@@ -1,0 +1,603 @@
+<title>AI 성적표</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Noto+Sans+KR:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap">
+<style>
+  :root{
+    --bg:#F1F3F6;
+    --surface:#FFFFFF;
+    --surface-2:#E8EBF1;
+    --ink:#16233F;
+    --ink-soft:#4C5A72;
+    --ink-faint:#7C8698;
+    --line:#DADFE7;
+    --line-strong:#C3CAD6;
+
+    --fn:#2C4A82;      /* 기능 관점 */
+    --fn-tint:#E7ECF6;
+    --tr:#A23B2E;      /* 신뢰성 관점 */
+    --tr-tint:#F7E9E6;
+    --ef:#237A64;      /* 효율성 관점 */
+    --ef-tint:#E3F1EC;
+
+    --shadow: 0 1px 2px rgba(22,35,63,.04), 0 8px 24px -12px rgba(22,35,63,.14);
+    --radius: 14px;
+    --serif: 'Gowun Batang', 'Nanum Myeongjo', Georgia, serif;
+    --sans: 'Noto Sans KR', -apple-system, 'Malgun Gothic', sans-serif;
+    --mono: 'JetBrains Mono', 'SFMono-Regular', Consolas, monospace;
+  }
+
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#10141D;
+      --surface:#181D28;
+      --surface-2:#212734;
+      --ink:#E7EAF1;
+      --ink-soft:#A7AFC1;
+      --ink-faint:#727D91;
+      --line:#2C3341;
+      --line-strong:#3A4152;
+
+      --fn:#83A7E4;
+      --fn-tint:#1D2740;
+      --tr:#E4877A;
+      --tr-tint:#332120;
+      --ef:#5FC7A2;
+      --ef-tint:#182B26;
+
+      --shadow: 0 1px 2px rgba(0,0,0,.3), 0 12px 28px -14px rgba(0,0,0,.55);
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#10141D;
+    --surface:#181D28;
+    --surface-2:#212734;
+    --ink:#E7EAF1;
+    --ink-soft:#A7AFC1;
+    --ink-faint:#727D91;
+    --line:#2C3341;
+    --line-strong:#3A4152;
+
+    --fn:#83A7E4;
+    --fn-tint:#1D2740;
+    --tr:#E4877A;
+    --tr-tint:#332120;
+    --ef:#5FC7A2;
+    --ef-tint:#182B26;
+
+    --shadow: 0 1px 2px rgba(0,0,0,.3), 0 12px 28px -14px rgba(0,0,0,.55);
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  @media (prefers-reduced-motion: reduce){ html{scroll-behavior:auto;} *{transition:none !important; animation:none !important;} }
+
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:var(--sans);
+    font-size:16px;
+    line-height:1.7;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  h1,h2,h3,.serif{ font-family:var(--serif); text-wrap:balance; }
+  .mono{ font-family:var(--mono); font-variant-numeric:tabular-nums; }
+
+  .wrap{ max-width:1080px; margin:0 auto; padding:0 24px; }
+  @media (max-width:640px){ .wrap{ padding:0 18px; } }
+
+  a{ color:inherit; }
+
+  /* ---------- top nav ---------- */
+  .topnav{
+    position:sticky; top:0; z-index:20;
+    background:color-mix(in srgb, var(--bg) 88%, transparent);
+    backdrop-filter:saturate(140%) blur(10px);
+    border-bottom:1px solid var(--line);
+  }
+  .topnav .wrap{
+    display:flex; align-items:center; justify-content:space-between;
+    height:56px; gap:18px;
+  }
+  .brand{ font-family:var(--serif); font-weight:700; font-size:1.02rem; letter-spacing:.01em; white-space:nowrap;}
+  .brand small{ display:block; font-family:var(--mono); font-weight:500; font-size:.62rem; letter-spacing:.12em; color:var(--ink-faint); text-transform:uppercase; margin-top:1px;}
+  .navlinks{ display:flex; gap:4px; overflow-x:auto; scrollbar-width:none; }
+  .navlinks::-webkit-scrollbar{ display:none; }
+  .navlinks a{
+    font-size:.82rem; font-weight:500; color:var(--ink-soft); text-decoration:none;
+    padding:7px 12px; border-radius:999px; white-space:nowrap; transition:background .15s,color .15s;
+  }
+  .navlinks a:hover, .navlinks a.active{ background:var(--surface-2); color:var(--ink); }
+
+  /* ---------- hero ---------- */
+  .hero{ padding:64px 0 40px; }
+  .eyebrow{
+    display:inline-flex; align-items:center; gap:8px;
+    font-family:var(--mono); font-size:.72rem; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--fn); background:var(--fn-tint); border-radius:999px; padding:6px 14px 6px 10px;
+    margin-bottom:22px; font-weight:600;
+  }
+  .eyebrow .dot{ width:6px; height:6px; border-radius:50%; background:var(--fn); }
+  .hero h1{ font-size:clamp(2.15rem, 5vw, 3.3rem); line-height:1.2; margin:0 0 18px; font-weight:700; }
+  .hero .lede{ max-width:640px; font-size:1.08rem; color:var(--ink-soft); margin:0 0 30px; }
+  .hero .lede b{ color:var(--ink); font-weight:600; }
+
+  .hero-strip{
+    display:grid; grid-template-columns:repeat(8,1fr); gap:8px;
+    margin-top:8px;
+  }
+  @media (max-width:760px){ .hero-strip{ grid-template-columns:repeat(4,1fr); } }
+  .strip-cell{
+    background:var(--surface); border:1px solid var(--line); border-radius:10px;
+    padding:10px 6px; text-align:center;
+  }
+  .strip-cell .code{ font-family:var(--mono); font-size:.95rem; font-weight:700; }
+  .strip-cell .label{ font-size:.62rem; color:var(--ink-faint); margin-top:2px; letter-spacing:.02em;}
+  .strip-cell.fn .code{ color:var(--fn); }
+  .strip-cell.tr .code{ color:var(--tr); }
+  .strip-cell.ef .code{ color:var(--ef); }
+
+  /* ---------- section shell ---------- */
+  section{ padding:56px 0; border-top:1px solid var(--line); }
+  .hero{ border-top:none; }
+  .kicker{
+    font-family:var(--mono); font-size:.72rem; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--ink-faint); margin-bottom:10px; font-weight:600;
+  }
+  .section-title{ font-size:clamp(1.5rem,3vw,2rem); margin:0 0 14px; font-weight:700; }
+  .section-intro{ max-width:660px; color:var(--ink-soft); margin:0 0 32px; font-size:1.02rem; }
+  .section-intro b{ color:var(--ink); font-weight:600; }
+
+  /* ---------- basics: kitchen analogy ---------- */
+  .basics-grid{
+    display:grid; grid-template-columns:1.1fr 1fr; gap:40px; align-items:start;
+  }
+  @media (max-width:760px){ .basics-grid{ grid-template-columns:1fr; gap:28px; } }
+  .diagram{
+    background:var(--surface); border:1px solid var(--line); border-radius:var(--radius);
+    padding:26px; box-shadow:var(--shadow);
+  }
+  .diagram-row{ display:flex; align-items:stretch; gap:0; }
+  .diagram-box{
+    flex:1; border:1.5px dashed var(--line-strong); border-radius:10px; padding:16px 14px;
+    display:flex; flex-direction:column; gap:6px; position:relative;
+  }
+  .diagram-box.solid{ border-style:solid; background:var(--fn-tint); border-color:var(--fn); }
+  .diagram-box .dt{ font-family:var(--mono); font-size:.66rem; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-faint); }
+  .diagram-box .dn{ font-weight:700; font-size:1.05rem; }
+  .diagram-box .dd{ font-size:.85rem; color:var(--ink-soft); line-height:1.5; }
+  .diagram-arrow{ display:flex; align-items:center; justify-content:center; width:38px; color:var(--ink-faint); flex-shrink:0; }
+  .diagram-cap{ margin-top:16px; font-size:.82rem; color:var(--ink-faint); text-align:center; }
+
+  .kv-list{ display:flex; flex-direction:column; gap:14px; }
+  .kv-item{ display:flex; gap:14px; }
+  .kv-item .kv-badge{
+    flex-shrink:0; width:34px; height:34px; border-radius:9px; background:var(--surface-2);
+    display:flex; align-items:center; justify-content:center; font-family:var(--mono);
+    font-size:.78rem; font-weight:700; color:var(--fn); border:1px solid var(--line);
+  }
+  .kv-item .kv-body b{ display:block; font-size:.98rem; margin-bottom:2px; }
+  .kv-item .kv-body span{ font-size:.88rem; color:var(--ink-soft); }
+
+  /* ---------- report card groups ---------- */
+  .group-block{ margin-bottom:52px; }
+  .group-block:last-child{ margin-bottom:0; }
+  .group-head{ display:flex; align-items:baseline; gap:12px; margin-bottom:6px; flex-wrap:wrap; }
+  .group-pill{
+    font-family:var(--mono); font-size:.68rem; letter-spacing:.1em; text-transform:uppercase;
+    font-weight:700; padding:5px 11px; border-radius:999px;
+  }
+  .group-pill.fn{ background:var(--fn-tint); color:var(--fn); }
+  .group-pill.tr{ background:var(--tr-tint); color:var(--tr); }
+  .group-pill.ef{ background:var(--ef-tint); color:var(--ef); }
+  .group-title{ font-family:var(--serif); font-weight:700; font-size:1.25rem; }
+  .group-sub{ color:var(--ink-soft); font-size:.92rem; max-width:640px; margin:6px 0 22px; }
+
+  .cards{ display:grid; grid-template-columns:repeat(auto-fit, minmax(300px,1fr)); gap:16px; }
+
+  .card{
+    background:var(--surface); border:1px solid var(--line); border-radius:var(--radius);
+    padding:22px 22px 24px; display:flex; flex-direction:column; gap:14px;
+    box-shadow:var(--shadow);
+    transition:transform .18s ease, box-shadow .18s ease;
+  }
+  .card:hover{ transform:translateY(-3px); }
+
+  .card-head{ display:flex; align-items:flex-start; gap:12px; }
+  .card-icon{
+    flex-shrink:0; width:42px; height:42px; border-radius:10px;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .card.fn .card-icon{ background:var(--fn-tint); color:var(--fn); }
+  .card.tr .card-icon{ background:var(--tr-tint); color:var(--tr); }
+  .card.ef .card-icon{ background:var(--ef-tint); color:var(--ef); }
+  .card-icon svg{ width:22px; height:22px; }
+
+  .card-titles .subj-code{ font-family:var(--mono); font-size:.66rem; letter-spacing:.1em; color:var(--ink-faint); font-weight:600; }
+  .card-titles h3{ margin:1px 0 0; font-size:1.12rem; font-weight:700; font-family:var(--serif); line-height:1.3;}
+  .card-titles .en{ font-size:.76rem; color:var(--ink-faint); font-family:var(--sans);}
+
+  .card .eli5{
+    font-size:.93rem; color:var(--ink); background:var(--surface-2); border-radius:10px;
+    padding:12px 14px; line-height:1.55;
+  }
+  .card .eli5 b{ font-weight:700; }
+  .card .eli5::before{ content:"쉽게 말하면 — "; font-weight:700; color:var(--ink-soft); font-size:.78rem; letter-spacing:.02em;}
+
+  .card .row-label{ font-family:var(--mono); font-size:.66rem; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-faint); margin-bottom:3px; font-weight:600;}
+  .card .body-text{ font-size:.9rem; color:var(--ink-soft); line-height:1.6; }
+  .card .body-text b{ color:var(--ink); font-weight:600; }
+  .card .example{ border-left:2.5px solid var(--line-strong); padding-left:11px; }
+  .card.fn .example{ border-color:var(--fn); }
+  .card.tr .example{ border-color:var(--tr); }
+  .card.ef .example{ border-color:var(--ef); }
+
+  /* ---------- tradeoffs ---------- */
+  .tradeoff-list{ display:flex; flex-direction:column; gap:16px; }
+  .tradeoff{
+    background:var(--surface); border:1px solid var(--line); border-radius:var(--radius);
+    padding:20px 22px; box-shadow:var(--shadow);
+  }
+  .tradeoff-top{ display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap; margin-bottom:14px;}
+  .tradeoff-pair{ display:flex; align-items:center; gap:10px; font-family:var(--serif); font-weight:700; font-size:1.02rem; }
+  .tradeoff-pair .vs{ font-family:var(--mono); font-size:.68rem; color:var(--tr); background:var(--tr-tint); padding:3px 9px; border-radius:999px; letter-spacing:.08em; }
+  .seesaw{ position:relative; height:34px; background:var(--surface-2); border-radius:999px; overflow:hidden; margin-bottom:12px; }
+  .seesaw-fill{ position:absolute; top:0; bottom:0; left:0; border-radius:999px 0 0 999px; display:flex; align-items:center; }
+  .seesaw-fill.right{ left:auto; right:0; border-radius:0 999px 999px 0; }
+  .seesaw span{ font-family:var(--mono); font-size:.66rem; font-weight:700; padding:0 12px; color:#fff; white-space:nowrap;}
+  .tradeoff p{ margin:0; font-size:.9rem; color:var(--ink-soft); }
+  .tradeoff p b{ color:var(--ink); font-weight:600; }
+  .tradeoff .note{ margin-top:10px; font-size:.78rem; color:var(--ink-faint); font-family:var(--mono); letter-spacing:.01em; }
+
+  /* ---------- data quality ---------- */
+  .pantry{ display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:14px; }
+  .pantry-item{
+    background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:16px 18px;
+  }
+  .pantry-item .pt{ font-family:var(--mono); font-size:.68rem; letter-spacing:.08em; text-transform:uppercase; color:var(--fn); font-weight:700; margin-bottom:6px;}
+  .pantry-item h4{ margin:0 0 6px; font-size:1rem; font-family:var(--serif); }
+  .pantry-item p{ margin:0; font-size:.85rem; color:var(--ink-soft); }
+
+  /* ---------- footer ---------- */
+  footer{ padding:40px 0 60px; border-top:1px solid var(--line); }
+  footer .wrap{ display:flex; flex-direction:column; gap:14px; }
+  .sources{ font-size:.8rem; color:var(--ink-faint); line-height:1.8; }
+  .sources b{ color:var(--ink-soft); font-weight:600; }
+  .foot-note{ font-size:.8rem; color:var(--ink-faint); }
+
+  ::selection{ background:var(--fn-tint); }
+</style>
+<header class="topnav">
+  <div class="wrap">
+    <div class="brand">AI 성적표<small>ELI5 · AI Engineering 요약</small></div>
+    <nav class="navlinks" id="navlinks">
+      <a href="#basics">기본 개념</a>
+      <a href="#group-fn">기능</a>
+      <a href="#group-tr">신뢰성</a>
+      <a href="#group-ef">효율성</a>
+      <a href="#tradeoffs">트레이드오프</a>
+      <a href="#data">데이터 품질</a>
+    </nav>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <span class="eyebrow"><span class="dot"></span>2026 AI Specialist(설계) 9월차수 · AI Engineering 강의 요약</span>
+    <h1>AI에게도 성적표가 있다면,<br>어떤 과목을 배울까요?</h1>
+    <p class="lede">
+      "똑똑한 AI"와 "믿을 수 있는 AI"는 다른 이야기입니다. 국제표준 <b>ISO/IEC 25059</b>는
+      AI 시스템을 8개 과목으로 나눠 채점합니다. 자율주행차, 로봇청소기, 챗봇 같은 익숙한 예로
+      각 과목이 뭘 뜻하는지 쉽게 풀어봤습니다.
+    </p>
+    <div class="hero-strip">
+      <div class="strip-cell fn"><div class="code">FC</div><div class="label">정확성</div></div>
+      <div class="strip-cell fn"><div class="code">RB</div><div class="label">강건성</div></div>
+      <div class="strip-cell fn"><div class="code">PR</div><div class="label">개인정보</div></div>
+      <div class="strip-cell fn"><div class="code">FR</div><div class="label">공정성</div></div>
+      <div class="strip-cell fn"><div class="code">FA</div><div class="label">적응성</div></div>
+      <div class="strip-cell tr"><div class="code">CT</div><div class="label">제어성</div></div>
+      <div class="strip-cell tr"><div class="code">EX</div><div class="label">설명력</div></div>
+      <div class="strip-cell ef"><div class="code">PE</div><div class="label">효율성</div></div>
+    </div>
+  </div>
+</section>
+
+<section id="basics">
+  <div class="wrap">
+    <div class="kicker">Chapter 00 · 기본 개념</div>
+    <h2 class="section-title">성적표를 보기 전에: AI 시스템 vs AI 애플리케이션</h2>
+    <p class="section-intro">
+      우리가 쓰는 챗봇이나 자율주행 앱은 <b>겉으로 보이는 식당 홀</b>입니다. 그 뒤에는 보이지 않는
+      <b>주방</b>이 있는데, 여기서 실제로 "생각"을 만들어냅니다. AI 시스템의 성적표는 바로 이 주방의
+      실력을 매기는 것입니다.
+    </p>
+    <div class="basics-grid">
+      <div class="diagram">
+        <div class="diagram-row">
+          <div class="diagram-box">
+            <span class="dt">Front of house</span>
+            <span class="dn">AI 애플리케이션</span>
+            <span class="dd">사용자가 마주하는 화면. 질문을 입력하고 답을 받는 "식당 홀".</span>
+          </div>
+          <div class="diagram-arrow">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 12h15M14 6l6 6-6 6"/></svg>
+          </div>
+          <div class="diagram-box solid">
+            <span class="dt">Back of house</span>
+            <span class="dn">AI 시스템</span>
+            <span class="dd">모델을 훈련하고(주방), 실시간으로 답을 만들어내는(요리) 엔진.</span>
+          </div>
+        </div>
+        <div class="diagram-cap">이 페이지의 8개 과목은 전부 "주방"(AI 시스템)의 실력을 채점합니다.</div>
+      </div>
+
+      <div class="kv-list">
+        <div class="kv-item">
+          <div class="kv-badge">1</div>
+          <div class="kv-body"><b>AI 시스템 = 데이터 + 모델 + 추론 엔진</b><span>사람이 정한 목표(비용 절감, 위험 감소 등)를 위해 입력을 받아 예측·추천·생성 같은 출력을 내놓는 엔진 전체.</span></div>
+        </div>
+        <div class="kv-item">
+          <div class="kv-badge">2</div>
+          <div class="kv-body"><b>AI Task = AI가 푸는 "숙제 유형"</b><span>분류(이게 뭐야?), 회귀(얼마나 될까?), 군집화(비슷한 걸 묶어봐), 이상탐지(이상한 거 찾아), 추천(뭐가 좋을까) 다섯 가지가 대표적입니다.</span></div>
+        </div>
+        <div class="kv-item">
+          <div class="kv-badge">3</div>
+          <div class="kv-body"><b>정확한 것 ≠ 믿을 수 있는 것</b><span>정답을 잘 맞혀도, 악조건에서 흔들리거나 남의 개인정보를 흘리거나 특정 집단을 차별하면 "좋은 AI"라 부를 수 없습니다.</span></div>
+        </div>
+        <div class="kv-item">
+          <div class="kv-badge">4</div>
+          <div class="kv-body"><b>그래서 8과목이 필요합니다</b><span>이 강의(및 ISO/IEC 25059)는 신뢰할 수 있는 AI를 "기능·신뢰성·효율성" 3개 관점, 8개 세부 과목으로 나눠 정의합니다.</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<section id="group-fn">
+  <div class="wrap">
+    <div class="kicker">Chapter 01 · 성적표</div>
+    <h2 class="section-title">8개 과목, 3개 관점</h2>
+    <p class="section-intro">
+      과목마다 "이 AI가 <b>얼마나 똑똑하고, 얼마나 오래 버티고, 얼마나 믿을 만한가</b>"를 각각 다른
+      방식으로 채점합니다. 먼저 <b>기능 관점</b> — 정답을 맞히고, 흔들리지 않고, 남의 비밀을 지키고,
+      편애하지 않고, 낯선 환경에도 적응하는 5과목입니다.
+    </p>
+
+    <div class="group-block">
+      <div class="group-head">
+        <span class="group-pill fn">기능 관점</span>
+        <span class="group-title">"올바르게 행동하고, 세상의 변화에 맞춰 진화하는가"</span>
+      </div>
+      <p class="group-sub">이 5과목은 AI가 내놓는 결과물 자체의 품질을 다룹니다. 정답을 내는 기본 실력부터, 나쁜 조건·낯선 환경에서도 버티는 맷집까지 포함합니다.</p>
+
+      <div class="cards">
+        <!-- FC -->
+        <article class="card fn">
+          <div class="card-head">
+            <div class="card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="8.4"/><circle cx="12" cy="12" r="4.6"/><circle cx="12" cy="12" r="1.2" fill="currentColor"/></svg></div>
+            <div class="card-titles"><span class="subj-code">FC · 01</span><h3>기능 정확성</h3><span class="en">Functional Correctness</span></div>
+          </div>
+          <div class="eli5">정해진 문제를 <b>필요한 정밀도만큼 정확하게</b> 맞히는 능력. 정지한 차와 도로 위 그림자를 헷갈리지 않는 것.</div>
+          <div class="body-text"><div class="row-label">왜 완벽할 수 없나</div>AI는 "정답을 안다"기보다 <b>가장 그럴듯한 답</b>을 확률로 고릅니다. 그래서 배운 적 없는 상황에선 자연스럽게 흔들립니다.</div>
+          <div class="body-text example"><div class="row-label">실패 사례</div>흰 눈밭 위 코끼리를 본 모델이 "배경이 하얗다 = 북극곰"이라는 학습 시 상관관계에 낚여 <b>북극곰으로 오분류</b>한 사례.</div>
+        </article>
+
+        <!-- RB -->
+        <article class="card fn">
+          <div class="card-head">
+            <div class="card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 3l7 3.2v5.4c0 5-3 8.2-7 9.4-4-1.2-7-4.4-7-9.4V6.2L12 3z"/></svg></div>
+            <div class="card-titles"><span class="subj-code">RB · 02</span><h3>강건성</h3><span class="en">Robustness</span></div>
+          </div>
+          <div class="eli5">폭우·안개·야간처럼 <b>악조건에서도</b> 평소 실력을 그대로 유지하는 맷집. 시끄러운 교실에서도 시험을 잘 보는 것.</div>
+          <div class="body-text"><div class="row-label">4가지 방해꾼</div>낯선 입력값, 외부 신호 방해(레이저 눈부심 등), 눈·비·조도 같은 환경 변화, 그리고 서버가 느려지는 연산 환경 문제.</div>
+          <div class="body-text example"><div class="row-label">실패 사례</div>정지 표지판에 <b>스티커 몇 장</b>만 붙여도 인간 눈에는 여전히 "정지"지만 AI는 "속도제한 표지판"으로 오인하는 적대적 공격.</div>
+        </article>
+
+        <!-- PR -->
+        <article class="card fn">
+          <div class="card-head">
+            <div class="card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="5" y="10.5" width="14" height="9" rx="2.2"/><path d="M8 10.5V7.8a4 4 0 0 1 8 0v2.7"/></svg></div>
+            <div class="card-titles"><span class="subj-code">PR · 03</span><h3>프라이버시</h3><span class="en">Privacy</span></div>
+          </div>
+          <div class="eli5">공부하다 우연히 본 <b>친구의 시험지 내용을 함부로 말하지 않는</b> 태도. 학습에 쓴 개인정보를 답변에 그대로 흘리지 않는 것.</div>
+          <div class="body-text"><div class="row-label">지켜야 할 것</div><b>PII</b>(전화번호·이름처럼 그 사람을 가리키는 정보)와, 유출되면 차별로 이어질 수 있는 <b>민감정보</b>(병력·종교 등)를 구분해 보호합니다.</div>
+          <div class="body-text example"><div class="row-label">실패 사례</div>챗봇에 특정 문구를 반복 입력했더니 학습 데이터 속 <b>실제 이메일·계좌번호</b>를 그대로 뱉어낸 "학습 데이터 추출" 사고.</div>
+        </article>
+
+        <!-- FR -->
+        <article class="card fn">
+          <div class="card-head">
+            <div class="card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><line x1="12" y1="3.5" x2="12" y2="18"/><line x1="4" y1="7" x2="20" y2="7"/><path d="M4 7l-2.4 5.6a3.4 3.4 0 0 0 6.8 0z"/><path d="M20 7l-2.4 5.6a3.4 3.4 0 0 0 6.8 0z"/><path d="M8.5 20.5h7"/></svg></div>
+            <div class="card-titles"><span class="subj-code">FR · 04</span><h3>공정성</h3><span class="en">Fairness</span></div>
+          </div>
+          <div class="eli5">성별·나이·사는 동네가 다르다는 이유로 <b>편애하거나 차별하지 않는</b> 채점 태도.</div>
+          <div class="body-text"><div class="row-label">두 가지 공정</div><b>그룹 공정</b>(집단별 승인율이 비슷한가)과 <b>개인 공정</b>(조건이 같은 두 사람이 똑같이 대우받는가)은 종종 서로 부딪힙니다.</div>
+          <div class="body-text example"><div class="row-label">실패 사례</div>연봉·신용점수가 같은데 <b>사는 우편번호</b>만 다르다는 이유로 대출 한도가 크게 달라지는 대리(proxy) 차별.</div>
+        </article>
+
+        <!-- FA -->
+        <article class="card fn">
+          <div class="card-head">
+            <div class="card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 20.5V11"/><path d="M12 11c0-4 3.2-7.2 7.2-7.2 0 4-3.2 7.2-7.2 7.2z"/><path d="M12 15c0-3-2.6-5.2-6-5.2 0 3 2.6 5.2 6 5.2z"/></svg></div>
+            <div class="card-titles"><span class="subj-code">FA · 05</span><h3>기능 적응성</h3><span class="en">Functional Adaptability</span></div>
+          </div>
+          <div class="eli5">도심에서만 배운 AI가 <b>비포장길이나 다른 나라 도로</b>로 "전학"을 가도 잘 적응하는가.</div>
+          <div class="body-text"><div class="row-label">두 가지 적응</div>미리 대응 방식을 <b>준비해두는</b> 확정적 적응(고속도로 모드 전환)과, 겪어보고 <b>스스로 학습하는</b> 진화적 적응(신형 표지판 인식 추가)이 있습니다.</div>
+          <div class="body-text example"><div class="row-label">실패 사례</div>서울 도심 데이터로만 훈련한 모델을 <b>좌측 통행 국가</b>에 그대로 배치하면, 새 규칙을 못 배워 판단이 무너집니다.</div>
+        </article>
+      </div>
+    </div>
+  </div>
+</section>
+<section id="group-tr">
+  <div class="wrap">
+    <div class="group-block" style="margin-bottom:0;">
+      <div class="group-head">
+        <span class="group-pill tr">신뢰성 관점</span>
+        <span class="group-title">"사람이 믿고 맡길 수 있게 만드는가"</span>
+      </div>
+      <p class="group-sub">AI가 항상 옳을 수는 없다는 걸 인정하는 관점입니다. 문제가 생겼을 때 사람이 <b>개입</b>할 수 있고, 왜 그런 답을 냈는지 <b>설명</b>받을 수 있어야 신뢰가 생깁니다.</p>
+
+      <div class="cards">
+        <!-- CT -->
+        <article class="card tr">
+          <div class="card-head">
+            <div class="card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3.4" y="9.2" width="17.2" height="6.2" rx="3.1"/><circle cx="15" cy="12.3" r="2.1" fill="currentColor" stroke="none"/></svg></div>
+            <div class="card-titles"><span class="subj-code">CT · 06</span><h3>제어 가능성</h3><span class="en">Controllability</span></div>
+          </div>
+          <div class="eli5">로봇청소기가 가구 사이에 <b>갇혀버렸을 때</b>, 사람(또는 관리자)이 앱으로 개입해 꺼내거나 멈출 수 있는가.</div>
+          <div class="body-text"><div class="row-label">개입의 두 목적</div>목표를 마치도록 <b>도와주는 것</b>(수동 조종으로 탈출)과, 위험할 때 <b>멈춰 세우는 것</b>(과열 시 강제 정지)입니다.</div>
+          <div class="body-text example"><div class="row-label">실패 사례</div>차선 인식 신뢰도가 급락했는데도 자율주행이 <b>계속 스스로 판단</b>하도록 방치돼, 운전자에게 제어권을 넘겨줄 수단이 없던 설계.</div>
+        </article>
+
+        <!-- EX -->
+        <article class="card tr">
+          <div class="card-head">
+            <div class="card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 5.4h16v10.2H10l-4.4 4v-4H4z"/><line x1="7.2" y1="9" x2="16.8" y2="9"/><line x1="7.2" y1="12" x2="13.5" y2="12"/></svg></div>
+            <div class="card-titles"><span class="subj-code">EX · 07</span><h3>설명 용이성</h3><span class="en">Explainability</span></div>
+          </div>
+          <div class="eli5">"이 답을 <b>왜</b> 골랐어?"라고 물었을 때, 사람이 알아들을 수 있게 조리 있게 답할 수 있는가.</div>
+          <div class="body-text"><div class="row-label">3단계 설명</div>알고리즘이 어떻게 계산했는지(인과), 그 판단이 현실과 맞는지(사실), 규정·윤리에 비춰 정당한지(정당성) — 듣는 사람에 맞춰 골라 씁니다.</div>
+          <div class="body-text example"><div class="row-label">실패 사례</div>대출을 거절당한 신청자에게 "신용 상태가 좋지 않습니다"라고만 말해, 무엇을 어떻게 <b>개선해야 하는지</b> 전혀 알 수 없던 안내.</div>
+        </article>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="group-ef">
+  <div class="wrap">
+    <div class="group-block" style="margin-bottom:0;">
+      <div class="group-head">
+        <span class="group-pill ef">효율성 관점</span>
+        <span class="group-title">"제한된 자원 안에서, 제때 답하는가"</span>
+      </div>
+      <p class="group-sub">앞의 7과목을 아무리 잘해도, <b>너무 늦게</b> 답하거나 컴퓨터 자원을 감당할 수 없이 써버리면 실전에서 쓸 수 없습니다.</p>
+
+      <div class="cards">
+        <!-- PE -->
+        <article class="card ef">
+          <div class="card-head">
+            <div class="card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4.4 16a7.6 7.6 0 1 1 15.2 0"/><line x1="12" y1="16" x2="15.6" y2="10.4"/><circle cx="12" cy="16" r="1.15" fill="currentColor" stroke="none"/></svg></div>
+            <div class="card-titles"><span class="subj-code">PE · 08</span><h3>수행 효율성</h3><span class="en">Performance Efficiency</span></div>
+          </div>
+          <div class="eli5">시험 시간 안에, 연필(자원)도 아껴 쓰며 답을 내는 능력. 자율주행차는 <b>0.03초</b> 안에 반응해야 합니다.</div>
+          <div class="body-text"><div class="row-label">3가지 잣대</div>얼마나 <b>빨리</b> 답하는가(시간), CPU·메모리를 얼마나 <b>아껴</b> 쓰는가(자원), 그리고 사람이 몰려도 <b>버틸</b> 수 있는가(용량).</div>
+          <div class="body-text example"><div class="row-label">현실 예</div>다른 7과목을 지키려고 검증·마스킹·재검토 절차를 더할수록, 응답은 <b>더 느려지고 자원은 더 든다</b> — 그래서 효율성은 늘 다른 과목과 저울질됩니다.</div>
+        </article>
+      </div>
+    </div>
+  </div>
+</section>
+<section id="tradeoffs">
+  <div class="wrap">
+    <div class="kicker">Chapter 02 · 성적 사이의 긴장</div>
+    <h2 class="section-title">올백은 없습니다</h2>
+    <p class="section-intro">
+      한 과목의 점수를 올리려는 조치가 다른 과목의 점수를 <b>깎아먹는</b> 경우가 흔합니다. 그래서 실제
+      설계에서는 "이 서비스에 지금 가장 중요한 과목은 무엇인가"를 먼저 정하고, 나머지는 감당 가능한
+      수준에서 타협합니다. 아래 막대는 실제 측정값이 아니라, <b>어느 쪽으로 힘이 쏠리는지</b>를 보여주는
+      개념도입니다.
+    </p>
+
+    <div class="tradeoff-list">
+      <div class="tradeoff">
+        <div class="tradeoff-top">
+          <div class="tradeoff-pair">설명 용이성<span class="vs">↔</span>기능 정확성</div>
+        </div>
+        <div class="seesaw">
+          <div class="seesaw-fill" style="width:38%; background:var(--tr);"><span>설명하기 쉬운 단순 모델</span></div>
+          <div class="seesaw-fill right" style="width:62%; background:var(--fn);"><span>수백만 파라미터의 정밀 모델</span></div>
+        </div>
+        <p>규칙이 눈에 보이는 <b>단순한 모델</b>(결정 트리 등)은 설명하긴 쉽지만 복잡한 패턴을 못 잡아 정확도가 낮습니다. <b>딥러닝처럼 복잡한 모델</b>은 정확도는 높지만 내부를 사람 말로 설명하기 어렵습니다.</p>
+        <div class="note">완화책 → 사후 설명(LIME, SHAP), 반사실적 설명으로 "복잡해도 설명 가능"하게 보완</div>
+      </div>
+
+      <div class="tradeoff">
+        <div class="tradeoff-top">
+          <div class="tradeoff-pair">프라이버시<span class="vs">↔</span>기능 정확성</div>
+        </div>
+        <div class="seesaw">
+          <div class="seesaw-fill" style="width:55%; background:var(--tr);"><span>노이즈를 많이 섞을수록</span></div>
+          <div class="seesaw-fill right" style="width:45%; background:var(--fn);"><span>정확도는 낮아짐</span></div>
+        </div>
+        <p>개인정보를 가리려고 데이터를 마스킹하거나 <b>일부러 노이즈</b>를 섞을수록, 모델이 배울 수 있는 정보량도 함께 줄어 예측이 둔해집니다.</p>
+        <div class="note">완화책 → 차분 프라이버시(Differential Privacy), 연합 학습으로 유출 위험만 선택적으로 낮춤</div>
+      </div>
+
+      <div class="tradeoff">
+        <div class="tradeoff-top">
+          <div class="tradeoff-pair">공정성<span class="vs">↔</span>기능 정확성</div>
+        </div>
+        <div class="seesaw">
+          <div class="seesaw-fill" style="width:48%; background:var(--tr);"><span>소수 집단 배려 강화</span></div>
+          <div class="seesaw-fill right" style="width:52%; background:var(--fn);"><span>전체 평균 정확도</span></div>
+        </div>
+        <p>데이터가 적은 소수 집단까지 고르게 대우하도록 손실 함수에 제약을 걸면, 다수 집단 위주로 최적화됐을 때보다 <b>전체 평균 정확도</b>는 약간 내려갈 수 있습니다.</p>
+        <div class="note">완화책 → 그룹별 정확도 격차에 상한선을 두고, 그 안에서만 정확도를 최대화</div>
+      </div>
+
+      <div class="tradeoff">
+        <div class="tradeoff-top">
+          <div class="tradeoff-pair">신뢰성 강화 절차 전체<span class="vs">↔</span>수행 효율성</div>
+        </div>
+        <div class="seesaw">
+          <div class="seesaw-fill" style="width:64%; background:var(--tr);"><span>검증·마스킹·설명 생성 단계 추가</span></div>
+          <div class="seesaw-fill right" style="width:36%; background:var(--ef);"><span>응답 속도 · 자원 여유</span></div>
+        </div>
+        <p>강건성 검사, 편향 탐지, 실시간 설명 생성 같은 안전장치를 겹겹이 두를수록 응답은 느려지고 서버 자원도 더 필요해집니다.</p>
+        <div class="note">완화책 → 경량화(양자화·지식증류)로 안전장치의 "무게"를 줄임</div>
+      </div>
+    </div>
+  </div>
+</section>
+<section id="data">
+  <div class="wrap">
+    <div class="kicker">Chapter 03 · 마지막 재료</div>
+    <h2 class="section-title">좋은 재료 없이는 좋은 요리도 없다</h2>
+    <p class="section-intro">
+      8과목 성적은 결국 <b>학습에 쓴 데이터</b>가 얼마나 좋은가에 달려 있습니다. ISO/IEC 5259-2는 데이터를
+      "장부(관리) · 설계 · 값 · 운영" 네 관점, 23개 특성으로 나눠 점검합니다. 대표적인 재료 체크리스트만
+      골라봤습니다.
+    </p>
+    <div class="pantry">
+      <div class="pantry-item"><div class="pt">값 · Accuracy</div><h4>정확성</h4><p>버스인데 트럭이라고 잘못 붙인 라벨이 없는가.</p></div>
+      <div class="pantry-item"><div class="pt">값 · Diversity</div><h4>다양성</h4><p>맑은 날뿐 아니라 눈·비·야간·터널 같은 예외 상황도 담겼는가.</p></div>
+      <div class="pantry-item"><div class="pt">값 · Balance</div><h4>균형</h4><p>구급차 같은 희귀 사례가 승용차에 파묻혀 무시되지 않는가.</p></div>
+      <div class="pantry-item"><div class="pt">값 · Representativeness</div><h4>대표성</h4><p>학습 데이터의 차종 비율이 실제 도로 상황과 비슷한가.</p></div>
+      <div class="pantry-item"><div class="pt">관리 · Traceability</div><h4>추적성</h4><p>이 라벨을 누가, 언제, 어떤 기준으로 달았는지 되짚을 수 있는가.</p></div>
+      <div class="pantry-item"><div class="pt">관리 · Compliance</div><h4>규정 준수</h4><p>얼굴·번호판처럼 법으로 보호되는 정보가 비식별화됐는가.</p></div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="sources">
+      <b>참고 자료 —</b> 「2026 AI Specialist(설계) 과정 9월차수: AI Engineering」 강의자료 ·
+      ISO/IEC 25059:2023 (AI 시스템 품질 모델) · ISO/IEC 25010:2023 (제품 품질 모델) ·
+      ISO/IEC 5259-2:2024 (분석·ML 데이터 품질) · NIST AI RMF 1.0 · EU AI Act ·
+      대한민국 AI 기본법 / TTA AI 신뢰성 가이드라인
+    </div>
+    <div class="foot-note">이 페이지는 강의 내용을 비유와 쉬운 말로 재구성한 요약이며, 트레이드오프 막대의 비율은 실제 측정값이 아닌 개념 설명용입니다.</div>
+  </div>
+</footer>
+
+<script>
+  (function(){
+    try{
+      var links = Array.prototype.slice.call(document.querySelectorAll('#navlinks a'));
+      var sections = links.map(function(a){ return document.querySelector(a.getAttribute('href')); }).filter(Boolean);
+      if(!('IntersectionObserver' in window) || sections.length === 0) return;
+      var io = new IntersectionObserver(function(entries){
+        entries.forEach(function(e){
+          if(e.isIntersecting){
+            var id = '#' + e.target.id;
+            links.forEach(function(a){ a.classList.toggle('active', a.getAttribute('href') === id); });
+          }
+        });
+      }, { rootMargin: '-45% 0px -45% 0px' });
+      sections.forEach(function(s){ io.observe(s); });
+    }catch(e){}
+  })();
+</script>
