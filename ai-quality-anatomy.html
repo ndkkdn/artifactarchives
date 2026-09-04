@@ -1,0 +1,849 @@
+<title>AI 품질 해부학</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Noto+Sans+KR:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap">
+<style>
+  :root{
+    --bg:#F1F3F6; --surface:#FFFFFF; --surface-2:#E8EBF1; --surface-3:#F6F7FA;
+    --ink:#16233F; --ink-soft:#4C5A72; --ink-faint:#7C8698;
+    --line:#DADFE7; --line-strong:#C3CAD6;
+    --fn:#2C4A82; --fn-tint:#E7ECF6;
+    --tr:#A23B2E; --tr-tint:#F7E9E6;
+    --ef:#237A64; --ef-tint:#E3F1EC;
+    --shadow: 0 1px 2px rgba(22,35,63,.04), 0 8px 24px -12px rgba(22,35,63,.14);
+    --radius:14px;
+    --serif:'Gowun Batang','Nanum Myeongjo',Georgia,serif;
+    --sans:'Noto Sans KR',-apple-system,'Malgun Gothic',sans-serif;
+    --mono:'JetBrains Mono','SFMono-Regular',Consolas,monospace;
+  }
+  @media (prefers-color-scheme:dark){
+    :root:not([data-theme="light"]){
+      --bg:#10141D; --surface:#181D28; --surface-2:#212734; --surface-3:#1D222E;
+      --ink:#E7EAF1; --ink-soft:#A7AFC1; --ink-faint:#727D91;
+      --line:#2C3341; --line-strong:#3A4152;
+      --fn:#83A7E4; --fn-tint:#1D2740;
+      --tr:#E4877A; --tr-tint:#332120;
+      --ef:#5FC7A2; --ef-tint:#182B26;
+      --shadow:0 1px 2px rgba(0,0,0,.3), 0 12px 28px -14px rgba(0,0,0,.55);
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#10141D; --surface:#181D28; --surface-2:#212734; --surface-3:#1D222E;
+    --ink:#E7EAF1; --ink-soft:#A7AFC1; --ink-faint:#727D91;
+    --line:#2C3341; --line-strong:#3A4152;
+    --fn:#83A7E4; --fn-tint:#1D2740;
+    --tr:#E4877A; --tr-tint:#332120;
+    --ef:#5FC7A2; --ef-tint:#182B26;
+    --shadow:0 1px 2px rgba(0,0,0,.3), 0 12px 28px -14px rgba(0,0,0,.55);
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  @media (prefers-reduced-motion:reduce){ html{scroll-behavior:auto;} *{transition:none!important;animation:none!important;} }
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:15.5px;line-height:1.7;-webkit-font-smoothing:antialiased;}
+  h1,h2,h3,h4,.serif{font-family:var(--serif);text-wrap:balance;}
+  .mono{font-family:var(--mono);font-variant-numeric:tabular-nums;}
+  a{color:inherit;}
+  ::selection{background:var(--fn-tint);}
+
+  /* ---- top bar ---- */
+  .topbar{position:sticky;top:0;z-index:30;background:color-mix(in srgb, var(--bg) 88%, transparent);backdrop-filter:blur(10px) saturate(140%);border-bottom:1px solid var(--line);}
+  .topbar-inner{max-width:1280px;margin:0 auto;padding:0 24px;height:56px;display:flex;align-items:center;justify-content:space-between;gap:16px;}
+  .brand{font-family:var(--serif);font-weight:700;font-size:1.02rem;}
+  .brand small{display:block;font-family:var(--mono);font-weight:500;font-size:.6rem;letter-spacing:.12em;color:var(--ink-faint);text-transform:uppercase;margin-top:1px;}
+  .topbar-tags{display:flex;gap:6px;}
+  .tag{font-family:var(--mono);font-size:.62rem;letter-spacing:.08em;padding:4px 9px;border-radius:999px;border:1px solid var(--line);color:var(--ink-faint);white-space:nowrap;}
+  @media (max-width:640px){ .topbar-tags{display:none;} }
+
+  /* ---- layout ---- */
+  .shell{max-width:1280px;margin:0 auto;padding:36px 24px 80px;display:grid;grid-template-columns:252px 1fr;gap:44px;align-items:start;}
+  @media (max-width:900px){ .shell{grid-template-columns:1fr;} }
+
+  .sidebar{position:sticky;top:76px;max-height:calc(100vh - 96px);overflow-y:auto;padding-right:6px;}
+  @media (max-width:900px){ .sidebar{position:static;max-height:none;margin-bottom:8px;} }
+  .side-group{margin-bottom:18px;}
+  .side-label{font-family:var(--mono);font-size:.62rem;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-faint);font-weight:700;margin:0 0 8px 10px;}
+  .side-link{display:flex;align-items:center;gap:9px;padding:7px 10px;border-radius:9px;font-size:.85rem;color:var(--ink-soft);text-decoration:none;font-weight:500;}
+  .side-link .n{font-family:var(--mono);font-size:.68rem;width:20px;flex-shrink:0;color:var(--ink-faint);}
+  .side-link:hover{background:var(--surface-2);color:var(--ink);}
+  .side-link.active{background:var(--surface);box-shadow:var(--shadow);color:var(--ink);font-weight:700;}
+  .side-link.active .n{color:var(--fn);}
+  .side-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;}
+
+  main{min-width:0;}
+
+  /* ---- intro / hero ---- */
+  .hero{margin-bottom:8px;}
+  .eyebrow{display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--fn);background:var(--fn-tint);border-radius:999px;padding:6px 14px 6px 10px;margin-bottom:18px;font-weight:600;}
+  .eyebrow .dot{width:6px;height:6px;border-radius:50%;background:var(--fn);}
+  .hero h1{font-size:clamp(1.9rem,4vw,2.6rem);line-height:1.22;margin:0 0 14px;font-weight:700;}
+  .hero .lede{max-width:660px;color:var(--ink-soft);font-size:1.02rem;margin:0 0 6px;}
+
+  .spec-table{margin-top:26px;}
+  table.dt{width:100%;border-collapse:collapse;font-size:.85rem;}
+  table.dt th{text-align:left;font-family:var(--mono);font-size:.68rem;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-faint);font-weight:700;padding:9px 12px;background:var(--surface-3);border-bottom:1px solid var(--line-strong);}
+  table.dt td{padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:top;color:var(--ink-soft);}
+  table.dt tr:last-child td{border-bottom:none;}
+  table.dt td.k{color:var(--ink);font-weight:600;white-space:nowrap;}
+  table.dt tbody tr:hover{background:var(--surface-3);}
+  .table-scroll{overflow-x:auto;border:1px solid var(--line);border-radius:12px;background:var(--surface);}
+  .table-cap{font-size:.76rem;color:var(--ink-faint);margin:8px 2px 0;}
+  .chip{display:inline-block;font-family:var(--mono);font-size:.68rem;font-weight:700;padding:2px 8px;border-radius:6px;}
+
+  /* ---- attribute sections ---- */
+  .attr{padding:64px 0 8px;border-top:1px solid var(--line);}
+  .attr:first-of-type{border-top:none;}
+  .attr-head{display:flex;align-items:flex-start;gap:16px;margin-bottom:8px;}
+  .attr-badge{flex-shrink:0;width:54px;height:54px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-weight:700;font-size:1.1rem;}
+  .attr.fn .attr-badge{background:var(--fn-tint);color:var(--fn);}
+  .attr.tr .attr-badge{background:var(--tr-tint);color:var(--tr);}
+  .attr.ef .attr-badge{background:var(--ef-tint);color:var(--ef);}
+  .attr-titles .group-pill{font-family:var(--mono);font-size:.64rem;letter-spacing:.1em;text-transform:uppercase;font-weight:700;padding:3px 9px;border-radius:999px;display:inline-block;margin-bottom:6px;}
+  .attr.fn .group-pill{background:var(--fn-tint);color:var(--fn);}
+  .attr.tr .group-pill{background:var(--tr-tint);color:var(--tr);}
+  .attr.ef .group-pill{background:var(--ef-tint);color:var(--ef);}
+  .attr-titles h2{margin:0;font-size:clamp(1.4rem,2.6vw,1.85rem);font-weight:700;}
+  .attr-titles .en{font-family:var(--mono);font-size:.78rem;color:var(--ink-faint);}
+  .attr-eli5{max-width:700px;font-size:.98rem;color:var(--ink-soft);margin:16px 0 26px;padding:13px 16px;background:var(--surface-2);border-radius:10px;}
+  .attr-eli5 b{color:var(--ink);}
+
+  .def-box{display:flex;gap:14px;margin:0 0 30px;padding:18px 20px;border-radius:12px;background:var(--surface);border:1px solid var(--line);box-shadow:var(--shadow);}
+  .def-box .qm{font-family:var(--serif);font-size:2.1rem;line-height:1;color:var(--line-strong);flex-shrink:0;}
+  .def-box .def-en{font-family:var(--serif);font-style:italic;font-size:.98rem;color:var(--ink-soft);line-height:1.55;}
+  .def-box .def-src{margin-top:8px;font-family:var(--mono);font-size:.7rem;color:var(--ink-faint);letter-spacing:.02em;}
+
+  h3.sub{font-size:1.1rem;font-weight:700;margin:38px 0 6px;font-family:var(--serif);}
+  h3.sub .num{font-family:var(--mono);font-size:.72rem;color:var(--ink-faint);font-weight:600;margin-right:8px;}
+  p.sub-intro{margin:0 0 18px;color:var(--ink-soft);font-size:.92rem;max-width:700px;}
+
+  .type-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px;margin-bottom:8px;}
+  .type-card{background:var(--surface);border:1px solid var(--line);border-radius:11px;padding:14px 16px;}
+  .type-card .tt{font-family:var(--mono);font-size:.66rem;letter-spacing:.06em;text-transform:uppercase;font-weight:700;margin-bottom:5px;}
+  .attr.fn .type-card .tt{color:var(--fn);}
+  .attr.tr .type-card .tt{color:var(--tr);}
+  .attr.ef .type-card .tt{color:var(--ef);}
+  .type-card h4{margin:0 0 4px;font-size:.98rem;font-family:var(--sans);font-weight:700;}
+  .type-card p{margin:0;font-size:.84rem;color:var(--ink-soft);}
+
+  .qas-table td.k{width:130px;font-family:var(--mono);font-size:.72rem;letter-spacing:.04em;text-transform:uppercase;color:var(--ink-faint);font-weight:700;vertical-align:top;padding-top:12px;}
+  .qas-table td.v{color:var(--ink);}
+  .qas-table .measure-line{display:block;margin-bottom:4px;}
+  .qas-scenario{font-size:.86rem;color:var(--ink-soft);margin:0 0 14px;padding:11px 14px;background:var(--surface-2);border-radius:9px;}
+
+  .example-box{border-left:3px solid var(--line-strong);padding:4px 0 4px 14px;margin:16px 0;}
+  .attr.fn .example-box{border-color:var(--fn);}
+  .attr.tr .example-box{border-color:var(--tr);}
+  .attr.ef .example-box{border-color:var(--ef);}
+  .example-box .lab{font-family:var(--mono);font-size:.66rem;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-faint);font-weight:700;margin-bottom:3px;}
+  .example-box p{margin:0;font-size:.88rem;color:var(--ink-soft);}
+
+  .strategy-list{display:flex;flex-direction:column;gap:10px;margin:0 0 8px;}
+  .strategy-item{display:flex;gap:12px;padding:12px 14px;background:var(--surface);border:1px solid var(--line);border-radius:10px;}
+  .strategy-item .si-badge{flex-shrink:0;width:28px;height:28px;border-radius:8px;background:var(--surface-2);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:.72rem;font-weight:700;color:var(--ink-faint);}
+  .strategy-item b{display:block;font-size:.92rem;margin-bottom:2px;}
+  .strategy-item span{font-size:.84rem;color:var(--ink-soft);}
+
+  .closing{padding:60px 0 10px;border-top:1px solid var(--line);}
+  .link-back{display:inline-flex;align-items:center;gap:8px;font-size:.86rem;color:var(--fn);text-decoration:none;font-weight:600;background:var(--fn-tint);padding:9px 16px;border-radius:999px;margin-top:6px;}
+
+  footer{margin-top:40px;padding-top:26px;border-top:1px solid var(--line);}
+  .sources{font-size:.78rem;color:var(--ink-faint);line-height:1.85;}
+  .sources b{color:var(--ink-soft);font-weight:600;}
+</style>
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <div class="brand">AI 품질 해부학<small>ELI5 심화편 · 정의·유형·평가지표·검증전략</small></div>
+    <div class="topbar-tags">
+      <span class="tag">ISO/IEC 25059</span>
+      <span class="tag">8 QAs</span>
+    </div>
+  </div>
+</header>
+
+<div class="shell">
+  <nav class="sidebar" id="sidebar">
+    <div class="side-group">
+      <div class="side-label">개요</div>
+      <a class="side-link" href="#s00"><span class="n">00</span>표준과 스펙시트</a>
+    </div>
+    <div class="side-group">
+      <div class="side-label">기능 관점</div>
+      <a class="side-link" href="#s01"><span class="side-dot" style="background:var(--fn)"></span><span class="n">01</span>기능 정확성</a>
+      <a class="side-link" href="#s02"><span class="side-dot" style="background:var(--fn)"></span><span class="n">02</span>강건성</a>
+      <a class="side-link" href="#s03"><span class="side-dot" style="background:var(--fn)"></span><span class="n">03</span>프라이버시</a>
+      <a class="side-link" href="#s04"><span class="side-dot" style="background:var(--fn)"></span><span class="n">04</span>공정성</a>
+      <a class="side-link" href="#s05"><span class="side-dot" style="background:var(--fn)"></span><span class="n">05</span>기능 적응성</a>
+    </div>
+    <div class="side-group">
+      <div class="side-label">신뢰성 관점</div>
+      <a class="side-link" href="#s06"><span class="side-dot" style="background:var(--tr)"></span><span class="n">06</span>제어 가능성</a>
+      <a class="side-link" href="#s07"><span class="side-dot" style="background:var(--tr)"></span><span class="n">07</span>설명 용이성</a>
+    </div>
+    <div class="side-group">
+      <div class="side-label">효율성 관점</div>
+      <a class="side-link" href="#s08"><span class="side-dot" style="background:var(--ef)"></span><span class="n">08</span>수행 효율성</a>
+    </div>
+    <div class="side-group">
+      <div class="side-label">마무리</div>
+      <a class="side-link" href="#s09">트레이드오프·출처</a>
+    </div>
+  </nav>
+
+  <main>
+    <section class="hero" id="s00">
+      <span class="eyebrow"><span class="dot"></span>2026 AI Specialist(설계) 9월차수 · AI Engineering 심화 해설</span>
+      <h1>8가지 품질 속성을 해부해봅니다</h1>
+      <p class="lede">
+        지난 편 <b>「AI 성적표」</b>가 8과목을 한눈에 훑어봤다면, 이 문서는 각 과목을 메스로 갈라
+        <b>정의 → 세부 유형 → 평가 지표 → 품질요구사항 시나리오(QAS) → 검증 전략</b> 순서로 뜯어봅니다.
+        용어는 실제 강의자료·ISO/IEC 25059:2023 표준 표현을 그대로 인용하고, 바로 아래 쉬운 말로 다시 풀었습니다.
+      </p>
+
+      <div class="spec-table">
+        <div class="table-scroll">
+          <table class="dt">
+            <thead><tr><th>코드</th><th>속성</th><th>관점</th><th>한 줄 정의</th></tr></thead>
+            <tbody>
+              <tr><td class="k mono">FC</td><td>기능 정확성</td><td>기능</td><td>사용자가 의도한 정답을 요구되는 정밀도로 제공하는 능력</td></tr>
+              <tr><td class="k mono">RB</td><td>강건성</td><td>기능</td><td>다양한 악조건 속에서도 기능 정확성을 유지하는 능력</td></tr>
+              <tr><td class="k mono">PR</td><td>프라이버시</td><td>기능</td><td>개인 데이터의 부당한 수집·사용으로 인한 사생활 침해를 방지하는 능력</td></tr>
+              <tr><td class="k mono">FR</td><td>공정성</td><td>기능</td><td>부당한 차별 없이 旣확립된 규범을 존중하는 결과를 제공하는 능력</td></tr>
+              <tr><td class="k mono">FA</td><td>기능 적응성</td><td>기능</td><td>운영 환경의 다양한 변화에 스스로 적응시키는 능력</td></tr>
+              <tr><td class="k mono">CT</td><td>제어 가능성</td><td>신뢰성</td><td>제어 주체가 개입하여 신뢰성 회복을 지원하는 능력</td></tr>
+              <tr><td class="k mono">EX</td><td>설명 용이성</td><td>신뢰성</td><td>결과의 이유와 타당성을 인간이 이해할 수 있게 표현하는 능력</td></tr>
+              <tr><td class="k mono">PE</td><td>수행 효율성</td><td>효율성</td><td>명시된 시간·처리량 내에서 자원을 효율적으로 사용하는 능력</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="table-cap">출처: ISO/IEC 25059:2023(품질 모델) · ISO/IEC 25010:2023(제품 품질 모델) · 2026 AI Specialist 9월차수 강의자료</p>
+      </div>
+    </section>
+
+    <!-- ================= 01 FC ================= -->
+    <section class="attr fn" id="s01">
+      <div class="attr-head">
+        <div class="attr-badge">FC</div>
+        <div class="attr-titles">
+          <span class="group-pill">기능 관점 · 01</span>
+          <h2>기능 정확성</h2>
+          <span class="en">Functional Correctness</span>
+        </div>
+      </div>
+      <p class="attr-eli5">쉽게 말하면 — 시험에서 <b>정답을 필요한 정밀도만큼</b> 맞히는 기초 실력. 8과목 중 가장 기본이지만, AI는 확률로 답을 고르기 때문에 "완전한 정답"을 보장할 수 없습니다.</p>
+
+      <div class="def-box">
+        <span class="qm">“</span>
+        <div>
+          <div class="def-en">Degree to which a product or system provides the correct results with the needed degree of precision.</div>
+          <div class="def-src">ISO/IEC 25059:2023 · Quality model for AI-based systems</div>
+        </div>
+      </div>
+
+      <h3 class="sub"><span class="num">1</span>왜 완벽할 수 없을까 — 3가지 구조적 이유</h3>
+      <p class="sub-intro">AI 시스템은 "모든 상황에서 정확하다"고 보장하지 않습니다(ISO/IEC 25059:2023). 그 이유는 아래 세 가지입니다.</p>
+      <div class="type-grid">
+        <div class="type-card"><div class="tt">이유 1</div><h4>확률론적 동작</h4><p>모델은 정답을 "아는" 게 아니라 학습 데이터의 통계적 상관관계에서 가장 그럴듯한 값을 고릅니다. 눈밭 배경 = 북극곰이라는 상관관계에 낚여 코끼리를 오분류하는 식입니다.</p></div>
+        <div class="type-card"><div class="tt">이유 2</div><h4>일반화의 한계</h4><p>조합의 폭발(모든 상황을 다 학습할 수 없음), 롱테일 문제(희귀 사례는 노이즈로 취급됨), 데이터 드리프트(세상이 계속 바뀜) 세 가지가 겹칩니다.</p></div>
+        <div class="type-card"><div class="tt">이유 3</div><h4>생성형 AI의 비결정성</h4><p>temperature·top-p·top-k 같은 샘플링 파라미터, 그리고 줄바꿈·문장부호 하나 같은 입력의 미세한 차이만으로도 답이 달라집니다.</p></div>
+      </div>
+      <p class="sub-intro" style="margin-top:14px;">그래서 <b>강건성·기능 적응성·제어 가능성·설명 용이성</b> 4개 과목이 기능 정확성의 "안전망" 역할을 합니다 — 악조건에서도 버티고(강건성), 변화에 맞춰 갱신되고(적응성), 틀렸을 때 사람이 멈출 수 있고(제어성), 판단 근거를 보여주는(설명력) 식입니다.</p>
+
+      <h3 class="sub"><span class="num">2</span>AI Task별 평가 지표</h3>
+      <p class="sub-intro">"정답"이 무엇이냐는 AI가 푸는 문제 유형(Task)마다 다릅니다. 대표적인 6가지 Task와 그에 맞는 성적표 기준입니다.</p>
+
+      <h4 style="margin:0 0 8px;font-size:.92rem;">분류 (Classification) — 이게 뭐야?</h4>
+      <div class="table-scroll"><table class="dt">
+        <thead><tr><th>지표</th><th>의미</th><th>언제 쓰는가</th></tr></thead>
+        <tbody>
+          <tr><td class="k">Accuracy</td><td>전체 중 정답을 맞춘 비율</td><td>클래스 분포가 균일할 때 (개/고양이 식별)</td></tr>
+          <tr><td class="k">Precision</td><td>양성이라 예측한 것 중 실제 양성 비율</td><td>오탐(FP) 비용이 클 때 — 스팸 오분류</td></tr>
+          <tr><td class="k">Recall</td><td>실제 양성 중 맞게 예측한 비율</td><td>미탐(FN) 비용이 클 때 — 암 진단, 보행자 인식</td></tr>
+          <tr><td class="k">F1-Score</td><td>Precision·Recall의 조화 평균</td><td>데이터 불균형이 심해 둘의 균형이 필요할 때</td></tr>
+          <tr><td class="k">ROC-AUC</td><td>임계값 전체에서의 분류 변별력</td><td>데이터가 비교적 균등할 때</td></tr>
+          <tr><td class="k">PR-AUC</td><td>임계값 전체에서의 정밀도-재현율 성능</td><td>양성이 매우 드문 불균형 데이터일 때 (부정거래 탐지)</td></tr>
+          <tr><td class="k">mAP</td><td>클래스별 AP(정밀도-재현율)의 평균</td><td>다중 객체 검출 — 자율주행 도로 위 다중 객체</td></tr>
+        </tbody>
+      </table></div>
+
+      <h4 style="margin:22px 0 8px;font-size:.92rem;">회귀 (Regression) — 얼마나 될까?</h4>
+      <div class="table-scroll"><table class="dt">
+        <thead><tr><th>지표</th><th>의미</th><th>언제 쓰는가</th></tr></thead>
+        <tbody>
+          <tr><td class="k">MAE</td><td>오차 절대값의 평균</td><td>이상치 영향을 중립적으로 보고 싶을 때</td></tr>
+          <tr><td class="k">MSE</td><td>오차 제곱의 평균</td><td>큰 오차에 더 강한 페널티가 필요할 때</td></tr>
+          <tr><td class="k">RMSE</td><td>MSE에 √를 씌워 실제 단위로 환산</td><td>오차를 m, km/h 같은 물리 단위로 직관적으로 보고 싶을 때</td></tr>
+          <tr><td class="k">MAPE</td><td>오차를 실제값 대비 %로 환산</td><td>스케일이 다른 여러 모델(경차 vs 트럭) 비교 시</td></tr>
+          <tr><td class="k">R²</td><td>모델이 데이터 분산을 설명하는 정도(0~1)</td><td>모델이 경향성을 얼마나 잘 파악했는지 볼 때</td></tr>
+        </tbody>
+      </table></div>
+
+      <h4 style="margin:22px 0 8px;font-size:.92rem;">군집화·추천·생성 — 나머지 3가지 Task</h4>
+      <div class="table-scroll"><table class="dt">
+        <thead><tr><th>Task</th><th>대표 지표</th><th>핵심 질문</th></tr></thead>
+        <tbody>
+          <tr><td class="k">군집화<br><span class="mono" style="font-size:.7rem;color:var(--ink-faint);">Clustering</span></td><td>WCSS(Inertia), Silhouette, ARI, DB Index</td><td>비슷한 것끼리 잘 묶였고, 다른 것과는 잘 갈라졌는가?</td></tr>
+          <tr><td class="k">추천<br><span class="mono" style="font-size:.7rem;color:var(--ink-faint);">Recommendation</span></td><td>Recall@K, MRR, NDCG, Coverage</td><td>제한된 화면 안에 원하는 게 있고, 좋은 순서로 놓였는가?</td></tr>
+          <tr><td class="k">텍스트 생성<br><span class="mono" style="font-size:.7rem;color:var(--ink-faint);">Text Generation (LLM)</span></td><td>BLEU/ROUGE/BERTScore, G-Eval, FActScore, RAG Triad(Faithfulness·Answer Relevance·Context Relevance)</td><td>참조 문장과 얼마나 비슷하고, 사실에 부합하며, 근거 문서에 충실한가?</td></tr>
+        </tbody>
+      </table></div>
+
+      <h3 class="sub"><span class="num">3</span>품질요구사항 시나리오 (QAS) 예시</h3>
+      <p class="sub-intro">"도로 객체 및 교통 표지판 인식" 기능에 대한 실제 요구사항 명세 형식입니다. 자극(Stimulus)이 들어와 결과(Response)가 나올 때, 그 결과를 어떤 잣대(Measure)로 재는지까지 한 줄로 고정합니다.</p>
+      <div class="table-scroll"><table class="dt qas-table">
+        <tbody>
+          <tr><td class="k">Source</td><td class="v">카메라 및 LiDAR 센서</td></tr>
+          <tr><td class="k">Stimulus</td><td class="v">주간/야간, 맑음/우천 등 일반적 상황에서의 주행 영상</td></tr>
+          <tr><td class="k">Artifact</td><td class="v">도로 객체 인식 모듈</td></tr>
+          <tr><td class="k">Environment</td><td class="v">정상 동작 상태</td></tr>
+          <tr><td class="k">Response</td><td class="v">영상에서 추출된 각 객체에 ‘보행자’, ‘차량’, ‘표지판 종류’ 레이블 부여</td></tr>
+          <tr><td class="k">Measure</td><td class="v"><span class="measure-line">mAP(mean Average Precision) 95% 이상</span><span class="measure-line">보행자 재현율(Recall) 99.9% 이상 — 미탐 방지</span></td></tr>
+        </tbody>
+      </table></div>
+
+      <h3 class="sub"><span class="num">4</span>검증 전략 — "정답이 없는데 어떻게 채점하지?"</h3>
+      <p class="sub-intro">전통 소프트웨어는 f(x)=y가 명확하지만 AI는 정답(y)을 사전에 확정하기 어렵습니다 — 이를 <b>테스트 오라클 문제</b>라 부릅니다. 절대적 정답 대신 5가지 방식으로 "상대적 정답"을 만듭니다.</p>
+      <div class="table-scroll"><table class="dt">
+        <thead><tr><th>기법</th><th>오라클의 성격</th><th>방법</th></tr></thead>
+        <tbody>
+          <tr><td class="k">벤치마킹<br>Benchmarking</td><td>旣구축된 정답</td><td>KITTI, Waymo, COCO 같은 라벨링 된 공개 데이터셋으로 채점</td></tr>
+          <tr><td class="k">변형 테스팅<br>Metamorphic Testing</td><td>논리적 일관성</td><td>"안개 필터를 씌워도 보행자는 여전히 보행자여야 한다"는 관계식으로 검증</td></tr>
+          <tr><td class="k">전문가 패널<br>Expert Panel</td><td>집단 지성</td><td>AI가 헷갈리는 경계 사례를 사람 5명이 합의해 정답으로 확정</td></tr>
+          <tr><td class="k">백투백 테스팅<br>Back-to-Back</td><td>상대적 차이</td><td>기존 검증된 v1.0 모델과 신규 v2.0의 결과를 비교해 차이점만 정밀 분석</td></tr>
+          <tr><td class="k">A/B 테스팅<br>A/B Testing</td><td>통계적 우위</td><td>실환경에서 두 모델을 동시에 돌려 사고·오류 발생률로 우열 판정</td></tr>
+        </tbody>
+      </table></div>
+      <p class="table-cap">테스트 케이스 생성에는 <b>조합 테스팅(Pairwise)</b>으로 "무엇을 테스트할지"를 줄이고, <b>변형 테스팅</b>으로 "그 결과가 옳은지"를 판정하는 두 기법이 짝을 이룹니다.</p>
+    </section>
+
+    <!-- ================= 02 RB ================= -->
+    <section class="attr fn" id="s02">
+      <div class="attr-head">
+        <div class="attr-badge">RB</div>
+        <div class="attr-titles">
+          <span class="group-pill">기능 관점 · 02</span>
+          <h2>강건성</h2>
+          <span class="en">Robustness</span>
+        </div>
+      </div>
+      <p class="attr-eli5">쉽게 말하면 — 시끄러운 교실, 폭우 치는 날씨, 낯선 문제에도 <b>평소 실력을 그대로 유지</b>하는 맷집. 기능 정확성이 "정상 조건의 실력"이라면 강건성은 "악조건에서도 그 실력을 지키는 힘"입니다.</p>
+
+      <div class="def-box">
+        <span class="qm">“</span>
+        <div>
+          <div class="def-en">The ability of a system to maintain its level of functional correctness under any circumstances including unseen, biased, adversarial or invalid data inputs, external interference, and environmental conditions.</div>
+          <div class="def-src">ISO/IEC 25059:2023 · Quality model for AI-based systems</div>
+        </div>
+      </div>
+
+      <h3 class="sub"><span class="num">1</span>4대 위협 유형</h3>
+      <div class="type-grid">
+        <div class="type-card"><div class="tt">유형 1</div><h4>입력 데이터 강건성</h4><p>학습 시 못 본 데이터(Unseen/OOD), 편향된 데이터(Biased), 악의적 공격(Adversarial), 손상된 값(Invalid) 네 종류.</p></div>
+        <div class="type-card"><div class="tt">유형 2</div><h4>외부 간섭 강건성</h4><p>고압선 전자기 노이즈처럼 우발적인 신호 왜곡, 레이저 눈부심처럼 의도적인 신호 기만.</p></div>
+        <div class="type-card"><div class="tt">유형 3</div><h4>외부 환경 강건성</h4><p>학습 데이터와 실제 환경의 분포가 달라지는 것(일반화), 폭우·안개로 정보가 훼손되는 것(복원력), 센서 노후화로 품질이 서서히 떨어지는 것(신뢰성).</p></div>
+        <div class="type-card"><div class="tt">유형 4</div><h4>추론 컴퓨팅 강건성</h4><p>서빙 코드·가드레일의 불완전성(추론 로직), GPU/CPU 수치 차이·배치 지연 같은 하부 인프라 불안정(추론 플랫폼).</p></div>
+      </div>
+
+      <h3 class="sub"><span class="num">2</span>기대 동작 — 무너지지 않고 어떻게 대응하는가</h3>
+      <div class="table-scroll"><table class="dt">
+        <thead><tr><th>유형</th><th>의미</th></tr></thead>
+        <tbody>
+          <tr><td class="k">Nominal Robustness</td><td>원래 요구된 기능 정확성·성능 수준을 그대로 유지</td></tr>
+          <tr><td class="k">Fail-Operational</td><td>핵심 기능(Mission Capability)만은 계속 제공 — 카메라 한 대가 죽어도 LiDAR로 장애물 인식 지속</td></tr>
+          <tr><td class="k">Fail-Degraded / Graceful Degradation</td><td>정의된 저하 수준 안에서 제한된 기능으로 계속 동작 — 음성 중심으로만 회의 유지</td></tr>
+          <tr><td class="k">Fail-Safe</td><td>기능 수행을 중단하고 안전 상태로 전이 (강건성이 아닌 Safety로 분류됨)</td></tr>
+        </tbody>
+      </table></div>
+
+      <h3 class="sub"><span class="num">3</span>평가 지표</h3>
+      <div class="table-scroll"><table class="dt">
+        <thead><tr><th>구분</th><th>지표</th><th>의미</th></tr></thead>
+        <tbody>
+          <tr><td class="k">정확성 기반</td><td>강건성 지수(RS)</td><td>Acc<sub>robust</sub>/Acc<sub>clean</sub> × 100% — 정상 대비 정확도 보존율</td></tr>
+          <tr><td class="k"></td><td>상대적 정확도 저하율(RCD)</td><td>1 − RS — 값이 작을수록 강건함</td></tr>
+          <tr><td class="k"></td><td>평균 오염 오류율(mCE)</td><td>ImageNet-C 등 표준 오염 시나리오에서 기준 모델 대비 오류율</td></tr>
+          <tr><td class="k">적대적 기반</td><td>강건 정확도(RA)</td><td>공격받은 입력에도 여전히 정답을 맞힌 비율</td></tr>
+          <tr><td class="k"></td><td>공격 탐지율(ADR) / 오거부율(FRR)</td><td>공격을 얼마나 잘 걸러내는지 / 정상 입력을 얼마나 헛되이 막는지</td></tr>
+          <tr><td class="k"></td><td>공격 성공률(ASR)</td><td>100% − RA. 공격자 관점의 성공 비율</td></tr>
+          <tr><td class="k">안정성 기반</td><td>추론 안정성 지수 / 예측 변동률(Flicker Rate)</td><td>연속 입력·프레임 사이에서 결과가 얼마나 흔들리는지</td></tr>
+        </tbody>
+      </table></div>
+
+      <h3 class="sub"><span class="num">4</span>품질요구사항 시나리오 (QAS) 예시</h3>
+      <p class="qas-scenario">"폭우, 짙은 안개, 광원 변화 등 가혹한 기상 조건에서도 객체 인식 정확도 하락을 최소화해야 한다"</p>
+      <div class="table-scroll"><table class="dt qas-table">
+        <tbody>
+          <tr><td class="k">Source</td><td class="v">성능이 저하된 카메라 및 LiDAR 센서</td></tr>
+          <tr><td class="k">Stimulus</td><td class="v">폭우(시간당 30mm↑), 짙은 안개(가시거리 10m↓), 태양 역광, 렌즈 오염</td></tr>
+          <tr><td class="k">Environment</td><td class="v">정상 상황(가혹 기상만 추가)</td></tr>
+          <tr><td class="k">Response</td><td class="v">인식 레이블의 깜빡임(Flicker)을 억제하고 객체 식별 연속성 보장</td></tr>
+          <tr><td class="k">Measure</td><td class="v"><span class="measure-line">강건성 지수: 정상 대비 정확성 유지율 90% 이상</span><span class="measure-line">예측 변동률(Flicker Rate): 레이블 번복률 0.5% 이하</span><span class="measure-line">상대적 정확도 저하율(RCD): mAP 하락폭 10% 이내</span></td></tr>
+        </tbody>
+      </table></div>
+
+      <h3 class="sub"><span class="num">5</span>검증 전략 — 4가지 데이터 유형별 테스트</h3>
+      <div class="strategy-list">
+        <div class="strategy-item"><div class="si-badge">1</div><div><b>Unseen/OOD 테스트</b><span>학습 범위 밖 객체·언어를 투입해 억지로 기존 클래스에 끼워 맞추지 않고 "모름"으로 처리하는지 확인 (Semantic OOD, Domain Shift)</span></div></div>
+        <div class="strategy-item"><div class="si-badge">2</div><div><b>Biased 테스트</b><span>객체와 배경을 의도적으로 뒤바꿔(잔디밭 위 자동차) 배경이 아닌 본질을 보는지 검증 (Cross-context, Counterfactual)</span></div></div>
+        <div class="strategy-item"><div class="si-badge">3</div><div><b>Adversarial 테스트</b><span>미세한 디지털 섭동(FGSM/PGD), 표지판 스티커 같은 물리적 공격, LiDAR/GPS 위조 신호로 방어력 확인</span></div></div>
+        <div class="strategy-item"><div class="si-badge">4</div><div><b>Invalid 테스트</b><span>스키마 위반, 신호 품질 저하, 필드 간 모순, 시간 순서 조작 데이터를 주입해 오작동 없이 차단·저하 모드로 전환되는지 확인</span></div></div>
+      </div>
+    </section>
+
+    <!-- ================= 03 PR ================= -->
+    <section class="attr fn" id="s03">
+      <div class="attr-head">
+        <div class="attr-badge">PR</div>
+        <div class="attr-titles">
+          <span class="group-pill">기능 관점 · 03</span>
+          <h2>프라이버시</h2>
+          <span class="en">Privacy</span>
+        </div>
+      </div>
+      <p class="attr-eli5">쉽게 말하면 — 공부하다 우연히 본 <b>친구의 시험지 내용을 함부로 말하지 않는</b> 태도. 학습에 쓴 개인정보가 답변이나 로그로 새어나가지 않도록 지키는 능력입니다.</p>
+
+      <div class="def-box">
+        <span class="qm">“</span>
+        <div>
+          <div class="def-en">Freedom from intrusion into the private life or affairs of an individual when that intrusion results from undue or illegal gathering and use of data about that individual.</div>
+          <div class="def-src">ISO/IEC TR 24028:2020 · Overview of trustworthiness in AI</div>
+        </div>
+      </div>
+
+      <h3 class="sub"><span class="num">1</span>보호 대상 구분하기</h3>
+      <div class="table-scroll"><table class="dt">
+        <thead><tr><th>구분</th><th>핵심 질문</th><th>예</th></tr></thead>
+        <tbody>
+          <tr><td class="k">PII<br>개인식별정보</td><td>이 데이터가 누구(Who)를 가리키는가?</td><td>직접 식별자(주민번호, 이메일) · 간접 식별자(성명, 생년월일, IP)</td></tr>
+          <tr><td class="k">민감 정보</td><td>유출 시 얼마나 위험(Risk)한가?</td><td>병력, 종교, 정치 견해, 범죄 기록 — 노출 시 낙인·차별로 이어짐</td></tr>
+          <tr><td class="k">대리(Proxy) 속성</td><td>PII를 몰라도 추론할 수 있는가?</td><td>우편번호(인종 추론), 쇼핑 목록(성별 추론)</td></tr>
+        </tbody>
+      </table></div>
+
+      <h3 class="sub"><span class="num">2</span>보호 원칙 3단계</h3>
+      <div class="type-grid">
+        <div class="type-card"><div class="tt">철학 · Why</div><h4>Privacy by Design 7원칙</h4><p>ISO 31700 — 사전 예방, 기본값 보호, 설계 내재화, 완전한 기능성, 전 과정 보안, 투명성, 사용자 중심.</p></div>
+        <div class="type-card"><div class="tt">지침 · What</div><h4>ISO/IEC 29100 11원칙</h4><p>동의와 선택, 목적 명시, 수집 제한, 데이터 최소화, 보유·공개 제한, 정확성, 투명성, 개인 참여, 책무성, 정보보안, 준법성.</p></div>
+        <div class="type-card"><div class="tt">도구 · How</div><h4>PETs</h4><p>차분 프라이버시(노이즈 주입), 익명화·가명화, 연합학습, 합성 데이터로 실제 기술을 구현.</p></div>
+      </div>
+
+      <h3 class="sub"><span class="num">3</span>내부 지표 — 얼마나 가려졌나</h3>
+      <div class="table-scroll"><table class="dt">
+        <thead><tr><th>지표</th><th>의미</th><th>권장 범위</th></tr></thead>
+        <tbody>
+          <tr><td class="k">DP 입실론(ε)</td><td>개인 데이터 1건이 출력에 미치는 영향의 상한. 작을수록 안전, 클수록 정확</td><td>강한 보호 0.1~1 · 중간 2~8 · 약한 보호 10↑</td></tr>
+          <tr><td class="k">DP 델타(δ)</td><td>ε 보장이 예외적으로 깨질 확률</td><td>기본 10⁻⁵, 엄격 설계는 10⁻⁶~10⁻⁹</td></tr>
+          <tr><td class="k">K-익명성</td><td>같은 준식별자 조합을 가진 레코드가 최소 k개 이상 존재</td><td>최소 k=3~5, 민감 데이터 k≥10</td></tr>
+        </tbody>
+      </table></div>
+
+      <h3 class="sub"><span class="num">4</span>적대적 지표 — 공격을 얼마나 막아내는가</h3>
+      <div class="table-scroll"><table class="dt">
+        <thead><tr><th>공격</th><th>핵심 질문</th><th>방어 목표</th></tr></thead>
+        <tbody>
+          <tr><td class="k">멤버십 추론(MIA)</td><td>이 사람이 학습 데이터 명단에 있는가?</td><td>MIA Advantage ≤ 0.05 목표</td></tr>
+          <tr><td class="k">속성 추론(AIA)</td><td>공개 정보로 비밀 속성을 알아낼 수 있는가?</td><td>무작위 추측 대비 상승폭 최소화</td></tr>
+          <tr><td class="k">학습 데이터 추출</td><td>학습 데이터의 원문을 그대로 뽑아낼 수 있는가?</td><td>반복 질의로도 PII 문자열 미노출</td></tr>
+          <tr><td class="k">모델 역전</td><td>학습 데이터의 대표적 형상을 복원할 수 있는가?</td><td>복원 이미지·텍스트의 재구성 오차 최대화</td></tr>
+        </tbody>
+      </table></div>
+
+      <h3 class="sub"><span class="num">5</span>품질요구사항 시나리오 (QAS) 예시</h3>
+      <p class="qas-scenario">"외부 공격자가 특정 개인의 진료 기록을 입력해 해당 환자가 학습 데이터셋에 포함되었는지 역추론할 수 없어야 한다" — 희귀질환 예측 모델</p>
+      <div class="table-scroll"><table class="dt qas-table">
+        <tbody>
+          <tr><td class="k">Source</td><td class="v">특정인의 질환 여부를 추론하려는 악의적 공격자</td></tr>
+          <tr><td class="k">Stimulus</td><td class="v">공개 정보(나이·성별·지역)를 조합한 고정밀 반복 질의</td></tr>
+          <tr><td class="k">Artifact</td><td class="v">희귀질환 진단 AI 추론 엔진</td></tr>
+          <tr><td class="k">Response</td><td class="v">DP-SGD 학습 + confidence 정밀도 제한, 반복 질의 탐지·차단</td></tr>
+          <tr><td class="k">Measure</td><td class="v"><span class="measure-line">MIA Advantage ≤ 0.05 (최대 0.10)</span><span class="measure-line">DP privacy budget ε ≤ 1.0, δ ≤ 1/N</span><span class="measure-line">반복 질의 탐지율 ≥ 95%, 차단 시간 ≤ 1초</span></td></tr>
+        </tbody>
+      </table></div>
+
+      <h3 class="sub"><span class="num">6</span>검증 전략 & 도구</h3>
+      <div class="strategy-list">
+        <div class="strategy-item"><div class="si-badge">1</div><div><b>정적 테스트 세트</b><span>PII 포함 프롬프트·민감정보 질의를 반복 실행해 노출 여부 확인</span></div></div>
+        <div class="strategy-item"><div class="si-badge">2</div><div><b>벤치마크·스캐너</b><span>Garak, PyRIT, Promptfoo로 Jailbreak·Data leakage 자동 탐지</span></div></div>
+        <div class="strategy-item"><div class="si-badge">3</div><div><b>공격 모델 기반</b><span>IBM ART, TensorFlow Privacy로 MIA/AIA/모델역전 공격을 실제 구성해 성능 측정</span></div></div>
+        <div class="strategy-item"><div class="si-badge">4</div><div><b>전문가 레드팀</b><span>보안·도메인 전문가가 다단계 공격 시나리오로 실제 침투 시도</span></div></div>
+      </div>
+      <p class="table-cap">관련 글로벌 표준: NIST AI 600-1(GenAI Profile) · EU AI Act GPAI 투명성 규정 · OWASP Top 10 for LLM · MITRE ATLAS</p>
+    </section>
+
+    <!-- ================= 04 FR ================= -->
+    <section class="attr fn" id="s04">
+      <div class="attr-head">
+        <div class="attr-badge">FR</div>
+        <div class="attr-titles">
+          <span class="group-pill">기능 관점 · 04</span>
+          <h2>공정성</h2>
+          <span class="en">Fairness</span>
+        </div>
+      </div>
+      <p class="attr-eli5">쉽게 말하면 — 성별·나이·사는 동네가 다르다는 이유로 <b>편애하거나 차별하지 않는</b> 채점 태도. "다수결"과 "소수 배려"가 자주 부딪히는 까다로운 과목입니다.</p>
+
+      <div class="def-box">
+        <span class="qm">“</span>
+        <div>
+          <div class="def-en">Treatment, behaviour or outcome that respects pre-established facts, beliefs, and norms and is not determined by favouritism or unjust discrimination.</div>
+          <div class="def-src">2026 AI Specialist 강의자료 인용</div>
+        </div>
+      </div>
+
+      <h3 class="sub"><span class="num">1</span>보호 속성 vs 대리 속성</h3>
+      <div class="table-scroll"><table class="dt">
+        <thead><tr><th>구분</th><th>기준</th><th>예</th></tr></thead>
+        <tbody>
+          <tr><td class="k">보호 속성</td><td>법률·사회적 합의로 "이 이유로 차별하면 안 된다"고 명시된 속성</td><td>성별, 연령, 인종/민족, 국적, 종교, 장애 여부</td></tr>
+          <tr><td class="k">대리(Proxy) 속성</td><td>보호 속성과 통계적으로 강하게 얽혀 간접 차별을 일으키는 속성</td><td>우편번호(→인종), 쇼핑 목록(→성별)</td></tr>
+        </tbody>
+      </table></div>
+
+      <h3 class="sub"><span class="num">2</span>그룹 공정성 vs 개인 공정성</h3>
+      <div class="table-scroll"><table class="dt">
+        <thead><tr><th></th><th>그룹 공정성</th><th>개인 공정성</th></tr></thead>
+        <tbody>
+          <tr><td class="k">철학</td><td>결과의 평등 — 집단 간 결과가 균등한가</td><td>절차적 일관성 — 비슷한 개인이 비슷한 결과를 받는가</td></tr>
+          <tr><td class="k">질문</td><td>"남성과 여성의 합격 비율이 같은가?"</td><td>"조건이 거의 같은 저 사람과 나는 왜 다른가?"</td></tr>
+          <tr><td class="k">충돌</td><td>집단 균형을 맞추려다 우수한 개인이 탈락할 수 있음</td><td>개인 능력을 중시하다 집단 격차가 심화될 수 있음</td></tr>
+        </tbody>
+      </table></div>
+
+      <h3 class="sub"><span class="num">3</span>그룹 공정성 지표</h3>
+      <div class="table-scroll"><table class="dt">
+        <thead><tr><th>지표</th><th>핵심 질문</th><th>방지하는 불공정</th></tr></thead>
+        <tbody>
+          <tr><td class="k">인구 통계적 패리티</td><td>결과 배분 자체가 그룹 간 균등한가?</td><td>선정·승인 결과의 집단 간 불균형</td></tr>
+          <tr><td class="k">불균등 영향(Disparate Impact)</td><td>집단 간 선정률 비율이 80% Rule을 충족하는가?</td><td>표면적으로 중립적인 기준의 차별적 파급</td></tr>
+          <tr><td class="k">예측 패리티</td><td>긍정 판정의 신뢰도가 그룹 간 균등한가?</td><td>긍정 판정 품질의 집단 간 차이</td></tr>
+          <tr><td class="k">기회의 평등</td><td>자격 있는 사람을 놓치는 정도가 그룹 간 균등한가?</td><td>자격자에 대한 기회 박탈</td></tr>
+          <tr><td class="k">균형된 오차(Equalized Odds)</td><td>탐지 성공률·오탐률이 모두 그룹 간 균등한가?</td><td>탐지 실패·오탐이 특정 집단에 집중되는 복합 불공정</td></tr>
+          <tr><td class="k">처우의 평등</td><td>오류의 상대적 성격(FP vs FN 비중)이 균등한가?</td><td>오류 부담이 특정 집단에 편중되는 것</td></tr>
+        </tbody>
+      </table></div>
+      <p class="table-cap">도메인별 우선 지표 — 사회적 배려(장학금)는 <b>인구통계적 패리티</b>, 기회 제공(채용·대출)은 <b>기회의 평등</b>, 위험 방지(범죄예측·부정탐지)는 <b>균형된 오차</b>를 우선합니다.</p>
+
+      <h3 class="sub"><span class="num">4</span>개인 공정성 지표</h3>
+      <div class="table-scroll"><table class="dt">
+        <thead><tr><th>지표</th><th>핵심 질문</th></tr></thead>
+        <tbody>
+          <tr><td class="k">유사도 기반 일관성</td><td>아주 유사한 두 사람이 동일한 결과를 받는가?</td></tr>
+          <tr><td class="k">립시츠 연속성</td><td>입력값의 작은 차이가 결과의 급격한 차이를 만들지 않는가?</td></tr>
+          <tr><td class="k">테일 지수</td><td>오류·불이익이 특정 개인들에게 불평등하게 쏠려 있지 않은가?</td></tr>
+          <tr><td class="k">반사실적 공정성</td><td>보호 속성만 가상으로 바꿔도 같은 결정을 받는가?</td></tr>
+          <tr><td class="k">인과적 공정성</td><td>보호 속성이 대리 변수를 거쳐 간접적으로 결과에 영향을 주지 않는가?</td></tr>
+        </tbody>
+      </table></div>
+
+      <h3 class="sub"><span class="num">5</span>품질요구사항 시나리오 (QAS) 예시</h3>
+      <p class="qas-scenario">"보행자 탐지 시 특정 연령·인종·교통약자 집단이 시스템 편향으로 미탐지되지 않아야 한다"</p>
+      <div class="table-scroll"><table class="dt qas-table">
+        <tbody>
+          <tr><td class="k">Source</td><td class="v">다양한 인종·연령·신체조건(휠체어, 유모차)의 보행자</td></tr>
+          <tr><td class="k">Response</td><td class="v">보호 속성에 영향받지 않고 모든 집단을 동등한 정확도로 식별</td></tr>
+          <tr><td class="k">Measure</td><td class="v"><span class="measure-line">기회의 평등: 교통약자·일반 성인 간 재현율 격차 1% 이내</span><span class="measure-line">균형된 오차: TPR·FPR 격차 모두 2% 이내</span></td></tr>
+        </tbody>
+      </table></div>
+
+      <h3 class="sub"><span class="num">6</span>대표 도구</h3>
+      <div class="table-scroll"><table class="dt">
+        <thead><tr><th>도구</th><th>강점</th></tr></thead>
+        <tbody>
+          <tr><td class="k">AIF360 (IBM)</td><td>70개 이상 지표 지원 — 그룹·개인 공정성 모두 가장 방대하게 커버</td></tr>
+          <tr><td class="k">Fairlearn (MS)</td><td>Equalized Odds 등에 특화, scikit-learn과 학습 중 직접 연동</td></tr>
+          <tr><td class="k">What-If Tool (Google)</td><td>데이터 포인트 간 시각적 비교, 반사실적 공정성 탐색 UI</td></tr>
+          <tr><td class="k">SageMaker Clarify / Vertex AI</td><td>클라우드 파이프라인에서 Disparate Impact 등 자동 리포트</td></tr>
+        </tbody>
+      </table></div>
+      <p class="table-cap">LLM의 공정성은 벤치마크(BBQ/KoBBQ, StereoSet, RealToxicityPrompts, ToxiGen)로 고정관념·혐오표현·응답 품질 격차를 별도 측정합니다.</p>
+    </section>
+
+    <!-- ================= 05 FA ================= -->
+    <section class="attr fn" id="s05">
+      <div class="attr-head">
+        <div class="attr-badge">FA</div>
+        <div class="attr-titles">
+          <span class="group-pill">기능 관점 · 05</span>
+          <h2>기능 적응성</h2>
+          <span class="en">Functional Adaptability</span>
+        </div>
+      </div>
+      <p class="attr-eli5">쉽게 말하면 — 서울 도심에서만 배운 AI가 <b>비포장길이나 다른 나라 도로</b>로 "전학"을 가도 스스로 적응하는가. 강건성이 "버티는 힘"이라면 적응성은 "새로 배우고 바뀌는 힘"입니다.</p>
+
+      <div class="def-box">
+        <span class="qm">“</span>
+        <div>
+          <div class="def-en">The ability of the system to adapt itself to a changing operational environment it is deployed in.</div>
+          <div class="def-src">ISO/IEC 25059:2023 · Quality model for AI-based systems</div>
+        </div>
+      </div>
+
+      <h3 class="sub"><span class="num">1</span>운영 도메인 3요소</h3>
+      <div class="type-grid">
+        <div class="type-card"><div class="tt">The Stage</div><h4>물리적 환경</h4><p>지리·지형, 기상, 인프라 특성, 배경 조도 — AI가 작동하는 무대.</p></div>
+        <div class="type-card"><div class="tt">The Actor</div><h4>물리적 대상</h4><p>도로 위 객체(차량·보행자·장애물) — AI가 인식·상호작용하는 실체.</p></div>
+        <div class="type-card"><div class="tt">The Script</div><h4>사회적 제약</h4><p>법규·표준·비즈니스 정책 — 판단의 정답과 논리를 결정하는 무형의 규칙.</p></div>
+      </div>
+
+      <h3 class="sub"><span class="num">2</span>변화의 두 축</h3>
+      <div class="table-scroll"><table class="dt">
+        <thead><tr><th></th><th>도메인 요소 확장 (Expansion)</th><th>도메인 요소 변경 (Change)</th></tr></thead>
+        <tbody>
+          <tr><td class="k">물리적 환경</td><td>도심 전용 모델이 비포장도로·고속도로로 운영 구역 확장</td><td>도시 재개발로 도로망 자체가 사라지고 재편됨</td></tr>
+          <tr><td class="k">물리적 대상</td><td>배달 로봇·PM 같은 신규 이동체 등장</td><td>차량 전동화로 가감속 패턴 자체가 바뀜</td></tr>
+          <tr><td class="k">사회적 제약</td><td>어린이 보호구역 특별 프로토콜 추가</td><td>우회전 일시정지 의무화처럼 기존 정답이 뒤바뀜</td></tr>
+        </tbody>
+      </table></div>
+      <p class="table-cap">여기에 적응 방식도 두 가지입니다 — 사전에 대응 로직을 준비해두는 <b>확정적(Deterministic)</b> 적응(고속도로 모드 전환)과, 겪어보며 학습으로 대응하는 <b>진화적(Evolutionary)</b> 적응(신형 표지판 학습).</p>
+
+      <h3 class="sub"><span class="num">3</span>평가 지표</h3>
+      <div class="table-scroll"><table class="dt">
+        <thead><tr><th>단계</th><th>지표</th><th>의미</th></tr></thead>
+        <tbody>
+          <tr><td class="k" rowspan="4">적응 과정</td><td>Adaptation Need Precision/Recall</td><td>적응이 필요하다고 판단한 것 중 진짜였던 비율 / 실제 필요한 변화 중 놓치지 않은 비율</td></tr>
+          <tr><td>Adaptation Success Rate</td><td>필요성 식별→방식 결정→적응 동작까지 제약 내 성공 완료된 비율</td></tr>
+          <tr><td>Adaptation Latency</td><td>변화 발생부터 적응 완료까지 걸린 시간</td></tr>
+          <tr><td>Adaptation Resource Overhead</td><td>적응 과정에서 추가로 든 계산·에너지·메모리</td></tr>
+          <tr><td class="k" rowspan="3">적응 후</td><td>Post-Adaptation Quality Attainment</td><td>적응 후 기능정확성·강건성·안전성이 요구 수준을 만족하는가</td></tr>
+          <tr><td>Quality Recovery Rate</td><td>적응하지 않았을 때 대비 목표 품질까지 얼마나 회복됐는가</td></tr>
+          <tr><td>Time to Stabilization / Stability Index</td><td>목표 품질에 도달하는 시간 / 이후 흔들림 없이 유지되는 정도</td></tr>
+        </tbody>
+      </table></div>
+
+      <h3 class="sub"><span class="num">4</span>품질요구사항 시나리오 (QAS) 예시</h3>
+      <p class="qas-scenario">"도심 전용 운영 도메인을 벗어나 비포장도로·고속도로로 진입할 때, 이를 식별하고 주행 지능을 해당 환경에 맞게 적응시켜야 한다"</p>
+      <div class="table-scroll"><table class="dt qas-table">
+        <tbody>
+          <tr><td class="k">Response</td><td class="v">신규 지형 진입 식별 → 적응 방식 결정(모드 전환·센서 융합 변경) → 시간·자원·안전 제약 내 수행. 실패 시 감속·안전모드·운전자 개입 요청</td></tr>
+          <tr><td class="k">Measure</td><td class="v"><span class="measure-line">Adaptation Need Recall ≥ 98%</span><span class="measure-line">Adaptation Latency ≤ 2초</span><span class="measure-line">Quality Recovery Rate ≥ 손실 품질의 80%</span></td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <!-- ================= 06 CT ================= -->
+    <section class="attr tr" id="s06">
+      <div class="attr-head">
+        <div class="attr-badge">CT</div>
+        <div class="attr-titles">
+          <span class="group-pill">신뢰성 관점 · 06</span>
+          <h2>제어 가능성</h2>
+          <span class="en">Controllability</span>
+        </div>
+      </div>
+      <p class="attr-eli5">쉽게 말하면 — 로봇청소기가 가구 사이에 <b>갇혀버렸을 때</b>, 사람이 앱으로 개입해 꺼내거나 멈출 수 있는가. "AI가 완벽할 수 없다"는 걸 인정하고 마지막 안전판을 두는 과목입니다.</p>
+
+      <div class="def-box">
+        <span class="qm">“</span>
+        <div>
+          <div class="def-en">The ability of a controller to intervene in the functioning of an AI system to support the recovery of trustworthiness.</div>
+          <div class="def-src">2026 AI Specialist 강의자료 인용 · ISO/IEC 25059:2023 개념 기반</div>
+        </div>
+      </div>
+
+      <h3 class="sub"><span class="num">1</span>왜 개입이 필요한가 — AI의 한계 2가지</h3>
+      <p class="sub-intro"><b>동작 예측의 불확실성</b>(AI의 비결정성은 완벽히 예측 불가) + <b>완전 보증의 한계</b>(모든 시나리오 100% 보증 불가) 이 두 한계를 수용하고, 위험을 관리하기 위해 시스템 동작에 개입하는 것이 제어 가능성의 출발점입니다.</p>
+
+      <h3 class="sub"><span class="num">2</span>제어 기능 3유형</h3>
+      <div class="type-grid">
+        <div class="type-card"><div class="tt">목적 완수</div><h4>교정(Correction)</h4><p>시스템 내부 로직·파라미터를 바꿔 신뢰성을 근본적으로 회복 — 흡입력 파라미터 직접 조정</p></div>
+        <div class="type-card"><div class="tt">목적 완수</div><h4>보완(Supplementation)</h4><p>저효율이지만 확실한 기초 기능으로 목적을 대체 이행 — 수동 조종으로 직접 청소 위치 이동</p></div>
+        <div class="type-card"><div class="tt">안전성 확보</div><h4>안전 상태 전환(Safety Transition)</h4><p>위기 감지 시 즉각 운영을 중단하고 보호 모드로 진입 — 배터리 과열 시 강제 정지</p></div>
+      </div>
+
+      <h3 class="sub"><span class="num">3</span>제어 주체·대상·수준</h3>
+      <div class="table-scroll"><table class="dt">
+        <thead><tr><th>제어 수준</th><th>제어 대상</th><th>제어 주체</th><th>제어의 목적</th></tr></thead>
+        <tbody>
+          <tr><td class="k">AI Application 수준</td><td>전체 응용 시스템(로봇청소기 본체 등)</td><td>최종 사용자, 원격 관제 시스템</td><td>비즈니스 목표 달성·물리적 안전 확보</td></tr>
+          <tr><td class="k">AI System 수준</td><td>추론·학습 서비스 엔진</td><td>AI 시스템 운영자, AI 애플리케이션</td><td>추론·학습 서비스의 기술적 신뢰성 확보</td></tr>
+        </tbody>
+      </table></div>
+
+      <h3 class="sub"><span class="num">4</span>평가 지표</h3>
+      <div class="table-scroll"><table class="dt">
+        <thead><tr><th>관점</th><th>질문</th><th>지표 예</th></tr></thead>
+        <tbody>
+          <tr><td class="k">제어 정확성</td><td>개입 후 의도한 목적이 달성됐는가?</td><td>제어 성공률, 탈출 성공률, Fail-safe 전이 성공률</td></tr>
+          <tr><td class="k">제어 효율성</td><td>목적이 얼마나 빠르고 효율적으로 달성됐는가?</td><td>제어 응답 지연, 비상 정지 시간, 모드 전환 시간</td></tr>
+        </tbody>
+      </table></div>
+
+      <h3 class="sub"><span class="num">5</span>품질요구사항 시나리오 (QAS) 예시</h3>
+      <p class="qas-scenario">"자율적으로 목적을 완수하지 못하는 고립 상황에서, 사용자가 앱을 통해 수동 조종으로 직접 제어함으로써 운영 연속성을 회복해야 한다"</p>
+      <div class="table-scroll"><table class="dt qas-table">
+        <tbody>
+          <tr><td class="k">Stimulus</td><td class="v">복잡한 가구 배치로 고립되거나 동일 경로를 반복하는 Livelock 상태 (30초 이상 유효 경로 미생성)</td></tr>
+          <tr><td class="k">Response</td><td class="v">자율 모드 즉시 중단 → 수동 제어 모드 활성화 → 방향 입력을 실시간 모터 신호로 변환 (충돌방지·속도제한 유지) → 이탈 확인 시 자율모드 복귀</td></tr>
+          <tr><td class="k">Measure</td><td class="v"><span class="measure-line">제어 정확성: 탈출 성공률 95% 이상</span><span class="measure-line">제어 효율성: 입력→모터 구동 응답 지연 200ms 이하</span></td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <!-- ================= 07 EX ================= -->
+    <section class="attr tr" id="s07">
+      <div class="attr-head">
+        <div class="attr-badge">EX</div>
+        <div class="attr-titles">
+          <span class="group-pill">신뢰성 관점 · 07</span>
+          <h2>설명 용이성</h2>
+          <span class="en">Explainability</span>
+        </div>
+      </div>
+      <p class="attr-eli5">쉽게 말하면 — "이 답을 <b>왜</b> 골랐어?"라고 물었을 때, 사람이 알아들을 수 있게 조리 있게 답하는 능력. 정확한 답을 내는 것과 그 이유를 설명하는 것은 완전히 다른 능력입니다.</p>
+
+      <div class="def-box">
+        <span class="qm">“</span>
+        <div>
+          <div class="def-en">Property of an AI system that enables a given human audience to comprehend the reasons for the system's behavior.</div>
+          <div class="def-src">ISO/IEC TS 6254:2025 · Objectives and approaches for explainability</div>
+        </div>
+      </div>
+
+      <h3 class="sub"><span class="num">1</span>신뢰 체인 — 4개 개념의 관계</h3>
+      <div class="table-scroll"><table class="dt">
+        <thead><tr><th>개념</th><th>대상</th><th>목적</th><th>신뢰 수준</th></tr></thead>
+        <tbody>
+          <tr><td class="k">Transparency<br>투명성</td><td>개발자·엔지니어</td><td>설계 품질과 엔지니어링 표준이 신뢰할 만한지 증명</td><td>공적 신뢰</td></tr>
+          <tr><td class="k">Interpretability<br>해석 가능성</td><td>개발자·엔지니어</td><td>모델 내부 로직이 설계 의도대로 작동하는지 검증</td><td>기술적 신뢰</td></tr>
+          <tr><td class="k">Explainability<br>설명 가능성</td><td>사용자·운영자</td><td>판단의 핵심 이유를 상식 수준에서 이해시킴</td><td>개인적 신뢰</td></tr>
+          <tr><td class="k">Justification<br>정당화</td><td>사용자·규제기관</td><td>결정이 법적·사회적 원칙을 준수했는지 입증</td><td>윤리적 신뢰</td></tr>
+        </tbody>
+      </table></div>
+      <p class="table-cap">해석 가능한 모델(Glass-box: 결정트리·선형회귀)은 설명은 쉽지만 표현력이 낮고, 복잡한 모델(Black-box: 딥러닝)은 정확하지만 SHAP·LIME 같은 사후 설명 기법이 필요합니다.</p>
+
+      <h3 class="sub"><span class="num">2</span>설명의 3가지 모드</h3>
+      <div class="type-grid">
+        <div class="type-card"><div class="tt">Causal</div><h4>인과적 설명</h4><p>"시스템이 어떻게 작동했나" — 알고리즘 메커니즘 중심. 개발자를 위한 설명.</p></div>
+        <div class="type-card"><div class="tt">Epistemic</div><h4>인식적 설명</h4><p>"이 결과가 왜 사실인가" — 현실 세계 논리·데이터 근거. 도메인 전문가를 위한 설명.</p></div>
+        <div class="type-card"><div class="tt">Justificatory</div><h4>정당성 설명</h4><p>"어떤 근거로 정당화되는가" — 규정·윤리·법적 기준. 사용자·규제기관을 위한 설명.</p></div>
+      </div>
+
+      <h3 class="sub"><span class="num">3</span>평가 기준</h3>
+      <div class="table-scroll"><table class="dt">
+        <thead><tr><th>관점</th><th>기준</th><th>질문</th></tr></thead>
+        <tbody>
+          <tr><td class="k" rowspan="4">기술적 신뢰성</td><td>설명 요구 정합성</td><td>설명이 목적·이해관계자·범위에 부합하는가?</td></tr>
+          <tr><td>충실성(Fidelity)</td><td>설명이 실제 모델의 판단과 일치하는가?</td></tr>
+          <tr><td>재현성</td><td>동일 조건에서 동일한 설명이 나오는가?</td></tr>
+          <tr><td>강건성</td><td>사소한 변화에는 흔들리지 않고, 의미 있는 변화엔 반응하는가?</td></tr>
+          <tr><td class="k" rowspan="3">사용자 경험</td><td>가독성</td><td>이해관계자가 읽고 이해하기 쉬운가?</td></tr>
+          <tr><td>시뮬레이션 가능성</td><td>설명을 보고 유사 사례의 결과를 예측할 수 있는가?</td></tr>
+          <tr><td>실행 가능성</td><td>후속 조치·개선·이의제기에 실질적으로 도움이 되는가?</td></tr>
+        </tbody>
+      </table></div>
+
+      <h3 class="sub"><span class="num">4</span>품질요구사항 시나리오 (QAS) 예시</h3>
+      <p class="qas-scenario">자율주행차가 급제동을 수행한 뒤, 사고 조사관에게 그 이유와 정당성을 설명해야 한다</p>
+      <div class="table-scroll"><table class="dt qas-table">
+        <tbody>
+          <tr><td class="k">Response</td><td class="v">LiDAR·카메라 데이터, 객체 인식 결과, 충돌 예상 시간, 제어 알고리즘의 판단 경로를 바탕으로 급제동 이유를 설명하고, 안전 우선 원칙(ISO 26262 등)에 따른 정당성을 제시</td></tr>
+          <tr><td class="k">Measure</td><td class="v"><span class="measure-line">설명 일치도(행동 정확도) 90% 이상</span><span class="measure-line">동일 입력 설명 일치율 100% (재현성)</span><span class="measure-line">인간 예측 정확도 80% 이상 (시뮬레이션 가능성)</span></td></tr>
+        </tbody>
+      </table></div>
+      <p class="table-cap">실패 사례 — 대출 거절 안내에 "신용 상태가 좋지 않습니다"라고만 적어, 무엇을 개선해야 하는지(실행 가능성) 전혀 알 수 없었던 경우.</p>
+    </section>
+
+    <!-- ================= 08 PE ================= -->
+    <section class="attr ef" id="s08">
+      <div class="attr-head">
+        <div class="attr-badge">PE</div>
+        <div class="attr-titles">
+          <span class="group-pill">효율성 관점 · 08</span>
+          <h2>수행 효율성</h2>
+          <span class="en">Performance Efficiency</span>
+        </div>
+      </div>
+      <p class="attr-eli5">쉽게 말하면 — 시험 시간 안에, 연필(자원)도 아껴 쓰며 답을 내는 능력. 앞의 7과목을 아무리 잘 지켜도 <b>너무 늦게</b> 답하면 쓸 수 없습니다.</p>
+
+      <div class="def-box">
+        <span class="qm">“</span>
+        <div>
+          <div class="def-en">Capability of a product to perform its functions within specified time and throughput parameters and be efficient in the use of resources under specified conditions.</div>
+          <div class="def-src">ISO/IEC 25010:2023 · SQuaRE Product quality model</div>
+        </div>
+      </div>
+
+      <h3 class="sub"><span class="num">1</span>3가지 잣대</h3>
+      <div class="type-grid">
+        <div class="type-card"><div class="tt">Time Behavior</div><h4>시간 효율성</h4><p>요청부터 응답까지의 반응 시간(Latency)과, 단위 시간당 처리량(Throughput).</p></div>
+        <div class="type-card"><div class="tt">Resource Utilization</div><h4>자원 활용성</h4><p>기능 수행에 쓰는 CPU/GPU/메모리/에너지 양이 얼마나 최적화됐는가.</p></div>
+        <div class="type-card"><div class="tt">Capacity</div><h4>용량</h4><p>부하가 커져도 성능 저하 없이 감당할 수 있는 최대 한계.</p></div>
+      </div>
+
+      <h3 class="sub"><span class="num">2</span>대표 지표</h3>
+      <div class="table-scroll"><table class="dt">
+        <thead><tr><th>유형</th><th>지표</th><th>의미</th></tr></thead>
+        <tbody>
+          <tr><td class="k" rowspan="2">시간</td><td>End-to-End Latency</td><td>요청 도착부터 최종 응답까지 전체 시간 (p50/p95/p99로 측정)</td></tr>
+          <tr><td>Throughput</td><td>단위 시간당 처리한 요청·샘플·토큰 수</td></tr>
+          <tr><td class="k" rowspan="2">자원</td><td>Memory / Compute Utilization</td><td>실행 중 점유하는 메모리 양, CPU/GPU 사용률</td></tr>
+          <tr><td>Energy Efficiency</td><td>단위 에너지당 처리 성능 (inferences/J 등)</td></tr>
+          <tr><td class="k" rowspan="2">용량</td><td>Max Concurrent Requests under SLO</td><td>응답시간·오류율 기준을 지키며 처리 가능한 최대 동시 요청 수</td></tr>
+          <tr><td>Goodput</td><td>SLO를 만족하며 완료된 단위 시간당 요청 수 (단순 처리량보다 실질적)</td></tr>
+        </tbody>
+      </table></div>
+
+      <h3 class="sub"><span class="num">3</span>LLM·에이전트 특화 지표</h3>
+      <div class="table-scroll"><table class="dt">
+        <thead><tr><th>지표</th><th>의미</th></tr></thead>
+        <tbody>
+          <tr><td class="k">TTFT (Time to First Token)</td><td>요청 후 첫 토큰이 나오기까지의 시간 — "반응하기 시작했다"는 체감 속도</td></tr>
+          <tr><td class="k">TPOT / ITL</td><td>첫 토큰 이후 토큰 간 평균 생성 간격 — 스트리밍의 자연스러움</td></tr>
+          <tr><td class="k">Token Throughput</td><td>단위 시간당 전체 사용자에게 전달한 출력 토큰 수</td></tr>
+          <tr><td class="k">LLM Calls per Request</td><td>에이전트가 요청 1건을 처리하는 데 호출한 LLM 횟수 — 적을수록 효율적</td></tr>
+          <tr><td class="k">Deterministic Execution Ratio</td><td>LLM 호출 없이(규칙만으로) 처리된 작업의 비율</td></tr>
+        </tbody>
+      </table></div>
+
+      <h3 class="sub"><span class="num">4</span>품질요구사항 시나리오 (QAS) 예시</h3>
+      <p class="qas-scenario">"다중 센서로부터 유입되는 고해상도 데이터로 최대 120개의 동적 객체·표지판을 실시간 식별해야 한다"</p>
+      <div class="table-scroll"><table class="dt qas-table">
+        <tbody>
+          <tr><td class="k">Stimulus</td><td class="v">카메라 6채널(30FPS, FHD) + LiDAR 2채널(10Hz, 채널당 10만 포인트) 동시 유입</td></tr>
+          <tr><td class="k">Environment</td><td class="v">복잡한 도심 교차로 — 최대 부하 상황</td></tr>
+          <tr><td class="k">Measure</td><td class="v"><span class="measure-line">End-to-End Latency p95 기준 33ms 이내</span><span class="measure-line">모든 센서 스트림 손실 없이 지속 처리</span><span class="measure-line">프레임당 최대 120개 객체까지 동시 추론 가능</span></td></tr>
+        </tbody>
+      </table></div>
+      <p class="table-cap">주의 — 강건성·프라이버시·설명력 같은 신뢰성 강화 절차(검증·마스킹·설명 생성)는 대체로 수행 효율성과 서로 저울질 관계에 놓입니다. 자세한 트레이드오프는 다음 장에서 다룹니다.</p>
+    </section>
+
+    <section class="closing" id="s09">
+      <div class="kicker" style="font-family:var(--mono);font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-faint);font-weight:700;margin-bottom:10px;">마무리</div>
+      <h2 class="section-title" style="font-size:1.7rem;margin:0 0 14px;">8과목은 따로 놓고 보면 안 됩니다</h2>
+      <p style="max-width:680px;color:var(--ink-soft);margin:0 0 8px;">
+        설명력을 높이려 모델을 단순화하면 정확성이 떨어지고, 개인정보를 더 가리면 정확도가 낮아지고,
+        소수 집단을 더 배려하면 전체 평균 정확도가 흔들립니다. 그리고 이 모든 안전장치를 겹겹이 두를수록
+        수행 효율성은 느려집니다. 이 트레이드오프의 구체적인 수치 감(개념도)과, 데이터 품질 체크리스트는
+        시리즈 첫 편 「AI 성적표」에서 다뤘습니다.
+      </p>
+      <a class="link-back" href="#s00">↑ 스펙시트로 돌아가기</a>
+
+      <footer>
+        <div class="sources">
+          <b>참고 자료 —</b> 「2026 AI Specialist(설계) 과정 9월차수: AI Engineering」 강의자료 ·
+          ISO/IEC 25059:2023(AI 시스템 품질 모델) · ISO/IEC 25010:2023(제품 품질 모델) ·
+          ISO/IEC TR 24028:2020 · ISO/IEC TS 6254:2025(설명가능성) · ISO/IEC 29100 · ISO 31700(PbD) ·
+          NIST AI RMF 1.0 / AI 600-1 · EU AI Act · OWASP Top 10 for LLM · MITRE ATLAS ·
+          대한민국 AI 기본법 / TTA AI 신뢰성 가이드라인
+        </div>
+      </footer>
+    </section>
+  </main>
+</div>
+
+<script>
+  (function(){
+    try{
+      var links = Array.prototype.slice.call(document.querySelectorAll('.side-link'));
+      var sections = links.map(function(a){ return document.querySelector(a.getAttribute('href')); }).filter(Boolean);
+      if(!('IntersectionObserver' in window) || sections.length === 0) return;
+      var io = new IntersectionObserver(function(entries){
+        entries.forEach(function(e){
+          if(e.isIntersecting){
+            var id = '#' + e.target.id;
+            links.forEach(function(a){ a.classList.toggle('active', a.getAttribute('href') === id); });
+          }
+        });
+      }, { rootMargin: '-15% 0px -70% 0px' });
+      sections.forEach(function(s){ io.observe(s); });
+    }catch(e){}
+  })();
+</script>
+
