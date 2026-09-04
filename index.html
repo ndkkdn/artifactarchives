@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Artifact Archives</title>
+<style>
+  :root {
+    --bg: #f7f7f5;
+    --card-bg: #ffffff;
+    --text: #1a1a1a;
+    --muted: #6b6b6b;
+    --border: #e5e3de;
+    --accent: #4db6ac;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #16171a;
+      --card-bg: #1e2023;
+      --text: #ececec;
+      --muted: #9a9a9a;
+      --border: #2c2e33;
+      --accent: #4db6ac;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    padding: 48px 24px 80px;
+  }
+  .wrap {
+    max-width: 880px;
+    margin: 0 auto;
+  }
+  header {
+    margin-bottom: 40px;
+  }
+  h1 {
+    font-size: 1.9rem;
+    margin: 0 0 8px;
+    letter-spacing: -0.01em;
+  }
+  header p {
+    color: var(--muted);
+    margin: 0;
+    font-size: 0.95rem;
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 18px;
+  }
+  a.card {
+    display: block;
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 22px;
+    text-decoration: none;
+    color: var(--text);
+    transition: border-color 0.15s, transform 0.15s;
+  }
+  a.card:hover {
+    border-color: var(--accent);
+    transform: translateY(-2px);
+  }
+  .card .dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 8px rgba(77, 182, 172, 0.5);
+    margin-bottom: 14px;
+  }
+  .card h2 {
+    font-size: 1.1rem;
+    margin: 0 0 6px;
+  }
+  .card p {
+    font-size: 0.85rem;
+    color: var(--muted);
+    margin: 0;
+    line-height: 1.5;
+  }
+  footer {
+    margin-top: 48px;
+    color: var(--muted);
+    font-size: 0.8rem;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Artifact Archives</h1>
+    <p>모아둔 HTML 아티팩트 목록입니다.</p>
+  </header>
+  <div class="grid">
+    <a class="card" href="ai-quality-anatomy-illustrated.html">
+      <div class="dot"></div>
+      <h2>AI 품질 해부도감</h2>
+      <p>8가지 품질 속성을 그림으로 해부해보는 도감 버전</p>
+    </a>
+    <a class="card" href="ai-quality-anatomy.html">
+      <div class="dot"></div>
+      <h2>AI 품질 해부학</h2>
+      <p>8가지 품질 속성을 해부해보는 기본 버전</p>
+    </a>
+    <a class="card" href="ai-quality-report-card.html">
+      <div class="dot"></div>
+      <h2>AI 성적표</h2>
+      <p>AI에게도 성적표가 있다면, 어떤 과목을 배울까요?</p>
+    </a>
+  </div>
+  <footer>artifactarchives</footer>
+</div>
+</body>
+</html>

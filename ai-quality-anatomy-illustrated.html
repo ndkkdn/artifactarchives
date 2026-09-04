@@ -1,4 +1,4 @@
-<title>AI 품질 해부학</title>
+<title>AI 품질 해부도감</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Noto+Sans+KR:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap">
 <style>
   :root{
@@ -127,6 +127,13 @@
   .qas-table .measure-line{display:block;margin-bottom:4px;}
   .qas-scenario{font-size:.86rem;color:var(--ink-soft);margin:0 0 14px;padding:11px 14px;background:var(--surface-2);border-radius:9px;}
 
+  .fig{margin:20px 0 32px;max-width:720px;}
+  .fig .fig-frame{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:18px 20px 14px;box-shadow:var(--shadow);}
+  .fig svg{display:block;width:100%;height:auto;}
+  .fig figcaption{margin-top:10px;font-size:.82rem;color:var(--ink-soft);line-height:1.55;}
+  .fig figcaption b{color:var(--ink);}
+  .fig .fig-lab{font-family:var(--mono);font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-faint);font-weight:700;margin-bottom:8px;}
+
   .example-box{border-left:3px solid var(--line-strong);padding:4px 0 4px 14px;margin:16px 0;}
   .attr.fn .example-box{border-color:var(--fn);}
   .attr.tr .example-box{border-color:var(--tr);}
@@ -150,10 +157,11 @@
 
 <header class="topbar">
   <div class="topbar-inner">
-    <div class="brand">AI 품질 해부학<small>ELI5 심화편 · 정의·유형·평가지표·검증전략</small></div>
+    <div class="brand">AI 품질 해부도감<small>도해편 · 정의·유형·평가지표·검증전략·다이어그램</small></div>
     <div class="topbar-tags">
       <span class="tag">ISO/IEC 25059</span>
       <span class="tag">8 QAs</span>
+      <span class="tag">+ 9 Figures</span>
     </div>
   </div>
 </header>
@@ -192,8 +200,9 @@
       <span class="eyebrow"><span class="dot"></span>2026 AI Specialist(설계) 9월차수 · AI Engineering 심화 해설</span>
       <h1>8가지 품질 속성을 해부해봅니다</h1>
       <p class="lede">
-        지난 편 <b>「AI 성적표」</b>가 8과목을 한눈에 훑어봤다면, 이 문서는 각 과목을 메스로 갈라
-        <b>정의 → 세부 유형 → 평가 지표 → 품질요구사항 시나리오(QAS) → 검증 전략</b> 순서로 뜯어봅니다.
+        지난 편 <b>「AI 성적표」</b>가 8과목을 한눈에 훑어봤고, <b>「AI 품질 해부학」</b>이 각 과목을 메스로 갈라
+        <b>정의 → 세부 유형 → 평가 지표 → 품질요구사항 시나리오(QAS) → 검증 전략</b> 순서로 뜯어봤다면,
+        이 도감편은 그 해부 결과마다 <b>손으로 그린 도해 한 장</b>을 더해 눈으로 바로 확인하게 만들었습니다.
         용어는 실제 강의자료·ISO/IEC 25059:2023 표준 표현을 그대로 인용하고, 바로 아래 쉬운 말로 다시 풀었습니다.
       </p>
 
@@ -244,6 +253,36 @@
         <div class="type-card"><div class="tt">이유 2</div><h4>일반화의 한계</h4><p>조합의 폭발(모든 상황을 다 학습할 수 없음), 롱테일 문제(희귀 사례는 노이즈로 취급됨), 데이터 드리프트(세상이 계속 바뀜) 세 가지가 겹칩니다.</p></div>
         <div class="type-card"><div class="tt">이유 3</div><h4>생성형 AI의 비결정성</h4><p>temperature·top-p·top-k 같은 샘플링 파라미터, 그리고 줄바꿈·문장부호 하나 같은 입력의 미세한 차이만으로도 답이 달라집니다.</p></div>
       </div>
+
+      <figure class="fig">
+        <div class="fig-lab">FIG. 01 — 커버리지 갭</div>
+        <div class="fig-frame">
+          <svg viewBox="0 0 640 230" role="img" aria-label="학습 데이터가 실제 입력 공간의 일부만 덮기 때문에, 그 바깥 영역에서 정확성이 흔들린다는 것을 보여주는 다이어그램" style="color:var(--ink-soft)">
+            <defs>
+              <marker id="fc-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                <path d="M0,0L10,5L0,10z" fill="currentColor"></path>
+              </marker>
+            </defs>
+            <rect x="16" y="16" width="608" height="178" rx="10" fill="none" stroke="currentColor" stroke-width="1.4" stroke-dasharray="4 4"></rect>
+            <text x="26" y="38" font-size="12" fill="currentColor">가능한 입력 공간 (세상의 모든 상황)</text>
+            <path d="M110,150 C90,120 95,80 130,65 C150,45 200,42 230,60 C265,50 300,65 300,95 C325,110 315,145 285,155 C270,175 220,178 190,168 C160,180 122,175 110,150 Z"
+                  style="fill:var(--fn-tint);stroke:var(--fn)" stroke-width="1.8"></path>
+            <text x="150" y="105" font-size="12" font-weight="700" style="fill:var(--fn)">학습 데이터가</text>
+            <text x="150" y="122" font-size="12" font-weight="700" style="fill:var(--fn)">커버한 영역</text>
+            <circle cx="160" cy="80" r="4.5" style="fill:var(--fn)"></circle>
+            <circle cx="220" cy="95" r="4.5" style="fill:var(--fn)"></circle>
+            <circle cx="190" cy="145" r="4.5" style="fill:var(--fn)"></circle>
+            <circle cx="430" cy="70" r="4.5" style="fill:var(--tr)"></circle>
+            <circle cx="500" cy="140" r="4.5" style="fill:var(--tr)"></circle>
+            <line x1="434" y1="74" x2="470" y2="105" stroke="currentColor" stroke-width="1" marker-end="url(#fc-arrow)"></line>
+            <text x="378" y="55" font-size="11.5" style="fill:var(--tr)">"눈밭 위 코끼리"</text>
+            <text x="378" y="69" font-size="11.5" style="fill:var(--tr)">→ 북극곰으로 오분류</text>
+            <text x="430" y="185" font-size="12" text-anchor="middle" fill="currentColor">커버되지 않은 영역 = 오류 발생 지대</text>
+          </svg>
+        </div>
+        <figcaption>학습 데이터(<b>파란 영역</b>)는 실제로 마주칠 수 있는 모든 입력(점선 사각형) 중 일부만 덮습니다. 그 바깥(<b>빨간 점</b>)에서는 통계적 상관관계가 엉뚱한 결과로 이어집니다.</figcaption>
+      </figure>
+
       <p class="sub-intro" style="margin-top:14px;">그래서 <b>강건성·기능 적응성·제어 가능성·설명 용이성</b> 4개 과목이 기능 정확성의 "안전망" 역할을 합니다 — 악조건에서도 버티고(강건성), 변화에 맞춰 갱신되고(적응성), 틀렸을 때 사람이 멈출 수 있고(제어성), 판단 근거를 보여주는(설명력) 식입니다.</p>
 
       <h3 class="sub"><span class="num">2</span>AI Task별 평가 지표</h3>
@@ -352,6 +391,63 @@
         </tbody>
       </table></div>
 
+      <figure class="fig">
+        <div class="fig-lab">FIG. 02 — 위협 유입부터 대응 모드 분기까지</div>
+        <div class="fig-frame">
+          <svg viewBox="0 0 640 230" role="img" aria-label="위협이 유입되면 모델이 정상 범위 여부를 판정하고, 아니라면 심각도에 따라 Fail-Operational, Fail-Degraded, Fail-Safe 중 하나로 분기하는 흐름을 보여주는 다이어그램" style="color:var(--ink-soft)">
+            <defs>
+              <marker id="rb-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                <path d="M0,0L10,5L0,10z" fill="currentColor"></path>
+              </marker>
+            </defs>
+            <text x="10" y="16" font-size="11" style="fill:var(--tr)">4대 위협 유형</text>
+            <text x="10" y="29" font-size="11" style="fill:var(--tr)">(입력·간섭·환경·인프라)</text>
+            <line x1="108" y1="34" x2="168" y2="85" stroke="currentColor" stroke-width="1.2" marker-end="url(#rb-arrow)"></line>
+
+            <rect x="14" y="88" width="84" height="48" rx="8" fill="var(--surface-2)" stroke="currentColor" stroke-width="1.2"></rect>
+            <text x="56" y="108" font-size="11.5" text-anchor="middle" fill="currentColor">정상 입력</text>
+            <text x="56" y="123" font-size="11.5" text-anchor="middle" fill="currentColor">(주행 영상)</text>
+            <line x1="98" y1="112" x2="168" y2="112" stroke="currentColor" stroke-width="1.4" marker-end="url(#rb-arrow)"></line>
+
+            <rect x="170" y="80" width="100" height="64" rx="8" style="fill:var(--fn-tint);stroke:var(--fn)" stroke-width="1.4"></rect>
+            <text x="220" y="116" font-size="12.5" text-anchor="middle" font-weight="700" style="fill:var(--fn)">모델 추론</text>
+            <line x1="270" y1="112" x2="308" y2="112" stroke="currentColor" stroke-width="1.4" marker-end="url(#rb-arrow)"></line>
+
+            <polygon points="370,64 428,112 370,160 312,112" fill="var(--surface)" stroke="currentColor" stroke-width="1.4"></polygon>
+            <text x="370" y="108" font-size="10.5" text-anchor="middle" fill="currentColor">정상 범위</text>
+            <text x="370" y="121" font-size="10.5" text-anchor="middle" fill="currentColor">내 유지?</text>
+
+            <line x1="370" y1="64" x2="375" y2="46" stroke="currentColor" stroke-width="1.4" marker-end="url(#rb-arrow)"></line>
+            <text x="383" y="52" font-size="10.5" fill="currentColor">예</text>
+            <rect x="300" y="4" width="150" height="42" rx="8" fill="var(--surface-2)" stroke="currentColor" stroke-width="1.2"></rect>
+            <text x="375" y="21" font-size="10.5" text-anchor="middle" font-weight="700" fill="currentColor">Nominal Robustness</text>
+            <text x="375" y="35" font-size="10" text-anchor="middle" fill="currentColor">요구 수준 그대로 유지</text>
+
+            <line x1="428" y1="112" x2="460" y2="112" stroke="currentColor" stroke-width="1.4"></line>
+            <text x="405" y="145" font-size="10.5" fill="currentColor">아니오</text>
+            <text x="405" y="158" font-size="10.5" fill="currentColor">(심각도별)</text>
+            <line x1="460" y1="112" x2="460" y2="35" stroke="currentColor" stroke-width="1.2"></line>
+            <line x1="460" y1="112" x2="460" y2="199" stroke="currentColor" stroke-width="1.2"></line>
+            <line x1="460" y1="35" x2="472" y2="35" stroke="currentColor" stroke-width="1.2" marker-end="url(#rb-arrow)"></line>
+            <line x1="460" y1="112" x2="472" y2="112" stroke="currentColor" stroke-width="1.2" marker-end="url(#rb-arrow)"></line>
+            <line x1="460" y1="199" x2="472" y2="199" stroke="currentColor" stroke-width="1.2" marker-end="url(#rb-arrow)"></line>
+
+            <rect x="474" y="10" width="152" height="50" rx="8" style="fill:var(--ef-tint);stroke:var(--ef)" stroke-width="1.2"></rect>
+            <text x="550" y="30" font-size="11" text-anchor="middle" font-weight="700" style="fill:var(--ef)">Fail-Operational</text>
+            <text x="550" y="45" font-size="10" text-anchor="middle" fill="currentColor">핵심 기능만 유지</text>
+
+            <rect x="474" y="87" width="152" height="50" rx="8" style="fill:var(--fn-tint);stroke:var(--fn)" stroke-width="1.2"></rect>
+            <text x="550" y="107" font-size="11" text-anchor="middle" font-weight="700" style="fill:var(--fn)">Fail-Degraded</text>
+            <text x="550" y="122" font-size="10" text-anchor="middle" fill="currentColor">제한된 기능으로 지속</text>
+
+            <rect x="474" y="174" width="152" height="50" rx="8" style="fill:var(--tr-tint);stroke:var(--tr)" stroke-width="1.2"></rect>
+            <text x="550" y="194" font-size="11" text-anchor="middle" font-weight="700" style="fill:var(--tr)">Fail-Safe</text>
+            <text x="550" y="209" font-size="10" text-anchor="middle" fill="currentColor">중단 후 안전 상태 전이</text>
+          </svg>
+        </div>
+        <figcaption>위협이 유입돼도 시스템은 하나로 무너지지 않고, 심각도에 따라 <b>정상 유지 → 핵심 기능만 유지 → 제한 기능 지속 → 안전 중단</b> 네 갈래로 갈라져 대응합니다.</figcaption>
+      </figure>
+
       <h3 class="sub"><span class="num">3</span>평가 지표</h3>
       <div class="table-scroll"><table class="dt">
         <thead><tr><th>구분</th><th>지표</th><th>의미</th></tr></thead>
@@ -445,6 +541,50 @@
         </tbody>
       </table></div>
 
+      <figure class="fig">
+        <div class="fig-lab">FIG. 03 — 멤버십 추론이 노리는 경로</div>
+        <div class="fig-frame">
+          <svg viewBox="0 0 640 260" role="img" aria-label="공격자가 정상 사용자처럼 반복 질의를 보내고 응답 패턴을 관찰해, 특정인이 학습 데이터에 포함되었는지 역추론하는 경로를 보여주는 다이어그램" style="color:var(--ink-soft)">
+            <defs>
+              <marker id="pr-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                <path d="M0,0L10,5L0,10z" fill="currentColor"></path>
+              </marker>
+              <marker id="pr-arrow-tr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                <path d="M0,0L10,5L0,10z" style="fill:var(--tr)"></path>
+              </marker>
+            </defs>
+
+            <rect x="20" y="16" width="172" height="48" rx="8" fill="var(--surface-2)" stroke="currentColor" stroke-width="1.2"></rect>
+            <text x="106" y="36" font-size="11.5" text-anchor="middle" font-weight="700" fill="currentColor">학습 데이터</text>
+            <text x="106" y="51" font-size="10.5" text-anchor="middle" fill="currentColor">(개인 진료 기록 포함)</text>
+            <line x1="140" y1="64" x2="272" y2="106" stroke="currentColor" stroke-width="1.3" marker-end="url(#pr-arrow)"></line>
+            <text x="150" y="90" font-size="10.5" fill="currentColor">학습</text>
+
+            <rect x="250" y="104" width="140" height="58" rx="8" style="fill:var(--fn-tint);stroke:var(--fn)" stroke-width="1.4"></rect>
+            <text x="320" y="139" font-size="12" text-anchor="middle" font-weight="700" style="fill:var(--fn)">모델 (추론 엔진)</text>
+
+            <rect x="466" y="26" width="154" height="48" rx="8" fill="var(--surface-2)" stroke="currentColor" stroke-width="1.2"></rect>
+            <text x="543" y="54" font-size="11.5" text-anchor="middle" font-weight="700" fill="currentColor">정상 사용자</text>
+            <line x1="478" y1="74" x2="394" y2="118" stroke="currentColor" stroke-width="1.2" marker-end="url(#pr-arrow)"></line>
+            <text x="400" y="108" font-size="10" fill="currentColor">질의</text>
+            <line x1="394" y1="108" x2="478" y2="60" stroke="currentColor" stroke-width="1.2" marker-end="url(#pr-arrow)"></line>
+            <text x="435" y="66" font-size="10" fill="currentColor">응답</text>
+
+            <rect x="466" y="182" width="154" height="48" rx="8" style="fill:var(--tr-tint);stroke:var(--tr)" stroke-width="1.2"></rect>
+            <text x="543" y="202" font-size="11.5" text-anchor="middle" font-weight="700" style="fill:var(--tr)">공격자</text>
+            <text x="543" y="217" font-size="9.5" text-anchor="middle" style="fill:var(--tr)">(공개 정보 보유)</text>
+            <line x1="478" y1="184" x2="394" y2="152" stroke="currentColor" stroke-width="1.2" marker-end="url(#pr-arrow)"></line>
+            <text x="398" y="176" font-size="10" fill="currentColor">고정밀 반복 질의</text>
+            <line x1="394" y1="162" x2="478" y2="196" stroke="currentColor" stroke-width="1.2" marker-end="url(#pr-arrow)"></line>
+            <text x="410" y="195" font-size="10" fill="currentColor">확신도 패턴</text>
+
+            <path d="M470,214 C 320,258 130,250 108,66" fill="none" style="stroke:var(--tr)" stroke-width="1.6" stroke-dasharray="5 4" marker-end="url(#pr-arrow-tr)"></path>
+            <text x="150" y="242" font-size="11" font-weight="700" style="fill:var(--tr)">멤버십 추론(MIA) — "이 사람, 학습 데이터에 있었나?"</text>
+          </svg>
+        </div>
+        <figcaption>공격자는 정상 사용자와 <b>똑같은 질의-응답 창구</b>를 쓰지만, 확신도 패턴을 모아 학습 데이터 포함 여부를 거꾸로(<b>점선 경로</b>) 캐냅니다 — 이것이 DP·질의 제한이 막으려는 통로입니다.</figcaption>
+      </figure>
+
       <h3 class="sub"><span class="num">5</span>품질요구사항 시나리오 (QAS) 예시</h3>
       <p class="qas-scenario">"외부 공격자가 특정 개인의 진료 기록을 입력해 해당 환자가 학습 데이터셋에 포함되었는지 역추론할 수 없어야 한다" — 희귀질환 예측 모델</p>
       <div class="table-scroll"><table class="dt qas-table">
@@ -505,6 +645,52 @@
           <tr><td class="k">충돌</td><td>집단 균형을 맞추려다 우수한 개인이 탈락할 수 있음</td><td>개인 능력을 중시하다 집단 격차가 심화될 수 있음</td></tr>
         </tbody>
       </table></div>
+
+      <figure class="fig" style="max-width:760px;">
+        <div class="fig-lab">FIG. 04 — 그룹이 공정해도 개인은 억울할 수 있다</div>
+        <div class="fig-frame">
+          <svg viewBox="0 0 640 240" role="img" aria-label="두 그룹의 선정률이 똑같이 50%로 그룹 공정성을 충족하더라도, 조건이 거의 동일한 두 개인이 기준선을 사이에 두고 서로 다른 결과를 받아 개인 공정성은 깨질 수 있음을 보여주는 다이어그램" style="color:var(--ink-soft)">
+            <line x1="322" y1="8" x2="322" y2="232" stroke="currentColor" stroke-width="1" stroke-dasharray="2 4"></line>
+
+            <text x="165" y="22" font-size="12" text-anchor="middle" font-weight="700" fill="currentColor">그룹 공정성 — 결과의 평등</text>
+            <line x1="165" y1="40" x2="165" y2="205" stroke="currentColor" stroke-width="1.2" stroke-dasharray="4 3"></line>
+            <text x="165" y="34" font-size="9.5" text-anchor="middle" fill="currentColor">선정 기준선</text>
+
+            <text x="45" y="65" font-size="10.5" fill="currentColor">Group A</text>
+            <circle cx="90" cy="62" r="6" fill="none" stroke="currentColor" stroke-width="1.3"></circle>
+            <circle cx="110" cy="62" r="6" fill="none" stroke="currentColor" stroke-width="1.3"></circle>
+            <circle cx="90" cy="80" r="6" fill="none" stroke="currentColor" stroke-width="1.3"></circle>
+            <circle cx="110" cy="80" r="6" fill="none" stroke="currentColor" stroke-width="1.3"></circle>
+            <circle cx="205" cy="62" r="6" style="fill:var(--fn)"></circle>
+            <circle cx="225" cy="62" r="6" style="fill:var(--fn)"></circle>
+            <circle cx="205" cy="80" r="6" style="fill:var(--fn)"></circle>
+            <circle cx="225" cy="80" r="6" style="fill:var(--fn)"></circle>
+
+            <text x="45" y="145" font-size="10.5" fill="currentColor">Group B</text>
+            <circle cx="90" cy="150" r="6" fill="none" stroke="currentColor" stroke-width="1.3"></circle>
+            <circle cx="110" cy="150" r="6" fill="none" stroke="currentColor" stroke-width="1.3"></circle>
+            <circle cx="90" cy="168" r="6" fill="none" stroke="currentColor" stroke-width="1.3"></circle>
+            <circle cx="110" cy="168" r="6" fill="none" stroke="currentColor" stroke-width="1.3"></circle>
+            <circle cx="205" cy="150" r="6" style="fill:var(--fn)"></circle>
+            <circle cx="225" cy="150" r="6" style="fill:var(--fn)"></circle>
+            <circle cx="205" cy="168" r="6" style="fill:var(--fn)"></circle>
+            <circle cx="225" cy="168" r="6" style="fill:var(--fn)"></circle>
+            <text x="165" y="222" font-size="10.5" text-anchor="middle" fill="currentColor">두 그룹 모두 선정률 50% → 그룹 공정성 충족</text>
+
+            <text x="480" y="22" font-size="12" text-anchor="middle" font-weight="700" fill="currentColor">개인 공정성 — 절차적 일관성</text>
+            <line x1="480" y1="42" x2="480" y2="180" stroke="currentColor" stroke-width="1.2" stroke-dasharray="4 3"></line>
+            <text x="480" y="36" font-size="9.5" text-anchor="middle" fill="currentColor">동일한 기준선</text>
+            <ellipse cx="480" cy="112" rx="42" ry="26" fill="none" stroke="currentColor" stroke-width="1" stroke-dasharray="3 3"></ellipse>
+            <text x="480" y="76" font-size="10" text-anchor="middle" fill="currentColor">조건이 거의 같은 두 사람</text>
+            <circle cx="468" cy="112" r="7" style="fill:var(--tr)"></circle>
+            <circle cx="493" cy="112" r="7" style="fill:var(--fn)"></circle>
+            <text x="468" y="150" font-size="10.5" text-anchor="middle" style="fill:var(--tr)">거절</text>
+            <text x="493" y="150" font-size="10.5" text-anchor="middle" style="fill:var(--fn)">승인</text>
+            <text x="480" y="222" font-size="10.5" text-anchor="middle" fill="currentColor">조건 차이 미미해도 결과가 갈림 → 개인 공정성 위반</text>
+          </svg>
+        </div>
+        <figcaption>왼쪽은 두 그룹의 선정률이 같아 <b>그룹 공정성</b>을 충족한 모습입니다. 그러나 오른쪽처럼 기준선 바로 옆에서 조건이 거의 같은 두 사람이 다른 결과를 받으면 <b>개인 공정성</b>은 별개로 깨질 수 있습니다 — 두 지표가 동시에 성립하지 않는 이유입니다.</figcaption>
+      </figure>
 
       <h3 class="sub"><span class="num">3</span>그룹 공정성 지표</h3>
       <div class="table-scroll"><table class="dt">
@@ -607,6 +793,48 @@
         </tbody>
       </table></div>
 
+      <figure class="fig" style="max-width:760px;">
+        <div class="fig-lab">FIG. 05 — 환경 변화 한 번의 품질 궤적</div>
+        <div class="fig-frame">
+          <svg viewBox="0 0 640 245" role="img" aria-label="환경 변화가 감지되면 품질이 급락했다가, Adaptation Latency 구간을 거쳐 다시 회복되지만 원래 수준에는 못 미치는 Quality Recovery Rate 격차가 남는 품질 궤적을 보여주는 꺾은선 그래프" style="color:var(--ink-soft)">
+            <defs>
+              <marker id="fa-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                <path d="M0,0L10,5L0,10z" fill="currentColor"></path>
+              </marker>
+            </defs>
+            <text x="12" y="115" font-size="10.5" fill="currentColor" transform="rotate(-90 12 115)" text-anchor="middle">품질 수준 →</text>
+            <line x1="30" y1="200" x2="600" y2="200" stroke="currentColor" stroke-width="1"></line>
+            <text x="588" y="215" font-size="10.5" fill="currentColor">시간 →</text>
+
+            <line x1="30" y1="60" x2="600" y2="60" stroke="currentColor" stroke-width="1" stroke-dasharray="3 4"></line>
+            <text x="34" y="52" font-size="10.5" fill="currentColor">요구 품질 수준</text>
+
+            <line x1="150" y1="20" x2="150" y2="190" stroke="currentColor" stroke-width="1" stroke-dasharray="2 4"></line>
+            <text x="150" y="16" font-size="10.5" text-anchor="middle" style="fill:var(--tr)">환경 변화 감지</text>
+
+            <path d="M30,60 L150,60 C165,60 175,90 182,120 C188,145 188,160 190,172 L230,170 C260,170 300,140 320,110 C335,90 342,84 350,80 L600,80"
+                  fill="none" style="stroke:var(--fn)" stroke-width="2.4"></path>
+
+            <line x1="150" y1="205" x2="230" y2="205" stroke="currentColor" stroke-width="1.1"></line>
+            <line x1="150" y1="200" x2="150" y2="210" stroke="currentColor" stroke-width="1.1"></line>
+            <line x1="230" y1="200" x2="230" y2="210" stroke="currentColor" stroke-width="1.1"></line>
+            <text x="190" y="222" font-size="10" text-anchor="middle" fill="currentColor">Adaptation Latency</text>
+
+            <line x1="230" y1="232" x2="350" y2="232" stroke="currentColor" stroke-width="1.1"></line>
+            <line x1="230" y1="227" x2="230" y2="237" stroke="currentColor" stroke-width="1.1"></line>
+            <line x1="350" y1="227" x2="350" y2="237" stroke="currentColor" stroke-width="1.1"></line>
+            <text x="290" y="244" font-size="10" text-anchor="middle" fill="currentColor">적응 적용 → Time to Stabilization</text>
+
+            <line x1="560" y1="60" x2="576" y2="60" stroke="currentColor" stroke-width="1"></line>
+            <line x1="560" y1="80" x2="576" y2="80" stroke="currentColor" stroke-width="1"></line>
+            <line x1="568" y1="62" x2="568" y2="78" stroke="currentColor" stroke-width="1.4" marker-end="url(#fa-arrow)" marker-start="url(#fa-arrow)"></line>
+            <text x="580" y="66" font-size="9.5" style="fill:var(--tr)">회복</text>
+            <text x="580" y="78" font-size="9.5" style="fill:var(--tr)">격차</text>
+          </svg>
+        </div>
+        <figcaption>환경 변화가 감지된 뒤 품질은 급락했다가, 적응 지연(Adaptation Latency)을 지나 다시 오르지만 원래 요구 수준(<b>점선</b>)에는 못 미치고 <b>회복 격차</b>만큼 낮은 수준에서 안정화됩니다 — 이 격차가 작을수록 Quality Recovery Rate가 높습니다.</figcaption>
+      </figure>
+
       <h3 class="sub"><span class="num">4</span>품질요구사항 시나리오 (QAS) 예시</h3>
       <p class="qas-scenario">"도심 전용 운영 도메인을 벗어나 비포장도로·고속도로로 진입할 때, 이를 식별하고 주행 지능을 해당 환경에 맞게 적응시켜야 한다"</p>
       <div class="table-scroll"><table class="dt qas-table">
@@ -646,6 +874,38 @@
         <div class="type-card"><div class="tt">목적 완수</div><h4>보완(Supplementation)</h4><p>저효율이지만 확실한 기초 기능으로 목적을 대체 이행 — 수동 조종으로 직접 청소 위치 이동</p></div>
         <div class="type-card"><div class="tt">안전성 확보</div><h4>안전 상태 전환(Safety Transition)</h4><p>위기 감지 시 즉각 운영을 중단하고 보호 모드로 진입 — 배터리 과열 시 강제 정지</p></div>
       </div>
+
+      <figure class="fig" style="max-width:680px;">
+        <div class="fig-lab">FIG. 06 — 신뢰성 회복 루프</div>
+        <div class="fig-frame">
+          <svg viewBox="0 0 640 220" role="img" aria-label="AI 시스템이 고립 상태를 신호로 보내면 제어 주체가 개입해 신뢰성을 회복시키고, 다시 자율 모드로 돌아가는 순환 루프를 보여주는 다이어그램" style="color:var(--ink-soft)">
+            <defs>
+              <marker id="ct-arrow-fn" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                <path d="M0,0L10,5L0,10z" style="fill:var(--fn)"></path>
+              </marker>
+              <marker id="ct-arrow-tr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                <path d="M0,0L10,5L0,10z" style="fill:var(--tr)"></path>
+              </marker>
+            </defs>
+            <text x="320" y="20" font-size="12" text-anchor="middle" font-weight="700" fill="currentColor">신뢰성 회복 루프</text>
+
+            <rect x="50" y="66" width="200" height="88" rx="10" style="fill:var(--fn-tint);stroke:var(--fn)" stroke-width="1.4"></rect>
+            <text x="150" y="104" font-size="12.5" text-anchor="middle" font-weight="700" style="fill:var(--fn)">AI 시스템</text>
+            <text x="150" y="122" font-size="11" text-anchor="middle" style="fill:var(--fn)">(자율 모드 · 고립 상태)</text>
+
+            <rect x="390" y="66" width="200" height="88" rx="10" style="fill:var(--tr-tint);stroke:var(--tr)" stroke-width="1.4"></rect>
+            <text x="490" y="104" font-size="12.5" text-anchor="middle" font-weight="700" style="fill:var(--tr)">제어 주체</text>
+            <text x="490" y="122" font-size="11" text-anchor="middle" style="fill:var(--tr)">(사용자 · 관제 앱)</text>
+
+            <path d="M250,86 C300,58 340,58 388,86" fill="none" style="stroke:var(--fn)" stroke-width="1.8" marker-end="url(#ct-arrow-fn)"></path>
+            <text x="320" y="52" font-size="10.5" text-anchor="middle" style="fill:var(--fn)">① 상태 신호: 고립 · Livelock 감지</text>
+
+            <path d="M388,138 C340,166 300,166 250,138" fill="none" style="stroke:var(--tr)" stroke-width="1.8" marker-end="url(#ct-arrow-tr)"></path>
+            <text x="320" y="184" font-size="10.5" text-anchor="middle" style="fill:var(--tr)">② 개입: 교정 · 보완 · 안전전환</text>
+          </svg>
+        </div>
+        <figcaption>제어 가능성은 AI가 스스로 못 벗어나는 상태를 <b>신호로 알리고(①)</b>, 제어 주체가 <b>개입해(②)</b> 다시 신뢰할 수 있는 상태로 되돌리는 닫힌 루프로 동작합니다.</figcaption>
+      </figure>
 
       <h3 class="sub"><span class="num">3</span>제어 주체·대상·수준</h3>
       <div class="table-scroll"><table class="dt">
@@ -707,6 +967,48 @@
         </tbody>
       </table></div>
       <p class="table-cap">해석 가능한 모델(Glass-box: 결정트리·선형회귀)은 설명은 쉽지만 표현력이 낮고, 복잡한 모델(Black-box: 딥러닝)은 정확하지만 SHAP·LIME 같은 사후 설명 기법이 필요합니다.</p>
+
+      <figure class="fig" style="max-width:760px;">
+        <div class="fig-lab">FIG. 07 — 신뢰 체인은 계단식으로 쌓인다</div>
+        <div class="fig-frame">
+          <svg viewBox="0 0 640 210" role="img" aria-label="투명성에서 해석가능성, 설명가능성, 정당화 순으로 갈수록 대상 청중이 개발자에서 규제기관으로 넓어지고 신뢰 수준이 높아지는 계단식 체인을 보여주는 다이어그램" style="color:var(--ink-soft)">
+            <defs>
+              <marker id="ex-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                <path d="M0,0L10,5L0,10z" fill="currentColor"></path>
+              </marker>
+            </defs>
+            <line x1="20" y1="188" x2="612" y2="42" stroke="currentColor" stroke-width="1" stroke-dasharray="2 4"></line>
+            <text x="565" y="30" font-size="10.5" fill="currentColor">신뢰 수준 ↑</text>
+
+            <rect x="10" y="130" width="130" height="50" rx="9" fill="var(--surface-2)" stroke="currentColor" stroke-width="1.2"></rect>
+            <text x="75" y="151" font-size="11.5" text-anchor="middle" font-weight="700" fill="currentColor">Transparency</text>
+            <text x="75" y="166" font-size="10" text-anchor="middle" fill="currentColor">투명성</text>
+            <text x="75" y="196" font-size="9.5" text-anchor="middle" fill="currentColor">개발자·엔지니어</text>
+
+            <line x1="140" y1="155" x2="173" y2="130" stroke="currentColor" stroke-width="1.3" marker-end="url(#ex-arrow)"></line>
+
+            <rect x="175" y="105" width="130" height="50" rx="9" fill="var(--surface-2)" stroke="currentColor" stroke-width="1.2"></rect>
+            <text x="240" y="126" font-size="11.5" text-anchor="middle" font-weight="700" fill="currentColor">Interpretability</text>
+            <text x="240" y="141" font-size="10" text-anchor="middle" fill="currentColor">해석 가능성</text>
+            <text x="240" y="171" font-size="9.5" text-anchor="middle" fill="currentColor">개발자·엔지니어</text>
+
+            <line x1="305" y1="130" x2="338" y2="105" stroke="currentColor" stroke-width="1.3" marker-end="url(#ex-arrow)"></line>
+
+            <rect x="340" y="80" width="130" height="50" rx="9" style="fill:var(--tr-tint);stroke:var(--tr)" stroke-width="1.4"></rect>
+            <text x="405" y="101" font-size="11.5" text-anchor="middle" font-weight="700" style="fill:var(--tr)">Explainability</text>
+            <text x="405" y="116" font-size="10" text-anchor="middle" style="fill:var(--tr)">설명 가능성</text>
+            <text x="405" y="146" font-size="9.5" text-anchor="middle" fill="currentColor">사용자·운영자</text>
+
+            <line x1="470" y1="105" x2="503" y2="80" stroke="currentColor" stroke-width="1.3" marker-end="url(#ex-arrow)"></line>
+
+            <rect x="505" y="55" width="130" height="50" rx="9" fill="var(--surface-2)" stroke="currentColor" stroke-width="1.2"></rect>
+            <text x="570" y="76" font-size="11.5" text-anchor="middle" font-weight="700" fill="currentColor">Justification</text>
+            <text x="570" y="91" font-size="10" text-anchor="middle" fill="currentColor">정당화</text>
+            <text x="570" y="121" font-size="9.5" text-anchor="middle" fill="currentColor">사용자·규제기관</text>
+          </svg>
+        </div>
+        <figcaption>네 개념은 순서대로 쌓입니다 — 개발자를 향한 <b>투명성·해석가능성</b>이 먼저 다져져야, 사용자·규제기관을 향한 <b>설명가능성·정당화</b>도 근거를 가질 수 있습니다.</figcaption>
+      </figure>
 
       <h3 class="sub"><span class="num">2</span>설명의 3가지 모드</h3>
       <div class="type-grid">
@@ -792,6 +1094,50 @@
         </tbody>
       </table></div>
 
+      <figure class="fig" style="max-width:760px;">
+        <div class="fig-lab">FIG. 08 — 스트리밍 응답 한 건의 시간 분해</div>
+        <div class="fig-frame">
+          <svg viewBox="0 0 640 220" role="img" aria-label="요청 전송부터 첫 토큰까지의 TTFT, 토큰과 토큰 사이의 TPOT, 마지막 토큰까지 전체를 아우르는 End-to-End Latency로 스트리밍 응답 한 건의 시간이 분해되는 모습을 보여주는 타임라인" style="color:var(--ink-soft)">
+            <line x1="30" y1="120" x2="560" y2="120" stroke="currentColor" stroke-width="1.2"></line>
+
+            <circle cx="40" cy="120" r="4.5" style="fill:var(--fn)"></circle>
+            <text x="40" y="55" font-size="10.5" text-anchor="middle" style="fill:var(--fn)">요청 전송</text>
+            <text x="40" y="68" font-size="9.5" text-anchor="middle" fill="currentColor">(t=0)</text>
+
+            <line x1="40" y1="90" x2="160" y2="90" stroke="currentColor" stroke-width="1.1"></line>
+            <line x1="40" y1="85" x2="40" y2="95" stroke="currentColor" stroke-width="1.1"></line>
+            <line x1="160" y1="85" x2="160" y2="95" stroke="currentColor" stroke-width="1.1"></line>
+            <text x="100" y="80" font-size="10.5" text-anchor="middle" font-weight="700" fill="currentColor">TTFT (첫 토큰까지)</text>
+
+            <circle cx="160" cy="120" r="4.5" style="fill:var(--tr)"></circle>
+            <text x="160" y="55" font-size="10.5" text-anchor="middle" style="fill:var(--tr)">첫 토큰</text>
+
+            <circle cx="200" cy="120" r="3" fill="currentColor"></circle>
+            <circle cx="240" cy="120" r="3" fill="currentColor"></circle>
+            <circle cx="280" cy="120" r="3" fill="currentColor"></circle>
+            <circle cx="320" cy="120" r="3" fill="currentColor"></circle>
+            <circle cx="360" cy="120" r="3" fill="currentColor"></circle>
+            <circle cx="400" cy="120" r="3" fill="currentColor"></circle>
+            <circle cx="440" cy="120" r="3" fill="currentColor"></circle>
+
+            <line x1="200" y1="140" x2="240" y2="140" stroke="currentColor" stroke-width="1.1"></line>
+            <line x1="200" y1="135" x2="200" y2="145" stroke="currentColor" stroke-width="1.1"></line>
+            <line x1="240" y1="135" x2="240" y2="145" stroke="currentColor" stroke-width="1.1"></line>
+            <text x="220" y="157" font-size="10" text-anchor="middle" fill="currentColor">TPOT / ITL</text>
+            <text x="220" y="170" font-size="9" text-anchor="middle" fill="currentColor">(토큰 간 간격)</text>
+
+            <circle cx="480" cy="120" r="4.5" style="fill:var(--tr)"></circle>
+            <text x="480" y="55" font-size="10.5" text-anchor="middle" style="fill:var(--tr)">마지막 토큰</text>
+
+            <line x1="40" y1="188" x2="480" y2="188" stroke="currentColor" stroke-width="1.1"></line>
+            <line x1="40" y1="183" x2="40" y2="193" stroke="currentColor" stroke-width="1.1"></line>
+            <line x1="480" y1="183" x2="480" y2="193" stroke="currentColor" stroke-width="1.1"></line>
+            <text x="260" y="205" font-size="10.5" text-anchor="middle" font-weight="700" fill="currentColor">End-to-End Latency (p50 / p95 / p99)</text>
+          </svg>
+        </div>
+        <figcaption>체감 속도는 세 구간이 각각 결정합니다 — <b>TTFT</b>(반응이 시작되는 순간), <b>TPOT</b>(글자가 흘러나오는 리듬), 그리고 이를 모두 합친 <b>End-to-End Latency</b>가 SLA의 실제 측정 대상입니다.</figcaption>
+      </figure>
+
       <h3 class="sub"><span class="num">4</span>품질요구사항 시나리오 (QAS) 예시</h3>
       <p class="qas-scenario">"다중 센서로부터 유입되는 고해상도 데이터로 최대 120개의 동적 객체·표지판을 실시간 식별해야 한다"</p>
       <div class="table-scroll"><table class="dt qas-table">
@@ -813,6 +1159,49 @@
         수행 효율성은 느려집니다. 이 트레이드오프의 구체적인 수치 감(개념도)과, 데이터 품질 체크리스트는
         시리즈 첫 편 「AI 성적표」에서 다뤘습니다.
       </p>
+
+      <figure class="fig" style="max-width:780px;">
+        <div class="fig-lab">FIG. 09 — 8과목은 하나의 파이프라인이다</div>
+        <div class="fig-frame">
+          <svg viewBox="0 0 640 225" role="img" aria-label="입력이 기능 관점을 거쳐 신뢰성 관점 게이트를 통과해 출력되며, 실패 시 신뢰성 관점이 기능 관점에 개입하고, 이 전체 파이프라인은 효율성 관점이라는 시간·자원 예산 안에 갇혀 있음을 보여주는 다이어그램" style="color:var(--ink-soft)">
+            <defs>
+              <marker id="s9-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                <path d="M0,0L10,5L0,10z" fill="currentColor"></path>
+              </marker>
+              <marker id="s9-arrow-tr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                <path d="M0,0L10,5L0,10z" style="fill:var(--tr)"></path>
+              </marker>
+            </defs>
+
+            <line x1="40" y1="30" x2="600" y2="30" stroke="currentColor" stroke-width="1.2"></line>
+            <line x1="40" y1="25" x2="40" y2="35" stroke="currentColor" stroke-width="1.2"></line>
+            <line x1="600" y1="25" x2="600" y2="35" stroke="currentColor" stroke-width="1.2"></line>
+            <text x="320" y="18" font-size="11" text-anchor="middle" font-weight="700" style="fill:var(--ef)">효율성 관점 — 정해진 시간 · 자원 예산 안에서</text>
+
+            <rect x="10" y="108" width="66" height="54" rx="8" fill="var(--surface-2)" stroke="currentColor" stroke-width="1.2"></rect>
+            <text x="43" y="139" font-size="11.5" text-anchor="middle" fill="currentColor">입력</text>
+            <line x1="76" y1="135" x2="108" y2="135" stroke="currentColor" stroke-width="1.3" marker-end="url(#s9-arrow)"></line>
+
+            <rect x="110" y="93" width="196" height="84" rx="10" style="fill:var(--fn-tint);stroke:var(--fn)" stroke-width="1.5"></rect>
+            <text x="208" y="128" font-size="12" text-anchor="middle" font-weight="700" style="fill:var(--fn)">기능 관점</text>
+            <text x="208" y="145" font-size="10.5" text-anchor="middle" style="fill:var(--fn)">FC · RB · PR · FR · FA</text>
+            <line x1="306" y1="135" x2="338" y2="135" stroke="currentColor" stroke-width="1.3" marker-end="url(#s9-arrow)"></line>
+
+            <rect x="340" y="93" width="196" height="84" rx="10" style="fill:var(--tr-tint);stroke:var(--tr)" stroke-width="1.5"></rect>
+            <text x="438" y="128" font-size="12" text-anchor="middle" font-weight="700" style="fill:var(--tr)">신뢰성 관점 게이트</text>
+            <text x="438" y="145" font-size="10.5" text-anchor="middle" style="fill:var(--tr)">CT · EX</text>
+            <line x1="536" y1="135" x2="568" y2="135" stroke="currentColor" stroke-width="1.3" marker-end="url(#s9-arrow)"></line>
+
+            <rect x="570" y="108" width="60" height="54" rx="8" fill="var(--surface-2)" stroke="currentColor" stroke-width="1.2"></rect>
+            <text x="600" y="139" font-size="11.5" text-anchor="middle" fill="currentColor">출력</text>
+
+            <path d="M438,177 C438,205 208,205 208,177" fill="none" style="stroke:var(--tr)" stroke-width="1.6" stroke-dasharray="5 4" marker-end="url(#s9-arrow-tr)"></path>
+            <text x="323" y="216" font-size="10.5" text-anchor="middle" style="fill:var(--tr)">실패 감지 시 개입 (제어 가능성)</text>
+          </svg>
+        </div>
+        <figcaption>기능 관점이 결과를 만들고, 신뢰성 관점이 그 결과를 통과시키거나 되돌려 회복시키며, 이 전체 흐름은 효율성 관점이라는 <b>시간·자원 예산</b> 안에서만 허용됩니다 — 8과목을 따로 채점할 수 없는 이유입니다.</figcaption>
+      </figure>
+
       <a class="link-back" href="#s00">↑ 스펙시트로 돌아가기</a>
 
       <footer>
