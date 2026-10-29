@@ -394,6 +394,9 @@ td.note { color: var(--muted); font-size: 19px; }
 .rail i { display: block; height: 100%; width: 100%; background: var(--accent); transform-origin: left; transform: scaleX(var(--p, 0)); transition: transform .6s var(--ease); }
 
 /* chrome */
+.home { position: absolute; top: 74px; right: 112px; width: 50px; height: 50px; border-radius: 14px; border: 1px solid var(--line); background: var(--surface); color: var(--muted); display: grid; place-items: center; cursor: pointer; box-shadow: var(--shadow); padding: 0; transition: color .2s, border-color .2s, transform .2s; z-index: 2; }
+.home:hover { color: var(--accent); border-color: var(--accent); transform: translateY(-2px); }
+.home svg { width: 24px; height: 24px; }
 .foot { position: absolute; left: 112px; bottom: 44px; font-family: var(--mono); font-size: 15px; color: var(--muted); }
 #progress { position: fixed; left: 0; right: 0; top: 0; height: 3px; background: var(--accent); transform-origin: left; transform: scaleX(0); transition: transform .35s; z-index: 5; }
 #controls { position: fixed; right: max(16px, env(safe-area-inset-right, 0px)); bottom: calc(16px + env(safe-area-inset-bottom, 0px)); display: flex; gap: 6px; align-items: center; z-index: 6;
@@ -423,7 +426,6 @@ td.note { color: var(--muted); font-size: 19px; }
   <div class="kicker"><b>LLM (Large Language Model)</b>14 chapters</div>
   <h1 style="margin-top:28px">LLM <em>이해하기</em></h1>
   <p class="lead">채팅창 뒤에서 무슨 일이 벌어지는지. Token부터 Embedding, Attention, KV (Key-Value) Cache, Prompt Caching, MoE (Mixture of Experts)까지</p>
-  <div class="meta"><span>원문 @yulmu_coffee</span><span>2026-10-22</span><span>가격 정보 2026년 10월 기준</span></div>
   <div class="ticker" aria-hidden="true"><div class="ticker-in" id="ticker"></div></div>
 </section>
 
@@ -464,7 +466,7 @@ td.note { color: var(--muted); font-size: 19px; }
 
 <section class="slide" data-notes="BPE(Byte Pair Encoding)는 자주 붙어 나오는 문자 쌍을 반복해서 합쳐 Vocabulary를 만듭니다. 한국어 비율은 Tokenizer마다 크게 다르니 직접 확인. strawberry의 r 개수를 헤매는 것도 Token 단위로 보기 때문이라고 흔히 설명합니다.">
   <div class="kicker"><b>02</b>입력 단위</div>
-  <h2>모델은 글자가 아니라 <em>Token</em>을 읽습니다</h2>
+  <h2>모델이 읽는 단위, <em>Token</em></h2>
   <div class="body cols wide-r">
     <div class="txt">
       <p>Tokenizer가 글을 조각으로 자르고 번호를 붙입니다. 자주 나오는 덩어리는 Token 하나, 드문 단어는 여러 조각.</p>
@@ -482,7 +484,7 @@ td.note { color: var(--muted); font-size: 19px; }
 
 <section class="slide" data-notes="OpenAI 안내 기준 영어 1 Token은 약 4글자, 0.75단어. 한국어는 같은 내용에 Token이 더 드는 편입니다.">
   <div class="kicker"><b>02</b>입력 단위</div>
-  <h2>Token은 글자 수와 다릅니다</h2>
+  <h2>Token과 글자 수의 차이</h2>
   <div class="body">
     <div class="stats">
       <div class="stat hl"><b data-count>≈ 4글자</b><span>영어 text 1 Token<br>(OpenAI 안내)</span></div>
@@ -564,7 +566,7 @@ td.note { color: var(--muted); font-size: 19px; }
 
 <section class="slide" data-notes="은행나무의 은행과 은행 대출의 은행을 어떻게 구분할까? 2017년 「Attention Is All You Need」. 각 Token이 다른 Token을 둘러보고 누가 중요한지 점수를 매겨 정보를 섞습니다. 비유: 회의실에서 궁금한 걸 들고(Q) 아는 사람(K)에게 귀 기울여 그 말(V)을 받아 적기.">
   <div class="kicker"><b>06</b>문맥</div>
-  <h2>Attention: 각 Token이 <em>Query·Key·Value</em>를 만든다</h2>
+  <h2>Attention: 각 Token의 <em>Query·Key·Value</em></h2>
   <div class="body cols" style="grid-template-columns:minmax(0,.7fr) minmax(0,1.3fr);gap:44px">
     <div>
       <div class="qlist">
@@ -636,7 +638,7 @@ td.note { color: var(--muted); font-size: 19px; }
 
 <section class="slide" data-notes="Block = Attention(Token끼리 정보 교환) + Feed-forward(각자 소화). 이걸 쌓은 게 Layer. 원래 Transformer는 Encoder+Decoder 번역기였고, GPT 계열은 Decoder만 쌓았습니다. ChatGPT, Claude, Llama 대부분이 Decoder-only.">
   <div class="kicker"><b>07</b>구조</div>
-  <h2>Decoder의 규칙: <em>앞만 본다</em></h2>
+  <h2>Decoder의 규칙: <em>앞만 보기</em></h2>
   <div class="body cols">
     <div class="txt">
       <p style="font-size:22px">Attention(Token끼리 정보 교환) → Feed-forward(각자 소화) Block을 층층이 쌓은 것이 Layer. 아래층은 단순한 pattern을, 위층으로 갈수록 더 추상적인 관계를 다룬다고 흔히 설명합니다.</p>
@@ -732,7 +734,7 @@ td.note { color: var(--muted); font-size: 19px; }
 
 <section class="slide" data-notes="InstructGPT 논문이 정리한 RLHF 과정입니다. 모델이 쓴 답변 여러 개를 사람이 순위 매기고, 그 선호를 학습한 Reward Model을 만든 뒤, Reward 점수가 높아지도록 원래 모델을 강화학습으로 조정합니다. InstructGPT는 이 강화학습에 PPO(Proximal Policy Optimization)를 썼습니다. 요즘은 RLHF 외에도 다양한 Post-training 기법이 쓰이며, 각 회사가 구체적 방법을 모두 공개하지는 않습니다.">
   <div class="kicker"><b>08</b>Post-training · RLHF 자세히</div>
-  <h2>RLHF는 <em>네 걸음</em>으로 돌아갑니다</h2>
+  <h2>RLHF의 <em>네 걸음</em></h2>
   <div class="body">
     <div class="rl4">
       <div class="rlc">
@@ -840,7 +842,7 @@ td.note { color: var(--muted); font-size: 19px; }
 
 <section class="slide" data-notes="가장 흔한 오해. 대화 중에 모델이 학습되는 게 아닙니다. 기억하는 것처럼 보이는 건 대화 내용 전체가 매번 입력(Context)으로 다시 들어가기 때문입니다. 대화 기록이 service 개선용 학습 data로 쓰일지는 각 service 정책의 문제이고, 그 대화 순간에 Dial이 바뀌지는 않습니다. 지난 글의 Mac에서 local로 돌린다는 이야기도 전부 Inference 이야기였습니다.">
   <div class="kicker"><b>09</b>흔한 오해</div>
-  <h2>대화 중에 모델은 <em>배우지 않습니다</em></h2>
+  <h2>대화 중에는 <em>배우지 않는</em> 모델</h2>
   <div class="body cols" style="grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:44px">
     <div class="txt">
       <p>모델이 내 말을 기억하는 것처럼 보이는 건, <strong>대화 내용 전체가 매번 입력(Context)으로 다시 들어가기 때문</strong>입니다.</p>
@@ -911,7 +913,7 @@ td.note { color: var(--muted); font-size: 19px; }
 
 <section class="slide" data-notes="Request가 끝나면 Note는 보통 버려집니다. 하지만 많은 Request는 System Prompt, Tool 정의, 참고 문서가 똑같이 앞에 붙습니다. 그 Prefix의 KV Tensor를 보관해 다음 Request에서 꺼내 씁니다. OpenAI, vLLM 모두 같은 원리. Anthropic은 Cache 지점까지 100% 같아야 한다고 씁니다.">
   <div class="kicker"><b>12</b>비용</div>
-  <h2>Prompt Caching: <em>앞부분이 같으면</em> Note를 빌려 쓴다</h2>
+  <h2>Prompt Caching: <em>앞부분이 같으면</em> Note 재사용</h2>
   <div class="body">
     <div class="panel prefix">
       <div class="prow"><span>Request A</span><div class="blocks"><i class="hit si" style="flex:2">Tools</i><i class="hit si" style="flex:3">System</i><i class="hit si" style="flex:3">참고 문서</i><i class="miss si" style="flex:1.4">질문 A</i></div><span class="res ok pop">Cache Write</span></div>
@@ -1054,7 +1056,12 @@ td.note { color: var(--muted); font-size: 19px; }
   const every = (fn, ms) => timers.push(setInterval(fn, ms));
   const clearTimers = () => { timers.forEach(t => { clearTimeout(t); clearInterval(t); }); timers = []; };
 
-  slides.forEach(s => { if (!s.classList.contains('title-slide')) s.insertAdjacentHTML('beforeend', '<div class="foot">LLM 이해하기</div>'); });
+  const HOME = '<button class="home" type="button" aria-label="첫 장으로" title="첫 장으로"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V20a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V9.5"/></svg></button>';
+  slides.forEach((s, i) => {
+    if (!s.classList.contains('title-slide')) s.insertAdjacentHTML('beforeend', '<div class="foot">LLM 이해하기</div>');
+    if (i > 0) s.insertAdjacentHTML('beforeend', HOME);
+  });
+  stage.addEventListener('click', e => { if (e.target.closest('.home')) go(0); });
 
   // build dynamic pieces before tagging
   const tokens = ['오늘', ' 아침', '에', ' 커', '피를', ' 마셨', '다', '.', ' Token', ' Embedding', ' Attention', ' KV', ' Cache', ' Prefill', ' Decoding', ' MoE', ' Router', ' Layer'];
