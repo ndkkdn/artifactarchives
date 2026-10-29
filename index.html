@@ -4,118 +4,320 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Artifact Archives</title>
+<meta name="description" content="직접 만든 HTML 아티팩트 — 발표 슬라이드, 인터랙티브 설명서, 도감을 모아둔 아카이브">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #f7f7f5;
-    --card-bg: #ffffff;
-    --text: #1a1a1a;
-    --muted: #6b6b6b;
-    --border: #e5e3de;
-    --accent: #4db6ac;
+    --bg: #f6f5f1;
+    --surface: #ffffff;
+    --surface-2: #efede7;
+    --text: #15151a;
+    --muted: #6b6b76;
+    --border: #e4e2dc;
+    --accent: #5b4bff;
+    --accent-2: #ff6b3d;
+    --accent-3: #12a37f;
+    --glow: rgba(91, 75, 255, .18);
+    --shadow: 0 1px 2px rgba(0,0,0,.04), 0 12px 32px rgba(20,20,40,.07);
   }
   @media (prefers-color-scheme: dark) {
-    :root {
-      --bg: #16171a;
-      --card-bg: #1e2023;
-      --text: #ececec;
-      --muted: #9a9a9a;
-      --border: #2c2e33;
-      --accent: #4db6ac;
+    :root:not([data-theme="light"]) {
+      --bg: #0c0c10; --surface: #16161c; --surface-2: #1e1e26; --text: #f2f1ee; --muted: #9a99a6;
+      --border: #282831; --accent: #8b7fff; --accent-2: #ff8a5c; --accent-3: #3fd1a4;
+      --glow: rgba(139, 127, 255, .22); --shadow: 0 1px 2px rgba(0,0,0,.3), 0 12px 32px rgba(0,0,0,.4);
     }
   }
+  :root[data-theme="dark"] {
+    --bg: #0c0c10; --surface: #16161c; --surface-2: #1e1e26; --text: #f2f1ee; --muted: #9a99a6;
+    --border: #282831; --accent: #8b7fff; --accent-2: #ff8a5c; --accent-3: #3fd1a4;
+    --glow: rgba(139, 127, 255, .22); --shadow: 0 1px 2px rgba(0,0,0,.3), 0 12px 32px rgba(0,0,0,.4);
+  }
   * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
   body {
     margin: 0;
     background: var(--bg);
     color: var(--text);
-    font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
-    padding: 48px 24px 80px;
+    font-family: "Pretendard Variable", Pretendard, -apple-system, system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    word-break: keep-all;
+    overflow-x: hidden;
   }
-  .wrap {
-    max-width: 880px;
-    margin: 0 auto;
+  .mono { font-family: "JetBrains Mono", ui-monospace, monospace; }
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 0 24px; }
+
+  /* nav */
+  nav {
+    position: sticky; top: 0; z-index: 20;
+    backdrop-filter: saturate(1.4) blur(14px);
+    -webkit-backdrop-filter: saturate(1.4) blur(14px);
+    background: color-mix(in srgb, var(--bg) 72%, transparent);
+    border-bottom: 1px solid color-mix(in srgb, var(--border) 70%, transparent);
   }
-  header {
-    margin-bottom: 40px;
+  nav .wrap { display: flex; align-items: center; justify-content: space-between; height: 60px; }
+  .brand { display: flex; align-items: center; gap: 10px; font-weight: 700; letter-spacing: -.01em; color: var(--text); text-decoration: none; }
+  .brand .logo {
+    width: 26px; height: 26px; border-radius: 8px;
+    background: conic-gradient(from 210deg, var(--accent), var(--accent-2), var(--accent-3), var(--accent));
   }
+  .nav-actions { display: flex; gap: 8px; }
+  .icon-btn {
+    appearance: none; border: 1px solid var(--border); background: var(--surface); color: var(--text);
+    height: 36px; min-width: 36px; padding: 0 12px; border-radius: 10px; cursor: pointer;
+    font: inherit; font-size: 14px; display: inline-flex; align-items: center; gap: 6px; text-decoration: none;
+  }
+  .icon-btn:hover { border-color: var(--accent); }
+
+  /* hero */
+  .hero { position: relative; padding: 96px 0 56px; }
+  .hero::before {
+    content: ""; position: absolute; inset: -40px -20% auto auto; width: 640px; height: 520px; z-index: -1;
+    background:
+      radial-gradient(closest-side at 35% 40%, color-mix(in srgb, var(--accent) 45%, transparent), transparent),
+      radial-gradient(closest-side at 70% 65%, color-mix(in srgb, var(--accent-2) 35%, transparent), transparent);
+    filter: blur(40px); opacity: .7; pointer-events: none;
+  }
+  .eyebrow {
+    display: inline-flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; color: var(--accent);
+    padding: 6px 12px; border-radius: 999px; background: color-mix(in srgb, var(--accent) 12%, transparent);
+  }
+  .eyebrow::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: currentColor; box-shadow: 0 0 0 4px var(--glow); }
   h1 {
-    font-size: 1.9rem;
-    margin: 0 0 8px;
-    letter-spacing: -0.01em;
+    font-size: clamp(44px, 8vw, 96px); line-height: 1.02; letter-spacing: -.045em; font-weight: 800;
+    margin: 22px 0 18px;
   }
-  header p {
-    color: var(--muted);
-    margin: 0;
-    font-size: 0.95rem;
+  h1 .grad {
+    background: linear-gradient(100deg, var(--accent) 10%, var(--accent-2) 90%);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
   }
-  .grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-    gap: 18px;
+  .hero p { font-size: clamp(17px, 2.2vw, 21px); line-height: 1.6; color: var(--muted); max-width: 620px; margin: 0; }
+  .stats { display: flex; gap: 28px; margin-top: 36px; flex-wrap: wrap; }
+  .stat b { display: block; font-size: 28px; letter-spacing: -.02em; }
+  .stat span { font-size: 13px; color: var(--muted); }
+
+  /* toolbar */
+  .toolbar { display: flex; gap: 12px; align-items: center; justify-content: space-between; flex-wrap: wrap; margin-bottom: 22px; }
+  .filters { display: flex; gap: 6px; flex-wrap: wrap; }
+  .filter {
+    appearance: none; border: 1px solid var(--border); background: transparent; color: var(--muted);
+    font: inherit; font-size: 14px; font-weight: 600; padding: 8px 14px; border-radius: 999px; cursor: pointer;
   }
-  a.card {
-    display: block;
-    background: var(--card-bg);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 22px;
-    text-decoration: none;
-    color: var(--text);
-    transition: border-color 0.15s, transform 0.15s;
+  .filter[aria-pressed="true"] { background: var(--text); color: var(--bg); border-color: var(--text); }
+  .search {
+    display: flex; align-items: center; gap: 8px; border: 1px solid var(--border); background: var(--surface);
+    border-radius: 12px; padding: 0 12px; height: 40px; min-width: 0; flex: 0 1 280px;
   }
-  a.card:hover {
-    border-color: var(--accent);
-    transform: translateY(-2px);
+  .search input { border: 0; outline: 0; background: transparent; color: var(--text); font: inherit; font-size: 15px; width: 100%; }
+  .search:focus-within { border-color: var(--accent); box-shadow: 0 0 0 4px var(--glow); }
+  kbd { font-family: "JetBrains Mono", monospace; font-size: 11px; color: var(--muted); border: 1px solid var(--border); border-radius: 6px; padding: 1px 6px; }
+
+  /* bento grid */
+  .grid { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 18px; padding-bottom: 80px; }
+  .card {
+    grid-column: span 2; position: relative; display: flex; flex-direction: column;
+    background: var(--surface); border: 1px solid var(--border); border-radius: 22px; overflow: hidden;
+    text-decoration: none; color: var(--text); box-shadow: var(--shadow);
+    transition: transform .25s cubic-bezier(.2,.8,.2,1), border-color .2s, box-shadow .25s;
+    animation: rise .5s both cubic-bezier(.2,.8,.2,1);
   }
-  .card .dot {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    background: var(--accent);
-    box-shadow: 0 0 8px rgba(77, 182, 172, 0.5);
-    margin-bottom: 14px;
+  .card:hover { transform: translateY(-4px); border-color: color-mix(in srgb, var(--accent) 50%, var(--border)); box-shadow: var(--shadow), 0 0 0 6px var(--glow); }
+  .card:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+  .card.featured { grid-column: span 4; grid-row: span 2; }
+  .card.wide { grid-column: span 3; }
+  .thumb { aspect-ratio: 16 / 10; overflow: hidden; background: var(--surface-2); border-bottom: 1px solid var(--border); position: relative; }
+  .card.featured .thumb { aspect-ratio: auto; flex: 1; min-height: 300px; }
+  .card.featured .thumb img { object-position: left center; }
+  .thumb img { width: 100%; height: 100%; object-fit: cover; object-position: top center; display: block; transition: transform .6s cubic-bezier(.2,.8,.2,1); }
+  .card:hover .thumb img { transform: scale(1.035); }
+  .badge {
+    position: absolute; left: 14px; top: 14px; font-size: 12px; font-weight: 700; padding: 5px 10px; border-radius: 999px;
+    background: color-mix(in srgb, var(--surface) 88%, transparent); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+    border: 1px solid var(--border); color: var(--text);
   }
-  .card h2 {
-    font-size: 1.1rem;
-    margin: 0 0 6px;
+  .badge.new { left: auto; right: 14px; background: var(--accent-2); color: #fff; border-color: transparent; }
+  .meta { padding: 20px 22px 22px; display: flex; flex-direction: column; gap: 8px; }
+  .meta h2 { margin: 0; font-size: 19px; letter-spacing: -.02em; line-height: 1.3; }
+  .card.featured .meta h2 { font-size: 28px; }
+  .meta p { margin: 0; font-size: 14.5px; color: var(--muted); line-height: 1.55; }
+  .row { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 6px; }
+  .tags { display: flex; gap: 6px; flex-wrap: wrap; }
+  .tag { font-size: 12px; color: var(--muted); background: var(--surface-2); padding: 3px 9px; border-radius: 6px; }
+  .date { font-size: 12px; color: var(--muted); white-space: nowrap; }
+  .go { width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; background: var(--surface-2); transition: background .2s, color .2s, transform .2s; flex: none; }
+  .card:hover .go { background: var(--accent); color: #fff; transform: rotate(-45deg); }
+  .empty { grid-column: 1 / -1; text-align: center; color: var(--muted); padding: 60px 0; }
+
+  footer { border-top: 1px solid var(--border); padding: 28px 0 40px; color: var(--muted); font-size: 13px; }
+  footer .wrap { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+  footer a { color: inherit; }
+
+  @keyframes rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+  @media (prefers-reduced-motion: reduce) { .card, .thumb img { animation: none; transition: none; } }
+
+  @media (max-width: 960px) {
+    .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .card, .card.wide { grid-column: span 1; }
+    .card.featured { grid-column: span 2; grid-row: auto; }
+    .card.featured .thumb { aspect-ratio: 16 / 9; min-height: 0; }
   }
-  .card p {
-    font-size: 0.85rem;
-    color: var(--muted);
-    margin: 0;
-    line-height: 1.5;
-  }
-  footer {
-    margin-top: 48px;
-    color: var(--muted);
-    font-size: 0.8rem;
+  @media (max-width: 620px) {
+    .wrap { padding: 0 16px; }
+    .hero { padding: 64px 0 40px; }
+    .grid { grid-template-columns: minmax(0, 1fr); }
+    .card.featured { grid-column: span 1; }
+    .card.featured .meta h2 { font-size: 22px; }
+    .search { flex: 1 1 100%; }
   }
 </style>
 </head>
 <body>
-<div class="wrap">
-  <header>
-    <h1>Artifact Archives</h1>
-    <p>모아둔 HTML 아티팩트 목록입니다.</p>
-  </header>
-  <div class="grid">
-    <a class="card" href="ai-quality-anatomy-illustrated.html">
-      <div class="dot"></div>
-      <h2>AI 품질 해부도감</h2>
-      <p>8가지 품질 속성을 그림으로 해부해보는 도감 버전</p>
-    </a>
-    <a class="card" href="ai-quality-anatomy.html">
-      <div class="dot"></div>
-      <h2>AI 품질 해부학</h2>
-      <p>8가지 품질 속성을 해부해보는 기본 버전</p>
-    </a>
-    <a class="card" href="ai-quality-report-card.html">
-      <div class="dot"></div>
-      <h2>AI 성적표</h2>
-      <p>AI에게도 성적표가 있다면, 어떤 과목을 배울까요?</p>
-    </a>
+<nav>
+  <div class="wrap">
+    <a class="brand" href="./"><span class="logo"></span>Artifact Archives</a>
+    <div class="nav-actions">
+      <a class="icon-btn" href="https://github.com/ndkkdn/artifactarchives" aria-label="GitHub 저장소">GitHub ↗</a>
+      <button class="icon-btn" id="themeBtn" aria-label="테마 전환">◐</button>
+    </div>
   </div>
-  <footer>artifactarchives</footer>
-</div>
+</nav>
+
+<header class="hero">
+  <div class="wrap">
+    <span class="eyebrow">HTML Artifact Collection</span>
+    <h1>배운 것을<br><span class="grad">한 장의 페이지로.</span></h1>
+    <p>공부하고 정리한 내용을 발표 슬라이드, 인터랙티브 설명서, 도감으로 만들어 모아두는 아카이브입니다.</p>
+    <div class="stats" id="stats"></div>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="toolbar">
+    <div class="filters" id="filters" role="group" aria-label="종류 필터"></div>
+    <label class="search">
+      <span aria-hidden="true">⌕</span>
+      <input id="q" type="search" placeholder="제목·태그 검색" autocomplete="off">
+      <kbd>/</kbd>
+    </label>
+  </div>
+  <div class="grid" id="grid"></div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>© artifactarchives</span>
+    <a href="https://github.com/ndkkdn/artifactarchives">github.com/ndkkdn/artifactarchives</a>
+  </div>
+</footer>
+
+<script>
+  // 새 아티팩트는 이 목록 맨 위에 추가합니다 (date 내림차순으로 자동 정렬)
+  const ITEMS = [
+    {
+      href: "llm-basics/",
+      title: "처음 읽는 LLM 이해하기",
+      desc: "토큰부터 임베딩, 어텐션, KV 캐시, 프롬프트 캐싱, MoE까지 — 채팅창 뒤에서 벌어지는 일을 20장 슬라이드로.",
+      type: "슬라이드",
+      tags: ["LLM", "기본기", "캐싱"],
+      date: "2026-10-29",
+      thumb: "thumbs/llm-basics.jpg"
+    },
+    {
+      href: "ai-quality-anatomy-illustrated.html",
+      title: "AI 품질 해부도감",
+      desc: "8가지 품질 속성을 그림으로 해부해보는 도감 버전",
+      type: "설명서",
+      tags: ["AI 품질", "도감"],
+      date: "2026-09-04",
+      thumb: "thumbs/ai-quality-anatomy-illustrated.jpg"
+    },
+    {
+      href: "ai-quality-anatomy.html",
+      title: "AI 품질 해부학",
+      desc: "8가지 품질 속성을 해부해보는 기본 버전",
+      type: "설명서",
+      tags: ["AI 품질"],
+      date: "2026-09-04",
+      thumb: "thumbs/ai-quality-anatomy.jpg"
+    },
+    {
+      href: "ai-quality-report-card.html",
+      title: "AI 성적표",
+      desc: "AI에게도 성적표가 있다면, 어떤 과목을 배울까요?",
+      type: "설명서",
+      tags: ["AI 품질", "ISO/IEC 25059"],
+      date: "2026-09-04",
+      thumb: "thumbs/ai-quality-report-card.jpg"
+    }
+  ];
+
+  const grid = document.getElementById('grid');
+  const q = document.getElementById('q');
+  const filtersEl = document.getElementById('filters');
+  const items = [...ITEMS].sort((a, b) => b.date.localeCompare(a.date));
+  const types = ['전체', ...new Set(items.map(i => i.type))];
+  let active = '전체';
+
+  const esc = s => s.replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  const isNew = d => (Date.now() - new Date(d)) / 864e5 < 14;
+
+  document.getElementById('stats').innerHTML = [
+    [items.length, '아티팩트'],
+    [types.length - 1, '종류'],
+    [items[0].date, '최근 업데이트']
+  ].map(([b, s]) => `<div class="stat"><b class="${typeof b === 'string' ? 'mono' : ''}" style="${typeof b === 'string' ? 'font-size:20px;line-height:42px' : ''}">${b}</b><span>${s}</span></div>`).join('');
+
+  filtersEl.innerHTML = types.map(t => `<button class="filter" aria-pressed="${t === active}" data-t="${esc(t)}">${esc(t)}</button>`).join('');
+  filtersEl.addEventListener('click', e => {
+    const b = e.target.closest('.filter'); if (!b) return;
+    active = b.dataset.t;
+    filtersEl.querySelectorAll('.filter').forEach(x => x.setAttribute('aria-pressed', x === b));
+    render();
+  });
+
+  function render() {
+    const term = q.value.trim().toLowerCase();
+    const list = items.filter(i =>
+      (active === '전체' || i.type === active) &&
+      (!term || [i.title, i.desc, ...i.tags].join(' ').toLowerCase().includes(term))
+    );
+    const featureFirst = active === '전체' && !term;
+    grid.innerHTML = list.length ? list.map((i, n) => {
+      const cls = featureFirst && n === 0 ? 'featured' : '';
+      return `<a class="card ${cls}" href="${esc(i.href)}" style="animation-delay:${n * 60}ms">
+        <div class="thumb">
+          <img src="${esc(i.thumb)}" alt="" loading="lazy">
+          <span class="badge">${esc(i.type)}</span>
+          ${isNew(i.date) ? '<span class="badge new">NEW</span>' : ''}
+        </div>
+        <div class="meta">
+          <h2>${esc(i.title)}</h2>
+          <p>${esc(i.desc)}</p>
+          <div class="row">
+            <div class="tags">${i.tags.map(t => `<span class="tag">#${esc(t)}</span>`).join('')}</div>
+            <span class="go" aria-hidden="true">→</span>
+          </div>
+          <span class="date mono">${esc(i.date)}</span>
+        </div>
+      </a>`;
+    }).join('') : '<div class="empty">검색 결과가 없습니다.</div>';
+  }
+  q.addEventListener('input', render);
+  addEventListener('keydown', e => {
+    if (e.key === '/' && document.activeElement !== q) { e.preventDefault(); q.focus(); }
+    if (e.key === 'Escape' && document.activeElement === q) { q.value = ''; render(); q.blur(); }
+  });
+
+  const root = document.documentElement;
+  try { const t = localStorage.getItem('archive-theme'); if (t) root.dataset.theme = t; } catch (e) {}
+  document.getElementById('themeBtn').onclick = () => {
+    const dark = root.dataset.theme ? root.dataset.theme === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
+    root.dataset.theme = dark ? 'light' : 'dark';
+    try { localStorage.setItem('archive-theme', root.dataset.theme); } catch (e) {}
+  };
+
+  render();
+</script>
 </body>
 </html>

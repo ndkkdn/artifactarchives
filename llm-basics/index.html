@@ -1,0 +1,659 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>처음 읽는 LLM</title>
+<meta name="description" content="채팅창 뒤에서 벌어지는 일 — 토큰부터 KV 캐시, 프롬프트 캐싱, MoE까지 LLM 기본기 발표 자료">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f6f5f1; --surface:#ffffff; --ink:#15151a; --muted:#6b6b76; --line:#e4e2dc;
+  --accent:#5b4bff; --accent-2:#ff6b3d; --accent-3:#12a37f; --accent-soft:#ecebff;
+  --chip:#f0eee8; --shadow:0 1px 2px rgba(0,0,0,.04),0 8px 24px rgba(20,20,40,.06);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0e0e12; --surface:#17171d; --ink:#f2f1ee; --muted:#9a99a6; --line:#2a2a33;
+    --accent:#8b7fff; --accent-2:#ff8a5c; --accent-3:#3fd1a4; --accent-soft:#221f3d;
+    --chip:#1f1f27; --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.35);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0e0e12; --surface:#17171d; --ink:#f2f1ee; --muted:#9a99a6; --line:#2a2a33;
+  --accent:#8b7fff; --accent-2:#ff8a5c; --accent-3:#3fd1a4; --accent-soft:#221f3d;
+  --chip:#1f1f27; --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.35);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden}
+body{background:var(--bg);color:var(--ink);font-family:"Pretendard Variable",Pretendard,-apple-system,system-ui,sans-serif;
+  -webkit-font-smoothing:antialiased;word-break:keep-all}
+.mono{font-family:"JetBrains Mono",ui-monospace,monospace}
+
+/* stage: fixed 1600x900 canvas scaled to fit */
+#viewport{position:fixed;inset:0;display:grid;place-items:center}
+#stage{width:1600px;height:900px;position:relative;transform-origin:center center}
+.slide{position:absolute;inset:0;padding:88px 112px 96px;display:flex;flex-direction:column;
+  opacity:0;visibility:hidden;transform:translateY(16px);transition:opacity .45s ease,transform .45s ease,visibility .45s}
+.slide.active{opacity:1;visibility:visible;transform:none}
+.slide.prev{transform:translateY(-16px)}
+
+.kicker{font-size:22px;font-weight:600;color:var(--accent);letter-spacing:.02em;display:flex;align-items:center;gap:14px}
+.kicker .num{font-family:"JetBrains Mono",monospace;font-size:18px;padding:4px 10px;border-radius:999px;background:var(--accent-soft)}
+h1{font-size:96px;line-height:1.08;font-weight:800;letter-spacing:-.035em}
+h2{font-size:60px;line-height:1.15;font-weight:750;letter-spacing:-.03em;margin-top:18px}
+h3{font-size:28px;font-weight:700;letter-spacing:-.01em}
+p,li{font-size:28px;line-height:1.55;color:var(--muted)}
+strong{color:var(--ink);font-weight:700}
+.lead{font-size:32px;line-height:1.5;color:var(--muted);margin-top:28px;max-width:1200px}
+.body{flex:1;display:flex;flex-direction:column;justify-content:center;margin-top:36px;min-height:0}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:28px}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:24px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:28px;padding:32px 34px;box-shadow:var(--shadow)}
+.card p{font-size:24px;margin-top:10px}
+.card .big{font-size:56px;font-weight:800;letter-spacing:-.03em;color:var(--ink);line-height:1.1}
+.card .label{font-size:20px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.06em}
+.note{margin-top:28px;font-size:22px;color:var(--muted);border-left:4px solid var(--accent-2);padding:6px 0 6px 18px}
+.note b{color:var(--accent-2)}
+.analogy{display:inline-flex;align-items:center;gap:12px;font-size:22px;font-weight:600;color:var(--accent-3);
+  background:color-mix(in srgb,var(--accent-3) 12%,transparent);padding:8px 18px;border-radius:999px}
+.chip{display:inline-block;font-size:26px;padding:10px 16px;border-radius:14px;background:var(--chip);border:1px solid var(--line);color:var(--ink)}
+.chip.a{background:color-mix(in srgb,var(--accent) 16%,var(--surface));border-color:color-mix(in srgb,var(--accent) 35%,transparent)}
+.chip.b{background:color-mix(in srgb,var(--accent-2) 16%,var(--surface));border-color:color-mix(in srgb,var(--accent-2) 35%,transparent)}
+.chip.c{background:color-mix(in srgb,var(--accent-3) 16%,var(--surface));border-color:color-mix(in srgb,var(--accent-3) 35%,transparent)}
+ul.clean{list-style:none;display:flex;flex-direction:column;gap:14px}
+ul.clean li{padding-left:34px;position:relative}
+ul.clean li::before{content:"";position:absolute;left:4px;top:.62em;width:14px;height:14px;border-radius:4px;background:var(--accent)}
+
+/* probability bars */
+.bars{display:flex;flex-direction:column;gap:16px}
+.bar{display:grid;grid-template-columns:150px 1fr 90px;align-items:center;gap:18px;font-size:28px}
+.bar .track{height:40px;border-radius:12px;background:var(--chip);overflow:hidden}
+.bar .fill{height:100%;border-radius:12px;background:var(--accent);width:0;transition:width 1s cubic-bezier(.2,.8,.2,1) .3s}
+.bar .pct{font-family:"JetBrains Mono",monospace;font-size:24px;color:var(--muted);text-align:right}
+.bar.lo .fill{background:var(--muted);opacity:.5}
+
+/* steps */
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;counter-reset:s}
+.step{background:var(--surface);border:1px solid var(--line);border-radius:24px;padding:28px;position:relative;box-shadow:var(--shadow)}
+.step::before{counter-increment:s;content:counter(s,decimal-leading-zero);font-family:"JetBrains Mono",monospace;font-size:18px;color:var(--accent);font-weight:600}
+.step h3{margin-top:10px}
+.step p{font-size:21px;margin-top:10px;line-height:1.5}
+
+/* pipeline */
+.flow{display:flex;align-items:stretch;gap:14px}
+.flow .node{flex:1;background:var(--surface);border:1px solid var(--line);border-radius:22px;padding:24px 20px;box-shadow:var(--shadow);text-align:center}
+.flow .node .t{font-size:24px;font-weight:700;color:var(--ink)}
+.flow .node .d{font-size:18px;color:var(--muted);margin-top:8px;line-height:1.45}
+.flow .arrow{align-self:center;color:var(--muted);font-size:28px}
+
+table{border-collapse:separate;border-spacing:0;width:100%;font-size:23px;background:var(--surface);border:1px solid var(--line);border-radius:24px;overflow:hidden;box-shadow:var(--shadow)}
+th,td{padding:20px 24px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top;line-height:1.45}
+th{font-size:18px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);background:var(--chip)}
+tr:last-child td{border-bottom:0}
+td:first-child{font-weight:700;color:var(--ink);white-space:nowrap}
+td{color:var(--muted)}
+td b{color:var(--ink)}
+
+svg text{font-family:"Pretendard Variable",Pretendard,sans-serif}
+
+/* title slide */
+.hero{justify-content:center}
+.hero .orb{position:absolute;right:-120px;top:-120px;width:760px;height:760px;border-radius:50%;
+  background:radial-gradient(circle at 30% 30%,var(--accent) 0%,transparent 60%),radial-gradient(circle at 70% 70%,var(--accent-2) 0%,transparent 55%);
+  filter:blur(60px);opacity:.35;pointer-events:none}
+.hero .tag{display:flex;gap:12px;margin-top:48px;flex-wrap:wrap}
+
+/* chrome */
+#progress{position:fixed;left:0;top:0;height:4px;background:var(--accent);transition:width .4s ease;z-index:10}
+#hud{position:fixed;right:20px;bottom:16px;display:flex;align-items:center;gap:8px;z-index:10;font-size:14px;color:var(--muted)}
+#hud button{appearance:none;border:1px solid var(--line);background:var(--surface);color:var(--ink);width:38px;height:38px;border-radius:12px;cursor:pointer;font-size:16px;display:grid;place-items:center}
+#hud button:hover{border-color:var(--accent)}
+#counter{font-family:"JetBrains Mono",monospace;min-width:64px;text-align:center}
+#home{position:fixed;left:20px;bottom:16px;z-index:10;font-size:14px;color:var(--muted);text-decoration:none;border:1px solid var(--line);background:var(--surface);padding:9px 14px;border-radius:12px}
+#home:hover{color:var(--ink);border-color:var(--accent)}
+</style>
+</head>
+<body>
+<div id="progress"></div>
+<div id="viewport"><div id="stage">
+
+<!-- 1 -->
+<section class="slide hero">
+  <div class="orb"></div>
+  <div class="kicker">LLM 기본기 편</div>
+  <h1 style="margin-top:28px">처음 읽는<br>LLM 이해하기</h1>
+  <p class="lead">채팅창 뒤에서 무슨 일이 벌어지는지,<br>머릿속에 그림 한 장 그리기</p>
+  <div class="tag">
+    <span class="chip">토큰</span><span class="chip">임베딩</span><span class="chip">어텐션</span>
+    <span class="chip">KV 캐시</span><span class="chip">프롬프트 캐싱</span><span class="chip">MoE</span>
+  </div>
+</section>
+
+<!-- 2 -->
+<section class="slide">
+  <div class="kicker">오늘 풀 질문</div>
+  <h2>AI를 매일 쓰는 분들이 자주 묻는 세 가지</h2>
+  <div class="body">
+    <div class="grid3">
+      <div class="card"><div class="label">Q1</div><div class="big" style="font-size:40px;margin-top:14px">컨텍스트 윈도가<br>뭐예요?</div></div>
+      <div class="card"><div class="label">Q2</div><div class="big" style="font-size:40px;margin-top:14px">토큰이 글자 수랑<br>같은 거예요?</div></div>
+      <div class="card"><div class="label">Q3</div><div class="big" style="font-size:40px;margin-top:14px">캐시는 왜<br>할인해요?</div></div>
+    </div>
+    <p class="note">비유를 많이 씁니다. 비유가 <b>오해를 부를 수 있는 곳</b>에는 한계도 함께 적습니다.</p>
+  </div>
+</section>
+
+<!-- 3 -->
+<section class="slide">
+  <div class="kicker"><span class="num">01</span>LLM의 본질</div>
+  <h2>LLM이 하는 일은 단 하나,<br><span style="color:var(--accent)">다음 토큰 맞히기</span></h2>
+  <div class="body grid2">
+    <div>
+      <p style="font-size:30px;color:var(--ink);font-weight:600;margin-bottom:24px">"오늘 아침에 커피를 ___"</p>
+      <div class="bars">
+        <div class="bar"><span>마셨다</span><div class="track"><div class="fill" data-w="78%"></div></div><span class="pct">0.78</span></div>
+        <div class="bar"><span>샀다</span><div class="track"><div class="fill" data-w="14%"></div></div><span class="pct">0.14</span></div>
+        <div class="bar"><span>쏟았다</span><div class="track"><div class="fill" data-w="6%"></div></div><span class="pct">0.06</span></div>
+        <div class="bar lo"><span>던졌다</span><div class="track"><div class="fill" data-w="1%"></div></div><span class="pct">0.01</span></div>
+      </div>
+      <p style="font-size:18px;margin-top:14px">※ 확률값은 설명을 위한 예시입니다</p>
+    </div>
+    <div>
+      <ul class="clean">
+        <li>하나를 고르고 → 문장 끝에 붙이고 → <strong>다시 예측</strong></li>
+        <li>수백·수천 번 반복하면 긴 답변이 된다</li>
+        <li>잘 맞히려면 <strong>문법·사실·맥락·추론 패턴</strong>까지 배워야 한다</li>
+        <li>GPT-3: 예시 몇 개만으로 번역·질의응답 수행</li>
+      </ul>
+      <div style="margin-top:28px"><span class="analogy">비유 · 상상을 초월하게 큰 스마트폰 자동완성</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- 4 -->
+<section class="slide">
+  <div class="kicker"><span class="num">02</span>토큰과 토크나이저</div>
+  <h2>모델은 글자가 아니라 <span style="color:var(--accent)">조각</span>을 읽는다</h2>
+  <div class="body">
+    <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+      <span class="chip a mono">straw</span><span class="chip b mono">berry</span><span class="chip mono">␣is</span><span class="chip c mono">␣delicious</span>
+      <span style="font-size:28px;color:var(--muted);margin:0 18px">→</span>
+      <span class="chip mono">[ 496, 15717, 374, 18307 ]</span>
+    </div>
+    <p style="font-size:18px;margin-top:10px">※ 분할·번호는 설명용 예시이며 토크나이저마다 다릅니다</p>
+    <div class="grid3" style="margin-top:40px">
+      <div class="card"><div class="label">영어 기준</div><div class="big">≈ 4글자</div><p>1토큰 ≈ 0.75단어 (OpenAI 안내)</p></div>
+      <div class="card"><div class="label">BPE</div><div class="big" style="font-size:40px">자주 붙는 쌍을<br>합쳐 어휘 생성</div></div>
+      <div class="card"><div class="label">한국어</div><div class="big" style="font-size:40px">보통 토큰이<br>더 많이 든다</div><p>토크나이저마다 크게 다름</p></div>
+    </div>
+    <p class="note"><b>왜 중요?</b> API 요금 · 컨텍스트 윈도우 모두 토큰 단위 · "strawberry에 r이 몇 개?"에 헤매는 이유와도 관련</p>
+  </div>
+</section>
+
+<!-- 5 -->
+<section class="slide">
+  <div class="kicker"><span class="num">03</span>임베딩</div>
+  <h2>번호엔 의미가 없다 →<br>단어에 <span style="color:var(--accent)">좌표</span>를 준다</h2>
+  <div class="body grid2">
+    <svg viewBox="0 0 640 420" style="width:100%;height:auto" aria-label="임베딩 공간 예시">
+      <rect x="1" y="1" width="638" height="418" rx="28" fill="var(--surface)" stroke="var(--line)"/>
+      <g stroke="var(--line)" stroke-dasharray="4 8"><line x1="40" y1="210" x2="600" y2="210"/><line x1="320" y1="30" x2="320" y2="390"/></g>
+      <circle cx="140" cy="120" r="10" fill="var(--accent)"/><text x="160" y="128" font-size="26" fill="var(--ink)">커피</text>
+      <circle cx="190" cy="165" r="10" fill="var(--accent)"/><text x="210" y="173" font-size="26" fill="var(--ink)">차</text>
+      <circle cx="120" cy="190" r="10" fill="var(--accent)"/><text x="60" y="235" font-size="26" fill="var(--ink)">라떼</text>
+      <circle cx="420" cy="100" r="10" fill="var(--accent-2)"/><text x="440" y="108" font-size="26" fill="var(--ink)">king</text>
+      <circle cx="420" cy="300" r="10" fill="var(--accent-2)"/><text x="440" y="308" font-size="26" fill="var(--ink)">man</text>
+      <circle cx="540" cy="300" r="10" fill="var(--accent-3)"/><text x="520" y="345" font-size="26" fill="var(--ink)">woman</text>
+      <circle cx="540" cy="100" r="10" fill="var(--accent-3)"/><text x="525" y="80" font-size="26" fill="var(--ink)">queen</text>
+      <g stroke-width="3" fill="none" stroke-dasharray="6 6"><path d="M420 300 L540 300" stroke="var(--accent-3)"/><path d="M420 100 L540 100" stroke="var(--accent-3)"/></g>
+    </svg>
+    <div>
+      <ul class="clean">
+        <li>각 토큰 → <strong>수백~수천 개 숫자의 벡터</strong></li>
+        <li>Transformer 원 논문 <strong>512</strong> · Kimi K3 <strong>7,168</strong></li>
+        <li>word2vec(2013): <span class="mono" style="color:var(--ink)">king − man + woman ≈ queen</span></li>
+      </ul>
+      <div style="margin-top:24px"><span class="analogy">비유 · 거대한 지도, 비슷한 뜻은 가까이</span></div>
+      <p class="note"><b>한계</b> 실제론 수천 차원이고, 축에 "성별" 같은 이름이 붙어 있지 않음. 좌표는 학습 중 저절로 생김</p>
+    </div>
+  </div>
+</section>
+
+<!-- 6 -->
+<section class="slide">
+  <div class="kicker"><span class="num">04</span>신경망과 파라미터</div>
+  <h2>수십억 개의 <span style="color:var(--accent)">다이얼</span></h2>
+  <div class="body">
+    <div class="grid4">
+      <div class="card"><div class="label">GPT-3</div><div class="big">175B</div><p>다이얼 1,750억 개</p></div>
+      <div class="card"><div class="label">bf16</div><div class="big">2 byte</div><p>다이얼 하나 저장 크기</p></div>
+      <div class="card"><div class="label">Qwen3.8-27B</div><div class="big">55.6GB</div><p>약 277.8억 × 2바이트</p></div>
+      <div class="card"><div class="label">양자화</div><div class="big">~4 bit</div><p>용량을 크게 줄이는 기법</p></div>
+    </div>
+    <div class="grid2" style="margin-top:40px;align-items:start">
+      <ul class="clean">
+        <li>신경망 = 곱하고 더하고 비선형 함수 통과의 반복</li>
+        <li>곱하는 값 = <strong>파라미터(가중치)</strong> · "70B"의 B는 billion</li>
+        <li><strong>학습</strong> = 다이얼 맞추기 · <strong>모델 파일</strong> = 설정값 묶음</li>
+      </ul>
+      <div>
+        <span class="analogy">비유 · 다이얼 수십억 개짜리 오디오 믹싱 콘솔</span>
+        <p class="note"><b>주의</b> '뉴런'은 뇌세포 흉내가 아니라 숫자를 곱하고 더하는 계산 단위</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 7 -->
+<section class="slide">
+  <div class="kicker"><span class="num">05</span>학습은 어떻게 하나</div>
+  <h2>벌점을 줄이는 방향으로, 조금씩</h2>
+  <div class="body">
+    <div class="steps">
+      <div class="step"><h3>순전파</h3><p>현재 다이얼로 다음 토큰 확률 계산</p></div>
+      <div class="step"><h3>손실</h3><p>정답 확률이 낮을수록 큰 벌점<br>(교차 엔트로피: −log p)</p></div>
+      <div class="step"><h3>역전파</h3><p>각 다이얼의 책임을 출력→입력으로 거슬러 계산 (Rumelhart·Hinton·Williams, 1986)</p></div>
+      <div class="step"><h3>경사하강법</h3><p>벌점이 줄어드는 방향으로 모든 다이얼을 아주 조금씩</p></div>
+    </div>
+    <div class="grid2" style="margin-top:44px">
+      <svg viewBox="0 0 640 220" style="width:100%" aria-label="경사하강 곡선">
+        <path d="M20 40 C 160 40, 220 200, 330 200 S 520 60, 620 30" fill="none" stroke="var(--line)" stroke-width="5"/>
+        <g fill="var(--accent)"><circle cx="90" cy="58" r="11"/><circle cx="170" cy="110" r="11" opacity=".75"/><circle cx="240" cy="170" r="11" opacity=".55"/><circle cx="318" cy="199" r="13" fill="var(--accent-2)"/></g>
+        <text x="300" y="185" font-size="20" fill="var(--muted)" text-anchor="end">골짜기</text>
+      </svg>
+      <div>
+        <p>이걸 <strong>수조 개 토큰</strong>에 대해 반복</p>
+        <div style="margin-top:20px"><span class="analogy">비유 · 안개 낀 산을 눈 가리고 내려가기</span></div>
+        <p style="font-size:22px;margin-top:16px">경사를 계산 = 역전파 · 한 걸음 = 경사하강법</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 8 -->
+<section class="slide">
+  <div class="kicker"><span class="num">06</span>트랜스포머와 어텐션</div>
+  <h2>"은행"나무 vs "은행" 대출 —<br>문맥은 <span style="color:var(--accent)">어텐션</span>이 읽는다</h2>
+  <div class="body grid2">
+    <div class="grid3" style="gap:16px">
+      <div class="card" style="padding:24px"><div class="chip a mono">Query</div><p style="font-size:21px">"나는 이런 정보를 찾고 있어"</p></div>
+      <div class="card" style="padding:24px"><div class="chip b mono">Key</div><p style="font-size:21px">"나는 이런 정보를 갖고 있어"</p></div>
+      <div class="card" style="padding:24px"><div class="chip c mono">Value</div><p style="font-size:21px">"실제로 건네줄 내용은 이거야"</p></div>
+    </div>
+    <div>
+      <ul class="clean">
+        <li>Query·Key가 잘 맞을수록 그 Value를 더 가져온다</li>
+        <li>2017 「Attention Is All You Need」 → 거의 모든 LLM의 뼈대</li>
+        <li><strong>멀티헤드</strong>: 여러 갈래 동시 수행 (원 논문 8개)</li>
+        <li><strong>병렬 처리</strong>: RNN과 달리 문장 전체를 한 번에 → 학습 속도↑</li>
+      </ul>
+      <div style="margin-top:22px"><span class="analogy">비유 · 회의실에서 아는 사람에게 귀 기울이기</span></div>
+    </div>
+  </div>
+  <p class="note">"주목"은 의도적 집중이 아니라 <b>벡터 유사도 점수로 가중 평균</b>을 내는 연산</p>
+</section>
+
+<!-- 9 -->
+<section class="slide">
+  <div class="kicker"><span class="num">07</span>레이어와 디코더 구조</div>
+  <h2>층층이 쌓은 조립 라인,<br>그리고 <span style="color:var(--accent)">미래는 가린다</span></h2>
+  <div class="body grid2">
+    <div>
+      <div class="flow">
+        <div class="node"><div class="t">임베딩</div><div class="d">원재료</div></div><div class="arrow">→</div>
+        <div class="node"><div class="t">어텐션</div><div class="d">토큰끼리 정보 교환</div></div><div class="arrow">→</div>
+        <div class="node"><div class="t">피드포워드</div><div class="d">각자 소화</div></div><div class="arrow">→</div>
+        <div class="node"><div class="t">확률표</div><div class="d">완제품</div></div>
+      </div>
+      <p style="text-align:center;font-size:20px;margin-top:14px">↑ 어텐션+피드포워드 블록 × 수십 층</p>
+      <ul class="clean" style="margin-top:30px">
+        <li>원래 트랜스포머는 <strong>번역기</strong> (인코더+디코더)</li>
+        <li>GPT·Claude·Llama 대부분 <strong>디코더 전용</strong></li>
+      </ul>
+    </div>
+    <div style="display:flex;flex-direction:column;align-items:center">
+      <svg viewBox="0 0 360 360" style="width:360px" aria-label="인과 마스킹 행렬">
+        <g id="mask"></g>
+      </svg>
+      <p style="font-size:22px;margin-top:10px;text-align:center"><strong>마스킹</strong>: 각 토큰은 자기 앞만 본다<br><span style="font-size:18px">행 = 지금 토큰 · 열 = 볼 수 있는 토큰</span></p>
+    </div>
+  </div>
+</section>
+
+<!-- 10 -->
+<section class="slide">
+  <div class="kicker"><span class="num">08</span>사전학습 · 파인튜닝 · RLHF</div>
+  <h2>박식한 학생 → <span style="color:var(--accent)">쓸 만한 비서</span></h2>
+  <div class="body">
+    <div class="flow">
+      <div class="node" style="text-align:left;padding:28px"><div class="label" style="font-size:16px;color:var(--accent)">STAGE 1</div><div class="t" style="margin-top:6px">사전학습</div><div class="d" style="font-size:20px">인터넷 규모 텍스트로 이어 쓰기 학습. 질문하면 비슷한 질문을 더 쓸 수도</div></div><div class="arrow">→</div>
+      <div class="node" style="text-align:left;padding:28px"><div class="label" style="font-size:16px;color:var(--accent)">STAGE 2</div><div class="t" style="margin-top:6px">지도 파인튜닝 (SFT)</div><div class="d" style="font-size:20px">사람이 쓴 "질문–모범 답변"으로 추가 학습</div></div><div class="arrow">→</div>
+      <div class="node" style="text-align:left;padding:28px"><div class="label" style="font-size:16px;color:var(--accent)">STAGE 3</div><div class="t" style="margin-top:6px">RLHF</div><div class="d" style="font-size:20px">답변 순위 → 보상 모델 → 점수 높이도록 강화학습</div></div>
+    </div>
+    <div class="grid2" style="margin-top:40px">
+      <div class="card" style="display:flex;align-items:center;gap:28px">
+        <div><div class="big" style="color:var(--accent)">1.3B</div><p>InstructGPT</p></div>
+        <div style="font-size:40px;color:var(--muted)">&gt;</div>
+        <div><div class="big">175B</div><p>GPT-3</p></div>
+        <p style="font-size:20px">100배 큰 모델보다<br>사람들이 더 선호</p>
+      </div>
+      <div>
+        <span class="analogy">비유 · 도서관을 다 읽은 학생의 신입 연수</span>
+        <p style="font-size:22px;margin-top:14px">지식을 넣기보다 <strong>꺼내는 태도와 형식</strong>을 다듬는 단계</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 11 -->
+<section class="slide">
+  <div class="kicker"><span class="num">09</span>학습과 추론</div>
+  <h2>공장 짓기 vs <span style="color:var(--accent)">공장 돌리기</span></h2>
+  <div class="body grid2" style="align-items:stretch">
+    <div class="card">
+      <div class="label">Training · 학습</div>
+      <h3 style="font-size:40px;margin-top:14px">다이얼을 맞추는 과정</h3>
+      <ul class="clean" style="margin-top:22px">
+        <li>순전파 + 역전파 + 경사하강법</li>
+        <li>엄청난 연산, 끝나면 다이얼 고정</li>
+        <li>우리가 할 일은 별로 없다</li>
+      </ul>
+    </div>
+    <div class="card" style="border-color:var(--accent)">
+      <div class="label" style="color:var(--accent)">Inference · 추론</div>
+      <h3 style="font-size:40px;margin-top:14px">고정된 다이얼로 답 만들기</h3>
+      <ul class="clean" style="margin-top:22px">
+        <li>순전파만, 가중치 업데이트 없음</li>
+        <li>ChatGPT와의 대화는 <strong>전부 추론</strong></li>
+        <li>우리가 맨날 한다</li>
+      </ul>
+    </div>
+  </div>
+  <p class="note">모델이 내 말을 "기억"하는 듯 보이는 이유: <b>대화 전체가 매번 다시 입력</b>으로 들어가기 때문</p>
+</section>
+
+<!-- 12 -->
+<section class="slide">
+  <div class="kicker"><span class="num">10</span>프리필과 디코딩</div>
+  <h2>추론의 두 박자</h2>
+  <div class="body">
+    <svg viewBox="0 0 1376 200" style="width:100%" aria-label="프리필과 디코딩 타임라인">
+      <text x="0" y="28" font-size="22" fill="var(--muted)">시간 →</text>
+      <rect x="0" y="50" width="420" height="90" rx="18" fill="var(--accent)" opacity=".9"/>
+      <text x="210" y="105" font-size="28" font-weight="700" fill="#fff" text-anchor="middle">① 프리필 — 한꺼번에</text>
+      <g id="decodeTicks"></g>
+      <text x="0" y="185" font-size="20" fill="var(--muted)">첫 글자 전 "멈칫"</text>
+      <text x="1376" y="185" font-size="20" fill="var(--muted)" text-anchor="end">이후 일정한 속도로 흘러나옴</text>
+    </svg>
+    <div class="grid2" style="margin-top:28px;align-items:stretch">
+      <div class="card"><h3 style="color:var(--accent)">① 프리필 (prefill)</h3><p>프롬프트 전체를 <strong>병렬</strong>로 통과<br>계산량이 많아 <strong>연산력</strong>이 속도를 좌우</p></div>
+      <div class="card"><h3 style="color:var(--accent-2)">② 디코딩 (decoding)</h3><p>한 토큰씩 <strong>순차</strong> 생성 · 행렬-벡터 곱 위주<br><strong>메모리 대역폭</strong>이 속도를 좌우 (memory-bound)</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 13 -->
+<section class="slide">
+  <div class="kicker"><span class="num">11</span>KV 캐시</div>
+  <h2>이미 읽은 건 <span style="color:var(--accent)">다시 읽지 않기</span></h2>
+  <div class="body grid2">
+    <div>
+      <ul class="clean">
+        <li>새 토큰마다 앞의 모든 토큰과 어텐션 → <strong>중복 계산</strong></li>
+        <li>한 번 계산한 Key·Value를 저장해 재사용</li>
+        <li>새 토큰은 자기 <strong>Query만</strong> 계산해 비교</li>
+      </ul>
+      <div style="margin-top:26px"><span class="analogy">비유 · 앞 챕터 요점 노트</span></div>
+      <p class="note"><b>대가는 메모리</b> — 대화가 길수록 노트도 두꺼워진다</p>
+    </div>
+    <div class="grid2" style="gap:20px">
+      <div class="card"><div class="label">OPT-13B</div><div class="big">800KB</div><p>토큰 1개당 KV 캐시</p></div>
+      <div class="card"><div class="label">2,048 토큰</div><div class="big">1.6GB</div><p>요청 1개 최대 KV 캐시</p></div>
+      <div class="card" style="grid-column:span 2"><div class="label">에이전트 비용</div><div class="big" style="color:var(--accent-2)">82.4%</div><p>긴 작업 에이전트의 전체 API 비용 중 KV 캐시 읽기 비중 (논문 측정)</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 14 -->
+<section class="slide">
+  <div class="kicker"><span class="num">12</span>프롬프트 캐싱</div>
+  <h2>"캐시는 왜 할인해요?"<br>→ <span style="color:var(--accent)">계산을 안 했으니 덜 받는다</span></h2>
+  <div class="body">
+    <div style="display:grid;grid-template-columns:140px 1fr;gap:16px 20px;align-items:center;font-size:22px">
+      <strong>요청 A</strong>
+      <div style="display:flex;gap:8px"><span class="chip a" style="flex:2">툴 정의</span><span class="chip a" style="flex:3">시스템 프롬프트</span><span class="chip a" style="flex:3">참고 문서</span><span class="chip" style="flex:2">질문 A</span></div>
+      <strong style="color:var(--accent-3)">요청 B · 히트</strong>
+      <div style="display:flex;gap:8px"><span class="chip c" style="flex:2">툴 정의 ✓</span><span class="chip c" style="flex:3">시스템 프롬프트 ✓</span><span class="chip c" style="flex:3">참고 문서 ✓</span><span class="chip" style="flex:2">질문 B</span></div>
+      <strong style="color:var(--accent-2)">요청 C · 미스</strong>
+      <div style="display:flex;gap:8px"><span class="chip c" style="flex:2">툴 정의 ✓</span><span class="chip b" style="flex:3">시스템 프롬프트 ✎</span><span class="chip b" style="flex:3">참고 문서 ✗</span><span class="chip" style="flex:2">질문 C</span></div>
+    </div>
+    <div class="grid3" style="margin-top:36px">
+      <div class="card"><h3>공통 접두부 재사용</h3><p>같은 앞부분의 KV 텐서를 보관했다 다음 요청에 꺼내 씀</p></div>
+      <div class="card"><h3>100% 일치해야 히트</h3><p>한 글자만 바뀌어도 그 지점 이후 노트는 전부 무효</p></div>
+      <div class="card"><h3>속도도 빨라진다</h3><p>히트 구간은 프리필을 건너뛰어 첫 글자까지 시간 단축</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 15 -->
+<section class="slide">
+  <div class="kicker"><span class="num">12</span>얼마나 할인되나 · 2026-10 기준</div>
+  <h2>회사별 캐시 요금 한눈에</h2>
+  <div class="body">
+    <table>
+      <thead><tr><th>제공사</th><th>캐시 읽기</th><th>캐시 쓰기</th><th>최소 길이</th><th>유효 기간</th></tr></thead>
+      <tbody>
+        <tr><td>OpenAI</td><td><b>0.1×</b> (GPT-5.6 이후)<br>GPT-6.1 Sol <b>0.05×</b></td><td>30분 1.25× · 12시간 2.5×</td><td>1,024토큰</td><td>Codex 로그인 시 영구 보관 발표</td></tr>
+        <tr><td>Anthropic</td><td><b>0.1×</b> 기본<br>일부 최신 0.05× · 0.025×</td><td>5분 1.25× · 1시간 2×</td><td>512~4,096토큰</td><td>기본 5분, 쓸 때마다 무료 갱신</td></tr>
+        <tr><td>Google Gemini</td><td>2.5 이후 <b>암묵적 캐싱</b> 기본, 절감분 자동 반영</td><td>—</td><td>2.5: 2,048 · 이후 4,096</td><td>"짧은 시간 안에 보내라" 권고</td></tr>
+      </tbody>
+    </table>
+    <p style="font-size:18px;margin-top:14px">배수는 일반 입력 단가 대비 · 원문 기준이며 실제 요금은 각 사 문서를 확인하세요</p>
+  </div>
+</section>
+
+<!-- 16 -->
+<section class="slide">
+  <div class="kicker">실전 팁</div>
+  <h2>캐시 히트를 내는 네 가지 습관</h2>
+  <div class="body">
+    <div class="steps">
+      <div class="step"><h3>안 바뀌는 건 앞에</h3><p>tools → system → messages. 앞이 바뀌면 뒤가 모두 무효</p></div>
+      <div class="step"><h3>바이트 단위까지 동일</h3><p>맨 앞 "현재 시각" 금지. 툴 순서·JSON 키 순서 변화도 캐시를 깬다</p></div>
+      <div class="step"><h3>최소 길이 넘기기</h3><p>너무 짧으면 <span class="mono">cache_control</span>을 붙여도 조용히 캐싱 안 됨</p></div>
+      <div class="step"><h3>TTL 안에 재사용</h3><p>노트엔 유통기한이 있다. 툴은 지우지 말고 <span class="mono">tool_choice:"none"</span></p></div>
+    </div>
+    <div class="card" style="margin-top:40px;text-align:center;background:var(--accent);border-color:var(--accent)">
+      <p style="font-size:36px;font-weight:800;color:#fff;letter-spacing:-.02em">안 바뀌는 건 앞에 두고, 한 글자도 건드리지 마세요.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 17 -->
+<section class="slide">
+  <div class="kicker"><span class="num">13</span>컨텍스트 윈도우</div>
+  <h2>모델이 한 번에 펼쳐 놓는 <span style="color:var(--accent)">책상</span></h2>
+  <div class="body grid2">
+    <div>
+      <div style="display:flex;height:92px;border-radius:20px;overflow:hidden;border:2px solid var(--ink)">
+        <div style="flex:2;background:var(--accent);display:grid;place-items:center;color:#fff;font-size:22px;font-weight:700">시스템·툴</div>
+        <div style="flex:3;background:color-mix(in srgb,var(--accent) 55%,var(--surface));display:grid;place-items:center;font-size:22px;font-weight:700">대화 기록</div>
+        <div style="flex:2;background:color-mix(in srgb,var(--accent-3) 45%,var(--surface));display:grid;place-items:center;font-size:22px;font-weight:700">첨부</div>
+        <div style="flex:2;background:color-mix(in srgb,var(--accent-2) 45%,var(--surface));display:grid;place-items:center;font-size:22px;font-weight:700">답변</div>
+      </div>
+      <p style="font-size:20px;margin-top:12px">← 전부 합쳐 최대 토큰 수 안에 들어가야 함 →</p>
+    </div>
+    <div>
+      <ul class="clean">
+        <li>프롬프트 · 대화 기록 · 첨부 · <strong>생성되는 답변까지</strong> 포함</li>
+        <li>넘치는 건 책상에서 밀려난다</li>
+        <li>길수록 어텐션 계산↑ · KV 캐시↑ · <strong>프리필 지연↑</strong></li>
+      </ul>
+      <div style="margin-top:26px"><span class="analogy">비유 · 넓은 책상엔 자료를 많이 펼칠 수 있다</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- 18 -->
+<section class="slide">
+  <div class="kicker"><span class="num">14</span>MoE · Mixture of Experts</div>
+  <h2>전문가 여러 명 중 <span style="color:var(--accent)">몇 명만</span> 부르기</h2>
+  <div class="body grid2">
+    <svg viewBox="0 0 640 380" style="width:100%" aria-label="MoE 라우팅">
+      <rect x="20" y="160" width="130" height="64" rx="16" fill="var(--surface)" stroke="var(--line)"/>
+      <text x="85" y="200" font-size="24" fill="var(--ink)" text-anchor="middle" font-weight="700">토큰</text>
+      <rect x="200" y="160" width="130" height="64" rx="16" fill="var(--accent-soft)" stroke="var(--accent)"/>
+      <text x="265" y="200" font-size="24" fill="var(--ink)" text-anchor="middle" font-weight="700">라우터</text>
+      <line x1="150" y1="192" x2="200" y2="192" stroke="var(--muted)" stroke-width="3"/>
+      <g id="experts"></g>
+    </svg>
+    <div>
+      <div class="grid2" style="gap:18px">
+        <div class="card"><div class="label">Mixtral 전체</div><div class="big">47B</div></div>
+        <div class="card" style="border-color:var(--accent)"><div class="label">토큰당 사용</div><div class="big" style="color:var(--accent)">13B</div></div>
+      </div>
+      <ul class="clean" style="margin-top:24px">
+        <li>레이어마다 전문가 8개 중 <strong>2개</strong>만</li>
+        <li><strong>용량</strong>은 크게, <strong>대역폭</strong> 부담은 작게</li>
+      </ul>
+      <div style="margin-top:20px"><span class="analogy">비유 · 종합병원 접수처의 안내</span></div>
+      <p class="note"><b>한계</b> 전문가가 "의학·법률" 같은 주제를 맡진 않음. 문법·구조 패턴과 더 관련</p>
+    </div>
+  </div>
+</section>
+
+<!-- 19 -->
+<section class="slide">
+  <div class="kicker">마치며</div>
+  <h2>다시, 채팅창 뒤에서</h2>
+  <div class="body">
+    <div class="flow">
+      <div class="node"><div class="t">① 토크나이저</div><div class="d">질문 → 토큰 번호</div></div><div class="arrow">→</div>
+      <div class="node"><div class="t">② 임베딩</div><div class="d">번호 → 벡터</div></div><div class="arrow">→</div>
+      <div class="node"><div class="t">③ 레이어·어텐션</div><div class="d">프리필 + KV 캐시 생성</div></div><div class="arrow">→</div>
+      <div class="node"><div class="t">④ 확률표</div><div class="d">온도·샘플링으로 선택</div></div><div class="arrow">→</div>
+      <div class="node"><div class="t">⑤ 디코딩</div><div class="d">붙이고 다시 예측</div></div>
+    </div>
+    <div class="card" style="margin-top:28px;padding:22px 30px"><p style="font-size:24px;margin:0">⑤까지 모두 <strong>컨텍스트 윈도우</strong> 안에서 · ⑥ 수십억 <strong>파라미터</strong>는 사전학습·파인튜닝·RLHF로 미리 맞춰져 있고, 대화 중엔 바뀌지 않는다</p></div>
+    <div style="margin-top:56px;text-align:center">
+      <p style="font-size:26px">처음의 질문으로 돌아가 볼까요</p>
+      <p style="font-size:52px;font-weight:800;color:var(--ink);letter-spacing:-.03em;margin-top:10px">ChatGPT는 생각을 할까요,<br>다음 단어를 고를까요?</p>
+    </div>
+  </div>
+</section>
+
+<!-- 20 -->
+<section class="slide hero">
+  <div class="orb"></div>
+  <div class="kicker">출처</div>
+  <h2 style="font-size:72px">감사합니다</h2>
+  <ul class="clean" style="margin-top:40px">
+    <li>원문: 「처음 읽는 LLM 이해하기」 · @yulmu_coffee · 2026-10-22</li>
+    <li>언급 자료: Attention Is All You Need(2017), GPT-3, InstructGPT(arXiv 2203.02155), word2vec(2013), vLLM, Mixtral 논문</li>
+    <li>요금·수치는 원문 작성 시점(2026-10) 기준입니다</li>
+  </ul>
+  <p style="font-size:20px;margin-top:48px">← → 방향키 · Space · 스와이프로 이동 &nbsp;·&nbsp; F 전체화면</p>
+</section>
+
+</div></div>
+
+<a id="home" href="../">← Archive</a>
+<div id="hud">
+  <button id="themeBtn" title="테마 전환" aria-label="테마 전환">◐</button>
+  <button id="prevBtn" aria-label="이전">‹</button>
+  <span id="counter">1 / 1</span>
+  <button id="nextBtn" aria-label="다음">›</button>
+</div>
+
+<script>
+(function(){
+  const stage=document.getElementById('stage');
+  const slides=[...document.querySelectorAll('.slide')];
+  const counter=document.getElementById('counter');
+  const progress=document.getElementById('progress');
+  const NS='http://www.w3.org/2000/svg';
+  let i=0;
+
+  function fit(){
+    const s=Math.min(innerWidth/1600,innerHeight/900);
+    stage.style.transform='scale('+s+')';
+  }
+  function show(n){
+    i=Math.max(0,Math.min(slides.length-1,n));
+    slides.forEach((el,k)=>{el.classList.toggle('active',k===i);el.classList.toggle('prev',k<i);});
+    slides[i].querySelectorAll('.fill').forEach(f=>f.style.width=f.dataset.w);
+    slides.forEach((el,k)=>{if(k!==i)el.querySelectorAll('.fill').forEach(f=>f.style.width=0);});
+    counter.textContent=(i+1)+' / '+slides.length;
+    progress.style.width=((i+1)/slides.length*100)+'%';
+    try{history.replaceState(null,'','#'+(i+1));}catch(e){}
+  }
+
+  // causal mask matrix
+  const mask=document.getElementById('mask'), N=6, c=56;
+  for(let r=0;r<N;r++)for(let k=0;k<N;k++){
+    const rect=document.createElementNS(NS,'rect');
+    rect.setAttribute('x',12+k*c);rect.setAttribute('y',12+r*c);
+    rect.setAttribute('width',c-8);rect.setAttribute('height',c-8);rect.setAttribute('rx',10);
+    rect.setAttribute('fill',k<=r?'var(--accent)':'var(--chip)');
+    rect.setAttribute('opacity',k<=r?(.45+.55*(k+1)/(r+1)):1);
+    if(k>r)rect.setAttribute('stroke','var(--line)');
+    mask.appendChild(rect);
+  }
+  // decode ticks
+  const dt=document.getElementById('decodeTicks');
+  for(let k=0;k<16;k++){
+    const r=document.createElementNS(NS,'rect');
+    r.setAttribute('x',440+k*58);r.setAttribute('y',50);r.setAttribute('width',48);r.setAttribute('height',90);r.setAttribute('rx',12);
+    r.setAttribute('fill','var(--accent-2)');r.setAttribute('opacity',.35+.04*k);dt.appendChild(r);
+  }
+  const lbl=document.createElementNS(NS,'text');
+  lbl.setAttribute('x',904);lbl.setAttribute('y',36);lbl.setAttribute('font-size',22);lbl.setAttribute('fill','var(--ink)');
+  lbl.setAttribute('text-anchor','middle');lbl.setAttribute('font-weight',700);lbl.textContent='② 디코딩 — 한 토큰씩';dt.appendChild(lbl);
+  // experts
+  const ex=document.getElementById('experts');
+  for(let k=0;k<8;k++){
+    const y=14+k*45, on=(k===1||k===5);
+    const l=document.createElementNS(NS,'line');
+    l.setAttribute('x1',330);l.setAttribute('y1',192);l.setAttribute('x2',420);l.setAttribute('y2',y+18);
+    l.setAttribute('stroke',on?'var(--accent)':'var(--line)');l.setAttribute('stroke-width',on?4:2);ex.appendChild(l);
+    const r=document.createElementNS(NS,'rect');
+    r.setAttribute('x',420);r.setAttribute('y',y);r.setAttribute('width',200);r.setAttribute('height',36);r.setAttribute('rx',10);
+    r.setAttribute('fill',on?'var(--accent)':'var(--surface)');r.setAttribute('stroke',on?'var(--accent)':'var(--line)');ex.appendChild(r);
+    const t=document.createElementNS(NS,'text');
+    t.setAttribute('x',520);t.setAttribute('y',y+25);t.setAttribute('font-size',19);t.setAttribute('text-anchor','middle');
+    t.setAttribute('fill',on?'#fff':'var(--muted)');t.setAttribute('font-weight',on?700:500);
+    t.textContent='전문가 '+(k+1)+(on?' ✓':'');ex.appendChild(t);
+  }
+
+  // theme toggle
+  const root=document.documentElement;
+  try{const t=localStorage.getItem('deck-theme');if(t)root.dataset.theme=t;}catch(e){}
+  document.getElementById('themeBtn').onclick=()=>{
+    const dark=root.dataset.theme?root.dataset.theme==='dark':matchMedia('(prefers-color-scheme: dark)').matches;
+    root.dataset.theme=dark?'light':'dark';
+    try{localStorage.setItem('deck-theme',root.dataset.theme);}catch(e){}
+  };
+
+  document.getElementById('prevBtn').onclick=()=>show(i-1);
+  document.getElementById('nextBtn').onclick=()=>show(i+1);
+  addEventListener('keydown',e=>{
+    if(['ArrowRight','PageDown',' ','Enter'].includes(e.key)){e.preventDefault();show(i+1);}
+    else if(['ArrowLeft','PageUp','Backspace'].includes(e.key)){e.preventDefault();show(i-1);}
+    else if(e.key==='Home')show(0);
+    else if(e.key==='End')show(slides.length-1);
+    else if(e.key==='f'||e.key==='F'){document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen?.();}
+  });
+  let sx=null;
+  addEventListener('touchstart',e=>{sx=e.touches[0].clientX},{passive:true});
+  addEventListener('touchend',e=>{if(sx===null)return;const dx=e.changedTouches[0].clientX-sx;if(Math.abs(dx)>50)show(i+(dx<0?1:-1));sx=null;});
+  addEventListener('resize',fit);
+  fit();
+  show((parseInt(location.hash.slice(1),10)||1)-1);
+})();
+</script>
+</body>
+</html>
