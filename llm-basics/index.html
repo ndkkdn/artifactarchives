@@ -49,9 +49,9 @@ p,li{font-size:28px;line-height:1.55;color:var(--muted)}
 strong{color:var(--ink);font-weight:700}
 .lead{font-size:32px;line-height:1.5;color:var(--muted);margin-top:28px;max-width:1200px}
 .body{flex:1;display:flex;flex-direction:column;justify-content:center;margin-top:36px;min-height:0}
-.grid2{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center}
-.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:28px}
-.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:24px}
+.grid2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:40px;align-items:center}
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:28px}
+.grid4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:24px}
 .card{background:var(--surface);border:1px solid var(--line);border-radius:28px;padding:32px 34px;box-shadow:var(--shadow)}
 .card p{font-size:24px;margin-top:10px}
 .card .big{font-size:56px;font-weight:800;letter-spacing:-.03em;color:var(--ink);line-height:1.1}
