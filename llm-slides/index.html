@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="description" content="LLM (Large Language Model) 기본기를 발표용으로 엮은 22장 슬라이드. Speaker Notes와 애니메이션 도해 포함">
+<meta name="description" content="LLM (Large Language Model) 기본기를 발표용으로 엮은 25장 슬라이드. Speaker Notes와 애니메이션 도해 포함">
 <title>LLM 이해하기</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -203,6 +203,58 @@ svg .mut { fill: var(--muted); }
 .slide.in .outp { animation: outp 3.3s linear infinite; }
 @keyframes inp { 0% { transform: translateX(0); opacity: 0; } 12%, 70% { opacity: 1; } 100% { transform: translateX(150px); opacity: 0; } }
 @keyframes outp { 0% { transform: translateX(0); opacity: 0; } 15%, 80% { opacity: 1; } 100% { transform: translateX(140px); opacity: 0; } }
+
+/* post-training detail */
+.chat { display: grid; gap: 14px; margin-top: 20px; }
+.bubble { max-width: 90%; padding: 14px 20px; border-radius: 20px; font-size: 23px; line-height: 1.55; }
+.bubble.user { justify-self: end; background: var(--accent); color: var(--surface); border-bottom-right-radius: 6px; }
+.bubble.bot { justify-self: start; background: var(--surface-2); border-bottom-left-radius: 6px; min-height: 5.2em; width: 90%; }
+.bubble.bot.bad { background: var(--signal-soft); }
+.bubble.bot.good { background: var(--mint-soft); }
+.typer::after { content: ""; display: inline-block; width: 2px; height: 1em; vertical-align: -3px; margin-left: 3px; background: currentColor; animation: blink 1s steps(1) infinite; }
+.verdict { margin-top: 18px; font-family: var(--mono); font-size: 17px; }
+.verdict.bad { color: var(--signal); }
+.verdict.good { color: var(--mint); }
+
+.stage3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 48px; }
+.stg { position: relative; background: var(--surface); border: 1px solid var(--line); border-radius: 22px; padding: 22px 26px; box-shadow: var(--shadow); }
+.stg:not(:last-child)::after { content: "→"; position: absolute; right: -38px; top: 44%; font-size: 30px; color: var(--muted); }
+.stg svg { display: block; width: 100%; height: 74px; }
+.stg small { display: block; font-family: var(--mono); font-size: 14px; color: var(--accent); margin-top: 12px; }
+.stg h3 { font-family: var(--display); font-size: 28px; letter-spacing: -.02em; margin: 2px 0 12px; line-height: 1.25; }
+.stg h3 .ab { display: block; font-size: 15px; margin-top: 2px; }
+.kv { display: grid; grid-template-columns: 88px minmax(0, 1fr); gap: 10px; padding: 8px 0; border-top: 1px dashed var(--line); }
+.kv span { font-family: var(--mono); font-size: 13.5px; color: var(--muted); padding-top: 3px; }
+.kv p { font-size: 18.5px; line-height: 1.5; color: var(--muted); }
+.kv strong { color: var(--ink); }
+
+.rl4 { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 40px; }
+.rlc { position: relative; background: var(--surface); border: 1px solid var(--line); border-radius: 22px; padding: 22px 22px; box-shadow: var(--shadow); }
+.rlc:not(:last-child)::after { content: "→"; position: absolute; right: -32px; top: 44%; font-size: 28px; color: var(--muted); }
+.rlc small { font-family: var(--mono); font-size: 18px; color: var(--accent); }
+.rlc h3 { font-family: var(--display); font-size: 24px; letter-spacing: -.02em; margin: 4px 0 12px; }
+.rlc p { font-size: 17.5px; line-height: 1.5; color: var(--muted); margin-top: 12px; }
+.vis { height: 140px; position: relative; }
+.gen3 { display: grid; gap: 8px; align-content: center; }
+.gen3 span, .rank span { font-family: var(--mono); font-size: 16px; padding: 8px 12px; border-radius: 10px; background: var(--accent-soft); color: var(--accent); }
+.rank i { position: absolute; left: 0; width: 26px; height: 38px; display: grid; place-items: center; font-style: normal; font-family: var(--mono); font-size: 15px; color: var(--muted); }
+.rank i:nth-of-type(1) { top: 2px; } .rank i:nth-of-type(2) { top: 50px; } .rank i:nth-of-type(3) { top: 98px; }
+.rank span { position: absolute; left: 34px; right: 0; height: 38px; display: flex; align-items: center; box-sizing: border-box; }
+.rk-a { top: 2px; background: var(--mint-soft) !important; color: var(--mint) !important; }
+.rk-b { top: 50px; } .rk-c { top: 98px; }
+.slide.in .rk-b { animation: rkDown .6s var(--ease) 1.4s both; }
+.slide.in .rk-c { animation: rkUp .6s var(--ease) 1.4s both; }
+@keyframes rkDown { to { transform: translateY(48px); background: var(--signal-soft); color: var(--signal); } }
+@keyframes rkUp { to { transform: translateY(-48px); } }
+.meters { display: grid; gap: 14px; align-content: center; }
+.meters div { display: grid; grid-template-columns: 20px minmax(0, 1fr) 36px; gap: 8px; align-items: center; font-family: var(--mono); font-size: 15px; color: var(--muted); }
+.meters b { height: 18px; border-radius: 6px; background: var(--surface-2); position: relative; overflow: hidden; }
+.meters .mt { position: absolute; inset: 0 auto 0 0; background: var(--accent); border-radius: 6px; transform-origin: left; }
+.slide.in .meters .mt { animation: growX 1s var(--ease) both; animation-delay: var(--d, 1600ms); }
+.meters em { font-style: normal; color: var(--ink); }
+.rlv { display: grid; place-items: center; }
+.slide.in .spinloop { transform-box: view-box; transform-origin: 60px 60px; animation: rot 3s linear infinite; }
+@keyframes rot { to { transform: rotate(360deg); } }
 
 /* rnn vs transformer */
 .seq { display: flex; gap: 10px; align-items: center; margin-top: 14px; }
@@ -551,6 +603,118 @@ td.note { color: var(--muted); font-size: 19px; }
   </div>
 </section>
 
+<section class="slide" data-notes="Pre-training만 한 모델은 문서 이어 쓰기를 배웠을 뿐이라, 질문을 받으면 답하는 대신 비슷한 질문을 몇 개 더 써 내려갈 수 있습니다. SFT와 RLHF를 거치면 같은 질문에 답을 합니다. 오른쪽 답변 문구는 설명용 예시입니다.">
+  <div class="kicker"><b>08</b>Post-training · 왜 필요한가</div>
+  <h2>같은 질문, <em>다른 반응</em></h2>
+  <div class="body cols" style="gap:32px">
+    <div class="panel">
+      <div class="kicker"><b style="background:var(--signal-soft);color:var(--signal)">Pre-training만 한 모델</b></div>
+      <div class="chat">
+        <div class="bubble user">커피를 맛있게 내리는 방법은?</div>
+        <div class="bubble bot bad"><span class="typer" data-text="커피를 맛있게 내리는 방법은? 원두는 어떻게 보관하나요? 물 온도는 몇 도가 좋나요?"></span></div>
+      </div>
+      <p class="verdict bad pop">✕ 답 대신 비슷한 질문을 이어 씀 · 문서 이어 쓰기만 배웠기 때문</p>
+    </div>
+    <div class="panel">
+      <div class="kicker"><b style="background:var(--mint-soft);color:var(--mint)">SFT + RLHF를 거친 모델</b></div>
+      <div class="chat">
+        <div class="bubble user">커피를 맛있게 내리는 방법은?</div>
+        <div class="bubble bot good"><span class="typer" data-text="원두를 내리기 직전에 갈고, 물 온도와 추출 시간을 일정하게 맞추면 맛이 안정됩니다."></span></div>
+      </div>
+      <p class="verdict good pop">✓ 질문에 답하는 형식과 태도를 배움</p>
+    </div>
+  </div>
+  <p class="cap" style="margin-top:18px">답변 문구는 설명용 예시입니다.</p>
+</section>
+
+<section class="slide" data-notes="세 단계는 무엇을 넣어 무엇을 배우는지가 다릅니다. Pre-training은 Internet 규모 text로 다음 Token 예측을, SFT는 사람이 쓴 모범 답변으로 답하는 형식을, RLHF는 사람의 순위로 선호를 배웁니다. 비유: 도서관 책을 전부 읽은 박식한 학생이 신입 연수를 받아 손님 응대하는 법을 배우는 것. 지식을 새로 넣는다기보다 이미 가진 지식을 어떤 태도와 형식으로 꺼낼지 다듬는 쪽에 가깝습니다.">
+  <div class="kicker"><b>08</b>Post-training · 세 단계 자세히</div>
+  <h2>무엇을 넣고, <em>무엇을 배우나</em></h2>
+  <div class="body">
+    <div class="stage3">
+      <div class="stg">
+        <svg viewBox="0 0 200 80" role="img" aria-label="쌓인 책">
+          <g class="gx"><rect x="20" y="52" width="160" height="16" rx="3" style="fill:var(--accent)"/></g>
+          <g class="gx"><rect x="34" y="34" width="132" height="16" rx="3" style="fill:var(--mint)"/></g>
+          <g class="gx"><rect x="26" y="16" width="148" height="16" rx="3" style="fill:var(--signal)"/></g>
+        </svg>
+        <small>STEP 1</small><h3>Pre-training</h3>
+        <div class="kv"><span>Data</span><p>Internet 규모의 text</p></div>
+        <div class="kv"><span>배우는 것</span><p>다음 Token 예측. 그 과정에서 문법·사실·맥락·추론 pattern</p></div>
+        <div class="kv"><span>결과</span><p><strong>도서관 책을 전부 읽은 박식한 학생</strong></p></div>
+      </div>
+      <div class="stg">
+        <svg viewBox="0 0 200 80" role="img" aria-label="질문과 모범 답변 한 쌍">
+          <g class="pop"><rect x="16" y="8" width="110" height="28" rx="12" style="fill:var(--surface-2)"/><text x="71" y="27" font-size="14" text-anchor="middle" class="mut">질문</text></g>
+          <g class="pop"><rect x="74" y="44" width="110" height="28" rx="12" style="fill:var(--accent)"/><text x="129" y="63" font-size="14" text-anchor="middle" style="fill:var(--surface)">모범 답변</text></g>
+        </svg>
+        <small>STEP 2</small><h3>SFT <span class="ab">(Supervised Fine-Tuning)</span></h3>
+        <div class="kv"><span>Data</span><p>사람이 직접 쓴 "질문–모범 답변" 예시</p></div>
+        <div class="kv"><span>배우는 것</span><p>질문을 받으면 답하는 형식</p></div>
+        <div class="kv"><span>결과</span><p><strong>응대 매뉴얼을 익힌 신입</strong></p></div>
+      </div>
+      <div class="stg">
+        <svg viewBox="0 0 200 80" role="img" aria-label="답변 순위 막대">
+          <text x="10" y="22" font-size="13" class="mut" font-family="Geist Mono, monospace">A</text><rect class="gx" x="28" y="10" width="150" height="16" rx="4" style="fill:var(--mint)"/>
+          <text x="10" y="45" font-size="13" class="mut" font-family="Geist Mono, monospace">C</text><rect class="gx" x="28" y="33" width="96" height="16" rx="4" style="fill:var(--mint);opacity:.6"/>
+          <text x="10" y="68" font-size="13" class="mut" font-family="Geist Mono, monospace">B</text><rect class="gx" x="28" y="56" width="40" height="16" rx="4" style="fill:var(--mint);opacity:.3"/>
+        </svg>
+        <small>STEP 3</small><h3>RLHF <span class="ab">(Reinforcement Learning from Human Feedback)</span></h3>
+        <div class="kv"><span>Data</span><p>모델이 쓴 여러 답변에 사람이 매긴 순위</p></div>
+        <div class="kv"><span>배우는 것</span><p>사람이 더 선호하는 답의 방향</p></div>
+        <div class="kv"><span>결과</span><p><strong>손님 응대가 몸에 밴 비서</strong></p></div>
+      </div>
+    </div>
+    <div class="analogy" style="margin-top:28px"><span class="tag">핵심</span><span>SFT와 RLHF는 지식을 새로 넣는다기보다, 이미 가진 지식을 <strong>어떤 태도와 형식으로 꺼낼지</strong> 다듬는 쪽에 가깝습니다.</span></div>
+  </div>
+</section>
+
+<section class="slide" data-notes="InstructGPT 논문이 정리한 RLHF 과정입니다. 모델이 쓴 답변 여러 개를 사람이 순위 매기고, 그 선호를 학습한 Reward Model을 만든 뒤, Reward 점수가 높아지도록 원래 모델을 강화학습으로 조정합니다. InstructGPT는 이 강화학습에 PPO(Proximal Policy Optimization)를 썼습니다. 요즘은 RLHF 외에도 다양한 Post-training 기법이 쓰이며, 각 회사가 구체적 방법을 모두 공개하지는 않습니다.">
+  <div class="kicker"><b>08</b>Post-training · RLHF 자세히</div>
+  <h2>RLHF는 <em>네 걸음</em>으로 돌아갑니다</h2>
+  <div class="body">
+    <div class="rl4">
+      <div class="rlc">
+        <small>①</small><h3>답변 여러 개 생성</h3>
+        <div class="vis gen3"><span class="pop">답변 A</span><span class="pop">답변 B</span><span class="pop">답변 C</span></div>
+        <p>같은 질문에 SFT 모델이 답변을 여러 개 씁니다.</p>
+      </div>
+      <div class="rlc">
+        <small>②</small><h3>사람이 순위 매기기</h3>
+        <div class="vis rank"><i>1</i><i>2</i><i>3</i><span class="rk-a">답변 A</span><span class="rk-b">답변 B</span><span class="rk-c">답변 C</span></div>
+        <p>사람 평가자가 더 나은 순서로 정렬합니다. A &gt; C &gt; B</p>
+      </div>
+      <div class="rlc">
+        <small>③</small><h3>Reward Model 학습</h3>
+        <div class="vis meters">
+          <div><span>A</span><b><i class="mt" style="width:90%"></i></b><em>0.9</em></div>
+          <div><span>C</span><b><i class="mt" style="width:60%;opacity:.7"></i></b><em>0.6</em></div>
+          <div><span>B</span><b><i class="mt" style="width:20%;opacity:.45"></i></b><em>0.2</em></div>
+        </div>
+        <p>사람의 선호를 점수로 흉내 내는 모델을 따로 만듭니다.</p>
+      </div>
+      <div class="rlc">
+        <small>④</small><h3>강화학습으로 조정</h3>
+        <div class="vis rlv">
+          <svg viewBox="0 0 120 120" width="110" height="110" aria-hidden="true">
+            <defs><marker id="arR" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L10 5L0 10z" style="fill:var(--accent)"/></marker></defs>
+            <g class="spinloop"><path d="M60 14 A46 46 0 1 1 18 42" style="fill:none;stroke:var(--accent)" stroke-width="7" stroke-linecap="round" marker-end="url(#arR)"/></g>
+            <text x="60" y="58" font-size="15" text-anchor="middle" font-weight="700">Reward</text>
+            <text x="60" y="80" font-size="18" text-anchor="middle" style="fill:var(--mint)" font-weight="700">↑</text>
+          </svg>
+        </div>
+        <p>Reinforcement Learning으로 Reward 점수가 높아지도록 원래 모델을 조정합니다. InstructGPT는 PPO <span class="ab">(Proximal Policy Optimization)</span> 사용.</p>
+      </div>
+    </div>
+    <svg viewBox="0 0 1376 64" width="100%" style="margin-top:6px" aria-hidden="true">
+      <defs><marker id="arL" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" style="fill:var(--muted)"/></marker></defs>
+      <path class="flowline" d="M1205 4 Q 1205 40 1165 40 H 210 Q 170 40 170 8" style="fill:none;stroke:var(--muted)" stroke-width="2.5" marker-end="url(#arL)"/>
+      <text x="688" y="62" font-size="16" text-anchor="middle" class="mut">더 선호되는 답변을 쓰도록 반복</text>
+    </svg>
+    <div class="limit" style="margin-top:8px"><b>주석</b>요즘은 RLHF 외에도 다양한 Post-training 기법이 쓰이며, 각 회사가 구체적 방법을 모두 공개하지는 않습니다.</div>
+  </div>
+</section>
+
 <section class="slide" data-notes="대화 중에 모델이 학습되는 게 아닙니다. 기억하는 것처럼 보이는 건 대화 전체가 매번 입력(Context)으로 다시 들어가기 때문. 학습 data 활용 여부는 service 정책 문제이고, 그 순간 Dial이 바뀌지는 않습니다.">
   <div class="kicker"><b>09</b>구분</div>
   <h2>Training은 공장 짓기, Inference는 <em>공장 돌리기</em></h2>
@@ -787,7 +951,7 @@ td.note { color: var(--muted); font-size: 19px; }
   [...document.querySelectorAll('#laneD i:not(.gap):not(.lead-gap)')].forEach((el, k) => { el.classList.add('gy'); el.style.setProperty('--d', (1100 + k * 320) + 'ms'); });
 
   // entrance tagging: order within each slide sets the stagger
-  const SEL = '.kicker, h1, h2, .lead, .meta, .qs > div, .txt > p, .analogy, .limit, .panel, .stat, .qlist > div, .steps > li, .qkv > div, .tip, table tr, .flow > div, .quote, .knobs, .rail';
+  const SEL = '.kicker, h1, h2, .lead, .meta, .qs > div, .txt > p, .analogy, .limit, .panel, .stat, .qlist > div, .steps > li, .qkv > div, .tip, table tr, .flow > div, .stg, .rlc, .quote, .knobs, .rail';
   slides.forEach(s => {
     let k = 0;
     s.querySelectorAll(SEL).forEach(el => {
@@ -950,6 +1114,11 @@ td.note { color: var(--muted); font-size: 19px; }
       later(() => cands[0].classList.add('pick'), 1500);
       [...' 마셨다'].forEach((ch, i) => later(() => { gen.textContent += ch; }, 1800 + i * 160));
     }
+    s.querySelectorAll('.typer').forEach((el, i) => {
+      const t = el.dataset.text; el.textContent = '';
+      if (reduce) { el.textContent = t; return; }
+      [...t].forEach((ch, k) => later(() => { el.textContent += ch; }, 900 + i * 500 + k * 45));
+    });
     if (s.contains(cv)) {
       runGD();
       if (reduce) { setPhase(3); lossTxt.textContent = 'Loss 2.31'; lossTag.classList.add('show'); }
