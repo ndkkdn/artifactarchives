@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Artifact Archives</title>
 <meta name="description" content="직접 만든 HTML 아티팩트 — 발표 슬라이드, 인터랙티브 설명서, 도감을 모아둔 아카이브">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
@@ -43,14 +43,14 @@
     font-family: "Pretendard Variable", Pretendard, -apple-system, system-ui, sans-serif;
     -webkit-font-smoothing: antialiased;
     word-break: keep-all;
-    overflow-x: hidden;
+    overflow-x: clip;
   }
   .mono { font-family: "JetBrains Mono", ui-monospace, monospace; }
-  .wrap { max-width: 1180px; margin: 0 auto; padding: 0 24px; }
+  .wrap { max-width: 1180px; margin: 0 auto; padding-left: max(24px, env(safe-area-inset-left, 0px)); padding-right: max(24px, env(safe-area-inset-right, 0px)); }
 
   /* nav */
   nav {
-    position: sticky; top: 0; z-index: 20;
+    position: sticky; top: 0; z-index: 20; padding-top: env(safe-area-inset-top, 0px);
     backdrop-filter: saturate(1.4) blur(14px);
     -webkit-backdrop-filter: saturate(1.4) blur(14px);
     background: color-mix(in srgb, var(--bg) 72%, transparent);
@@ -109,7 +109,8 @@
     display: flex; align-items: center; gap: 8px; border: 1px solid var(--border); background: var(--surface);
     border-radius: 12px; padding: 0 12px; height: 40px; min-width: 0; flex: 0 1 280px;
   }
-  .search input { border: 0; outline: 0; background: transparent; color: var(--text); font: inherit; font-size: 15px; width: 100%; }
+  .search input { border: 0; outline: 0; background: transparent; color: var(--text); font: inherit; font-size: 16px; width: 100%; min-width: 0; }
+  .search input::-webkit-search-cancel-button { cursor: pointer; }
   .search:focus-within { border-color: var(--accent); box-shadow: 0 0 0 4px var(--glow); }
   kbd { font-family: "JetBrains Mono", monospace; font-size: 11px; color: var(--muted); border: 1px solid var(--border); border-radius: 6px; padding: 1px 6px; }
 
@@ -149,26 +150,55 @@
   .card:hover .go { background: var(--accent); color: #fff; transform: rotate(-45deg); }
   .empty { grid-column: 1 / -1; text-align: center; color: var(--muted); padding: 60px 0; }
 
-  footer { border-top: 1px solid var(--border); padding: 28px 0 40px; color: var(--muted); font-size: 13px; }
+  footer { border-top: 1px solid var(--border); padding: 28px 0 calc(40px + env(safe-area-inset-bottom, 0px)); color: var(--muted); font-size: 13px; }
   footer .wrap { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
   footer a { color: inherit; }
 
   @keyframes rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
   @media (prefers-reduced-motion: reduce) { .card, .thumb img { animation: none; transition: none; } }
 
+  /* tablet: two columns, featured card spans the row */
   @media (max-width: 960px) {
-    .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .hero { padding: 72px 0 44px; }
+    .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
     .card, .card.wide { grid-column: span 1; }
     .card.featured { grid-column: span 2; grid-row: auto; }
     .card.featured .thumb { aspect-ratio: 16 / 9; min-height: 0; }
   }
+  /* phone: one column, search on top, filters scroll sideways */
   @media (max-width: 620px) {
-    .wrap { padding: 0 16px; }
-    .hero { padding: 64px 0 40px; }
-    .grid { grid-template-columns: minmax(0, 1fr); }
+    .wrap { padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+    nav .wrap { height: 56px; }
+    .hero { padding: 44px 0 32px; }
+    .hero::before { width: 420px; height: 360px; inset: -60px -40% auto auto; }
+    h1 { margin: 18px 0 14px; }
+    .stats { display: grid; grid-template-columns: auto auto minmax(0, 1fr); gap: 28px; margin-top: 28px; align-items: end; }
+    .stat b { font-size: 24px; line-height: 34px; }
+    .stat b.mono { font-size: 17px !important; line-height: 34px !important; white-space: nowrap; }
+    .toolbar { flex-direction: column; align-items: stretch; gap: 12px; margin-bottom: 18px; }
+    .search { order: -1; flex: none; height: 46px; }
+    .filters { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; -webkit-overflow-scrolling: touch; margin: 0 -16px; padding: 2px 16px; scroll-padding: 16px; }
+    .filters::-webkit-scrollbar { display: none; }
+    .filter { flex: none; }
+    .grid { grid-template-columns: minmax(0, 1fr); gap: 14px; padding-bottom: 56px; }
     .card.featured { grid-column: span 1; }
     .card.featured .meta h2 { font-size: 22px; }
-    .search { flex: 1 1 100%; }
+    .meta { padding: 16px 18px 18px; }
+    .meta h2 { font-size: 18px; }
+    footer .wrap { flex-direction: column; }
+  }
+
+  /* touch screens: finger-sized targets, no hover lift, no keyboard hint */
+  @media (pointer: coarse) {
+    .icon-btn { height: 42px; min-width: 42px; }
+    .filter { min-height: 42px; padding: 8px 16px; }
+    kbd { display: none; }
+  }
+  @media (hover: none) {
+    .card:hover { transform: none; box-shadow: var(--shadow); border-color: var(--border); }
+    .card:hover .thumb img { transform: none; }
+    .card:hover .go { background: var(--surface-2); color: inherit; transform: none; }
+    .card:active { transform: scale(.985); }
   }
 </style>
 </head>
@@ -178,7 +208,7 @@
     <a class="brand" href="./"><span class="logo"></span>Artifact Archives</a>
     <div class="nav-actions">
       <a class="icon-btn" href="https://github.com/ndkkdn/artifactarchives" aria-label="GitHub 저장소">GitHub ↗</a>
-      <button class="icon-btn" id="themeBtn" aria-label="테마 전환">◐</button>
+      <button class="icon-btn" id="themeBtn" type="button" aria-label="테마 전환">◐</button>
     </div>
   </div>
 </nav>
