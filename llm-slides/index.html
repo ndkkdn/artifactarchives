@@ -404,6 +404,8 @@ td.note { color: var(--muted); font-size: 19px; }
 #controls:hover, #controls:focus-within { opacity: 1; }
 #controls button { appearance: none; border: 0; background: transparent; color: var(--ink); height: 32px; min-width: 32px; padding: 0 9px; border-radius: 8px; cursor: pointer; font: 500 13px/1 var(--display); }
 #controls button:hover { background: var(--surface-2); }
+#source { font-family: var(--mono); font-size: 12.5px; color: var(--muted); text-decoration: none; padding: 0 10px 0 8px; margin-right: 2px; border-right: 1px solid var(--line); white-space: nowrap; line-height: 32px; }
+#source:hover { color: var(--accent); }
 #count { font-family: var(--mono); font-size: 12.5px; color: var(--muted); padding: 0 6px; font-variant-numeric: tabular-nums; }
 #notes { position: fixed; left: max(16px, env(safe-area-inset-left, 0px)); bottom: calc(16px + env(safe-area-inset-bottom, 0px)); max-width: min(560px, calc(100% - 32px)); z-index: 6;
   background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 12px 16px; font-size: 14px; line-height: 1.65; box-shadow: var(--shadow); }
@@ -1034,6 +1036,7 @@ td.note { color: var(--muted); font-size: 19px; }
 
 <div id="notes" hidden><b>SPEAKER NOTES</b><span id="notesText"></span></div>
 <div id="controls">
+  <a id="source" href="https://x.com/yulmu_coffee/status/2113455967518216543" target="_blank" rel="noopener">Source: @yulmu_coffee</a>
   <button type="button" id="prevBtn" aria-label="이전 slide">‹</button>
   <span id="count">1 / 1</span>
   <button type="button" id="nextBtn" aria-label="다음 slide">›</button>
