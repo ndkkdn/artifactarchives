@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="description" content="LLM (Large Language Model) 기본기를 발표용으로 엮은 25장 슬라이드. Speaker Notes와 애니메이션 도해 포함">
+<meta name="description" content="LLM (Large Language Model) 기본기를 발표용으로 엮은 28장 슬라이드. Speaker Notes와 애니메이션 도해 포함">
 <title>LLM 이해하기</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -256,6 +256,58 @@ svg .mut { fill: var(--muted); }
 .slide.in .spinloop { transform-box: view-box; transform-origin: 60px 60px; animation: rot 3s linear infinite; }
 @keyframes rot { to { transform: rotate(360deg); } }
 
+/* misconception: context resent */
+.resend { display: grid; gap: 14px; }
+.resend .row { display: grid; grid-template-columns: 110px minmax(0, 1fr); gap: 14px; align-items: center; }
+.resend .row > span, .ctx .row > span { font-family: var(--mono); font-size: 16px; color: var(--muted); }
+.bks { display: flex; gap: 6px; min-width: 0; }
+.bk { font-style: normal; flex: 1; min-width: 0; height: 46px; border-radius: 9px; display: grid; place-items: center; font-size: 15px; font-family: var(--mono); white-space: nowrap; }
+.bk.sys { background: var(--accent-soft); color: var(--accent); }
+.bk.q { background: var(--surface-2); color: var(--ink); }
+.bk.a { background: var(--mint-soft); color: var(--mint); }
+.bk.new { outline: 2.5px solid var(--accent); outline-offset: -2.5px; }
+.resend .model { display: flex; gap: 16px; align-items: center; margin-top: 6px; padding: 14px 18px; border-radius: 14px; border: 2px solid var(--mint); }
+.resend .model b { font-family: var(--display); font-size: 22px; }
+.resend .model span { font-size: 18px; color: var(--muted); }
+
+/* agent cost */
+.ringbox { position: relative; display: grid; justify-items: center; text-align: center; }
+.ringwrap { position: relative; width: 300px; height: 300px; }
+.ringwrap svg { width: 100%; height: 100%; }
+.ringnum { position: absolute; inset: 0; display: grid; place-items: center; font-family: var(--display); font-size: 64px; font-weight: 800; letter-spacing: -.04em; color: var(--accent); font-variant-numeric: tabular-nums; }
+.ringbox p { font-size: 20px; color: var(--muted); line-height: 1.5; margin-top: 14px; max-width: 420px; }
+.slide.in .ring { animation: ringIn 1.5s var(--ease) .4s both; }
+@keyframes ringIn { from { stroke-dashoffset: 82.4; } to { stroke-dashoffset: 0; } }
+.ctx { display: grid; gap: 18px; }
+.ctx .row { display: grid; grid-template-columns: 130px minmax(0, 1fr) 120px; gap: 14px; align-items: center; }
+.segs { display: flex; gap: 5px; min-width: 0; }
+.seg { font-style: normal; flex: 1; min-width: 0; height: 50px; border-radius: 8px; display: grid; place-items: center; font-family: var(--mono); font-size: 15px; border: 1.5px solid var(--mint); background: var(--mint-soft); color: var(--mint); }
+.seg.sum { background: var(--accent-soft); color: var(--accent); border-color: var(--accent); }
+.slide.in .inv { animation: toMiss .45s ease both; animation-delay: var(--d, 1500ms); }
+@keyframes toMiss { to { background: var(--signal-soft); color: var(--signal); border-color: var(--signal); border-style: dashed; } }
+
+/* cache miss pages */
+.pgrow { display: flex; gap: 10px; padding-top: 16px; }
+.pg { flex: 1; height: 110px; border-radius: 10px; background: var(--mint-soft); border: 1.5px solid var(--mint); color: var(--mint); display: grid; place-items: center; font-family: var(--mono); font-size: 18px; font-style: normal; position: relative; }
+.pg b { position: absolute; top: -15px; left: 50%; margin-left: -58px; width: 116px; text-align: center; font-size: 13px; background: var(--signal); color: var(--surface); padding: 3px 0; border-radius: 999px; }
+
+/* prefill experience */
+.exp { margin-top: 26px; display: grid; grid-template-columns: auto 230px minmax(0, 1fr); gap: 20px; align-items: center; padding: 18px 24px; }
+.exp .who { font-family: var(--mono); font-size: 16px; color: var(--muted); }
+.pills { position: relative; height: 34px; }
+.pill { position: absolute; left: 0; top: 0; font-family: var(--mono); font-size: 15px; padding: 7px 14px; border-radius: 999px; white-space: nowrap; }
+.pill.p1 { background: var(--signal-soft); color: var(--signal); }
+.pill.p2 { background: var(--mint-soft); color: var(--mint); opacity: 0; }
+.slide.in .pill.p1 { animation: fadeOut .3s ease 1.6s both; }
+.slide.in .pill.p2 { animation: fadeIn .3s ease 1.7s both; }
+@keyframes fadeOut { to { opacity: 0; } }
+@keyframes fadeIn { to { opacity: 1; } }
+.exp .typer { font-size: 21px; }
+.straw { display: flex; gap: 28px; align-items: center; margin-top: 26px; }
+.straw .chips { flex: none; flex-wrap: nowrap; }
+.straw p { font-size: 21px; color: var(--muted); line-height: 1.55; }
+@media (prefers-reduced-motion: reduce) { .pill.p1 { opacity: 0; } .pill.p2 { opacity: 1; } }
+
 /* rnn vs transformer */
 .seq { display: flex; gap: 10px; align-items: center; margin-top: 14px; }
 .seq > small { font-family: var(--mono); font-size: 16px; color: var(--muted); width: 140px; flex: none; }
@@ -321,8 +373,8 @@ td.note { color: var(--muted); font-size: 19px; }
 .tips { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 22px; }
 .tip { background: var(--surface); border: 1px solid var(--line); border-radius: 22px; padding: 24px 30px; box-shadow: var(--shadow); }
 .tip .k { font-family: var(--mono); font-size: 16px; color: var(--accent); letter-spacing: .06em; }
-.tip h3 { font-family: var(--display); font-size: 29px; letter-spacing: -.02em; margin: 6px 0 10px; }
-.tip p { font-size: 19.5px; line-height: 1.55; color: var(--muted); }
+.tip h3 { font-family: var(--display); font-size: 26px; letter-spacing: -.02em; margin: 6px 0 10px; }
+.tip p { font-size: 17.5px; line-height: 1.55; color: var(--muted); }
 .tip code { font-family: var(--mono); font-size: .9em; background: var(--surface-2); padding: 1px 8px; border-radius: 6px; color: var(--ink); }
 
 .moe { display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); gap: 12px; }
@@ -396,6 +448,7 @@ td.note { color: var(--muted); font-size: 19px; }
       <p>LLM <span class="ab">(Large Language Model)</span>은 지금까지의 글 다음에 올 조각이 무엇일지 <strong>확률로 예측</strong>합니다. 하나를 고르고, 문장 끝에 붙이고, 다시 예측합니다.</p>
       <p>이걸 수백, 수천 번 반복하면 긴 답변이 됩니다.</p>
       <div class="analogy"><span class="tag">비유</span><span>Smartphone keyboard의 자동완성. 다만 규모가 상상을 초월하게 큰.</span></div>
+      <div class="limit"><b>단, "그냥 자동완성"은 과소평가</b>다음 Token을 잘 맞히려면 문법·사실·맥락·추론 pattern까지 배워야 합니다. GPT-3 (Generative Pre-trained Transformer 3)는 예시 몇 개만 보여줘도 번역·질의응답을 해냈습니다.</div>
     </div>
     <div class="panel">
       <div class="prompt" id="nt">오늘 아침에 커피를<span class="gen"></span><span class="caret"></span></div>
@@ -416,6 +469,7 @@ td.note { color: var(--muted); font-size: 19px; }
     <div class="txt">
       <p>Tokenizer가 글을 조각으로 자르고 번호를 붙입니다. 자주 나오는 덩어리는 Token 하나, 드문 단어는 여러 조각.</p>
       <p>그래서 <strong>API <span class="ab">(Application Programming Interface)</span> 요금</strong>도, <strong>Context Window</strong>도 Token 단위입니다.</p>
+      <p>대표 방식인 <strong>BPE</strong> <span class="ab">(Byte Pair Encoding)</span>는 자주 붙어 나오는 문자 쌍을 반복해서 합쳐 Vocabulary(모델이 아는 Token 전체 목록)를 만듭니다.</p>
     </div>
     <div class="panel">
       <div class="chiprow"><small>영어</small><div class="chips"><span class="pop">I</span><span class="pop"> love</span><span class="pop"> straw</span><span class="pop">berry</span></div></div>
@@ -435,6 +489,10 @@ td.note { color: var(--muted); font-size: 19px; }
       <div class="stat"><b data-count>≈ 0.75단어</b><span>영어 기준 1 Token이 담는 단어 수</span></div>
       <div class="stat"><b>한국어 ↑</b><span>같은 내용에 Token이 더 드는 편.<br>Tokenizer마다 차이가 큼</span></div>
     </div>
+    <div class="panel straw">
+      <div class="chips"><span class="pop">str</span><span class="pop">aw</span><span class="pop">berry</span></div>
+      <p>"strawberry에 r이 몇 개?" 같은 질문에 모델이 가끔 헤매는 것도, 글자가 아니라 <strong>Token 덩어리로 보고 있기 때문</strong>이라고 흔히 설명합니다.</p>
+    </div>
   </div>
 </section>
 
@@ -443,9 +501,9 @@ td.note { color: var(--muted); font-size: 19px; }
   <h2>Embedding: 단어에 <em>좌표</em>를 주기</h2>
   <div class="body cols">
     <div class="txt">
-      <p>Token 번호에는 의미가 없습니다. 그래서 각 Token을 <strong>수백~수천 개 숫자의 Vector</strong>로 바꿉니다.</p>
+      <p>Token 번호에는 의미가 없습니다. 그래서 각 Token을 <strong>수백~수천 개 숫자의 Vector</strong>로 바꿉니다. Transformer 원 논문은 512개, 현재 가장 큰 open-weight 모델 Kimi K3는 7,168개.</p>
       <div class="analogy"><span class="tag">비유</span><span>거대한 지도. 의미가 비슷한 단어끼리 가까이 모여 있습니다.</span></div>
-      <div class="limit"><b>비유의 한계</b>실제 지도는 수천 차원이고, 축에 사람이 붙일 수 있는 이름도 없습니다.</div>
+      <div class="limit"><b>비유의 한계</b>실제 지도는 수천 차원이고, 축에 사람이 붙일 수 있는 이름도 없습니다. 좌표도 사람이 정하지 않고 학습 과정에서 저절로 만들어집니다.</div>
     </div>
     <div class="panel">
       <svg viewBox="0 0 640 400" width="100%" role="img" aria-label="Embedding 공간 예시">
@@ -483,6 +541,7 @@ td.note { color: var(--muted); font-size: 19px; }
       <div class="stat"><b data-count>2 bytes</b><span>Dial 하나를 bf16 (bfloat16)으로 저장할 때</span></div>
       <div class="stat"><b data-count>55.6 GB</b><span>Qwen3.8-27B (277.8억) bf16 Weight. 4-bit 근처로 줄이면 Quantization</span></div>
     </div>
+    <div class="limit"><b>Trade-off</b>Dial이 많을수록 더 정확한 답을 낼 수 있지만, 그만큼 계산할 양도 많아집니다. 참고로 Neuron은 뇌세포 흉내가 아니라 곱하고 더하는 계산 단위입니다.</div>
   </div>
 </section>
 
@@ -500,6 +559,7 @@ td.note { color: var(--muted); font-size: 19px; }
       <div class="gd-info" id="gdInfo">step 00</div>
     </div>
   </div>
+  <div class="analogy"><span class="tag">비유</span><span>안개 낀 산에서 눈을 가리고 발밑 경사만 느끼며 한 걸음씩 내려가기. 경사를 계산하는 게 Backpropagation, 한 걸음 내딛는 게 Gradient Descent. 이걸 <strong>수조 개 Token</strong>에 대해 반복합니다.</span></div>
 </section>
 
 <section class="slide" data-notes="은행나무의 은행과 은행 대출의 은행을 어떻게 구분할까? 2017년 「Attention Is All You Need」. 각 Token이 다른 Token을 둘러보고 누가 중요한지 점수를 매겨 정보를 섞습니다. 비유: 회의실에서 궁금한 걸 들고(Q) 아는 사람(K)에게 귀 기울여 그 말(V)을 받아 적기.">
@@ -579,8 +639,9 @@ td.note { color: var(--muted); font-size: 19px; }
   <h2>Decoder의 규칙: <em>앞만 본다</em></h2>
   <div class="body cols">
     <div class="txt">
-      <p>Attention → Feed-forward Block을 층층이 쌓은 것이 Layer. 대화형 LLM 대부분은 <strong>Decoder-only</strong> 구조입니다.</p>
-      <p>각 Token은 자기보다 앞에 있는 Token만 볼 수 있습니다 (Masking). 다음 Token을 맞히는 모델이 정답을 미리 보면 안 되니까요.</p>
+      <p style="font-size:22px">Attention(Token끼리 정보 교환) → Feed-forward(각자 소화) Block을 층층이 쌓은 것이 Layer. 아래층은 단순한 pattern을, 위층으로 갈수록 더 추상적인 관계를 다룬다고 흔히 설명합니다.</p>
+      <p style="font-size:22px">원래 Transformer는 Encoder(원문 읽기) + Decoder(번역문 쓰기)로 된 번역기였습니다. GPT 계열은 Decoder만 쌓았고, ChatGPT·Claude·Llama 등 대화형 LLM 대부분이 <strong>Decoder-only</strong>입니다.</p>
+      <p style="font-size:22px">각 Token은 자기보다 앞에 있는 Token만 볼 수 있습니다 (Masking). 다음 Token을 맞히는 모델이 정답을 미리 보면 안 되니까요.</p>
       <div class="analogy"><span class="tag">비유</span><span>Assembly line. 원재료(Embedding)가 수십 개 공정(Layer)을 거쳐 확률표라는 완제품이 됩니다.</span></div>
     </div>
     <div class="panel"><div class="mask" id="mask"></div><p class="cap" style="text-align:center">행: 지금 Token · 열: 볼 수 있는 Token</p></div>
@@ -777,6 +838,25 @@ td.note { color: var(--muted); font-size: 19px; }
   </div>
 </section>
 
+<section class="slide" data-notes="가장 흔한 오해. 대화 중에 모델이 학습되는 게 아닙니다. 기억하는 것처럼 보이는 건 대화 내용 전체가 매번 입력(Context)으로 다시 들어가기 때문입니다. 대화 기록이 service 개선용 학습 data로 쓰일지는 각 service 정책의 문제이고, 그 대화 순간에 Dial이 바뀌지는 않습니다. 지난 글의 Mac에서 local로 돌린다는 이야기도 전부 Inference 이야기였습니다.">
+  <div class="kicker"><b>09</b>흔한 오해</div>
+  <h2>대화 중에 모델은 <em>배우지 않습니다</em></h2>
+  <div class="body cols" style="grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:44px">
+    <div class="txt">
+      <p>모델이 내 말을 기억하는 것처럼 보이는 건, <strong>대화 내용 전체가 매번 입력(Context)으로 다시 들어가기 때문</strong>입니다.</p>
+      <p>대화 기록이 service 개선용 학습 data로 쓰일지는 각 service 정책의 문제입니다. 그 대화 순간에 Dial이 바뀌지는 않습니다.</p>
+      <div class="analogy"><span class="tag">참고</span><span>"Mac에서 local로 돌린다"는 이야기도 전부 Inference 이야기입니다.</span></div>
+    </div>
+    <div class="panel resend">
+      <div class="row si" style="--d:400ms"><span>Request 1</span><div class="bks"><i class="bk sys">System</i><i class="bk q new">질문 1</i></div></div>
+      <div class="row si" style="--d:1000ms"><span>Request 2</span><div class="bks"><i class="bk sys">System</i><i class="bk q">질문 1</i><i class="bk a">답 1</i><i class="bk q new">질문 2</i></div></div>
+      <div class="row si" style="--d:1600ms"><span>Request 3</span><div class="bks"><i class="bk sys">System</i><i class="bk q">질문 1</i><i class="bk a">답 1</i><i class="bk q">질문 2</i><i class="bk a">답 2</i><i class="bk q new">질문 3</i></div></div>
+      <div class="model pop" style="--d:2200ms"><b>Model</b><span>Dial 그대로 · 매번 전체를 처음부터 다시 읽음</span></div>
+      <p class="cap">파란 테두리가 이번에 새로 쓴 부분입니다. 나머지 기록은 매번 다시 보냅니다.</p>
+    </div>
+  </div>
+</section>
+
 <section class="slide" data-notes="Prefill: Prompt Token을 동시에 처리, 연산력이 속도를 좌우. Decoding: Token 하나씩, matrix-vector 곱 위주라 Memory Bandwidth가 좌우(vLLM 논문). 긴 문서를 붙여 넣으면 잠깐 멈칫(Prefill) 후 일정 속도로 흘러나옴(Decoding).">
   <div class="kicker"><b>10</b>Inference의 두 박자</div>
   <h2>Prefill은 한꺼번에, Decoding은 <em>한 Token씩</em></h2>
@@ -789,6 +869,7 @@ td.note { color: var(--muted); font-size: 19px; }
       <div class="txt"><p><strong>① Prefill</strong>: Prompt 전체를 병렬로 통과. 계산량이 많고 <strong>연산력</strong>이 속도를 좌우.</p></div>
       <div class="txt"><p><strong>② Decoding</strong>: 앞 Token이 나와야 다음을 예측하니 순차적. <strong>Memory Bandwidth</strong>가 속도를 좌우.</p></div>
     </div>
+    <div class="panel exp"><span class="who">ChatGPT에 긴 문서를 붙여 넣으면</span><div class="pills"><span class="pill p1">Prefill · 잠깐 멈칫</span><span class="pill p2">Decoding · 흘러나옴</span></div><span class="typer" data-delay="1800" data-speed="40" data-text="이 문서는 Token부터 MoE까지 LLM의 기본 원리를 차례로 설명합니다."></span></div>
   </div>
 </section>
 
@@ -802,6 +883,29 @@ td.note { color: var(--muted); font-size: 19px; }
       <div class="stat"><b data-count>2,048</b><span>Request 하나의<br>최대 Token 수</span></div>
       <div class="stat hl"><b data-count>1.6 GB</b><span>Request 하나가 KV Cache로만<br>차지할 수 있는 최대치</span></div>
     </div>
+    <p class="lead">대화가 길어질수록 Note도 두꺼워집니다. 그래서 모델 설계자들은 KV Cache를 줄이려고 애씁니다.</p>
+  </div>
+</section>
+
+<section class="slide" data-notes="원문 10월 23일 글. Agent 비용을 줄이는 방법, Cache Engineering. 긴 작업을 하는 Agent는 비용 대부분이 KV Cache 읽기에서 나옵니다. 논문 측정으로는 전체 API 비용의 82.4%. 그래서 다들 오래된 기록을 요약하거나 잘라내는데, 문제는 앞부분 text를 바꾸는 순간 그 뒤 Cache가 전부 무효가 된다는 것. 이 문제가 다음 장 Prompt Caching으로 이어집니다.">
+  <div class="kicker"><b>11</b>Agent 비용</div>
+  <h2>Agent 비용 대부분은 <em>KV Cache 읽기</em></h2>
+  <div class="body cols" style="grid-template-columns:minmax(0,.72fr) minmax(0,1.28fr);gap:44px">
+    <div class="ringbox">
+      <div class="ringwrap">
+        <svg viewBox="0 0 220 220" aria-hidden="true">
+          <circle cx="110" cy="110" r="88" style="fill:none;stroke:var(--surface-2)" stroke-width="26"/>
+          <circle class="ring" cx="110" cy="110" r="88" pathLength="100" stroke-dasharray="82.4 100" transform="rotate(-90 110 110)" style="fill:none;stroke:var(--accent)" stroke-width="26"/>
+        </svg>
+        <b class="ringnum" data-count>82.4%</b>
+      </div>
+      <p>긴 작업을 하는 Agent의 전체 API (Application Programming Interface) 비용 중 KV Cache 읽기 비중 (논문 측정)</p>
+    </div>
+    <div class="panel ctx">
+      <div class="row si" style="--d:500ms"><span>원래 기록</span><div class="segs"><i class="seg">T1</i><i class="seg">T2</i><i class="seg">T3</i><i class="seg">T4</i><i class="seg">T5</i><i class="seg">T6</i><i class="seg">T7</i><i class="seg">T8</i></div><em class="res ok">Cache Hit</em></div>
+      <div class="row si" style="--d:1300ms"><span>앞부분 요약 후</span><div class="segs"><i class="seg sum" style="flex:2.4">요약</i><i class="seg inv" style="--d:1900ms">T5</i><i class="seg inv" style="--d:2050ms">T6</i><i class="seg inv" style="--d:2200ms">T7</i><i class="seg inv" style="--d:2350ms">T8</i></div><em class="res no pop" style="--d:2600ms">Cache Miss</em></div>
+      <p class="cap">그래서 다들 오래된 기록을 요약하거나 잘라냅니다. 문제는 <strong>앞부분 text를 바꾸는 순간 그 뒤 Cache가 전부 무효</strong>가 된다는 것. 다음 장의 Prompt Caching으로 이어집니다.</p>
+    </div>
   </div>
 </section>
 
@@ -814,7 +918,24 @@ td.note { color: var(--muted); font-size: 19px; }
       <div class="prow"><span>Request B</span><div class="blocks"><i class="hit si" style="flex:2">Tools</i><i class="hit si" style="flex:3">System</i><i class="hit si" style="flex:3">참고 문서</i><i class="miss si" style="flex:1.4">질문 B</i></div><span class="res ok pop">Cache Hit</span></div>
       <div class="prow"><span>Timestamp 넣은<br>Request</span><div class="blocks"><i class="miss si" style="flex:1.6">09:52</i><i class="miss si" style="flex:2">Tools</i><i class="miss si" style="flex:3">System</i><i class="miss si" style="flex:3">참고 문서</i><i class="miss si" style="flex:1.4">질문</i></div><span class="res no pop">Cache Miss</span></div>
     </div>
-    <p class="quote" style="margin-top:40px">할인의 이유: 계산을 안 했으니 덜 받는 겁니다.</p>
+    <p class="quote" style="margin-top:34px">할인의 이유: 계산을 안 했으니 덜 받는 겁니다.</p>
+    <p class="lead" style="margin-top:12px;padding-left:38px">덤으로 Prefill을 건너뛰니 <strong>첫 글자가 나오기까지의 시간</strong> (TTFT, Time To First Token)도 줄어듭니다.</p>
+  </div>
+</section>
+
+<section class="slide" data-notes="Cache Miss는 맞는 Note가 없어서 처음부터 계산한 경우입니다. Note가 아예 없었거나, 유효 기간이 지났거나, 앞부분이 조금이라도 달랐을 때. Anthropic 문서는 Cache 지점까지의 text와 이미지가 100% 똑같아야 Hit라고 씁니다. OpenAI도 rendering된 Prefix 전체가 일치해야 재사용된다고 설명합니다. Note는 첫 페이지부터 순서대로 쌓이니, 3쪽에서 한 글자가 바뀌면 3쪽 이후 Note는 모두 쓸 수 없습니다.">
+  <div class="kicker"><b>12</b>Cache Hit와 Cache Miss</div>
+  <h2>Cache Miss는 <em>언제</em> 나나</h2>
+  <div class="body">
+    <div class="tips" style="grid-template-columns:repeat(3,minmax(0,1fr))">
+      <div class="tip"><span class="k">MISS 1</span><h3>Note가 아예 없음</h3><p>처음 보내는 Prefix라 저장된 Note가 없을 때</p></div>
+      <div class="tip"><span class="k">MISS 2</span><h3>유효 기간이 지남</h3><p>TTL (Time To Live)이 지나 Note가 버려졌을 때</p></div>
+      <div class="tip"><span class="k">MISS 3</span><h3>앞부분이 조금이라도 다름</h3><p>Cache 지점까지 100% 똑같아야 Hit (Anthropic). Rendering된 Prefix 전체가 일치해야 재사용 (OpenAI)</p></div>
+    </div>
+    <div class="panel" style="margin-top:26px">
+      <div class="pgrow"><i class="pg">p.1</i><i class="pg">p.2</i><i class="pg inv" style="--d:1500ms">p.3<b class="pop" style="--d:1200ms">한 글자 수정</b></i><i class="pg inv" style="--d:1700ms">p.4</i><i class="pg inv" style="--d:1900ms">p.5</i><i class="pg inv" style="--d:2100ms">p.6</i><i class="pg inv" style="--d:2300ms">p.7</i></div>
+      <p class="cap">Note는 첫 페이지부터 순서대로 쌓입니다. 3쪽에서 한 글자가 바뀌면 3쪽 이후 Note는 모두 쓸 수 없습니다.</p>
+    </div>
   </div>
 </section>
 
@@ -838,10 +959,10 @@ td.note { color: var(--muted); font-size: 19px; }
   <h2>안 바뀌는 건 앞에, <em>한 글자도 건드리지 않기</em></h2>
   <div class="body">
     <div class="tips">
-      <div class="tip"><span class="k">TIP 1</span><h3>고정은 앞, 변동은 뒤</h3><p>System Prompt·Tool 정의·참고 문서를 맨 앞에, 사용자 질문은 맨 뒤에.</p></div>
-      <div class="tip"><span class="k">TIP 2</span><h3>Byte 단위까지 똑같이</h3><p>맨 앞의 <code>현재 시각</code>은 Cache를 한 장도 못 쓰게 만듭니다. Tool 순서, JSON (JavaScript Object Notation) key 순서도 주의.</p></div>
-      <div class="tip"><span class="k">TIP 3</span><h3>최소 길이 넘기기</h3><p>OpenAI 1,024 · Anthropic 512~4,096 · Gemini 2,048~4,096 Token 미만은 Cache 안 됨.</p></div>
-      <div class="tip"><span class="k">TIP 4</span><h3>TTL (Time To Live) 안에 다시 쓰기</h3><p>Anthropic 기본 5분(쓸 때마다 갱신), OpenAI는 영구 보관으로 바뀌는 중.</p></div>
+      <div class="tip"><span class="k">TIP 1</span><h3>고정은 앞, 변동은 뒤</h3><p>System Prompt·Tool 정의·참고 문서를 맨 앞에, 사용자 질문은 맨 뒤에. Anthropic은 <code>tools → system → messages</code> 순서로 Prefix를 만들고, 앞 단계가 바뀌면 그 뒤가 모두 무효가 됩니다.</p></div>
+      <div class="tip"><span class="k">TIP 2</span><h3>Byte 단위까지 똑같이</h3><p>맨 앞의 <code>현재 시각</code>은 Cache를 한 장도 못 쓰게 만듭니다. OpenAI는 Timestamp를 끝으로 옮기라고 하고, Anthropic은 Timestamp 블록에 Cache 지점을 두면 쓰기 비용만 내고 읽기는 한 번도 못 한다고 경고합니다. Tool 순서·Schema, JSON (JavaScript Object Notation) key 순서 변경도 주의. Tool을 끄려면 정의를 지우지 말고 <code>tool_choice: "none"</code>.</p></div>
+      <div class="tip"><span class="k">TIP 3</span><h3>최소 길이 넘기기</h3><p>OpenAI 1,024 · Anthropic 512~4,096 · Gemini 2,048~4,096 Token 미만은 Cache 안 됨. Anthropic은 짧으면 <code>cache_control</code>을 붙여도 오류 없이 그냥 Cache 없이 처리합니다.</p></div>
+      <div class="tip"><span class="k">TIP 4</span><h3>TTL (Time To Live) 안에 다시 쓰기</h3><p>Anthropic: 기본 5분, 쓸 때마다 무료 갱신 (1시간 옵션은 추가 요금). OpenAI: API는 최대 12시간, Codex login 시 영구 보관. Gemini: 비슷한 Prefix의 Request를 짧은 시간 안에 보내라고만 권장.</p></div>
     </div>
   </div>
 </section>
@@ -1076,7 +1197,7 @@ td.note { color: var(--muted); font-size: 19px; }
   const lossTxt = mk('text', { x: 540, y: 31, 'font-size': 16, 'text-anchor': 'middle', 'font-family': 'Geist Mono, monospace', style: 'fill:var(--signal)' });
   lossTag.appendChild(lossTxt); net.appendChild(lossTag);
   const chips = [...document.querySelectorAll('#phases span')], phaseCap = document.getElementById('phaseCap');
-  const CAPS = ['문장을 넣고 현재 Dial로 다음 Token 확률을 계산합니다.', '정답 Token의 확률이 낮을수록 큰 벌점(Cross Entropy)을 줍니다.', '벌점에 각 Dial이 얼마나 책임 있는지 출력에서 입력 쪽으로 거슬러 계산합니다.', '벌점이 줄어드는 방향으로 모든 Dial을 아주 조금씩 돌립니다.'];
+  const CAPS = ['문장을 넣고 현재 Dial로 다음 Token 확률을 계산합니다.', '정답 Token의 확률이 낮을수록 큰 벌점(Cross Entropy)을 줍니다.', '벌점에 각 Dial이 얼마나 책임 있는지 출력에서 입력 쪽으로 거슬러 계산합니다 (Rumelhart·Hinton·Williams, 1986).', '벌점이 줄어드는 방향으로 모든 Dial을 아주 조금씩 돌립니다.'];
   let netLoss = 2.31;
   const setPhase = p => { chips.forEach((c, i) => { c.classList.toggle('on', i === p); c.classList.toggle('warm', i === p && p > 0 && p < 3); }); phaseCap.textContent = CAPS[p]; };
   const netReset = () => { edges.flat().forEach(e => e.classList.remove('f', 'b')); nodes.flat().forEach(n => n.classList.remove('on', 'hot')); lossTag.classList.remove('show'); };
@@ -1105,7 +1226,7 @@ td.note { color: var(--muted); font-size: 19px; }
   route();
 
   function onEnter(s) {
-    s.querySelectorAll('[data-count]').forEach((el, i) => { if (el.dataset.final) el.textContent = el.dataset.final; later(() => countUp(el), 300 + i * 120); });
+    s.querySelectorAll('[data-count]').forEach((el, i) => { if (el.dataset.final) el.textContent = el.dataset.final; later(() => countUp(el), 300 + i * 120); later(() => { el.textContent = el.dataset.final; }, 1800 + i * 120); });
     const bars = s.querySelectorAll('.bar-fill');
     if (bars.length) {
       const gen = s.querySelector('.gen'), cands = s.querySelectorAll('.cand');
@@ -1117,7 +1238,8 @@ td.note { color: var(--muted); font-size: 19px; }
     s.querySelectorAll('.typer').forEach((el, i) => {
       const t = el.dataset.text; el.textContent = '';
       if (reduce) { el.textContent = t; return; }
-      [...t].forEach((ch, k) => later(() => { el.textContent += ch; }, 900 + i * 500 + k * 45));
+      const base = +(el.dataset.delay || (900 + i * 500)), sp = +(el.dataset.speed || 45);
+      [...t].forEach((ch, k) => later(() => { el.textContent += ch; }, base + k * sp));
     });
     if (s.contains(cv)) {
       runGD();
