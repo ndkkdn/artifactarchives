@@ -49,7 +49,7 @@ body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--b
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
 #viewport { position: fixed; inset: 0; display: grid; place-items: center; overflow: hidden; }
-#stage { width: 1600px; height: 900px; position: relative; flex: none; transform-origin: center center; }
+#stage { width: 1600px; height: 900px; position: absolute; left: 50%; top: 50%; transform-origin: center center; }
 
 .slide { position: absolute; inset: 0; padding: 84px 112px 104px; display: flex; flex-direction: column;
   opacity: 0; visibility: hidden; transform: translateX(40px) scale(.985); transition: opacity .5s ease, transform .6s var(--ease), visibility .5s; }
@@ -411,6 +411,66 @@ td.note { color: var(--muted); font-size: 19px; }
   background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 12px 16px; font-size: 14px; line-height: 1.65; box-shadow: var(--shadow); }
 #notes b { font-family: var(--mono); font-size: 11px; letter-spacing: .08em; color: var(--accent); display: block; margin-bottom: 4px; }
 @media (max-width: 700px) { #notes { bottom: calc(64px + env(safe-area-inset-bottom, 0px)); } }
+
+/* portrait stage (phones, tablets held upright): 720px-wide canvas, stacked columns, scrollable slide */
+.portrait .slide { padding: 60px 44px 150px; overflow-y: auto; overscroll-behavior: contain; -webkit-overflow-scrolling: touch; }
+.portrait .slide.title-slide { padding-bottom: 180px; }
+.portrait .foot { display: none; }
+.portrait .home { top: 52px; right: 44px; }
+.portrait .kicker { font-size: 17px; padding-right: 64px; flex-wrap: wrap; }
+.portrait h1 { font-size: 92px !important; }
+.portrait .title-slide h1[style] { font-size: 64px !important; }
+.portrait h2 { font-size: 42px; padding-right: 0; }
+.portrait .lead { font-size: 24px; }
+.portrait .txt p, .portrait .txt p[style] { font-size: 23px !important; }
+.portrait .body { justify-content: flex-start; flex: none; margin-top: 28px; }
+.portrait .cols, .portrait .cols[style] { grid-template-columns: minmax(0, 1fr) !important; gap: 26px !important; }
+.portrait .analogy { font-size: 21px; }
+.portrait .limit { font-size: 18px; }
+.portrait .panel { padding: 22px 22px; }
+.portrait .stats { gap: 12px; }
+.portrait .stat { padding: 18px 18px; }
+.portrait .stat b { font-size: 38px; }
+.portrait .stat span { font-size: 16px; }
+.portrait .qs div { font-size: 32px; gap: 14px; }
+.portrait .tips, .portrait .tips[style] { grid-template-columns: minmax(0, 1fr) !important; gap: 14px; }
+.portrait .tip p { font-size: 18px; }
+.portrait .stage3 { grid-template-columns: minmax(0, 1fr); gap: 44px; }
+.portrait .stg:not(:last-child)::after { content: "↓"; right: auto; left: 50%; top: auto; bottom: -40px; margin-left: -8px; }
+.portrait .rl4 { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.portrait .rlc:not(:last-child)::after, .portrait .rl4 + svg { display: none; }
+.portrait .flow { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.portrait .knobs { grid-template-columns: repeat(8, minmax(0, 1fr)); }
+.portrait .knob:nth-child(n+9) { display: none; }
+.portrait .qlist strong { font-size: 24px; }
+.portrait .prow { grid-template-columns: 110px minmax(0, 1fr) 96px; gap: 10px; }
+.portrait .blocks i { font-size: 14px; height: 46px; padding: 0 6px; }
+.portrait .res { font-size: 15px; }
+.portrait .exp { grid-template-columns: minmax(0, 1fr); gap: 12px; }
+.portrait .lane-row { grid-template-columns: 110px minmax(0, 1fr); }
+.portrait .lane.dec i { flex-basis: 24px; }
+.portrait .ctx .row { grid-template-columns: 100px minmax(0, 1fr) 100px; }
+.portrait .seg { font-size: 12px; }
+.portrait .resend .row { grid-template-columns: 100px minmax(0, 1fr); }
+.portrait .bk { font-size: 12px; }
+.portrait .ringwrap { width: 240px; height: 240px; }
+.portrait .ringnum { font-size: 50px; }
+.portrait table { font-size: 18px; }
+.portrait th, .portrait td { padding: 14px 14px; }
+.portrait td.num { font-size: 17px; }
+.portrait .bubble { font-size: 21px; }
+.portrait .quote { font-size: 34px; }
+.portrait .lead[style] { padding-left: 0 !important; }
+
+@media (pointer: coarse) {
+  #controls { opacity: 1; }
+  #controls button { min-width: 40px; height: 40px; }
+}
+@media (max-width: 560px) {
+  #controls { left: max(10px, env(safe-area-inset-left, 0px)); right: max(10px, env(safe-area-inset-right, 0px)); bottom: calc(10px + env(safe-area-inset-bottom, 0px)); flex-wrap: wrap; justify-content: space-between; opacity: 1; }
+  #source { flex: 1 0 100%; border-right: 0; border-bottom: 1px solid var(--line); text-align: center; line-height: 28px; margin: 0 0 4px; padding: 0 0 2px; }
+  #notes { bottom: calc(104px + env(safe-area-inset-bottom, 0px)); }
+}
 
 @media (prefers-reduced-motion: reduce) {
   .slide, .bar-fill, .moe span, .knob::after, .flow div, .rail i { transition: none !important; }
@@ -1092,7 +1152,13 @@ td.note { color: var(--muted); font-size: 19px; }
     s.querySelectorAll('.pop, .draw, .gx, .si').forEach(el => { if (!el.style.getPropertyValue('--d')) el.style.setProperty('--d', (350 + p++ * 110) + 'ms'); });
   });
 
-  function fit() { stage.style.transform = `scale(${Math.min(innerWidth / 1600, innerHeight / 900)})`; }
+  function fit() {
+    const portrait = innerWidth / innerHeight < 0.9;
+    root.classList.toggle('portrait', portrait);
+    const W = portrait ? 720 : 1600, H = portrait ? Math.max(1100, Math.round(720 * innerHeight / innerWidth)) : 900;
+    stage.style.width = W + 'px'; stage.style.height = H + 'px';
+    stage.style.transform = `translate(-50%, -50%) scale(${Math.min(innerWidth / W, innerHeight / H)})`;
+  }
   addEventListener('resize', fit); fit();
 
   // count-up numbers
@@ -1114,7 +1180,7 @@ td.note { color: var(--muted); font-size: 19px; }
     clearTimers();
     slides.forEach((s, k) => { s.classList.toggle('active', k === cur); s.classList.toggle('past', k < cur); if (k !== cur) s.classList.remove('in'); });
     const s = slides[cur];
-    s.classList.remove('in'); void s.offsetWidth; s.classList.add('in');
+    s.classList.remove('in'); void s.offsetWidth; s.classList.add('in'); s.scrollTop = 0;
     document.getElementById('count').textContent = `${cur + 1} / ${N}`;
     document.getElementById('progress').style.transform = `scaleX(${(cur + 1) / N})`;
     document.getElementById('notesText').textContent = s.dataset.notes || '';
@@ -1144,10 +1210,15 @@ td.note { color: var(--muted); font-size: 19px; }
     else if (e.key === 'n' || e.key === 'N') toggleNotes();
     else if (e.key === 'f' || e.key === 'F') toggleFs();
   });
-  document.getElementById('viewport').addEventListener('click', e => { if (!e.target.closest('a,button')) (e.clientX > innerWidth * 0.35 ? next : prev)(); });
-  let tx = null;
-  addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, { passive: true });
-  addEventListener('touchend', e => { if (tx === null) return; const dx = e.changedTouches[0].clientX - tx; tx = null; if (Math.abs(dx) > 40) (dx < 0 ? next : prev)(); });
+  const coarse = matchMedia('(pointer: coarse)').matches;
+  document.getElementById('viewport').addEventListener('click', e => { if (coarse || e.target.closest('a,button')) return; (e.clientX > innerWidth * 0.35 ? next : prev)(); });
+  let tx = null, ty = null;
+  addEventListener('touchstart', e => { tx = e.touches[0].clientX; ty = e.touches[0].clientY; }, { passive: true });
+  addEventListener('touchend', e => {
+    if (tx === null) return;
+    const dx = e.changedTouches[0].clientX - tx, dy = e.changedTouches[0].clientY - ty; tx = ty = null;
+    if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.5) (dx < 0 ? next : prev)();
+  });
   addEventListener('hashchange', () => go(fromHash(), false));
 
   // gradient descent

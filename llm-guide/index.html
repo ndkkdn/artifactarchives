@@ -3,14 +3,14 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="description" content="토큰부터 임베딩, 어텐션, KV 캐시, 프롬프트 캐싱, MoE까지 LLM 기본기를 한 페이지로 읽는 웹 가이드">
-<title>처음 읽는 LLM 가이드</title>
+<meta name="description" content="Token부터 Embedding, Attention, KV Cache, Prompt Caching, MoE까지 LLM 기본기를 한 페이지로 읽는 웹 가이드">
+<title>LLM 이해하기 가이드</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&family=Geist+Mono:wght@400;500;600&family=IBM+Plex+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-/* Layout: docs-site shell — sticky top bar with read progress, left TOC rail with scroll-spy, 700px article column with live demos inline */
+/* Layout: docs-site shell — sticky top bar with read progress, left TOC rail (desktop) / collapsible TOC (tablet, phone), 720px article column with animated figures that play when scrolled into view */
 :root {
   --bg: #f7f8fa;
   --surface: #ffffff;
@@ -23,29 +23,30 @@
   --signal: #b86e00;
   --signal-soft: #fff3df;
   --mint: #0f8f6e;
+  --mint-soft: #e2f5ef;
   --code-bg: #f1f3f7;
   --shadow: 0 1px 2px rgba(15, 25, 50, .04), 0 10px 30px rgba(15, 25, 50, .06);
   --display: "Geist", "IBM Plex Sans KR", -apple-system, system-ui, sans-serif;
   --body: "IBM Plex Sans KR", "Geist", -apple-system, system-ui, sans-serif;
   --mono: "Geist Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  --ease: cubic-bezier(.2, .8, .2, 1);
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
     --bg: #0a0b0e; --surface: #121419; --surface-2: #191c23; --ink: #eef0f4; --muted: #9aa1ae;
     --line: #252a33; --accent: #7b9fff; --accent-soft: #18203a; --signal: #f2b14c; --signal-soft: #2a2112;
-    --mint: #3fd1a4; --code-bg: #171a21; --shadow: 0 1px 2px rgba(0,0,0,.4), 0 10px 30px rgba(0,0,0,.35);
+    --mint: #3fd1a4; --mint-soft: #10261f; --code-bg: #171a21; --shadow: 0 1px 2px rgba(0,0,0,.4), 0 10px 30px rgba(0,0,0,.35);
     color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
   --bg: #0a0b0e; --surface: #121419; --surface-2: #191c23; --ink: #eef0f4; --muted: #9aa1ae;
   --line: #252a33; --accent: #7b9fff; --accent-soft: #18203a; --signal: #f2b14c; --signal-soft: #2a2112;
-  --mint: #3fd1a4; --code-bg: #171a21; --shadow: 0 1px 2px rgba(0,0,0,.4), 0 10px 30px rgba(0,0,0,.35);
+  --mint: #3fd1a4; --mint-soft: #10261f; --code-bg: #171a21; --shadow: 0 1px 2px rgba(0,0,0,.4), 0 10px 30px rgba(0,0,0,.35);
   color-scheme: dark;
 }
 * { box-sizing: border-box; }
-html { scroll-behavior: smooth; scroll-padding-top: 84px; }
-@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } *, *::before { transition: none !important; animation: none !important; } }
+html { scroll-behavior: smooth; scroll-padding-top: 84px; -webkit-text-size-adjust: 100%; }
 body {
   margin: 0; background: var(--bg); color: var(--ink);
   font-family: var(--body); font-size: 17px; line-height: 1.8;
@@ -53,61 +54,77 @@ body {
 }
 a { color: var(--accent); text-underline-offset: 3px; }
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
-.mono { font-family: var(--mono); }
 .gutter { padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+@media (min-width: 640px) { .gutter { padding-left: max(28px, env(safe-area-inset-left, 0px)); padding-right: max(28px, env(safe-area-inset-right, 0px)); } }
+
+/* motion primitives: figures get .in when they scroll into view */
+@keyframes rise { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
+@keyframes pop { 0% { opacity: 0; transform: scale(.6); } 70% { transform: scale(1.06); } 100% { opacity: 1; transform: none; } }
+@keyframes draw { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
+@keyframes growX { from { transform: scaleX(0); } to { transform: none; } }
+@keyframes growY { from { transform: scaleY(0); } to { transform: none; } }
+@keyframes slideIn { from { opacity: 0; transform: translateX(-20px); } to { opacity: 1; transform: none; } }
+@keyframes blink { 50% { opacity: 0; } }
+@keyframes toMiss { to { background: var(--signal-soft); color: var(--signal); border-color: var(--signal); border-style: dashed; } }
+@keyframes spin { from { transform: rotate(-70deg); } to { transform: rotate(80deg); } }
+@keyframes belt { to { stroke-dashoffset: -28; } }
+@keyframes rot { to { transform: rotate(360deg); } }
+.in .pop { animation: pop .55s var(--ease) both; animation-delay: var(--d, 0ms); }
+.in svg .pop { transform-box: fill-box; transform-origin: center; }
+.draw { stroke-dasharray: 1; stroke-dashoffset: 0; }
+.in .draw { animation: draw 1.1s ease-in-out both; animation-delay: var(--d, 0ms); }
+.in .gx { transform-box: fill-box; transform-origin: left center; animation: growX .8s var(--ease) both; animation-delay: var(--d, 0ms); }
+.in .gy { transform-origin: bottom; animation: growY .5s var(--ease) both; animation-delay: var(--d, 0ms); }
+.in .si { animation: slideIn .5s var(--ease) both; animation-delay: var(--d, 0ms); }
+.in .inv { animation: toMiss .45s ease both; animation-delay: var(--d, 1500ms); }
+.in .rise { animation: rise .7s var(--ease) both; animation-delay: var(--d, 0ms); }
+@supports (animation-timeline: view()) {
+  article section > :is(p, h2, h3, ul, ol, .analogy, .callout, .key) { animation: rise linear both; animation-timeline: view(); animation-range: entry 0% entry 40%; }
+}
 
 /* top bar */
 body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 30; background: var(--bg); }
-.topbar {
-  position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20;
-  background: color-mix(in srgb, var(--bg) 80%, transparent);
-  backdrop-filter: saturate(1.5) blur(12px); -webkit-backdrop-filter: saturate(1.5) blur(12px);
-  border-bottom: 1px solid var(--line);
-}
-.topbar-in { max-width: 1200px; margin: 0 auto; height: 56px; display: flex; align-items: center; gap: 16px; }
+.topbar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; background: color-mix(in srgb, var(--bg) 80%, transparent); backdrop-filter: saturate(1.5) blur(12px); -webkit-backdrop-filter: saturate(1.5) blur(12px); border-bottom: 1px solid var(--line); }
+.topbar-in { max-width: 1200px; margin: 0 auto; height: 56px; display: flex; align-items: center; gap: 14px; }
 .brand { display: flex; align-items: center; gap: 10px; font-family: var(--display); font-weight: 700; font-size: 15px; color: var(--ink); text-decoration: none; letter-spacing: -.01em; min-width: 0; }
 .brand-mark { width: 22px; height: 22px; border-radius: 6px; background: var(--ink); color: var(--bg); display: grid; place-items: center; font-family: var(--mono); font-size: 11px; font-weight: 600; flex: none; }
 .brand span:last-child { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .crumb { color: var(--muted); font-size: 13px; font-family: var(--mono); white-space: nowrap; }
 .spacer { flex: 1; }
-.btn {
-  appearance: none; border: 1px solid var(--line); background: var(--surface); color: var(--ink);
-  height: 34px; padding: 0 12px; border-radius: 8px; font: 500 13px/1 var(--display);
-  display: inline-flex; align-items: center; gap: 6px; cursor: pointer; text-decoration: none; white-space: nowrap;
-}
+.btn { appearance: none; border: 1px solid var(--line); background: var(--surface); color: var(--ink); min-height: 36px; padding: 0 12px; border-radius: 8px; font: 500 13px/1 var(--display); display: inline-flex; align-items: center; justify-content: center; gap: 6px; cursor: pointer; text-decoration: none; white-space: nowrap; }
 .btn:hover { border-color: var(--accent); }
 .btn.primary { background: var(--ink); color: var(--bg); border-color: var(--ink); }
 .progress { position: absolute; left: 0; bottom: -1px; height: 2px; width: 100%; background: var(--accent); transform-origin: left; transform: scaleX(0); }
 @media (max-width: 640px) { .crumb { display: none; } }
+@media (pointer: coarse) { .btn { min-height: 42px; padding: 0 14px; } }
 
 /* hero */
-.hero { border-bottom: 1px solid var(--line); background:
-  radial-gradient(600px 240px at 85% 0%, color-mix(in srgb, var(--accent) 10%, transparent), transparent 70%), var(--bg); }
+.hero { border-bottom: 1px solid var(--line); background: radial-gradient(600px 240px at 85% 0%, color-mix(in srgb, var(--accent) 10%, transparent), transparent 70%), var(--bg); }
 .hero-in { max-width: 1200px; margin: 0 auto; padding-block: 64px 56px; display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); gap: 48px; align-items: center; }
-.eyebrow { font-family: var(--mono); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); display: inline-flex; gap: 10px; align-items: center; }
+.eyebrow { font-family: var(--mono); font-size: 12px; letter-spacing: .06em; color: var(--accent); display: inline-flex; gap: 10px; align-items: center; flex-wrap: wrap; }
 .eyebrow i { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 0 4px var(--accent-soft); }
-.hero h1 { font-family: var(--display); font-size: clamp(36px, 5.4vw, 60px); line-height: 1.12; letter-spacing: -.035em; font-weight: 800; margin: 18px 0 18px; text-wrap: balance; }
+.hero h1 { font-family: var(--display); font-size: clamp(44px, 7vw, 76px); line-height: 1.05; letter-spacing: -.04em; font-weight: 800; margin: 16px 0 16px; text-wrap: balance; }
 .hero h1 em { font-style: normal; color: var(--accent); }
 .hero p.lede { font-size: 18px; color: var(--muted); margin: 0; max-width: 34em; }
-.meta { display: flex; flex-wrap: wrap; gap: 8px 18px; margin-top: 24px; font-size: 13px; color: var(--muted); font-family: var(--mono); }
+.meta { display: flex; flex-wrap: wrap; gap: 8px 18px; margin-top: 22px; font-size: 13px; color: var(--muted); font-family: var(--mono); }
 .meta a { color: var(--muted); }
-.hero-cta { display: flex; gap: 10px; margin-top: 28px; flex-wrap: wrap; }
-.hero-cta .btn { height: 40px; padding: 0 16px; font-size: 14px; }
-@media (max-width: 900px) { .hero-in { grid-template-columns: minmax(0, 1fr); padding-block: 44px 40px; gap: 32px; } }
+.hero-cta { display: flex; gap: 10px; margin-top: 26px; flex-wrap: wrap; }
+.hero-cta .btn { min-height: 42px; padding: 0 16px; font-size: 14px; }
+@media (max-width: 960px) { .hero-in { grid-template-columns: minmax(0, 1fr); padding-block: 44px 40px; gap: 32px; } .demo { max-width: 620px; } }
+@media (max-width: 480px) { .hero p.lede { font-size: 16.5px; } }
 
 /* next-token demo */
 .demo { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; box-shadow: var(--shadow); overflow: hidden; min-width: 0; }
 .demo-head { display: flex; align-items: center; gap: 8px; padding: 10px 14px; border-bottom: 1px solid var(--line); font-family: var(--mono); font-size: 12px; color: var(--muted); }
 .dots { display: flex; gap: 5px; } .dots b { width: 9px; height: 9px; border-radius: 50%; background: var(--line); }
-.demo-head .spacer + span { color: var(--mint); }
+.demo-head .live { color: var(--mint); }
 .demo-body { padding: 20px 18px 18px; }
 .prompt { font-size: 20px; font-weight: 600; line-height: 1.5; min-height: 2.2em; }
 .prompt .gen { color: var(--accent); }
-.prompt .caret { display: inline-block; width: 2px; height: 1.1em; vertical-align: -3px; background: var(--accent); margin-left: 3px; animation: blink 1s steps(1) infinite; }
-@keyframes blink { 50% { opacity: 0; } }
+.caret { display: inline-block; width: 2px; height: 1.1em; vertical-align: -3px; background: var(--accent); margin-left: 3px; animation: blink 1s steps(1) infinite; }
 .cands { display: grid; gap: 6px; margin-top: 16px; }
-.cand { appearance: none; border: 1px solid var(--line); background: var(--bg); color: var(--ink); border-radius: 8px; padding: 0; cursor: pointer; text-align: left; position: relative; overflow: hidden; font: inherit; display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 12px; height: 38px; }
-.cand .bar { position: absolute; inset: 0 auto 0 0; background: var(--accent-soft); transition: width .5s cubic-bezier(.2,.8,.2,1); }
+.cand { appearance: none; border: 1px solid var(--line); background: var(--bg); color: var(--ink); border-radius: 8px; padding: 0; cursor: pointer; text-align: left; position: relative; overflow: hidden; font: inherit; display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 12px; min-height: 40px; }
+.cand .bar { position: absolute; inset: 0 auto 0 0; background: var(--accent-soft); transition: width .5s var(--ease); }
 .cand .tok, .cand .p { position: relative; padding: 0 12px; font-size: 15px; }
 .cand .tok { font-weight: 600; }
 .cand .p { font-family: var(--mono); font-size: 12.5px; color: var(--muted); font-variant-numeric: tabular-nums; }
@@ -116,9 +133,9 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 .demo-foot small { color: var(--muted); font-size: 12px; flex: 1; min-width: 160px; line-height: 1.5; }
 
 /* shell */
-.shell { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 232px minmax(0, 1fr); gap: 56px; padding-block: 48px 80px; }
+.shell { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 236px minmax(0, 1fr); gap: 56px; padding-block: 48px 80px; }
 .toc { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 80px); align-self: start; max-height: calc(100vh - 110px); overflow: auto; font-size: 13.5px; }
-.toc h4 { font-family: var(--mono); font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); margin: 0 0 10px; font-weight: 500; }
+.toc h4 { font-family: var(--mono); font-size: 11px; letter-spacing: .1em; color: var(--muted); margin: 0 0 10px; font-weight: 500; }
 .toc ol { list-style: none; margin: 0; padding: 0; border-left: 1px solid var(--line); }
 .toc a { display: grid; grid-template-columns: 22px minmax(0, 1fr); gap: 6px; padding: 5px 0 5px 14px; margin-left: -1px; border-left: 2px solid transparent; color: var(--muted); text-decoration: none; line-height: 1.45; }
 .toc a .n { font-family: var(--mono); font-size: 11.5px; padding-top: 1px; }
@@ -130,116 +147,324 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
   .shell { grid-template-columns: minmax(0, 1fr); gap: 0; padding-block: 28px 64px; }
   .toc { display: none; }
   .toc-mobile { display: block; margin-bottom: 28px; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; }
-  .toc-mobile summary { cursor: pointer; padding: 12px 16px; font-family: var(--display); font-weight: 600; font-size: 14px; }
-  .toc-mobile ol { margin: 0; padding: 0 16px 14px 36px; font-size: 14px; line-height: 2; }
+  .toc-mobile summary { cursor: pointer; padding: 14px 16px; font-family: var(--display); font-weight: 600; font-size: 15px; }
+  .toc-mobile ol { margin: 0; padding: 0 16px 14px 36px; font-size: 15px; line-height: 2.1; columns: 2; column-gap: 28px; }
   .toc-mobile a { color: var(--muted); text-decoration: none; }
+  article { margin: 0 auto; }
 }
+@media (max-width: 560px) { .toc-mobile ol { columns: 1; } }
 
 /* article */
-article { max-width: 700px; min-width: 0; }
-section { padding-top: 8px; margin-bottom: 64px; }
+article { width: 100%; max-width: 720px; min-width: 0; }
+section { padding-top: 8px; margin-bottom: 72px; }
 .sec-label { font-family: var(--mono); font-size: 12px; color: var(--accent); letter-spacing: .06em; display: block; margin-bottom: 6px; }
-h2 { font-family: var(--display); font-size: clamp(26px, 3.4vw, 32px); line-height: 1.25; letter-spacing: -.025em; font-weight: 700; margin: 0 0 20px; text-wrap: balance; }
+h2 { font-family: var(--display); font-size: clamp(25px, 3.4vw, 32px); line-height: 1.25; letter-spacing: -.025em; font-weight: 700; margin: 0 0 20px; text-wrap: balance; }
 h2 small { display: block; font-size: .56em; font-weight: 500; color: var(--muted); letter-spacing: -.01em; margin-top: 6px; }
-h3 { font-family: var(--display); font-size: 19px; letter-spacing: -.015em; margin: 32px 0 10px; }
+h3 { font-family: var(--display); font-size: 19px; letter-spacing: -.015em; margin: 32px 0 10px; text-wrap: balance; }
 article p { margin: 0 0 16px; }
 article strong { font-weight: 700; }
+.ab { font-size: .86em; color: var(--muted); font-weight: 500; }
 .key { font-size: 19px; line-height: 1.65; font-weight: 600; padding: 4px 0 4px 18px; border-left: 3px solid var(--accent); margin: 24px 0; }
 code { font-family: var(--mono); font-size: .86em; background: var(--code-bg); border: 1px solid var(--line); padding: 1px 6px; border-radius: 5px; }
 ul.list { margin: 0 0 16px; padding: 0; list-style: none; display: grid; gap: 10px; }
 ul.list li { position: relative; padding-left: 20px; }
 ul.list li::before { content: ""; position: absolute; left: 3px; top: .78em; width: 6px; height: 6px; border-radius: 2px; background: var(--accent); }
+@media (max-width: 480px) { body { font-size: 16.5px; } .key { font-size: 17.5px; } section { margin-bottom: 60px; } }
 
 .callout { border: 1px solid color-mix(in srgb, var(--signal) 30%, var(--line)); background: var(--signal-soft); border-radius: 10px; padding: 14px 16px; margin: 22px 0; font-size: 15.5px; line-height: 1.75; }
-.callout b.t { display: block; font-family: var(--mono); font-size: 11.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--signal); margin-bottom: 4px; font-weight: 600; }
+.callout b.t { display: block; font-family: var(--mono); font-size: 11.5px; letter-spacing: .06em; color: var(--signal); margin-bottom: 4px; font-weight: 600; }
 .analogy { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 14px; align-items: start; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 16px 18px; margin: 22px 0; }
-.analogy .tag { font-family: var(--mono); font-size: 11px; letter-spacing: .08em; color: var(--mint); border: 1px solid color-mix(in srgb, var(--mint) 40%, var(--line)); border-radius: 999px; padding: 2px 8px; margin-top: 4px; white-space: nowrap; }
+.analogy .tag { font-family: var(--mono); font-size: 11px; letter-spacing: .06em; color: var(--mint); border: 1px solid color-mix(in srgb, var(--mint) 40%, var(--line)); border-radius: 999px; padding: 2px 8px; margin-top: 4px; white-space: nowrap; }
 .analogy p { margin: 0; }
+@media (max-width: 420px) { .analogy { grid-template-columns: minmax(0, 1fr); gap: 8px; } .analogy .tag { justify-self: start; } }
 
-.figure { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 18px; margin: 24px 0; overflow-x: auto; }
-.figure figcaption, .figcap { font-size: 13px; color: var(--muted); margin-top: 12px; line-height: 1.6; }
-.figure svg { display: block; width: 100%; height: auto; min-width: 460px; }
+.figure { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 18px; margin: 24px 0; overflow-x: auto; min-width: 0; }
+.figcap { font-size: 13px; color: var(--muted); margin: 12px 0 0; line-height: 1.6; }
+.figure svg { display: block; width: 100%; height: auto; }
 .figure svg text { font-family: var(--body); fill: var(--ink); }
 .figure svg .mut { fill: var(--muted); }
+.figure .wide { min-width: 520px; }
+.fig-h { font-family: var(--mono); font-size: 11.5px; letter-spacing: .06em; color: var(--muted); margin-bottom: 10px; display: flex; gap: 8px; align-items: center; }
+.fig-h b { font-weight: 600; padding: 2px 9px; border-radius: 999px; background: var(--accent-soft); color: var(--accent); }
+@media (max-width: 480px) { .figure { padding: 14px; border-radius: 12px; } }
 
 .stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin: 24px 0; }
 .stat { border: 1px solid var(--line); background: var(--surface); border-radius: 12px; padding: 14px 16px; }
 .stat b { display: block; font-family: var(--display); font-size: 26px; letter-spacing: -.03em; font-variant-numeric: tabular-nums; line-height: 1.2; }
 .stat span { font-size: 13px; color: var(--muted); line-height: 1.5; display: block; margin-top: 4px; }
-@media (max-width: 560px) { .stats { grid-template-columns: minmax(0, 1fr); } }
+.stat.hl b { color: var(--accent); }
+.in .stat { animation: rise .6s var(--ease) both; }
+.in .stat:nth-child(2) { animation-delay: 90ms; } .in .stat:nth-child(3) { animation-delay: 180ms; }
+@media (max-width: 560px) { .stats { grid-template-columns: minmax(0, 1fr); } .stat { display: grid; grid-template-columns: 130px minmax(0, 1fr); gap: 12px; align-items: center; } .stat span { margin-top: 0; } }
 
 /* tokens */
 .chips { display: flex; flex-wrap: wrap; gap: 4px; font-family: var(--mono); font-size: 15px; }
-.chips span { padding: 3px 7px; border-radius: 5px; background: var(--accent-soft); border: 1px solid color-mix(in srgb, var(--accent) 25%, transparent); }
-.chips span:nth-child(3n+2) { background: color-mix(in srgb, var(--mint) 14%, var(--surface)); border-color: color-mix(in srgb, var(--mint) 35%, transparent); }
+.chips span { padding: 3px 7px; border-radius: 5px; background: var(--accent-soft); border: 1px solid color-mix(in srgb, var(--accent) 25%, transparent); white-space: pre; }
+.chips span:nth-child(3n+2) { background: var(--mint-soft); border-color: color-mix(in srgb, var(--mint) 35%, transparent); }
 .chips span:nth-child(3n) { background: var(--signal-soft); border-color: color-mix(in srgb, var(--signal) 35%, transparent); }
-.chips-row { display: grid; grid-template-columns: 92px minmax(0, 1fr); gap: 12px; align-items: center; padding: 8px 0; border-bottom: 1px dashed var(--line); }
+.chips-row { display: grid; grid-template-columns: 100px minmax(0, 1fr); gap: 12px; align-items: center; padding: 9px 0; border-bottom: 1px dashed var(--line); }
 .chips-row:last-of-type { border-bottom: 0; }
-.chips-row > small { font-family: var(--mono); font-size: 11.5px; color: var(--muted); }
+.chips-row > small { font-family: var(--mono); font-size: 11.5px; color: var(--muted); line-height: 1.4; }
+@media (max-width: 420px) { .chips-row { grid-template-columns: minmax(0, 1fr); gap: 6px; } }
 
-/* qkv */
-.qkv { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin: 20px 0; }
-.qkv div { border: 1px solid var(--line); background: var(--surface); border-radius: 12px; padding: 14px; }
-.qkv b { font-family: var(--mono); font-size: 13px; color: var(--accent); display: block; }
-.qkv span { font-size: 14.5px; line-height: 1.6; display: block; margin-top: 6px; }
-@media (max-width: 560px) { .qkv { grid-template-columns: minmax(0, 1fr); } }
+/* knobs */
+.knobs { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 8px; }
+.knob { aspect-ratio: 1; max-width: 100%; border-radius: 50%; border: 2px solid var(--line); background: var(--bg); position: relative; }
+.knob::after { content: ""; position: absolute; left: 50%; top: 12%; width: 3px; height: 34%; margin-left: -1.5px; border-radius: 2px; background: var(--accent); transform-origin: 50% 112%; transform: rotate(var(--r, 0deg)); transition: transform 1.2s var(--ease); }
+.knob:nth-child(3n)::after { background: var(--mint); }
+@media (max-width: 480px) { .knobs { grid-template-columns: repeat(6, minmax(0, 1fr)); } .knob:nth-child(n+13) { display: none; } }
 
 /* steps */
-.steps { counter-reset: s; list-style: none; padding: 0; margin: 20px 0; display: grid; gap: 0; }
+.steps { counter-reset: s; list-style: none; padding: 0; margin: 20px 0; display: grid; }
 .steps li { counter-increment: s; display: grid; grid-template-columns: 34px minmax(0, 1fr); gap: 14px; padding: 14px 0; border-top: 1px solid var(--line); }
 .steps li:last-child { border-bottom: 1px solid var(--line); }
 .steps li::before { content: counter(s); font-family: var(--mono); font-size: 13px; font-weight: 600; width: 28px; height: 28px; border-radius: 8px; display: grid; place-items: center; background: var(--accent-soft); color: var(--accent); margin-top: 2px; }
 .steps li b { font-family: var(--display); }
 .steps li p { margin: 2px 0 0; font-size: 15.5px; color: var(--muted); }
 
-/* gd canvas */
-.gd { position: relative; }
+/* network */
+#net .e { stroke: var(--line); transition: stroke .3s, stroke-width .8s var(--ease); }
+#net .e.f { stroke: var(--accent); }
+#net .e.b { stroke: var(--signal); }
+#net .n { fill: var(--surface); stroke: var(--muted); stroke-width: 2; transition: fill .3s, stroke .3s; }
+#net .n.on { fill: var(--accent); stroke: var(--accent); }
+#net .n.hot { fill: var(--signal); stroke: var(--signal); }
+#lossTag { opacity: 0; transition: opacity .3s; }
+#lossTag.show { opacity: 1; }
+.phases { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 12px; }
+.phases span { font-family: var(--mono); font-size: 12px; padding: 4px 10px; border-radius: 999px; background: var(--surface-2); color: var(--muted); transition: background .3s, color .3s; }
+.phases span.on { background: var(--accent); color: var(--surface); }
+.phases span.on.warm { background: var(--signal); }
+#phaseCap { min-height: 3.2em; }
 .gd canvas { width: 100%; height: 240px; display: block; }
-.gd-bar { display: flex; gap: 8px; align-items: center; margin-top: 10px; flex-wrap: wrap; }
-.gd-bar .mono { font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; flex: 1; min-width: 180px; }
+.gd-info { font-family: var(--mono); font-size: 12px; color: var(--muted); margin-top: 10px; font-variant-numeric: tabular-nums; }
+@media (max-width: 480px) { .gd canvas { height: 200px; } }
 
-/* phases */
-.phase { display: grid; grid-template-columns: 64px minmax(0, 1fr); gap: 10px; align-items: center; font-family: var(--mono); font-size: 12px; color: var(--muted); margin: 8px 0; }
+/* attention */
+.qkv { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin: 20px 0; }
+.qkv div { border: 1px solid var(--line); background: var(--surface); border-radius: 12px; padding: 14px; }
+.qkv b { font-family: var(--mono); font-size: 13px; display: block; }
+.qkv div:nth-child(1) b { color: var(--accent); } .qkv div:nth-child(2) b { color: var(--mint); } .qkv div:nth-child(3) b { color: var(--signal); }
+.qkv span { font-size: 14.5px; line-height: 1.6; display: block; margin-top: 6px; }
+@media (max-width: 560px) { .qkv { grid-template-columns: minmax(0, 1fr); } }
+.in #qbox { animation: qpulse 2.4s ease-in-out 2.2s infinite; transform-box: fill-box; transform-origin: center; }
+@keyframes qpulse { 0%, 100% { transform: none; } 50% { transform: scale(1.05); } }
+.par { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 18px; }
+@media (max-width: 600px) { .par { grid-template-columns: minmax(0, 1fr); } }
+.heads { display: flex; gap: 6px; height: 64px; align-items: flex-end; margin-top: 10px; }
+.heads i { flex: 1; border-radius: 6px 6px 3px 3px; background: var(--accent); opacity: .85; height: 40%; }
+.heads i:nth-child(even) { background: var(--mint); }
+.in .heads i { animation: head var(--t, 1.6s) ease-in-out infinite alternate; }
+@keyframes head { from { height: 18%; } to { height: 100%; } }
+.seq { display: flex; gap: 6px; align-items: center; margin-top: 10px; }
+.seq > small { font-family: var(--mono); font-size: 12px; color: var(--muted); width: 92px; flex: none; }
+.seq i { width: 24px; height: 24px; border-radius: 6px; background: var(--surface-2); border: 1px solid var(--line); }
+.in .seq.rnn i { animation: lit 3s infinite; animation-delay: calc(var(--k) * .45s); }
+.in .seq.tf i { animation: lit 3s infinite; animation-delay: .3s; }
+@keyframes lit { 0%, 12% { background: var(--accent); border-color: var(--accent); } 25%, 100% { background: var(--surface-2); border-color: var(--line); } }
+
+/* mask */
+.mask { display: grid; grid-template-columns: 64px repeat(6, minmax(28px, 46px)); gap: 4px; font-size: 13px; justify-content: center; }
+.mask div { height: 36px; display: grid; place-items: center; border-radius: 6px; }
+.mask .h { color: var(--muted); font-size: 12px; }
+.mask .rl { justify-content: end; padding-right: 8px; display: flex; align-items: center; color: var(--muted); font-size: 12px; }
+.mask .on { background: color-mix(in srgb, var(--accent) 80%, var(--surface)); }
+.mask .self { background: var(--accent); }
+.mask .off { background: var(--surface-2); border: 1px dashed var(--line); }
+@media (max-width: 420px) { .mask { grid-template-columns: 50px repeat(6, minmax(0, 1fr)); } .mask div { height: 30px; } }
+
+/* size bars */
+.size small { font-family: var(--mono); font-size: 12.5px; color: var(--muted); display: flex; justify-content: space-between; align-items: baseline; }
+.size small b { color: var(--ink); font-family: var(--display); font-size: 17px; }
+.size + .size { margin-top: 16px; }
+.track { height: 26px; border-radius: 8px; background: var(--surface-2); margin-top: 6px; position: relative; }
+.track i { position: absolute; inset: 0 auto 0 0; border-radius: 8px; background: var(--muted); transform-origin: left; }
+.track.win i { background: var(--accent); }
+.in .track i { animation: growX 1.2s var(--ease) both; animation-delay: var(--d, 300ms); }
+.badge { display: inline-block; margin-top: 8px; font-family: var(--mono); font-size: 12px; color: var(--accent); background: var(--accent-soft); padding: 3px 10px; border-radius: 999px; }
+
+/* chat compare */
+.chat2 { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 14px; }
+@media (max-width: 640px) { .chat2 { grid-template-columns: minmax(0, 1fr); } }
+.chatcol { border: 1px solid var(--line); border-radius: 12px; padding: 14px; background: var(--bg); min-width: 0; }
+.chatcol .who { font-family: var(--mono); font-size: 11.5px; padding: 2px 9px; border-radius: 999px; display: inline-block; }
+.chat { display: grid; gap: 10px; margin-top: 12px; }
+.bubble { max-width: 92%; padding: 10px 14px; border-radius: 16px; font-size: 15px; line-height: 1.6; }
+.bubble.user { justify-self: end; background: var(--accent); color: var(--surface); border-bottom-right-radius: 5px; }
+.bubble.bot { justify-self: start; border-bottom-left-radius: 5px; min-height: 5.4em; width: 92%; }
+.bubble.bot.bad { background: var(--signal-soft); } .bubble.bot.good { background: var(--mint-soft); }
+.typer::after { content: ""; display: inline-block; width: 2px; height: 1em; vertical-align: -2px; margin-left: 2px; background: currentColor; animation: blink 1s steps(1) infinite; }
+.verdict { margin: 10px 0 0; font-family: var(--mono); font-size: 12px; }
+.verdict.bad { color: var(--signal); } .verdict.good { color: var(--mint); }
+
+/* rlhf */
+.rl4 { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+@media (max-width: 760px) { .rl4 { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 400px) { .rl4 { grid-template-columns: minmax(0, 1fr); } }
+.rlc { border: 1px solid var(--line); border-radius: 12px; padding: 12px; background: var(--bg); min-width: 0; }
+.rlc small { font-family: var(--mono); font-size: 13px; color: var(--accent); }
+.rlc h4 { font-family: var(--display); font-size: 15px; margin: 2px 0 8px; letter-spacing: -.01em; }
+.rlc p { font-size: 13px; line-height: 1.55; color: var(--muted); margin: 8px 0 0; }
+.vis { height: 104px; position: relative; }
+.gen3 { display: grid; gap: 5px; align-content: center; }
+.gen3 span, .rank span { font-family: var(--mono); font-size: 12px; padding: 5px 9px; border-radius: 8px; background: var(--accent-soft); color: var(--accent); }
+.rank i { position: absolute; left: 0; width: 18px; height: 28px; display: grid; place-items: center; font-style: normal; font-family: var(--mono); font-size: 12px; color: var(--muted); }
+.rank i:nth-of-type(1) { top: 4px; } .rank i:nth-of-type(2) { top: 38px; } .rank i:nth-of-type(3) { top: 72px; }
+.rank span { position: absolute; left: 24px; right: 0; height: 28px; display: flex; align-items: center; }
+.rk-a { top: 4px; background: var(--mint-soft) !important; color: var(--mint) !important; }
+.rk-b { top: 38px; } .rk-c { top: 72px; }
+.in .rk-b { animation: rkDown .6s var(--ease) 1.4s both; }
+.in .rk-c { animation: rkUp .6s var(--ease) 1.4s both; }
+@keyframes rkDown { to { transform: translateY(34px); background: var(--signal-soft); color: var(--signal); } }
+@keyframes rkUp { to { transform: translateY(-34px); } }
+.meters { display: grid; gap: 10px; align-content: center; }
+.meters div { display: grid; grid-template-columns: 14px minmax(0, 1fr) 28px; gap: 6px; align-items: center; font-family: var(--mono); font-size: 12px; color: var(--muted); }
+.meters b { height: 12px; border-radius: 4px; background: var(--surface-2); position: relative; overflow: hidden; }
+.meters .mt { position: absolute; inset: 0 auto 0 0; background: var(--accent); border-radius: 4px; transform-origin: left; }
+.in .meters .mt { animation: growX 1s var(--ease) 1.6s both; }
+.meters em { font-style: normal; color: var(--ink); }
+.rlv { display: grid; place-items: center; }
+.in .spinloop { transform-box: view-box; transform-origin: 60px 60px; animation: rot 3s linear infinite; }
+
+/* factory */
+.factory { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 14px; }
+@media (max-width: 680px) { .factory { grid-template-columns: minmax(0, 1fr); } }
+.fcol { border: 1px solid var(--line); border-radius: 12px; padding: 14px; background: var(--bg); min-width: 0; }
+.tl { list-style: none; margin: 10px 0 0; padding: 0; display: grid; gap: 4px; }
+.tl li { font-size: 14px; color: var(--muted); line-height: 1.5; padding-left: 14px; position: relative; }
+.tl li::before { content: ""; position: absolute; left: 1px; top: .62em; width: 5px; height: 5px; border-radius: 2px; background: var(--accent); }
+.tl li:last-child { color: var(--ink); font-weight: 600; }
+.flowline { stroke-dasharray: 10 8; }
+.in .flowline { animation: belt .9s linear infinite; }
+.belt { stroke-dasharray: 16 12; }
+.in .belt { animation: belt .7s linear infinite; }
+.in .dial { transform-box: fill-box; transform-origin: center; animation: spin var(--sd, 2s) ease-in-out infinite alternate; }
+.in .inp { animation: inp 3.2s linear infinite; }
+.in .outp { animation: outp 3.3s linear infinite; }
+@keyframes inp { 0% { transform: translateX(0); opacity: 0; } 12%, 70% { opacity: 1; } 100% { transform: translateX(150px); opacity: 0; } }
+@keyframes outp { 0% { transform: translateX(0); opacity: 0; } 15%, 80% { opacity: 1; } 100% { transform: translateX(140px); opacity: 0; } }
+
+/* resend + blocks */
+.resend { display: grid; gap: 8px; }
+.row3 { display: grid; grid-template-columns: 82px minmax(0, 1fr); gap: 10px; align-items: center; }
+.row3 > span { font-family: var(--mono); font-size: 12px; color: var(--muted); }
+.bks { display: flex; gap: 4px; min-width: 0; }
+.bk { font-style: normal; flex: 1; min-width: 0; height: 34px; border-radius: 7px; display: grid; place-items: center; font-size: 11.5px; font-family: var(--mono); white-space: nowrap; overflow: hidden; }
+.bk.sys { background: var(--accent-soft); color: var(--accent); }
+.bk.q { background: var(--surface-2); color: var(--ink); }
+.bk.a { background: var(--mint-soft); color: var(--mint); }
+.bk.new { outline: 2px solid var(--accent); outline-offset: -2px; }
+.modelbar { display: flex; gap: 12px; align-items: center; margin-top: 4px; padding: 10px 14px; border-radius: 10px; border: 1.5px solid var(--mint); flex-wrap: wrap; }
+.modelbar b { font-family: var(--display); }
+.modelbar span { font-size: 13.5px; color: var(--muted); }
+@media (max-width: 480px) { .row3 { grid-template-columns: minmax(0, 1fr); gap: 4px; } .bk { font-size: 10.5px; } }
+
+/* lanes */
+.phase { display: grid; grid-template-columns: 74px minmax(0, 1fr); gap: 10px; align-items: center; font-family: var(--mono); font-size: 12px; color: var(--muted); margin: 8px 0; }
 .lane { display: flex; gap: 3px; height: 26px; }
 .lane i { flex: 1; border-radius: 4px; background: var(--accent); opacity: .85; }
 .lane.dec i { background: var(--mint); flex: 0 0 18px; }
-.lane .gap { flex: 0 0 14px; background: transparent; }
+.lane .gap { background: transparent !important; flex: 0 0 12px !important; }
+.lane .lead-gap { background: transparent !important; flex: 1 !important; }
+.exp { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 12px; align-items: center; margin-top: 14px; padding-top: 14px; border-top: 1px dashed var(--line); }
+.pills { position: relative; height: 26px; width: 160px; }
+.pill { position: absolute; left: 0; top: 0; font-family: var(--mono); font-size: 12px; padding: 4px 10px; border-radius: 999px; white-space: nowrap; }
+.pill.p1 { background: var(--signal-soft); color: var(--signal); }
+.pill.p2 { background: var(--mint-soft); color: var(--mint); opacity: 0; }
+.in .pill.p1 { animation: fadeOut .3s ease 1.6s both; }
+.in .pill.p2 { animation: fadeIn .3s ease 1.7s both; }
+@keyframes fadeOut { to { opacity: 0; } }
+@keyframes fadeIn { to { opacity: 1; } }
+.exp .typer { font-size: 15px; grid-column: 1 / -1; min-height: 3.2em; }
 
-/* tweet note */
-.post { border: 1px solid var(--line); background: var(--surface); border-radius: 12px; padding: 14px 16px; margin: 22px 0; font-size: 15px; line-height: 1.75; }
-.post header { display: flex; gap: 10px; align-items: center; font-size: 12.5px; color: var(--muted); font-family: var(--mono); margin-bottom: 6px; }
-.post header b { color: var(--ink); font-family: var(--display); font-size: 13.5px; }
-.post p { margin: 0; }
+/* agent cost */
+.agent { display: grid; grid-template-columns: 180px minmax(0, 1fr); gap: 20px; align-items: center; }
+@media (max-width: 600px) { .agent { grid-template-columns: minmax(0, 1fr); justify-items: center; } }
+.ringwrap { position: relative; width: 170px; height: 170px; }
+.ringwrap svg { width: 100%; height: 100%; }
+.ringnum { position: absolute; inset: 0; display: grid; place-items: center; font-family: var(--display); font-size: 34px; font-weight: 800; letter-spacing: -.04em; color: var(--accent); font-variant-numeric: tabular-nums; }
+.in .ring { animation: ringIn 1.5s var(--ease) .3s both; }
+@keyframes ringIn { from { stroke-dashoffset: 82.4; } to { stroke-dashoffset: 0; } }
+.ctx { display: grid; gap: 10px; width: 100%; min-width: 0; }
+.ctx .row3 { grid-template-columns: 96px minmax(0, 1fr); }
+.segs { display: flex; gap: 3px; min-width: 0; }
+.seg { font-style: normal; flex: 1; min-width: 0; height: 34px; border-radius: 6px; display: grid; place-items: center; font-family: var(--mono); font-size: 11px; border: 1.5px solid var(--mint); background: var(--mint-soft); color: var(--mint); }
+.seg.sum { background: var(--accent-soft); color: var(--accent); border-color: var(--accent); }
+.resl { font-family: var(--mono); font-size: 12px; font-weight: 600; text-align: right; }
+.resl.ok { color: var(--mint); } .resl.no { color: var(--signal); }
+@media (max-width: 480px) { .ctx .row3 { grid-template-columns: minmax(0, 1fr); } }
+
+/* prefix blocks */
+.prefix { display: grid; gap: 8px; }
+.prow { display: grid; grid-template-columns: 96px minmax(0, 1fr) 84px; gap: 10px; align-items: center; }
+.prow > span { font-family: var(--mono); font-size: 12px; color: var(--muted); line-height: 1.3; }
+.blocks { display: flex; gap: 4px; min-width: 0; }
+.blocks i { font-style: normal; height: 34px; border-radius: 7px; display: grid; place-items: center; font-size: 11.5px; font-family: var(--mono); min-width: 0; overflow: hidden; white-space: nowrap; }
+.blocks .hit { background: var(--mint-soft); color: var(--mint); border: 1.5px solid var(--mint); }
+.blocks .miss { background: var(--signal-soft); color: var(--signal); border: 1.5px dashed var(--signal); }
+@media (max-width: 520px) { .prow { grid-template-columns: minmax(0, 1fr) auto; } .prow > span:first-child { grid-column: 1 / -1; } }
+
+/* cache miss pages */
+.miss3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin: 20px 0; }
+.miss3 div { border: 1px solid var(--line); background: var(--surface); border-radius: 12px; padding: 14px; }
+.miss3 small { font-family: var(--mono); font-size: 11.5px; color: var(--signal); }
+.miss3 h4 { font-family: var(--display); font-size: 15.5px; margin: 4px 0 6px; }
+.miss3 p { font-size: 13.5px; color: var(--muted); line-height: 1.55; margin: 0; }
+@media (max-width: 600px) { .miss3 { grid-template-columns: minmax(0, 1fr); } }
+.pgrow { display: flex; gap: 6px; padding-top: 14px; }
+.pg { flex: 1; min-width: 0; height: 70px; border-radius: 8px; background: var(--mint-soft); border: 1.5px solid var(--mint); color: var(--mint); display: grid; place-items: center; font-family: var(--mono); font-size: 13px; font-style: normal; position: relative; }
+.pg b { position: absolute; top: -12px; left: 50%; transform: translateX(-50%); font-size: 10.5px; background: var(--signal); color: var(--surface); padding: 2px 8px; border-radius: 999px; white-space: nowrap; font-weight: 500; }
 
 /* table */
 .table-wrap { overflow-x: auto; margin: 20px 0; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); }
 table { border-collapse: collapse; width: 100%; min-width: 540px; font-size: 14.5px; }
 th, td { text-align: left; padding: 11px 14px; border-bottom: 1px solid var(--line); vertical-align: top; line-height: 1.6; }
-th { font-family: var(--mono); font-size: 11.5px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); font-weight: 500; background: var(--surface-2); }
+th { font-family: var(--mono); font-size: 11.5px; letter-spacing: .04em; color: var(--muted); font-weight: 500; background: var(--surface-2); }
 tr:last-child td { border-bottom: 0; }
 td.num { font-family: var(--mono); font-variant-numeric: tabular-nums; white-space: nowrap; }
 td b { font-family: var(--display); }
 
+.post { border: 1px solid var(--line); background: var(--surface); border-radius: 12px; padding: 14px 16px; margin: 22px 0; font-size: 15px; line-height: 1.75; }
+.post header { display: flex; gap: 10px; align-items: center; font-size: 12.5px; color: var(--muted); font-family: var(--mono); margin-bottom: 6px; flex-wrap: wrap; }
+.post header b { color: var(--ink); font-family: var(--display); font-size: 13.5px; }
+.post p { margin: 0; }
+
 .tips { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin: 20px 0; }
-.tip { border: 1px solid var(--line); background: var(--surface); border-radius: 12px; padding: 16px 18px; }
+.tip { border: 1px solid var(--line); background: var(--surface); border-radius: 12px; padding: 16px 18px; min-width: 0; }
 .tip .k { font-family: var(--mono); font-size: 11.5px; color: var(--accent); letter-spacing: .06em; }
 .tip h4 { font-family: var(--display); font-size: 16.5px; margin: 4px 0 8px; letter-spacing: -.01em; }
 .tip p, .tip li { font-size: 14.5px; line-height: 1.7; color: var(--muted); margin: 0 0 8px; }
 .tip ul { margin: 0; padding-left: 18px; }
 @media (max-width: 640px) { .tips { grid-template-columns: minmax(0, 1fr); } }
 .tldr { margin: 24px 0; padding: 18px 20px; border-radius: 12px; background: var(--ink); color: var(--bg); font-family: var(--display); font-weight: 700; font-size: 18px; letter-spacing: -.01em; }
-.tldr small { display: block; font-family: var(--mono); font-weight: 500; font-size: 11.5px; letter-spacing: .08em; opacity: .7; margin-bottom: 4px; }
+.tldr small { display: block; font-family: var(--mono); font-weight: 500; font-size: 11.5px; letter-spacing: .06em; opacity: .7; margin-bottom: 4px; }
 
-/* moe */
 .moe { display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); gap: 6px; margin-top: 12px; }
-.moe span { aspect-ratio: 1; max-width: 100%; border-radius: 8px; border: 1px dashed var(--line); display: grid; place-items: center; font-family: var(--mono); font-size: 12px; color: var(--muted); transition: all .3s; }
-.moe span.on { border: 1px solid var(--accent); background: var(--accent-soft); color: var(--accent); font-weight: 600; }
+.moe span { aspect-ratio: 1; max-width: 100%; border-radius: 8px; border: 1px dashed var(--line); display: grid; place-items: center; font-family: var(--mono); font-size: 12px; color: var(--muted); transition: all .35s var(--ease); }
+.moe span.on { border: 1px solid var(--accent); background: var(--accent-soft); color: var(--accent); font-weight: 600; transform: translateY(-4px); }
+@media (max-width: 420px) { .moe { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+
+.flow { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+@media (max-width: 560px) { .flow { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.flow div { border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; background: var(--bg); transition: border-color .35s, translate .35s var(--ease), box-shadow .35s; min-width: 0; }
+.flow div.lit { border-color: var(--accent); translate: 0 -4px; box-shadow: 0 10px 24px color-mix(in srgb, var(--accent) 18%, transparent); }
+.flow small { font-family: var(--mono); font-size: 11px; color: var(--accent); }
+.flow b { display: block; font-family: var(--display); font-size: 16px; margin: 2px 0 4px; }
+.flow p { font-size: 13.5px; line-height: 1.5; color: var(--muted); margin: 0; }
+.rail { height: 3px; border-radius: 2px; background: var(--surface-2); margin-top: 16px; overflow: hidden; }
+.rail i { display: block; height: 100%; background: var(--accent); transform-origin: left; transform: scaleX(var(--p, 0)); transition: transform .6s var(--ease); }
 
 .ending { font-family: var(--display); font-size: clamp(24px, 3.4vw, 30px); font-weight: 700; letter-spacing: -.025em; line-height: 1.35; margin: 36px 0 8px; text-wrap: balance; }
 .source { border-top: 1px solid var(--line); margin-top: 48px; padding-top: 20px; font-size: 13.5px; color: var(--muted); line-height: 1.7; }
 footer.site { border-top: 1px solid var(--line); }
-footer.site .in { max-width: 1200px; margin: 0 auto; padding-block: 24px; display: flex; gap: 12px; justify-content: space-between; flex-wrap: wrap; font-size: 13px; color: var(--muted); font-family: var(--mono); }
+footer.site .in-wrap { max-width: 1200px; margin: 0 auto; padding-block: 24px calc(24px + env(safe-area-inset-bottom, 0px)); display: flex; gap: 12px; justify-content: space-between; flex-wrap: wrap; font-size: 13px; color: var(--muted); font-family: var(--mono); }
 footer.site a { color: var(--muted); }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+  .pill.p1 { opacity: 0; } .pill.p2 { opacity: 1; }
+}
 </style>
 </head>
 <body>
@@ -249,7 +474,7 @@ footer.site a { color: var(--muted); }
     <a class="brand" href="../"><span class="brand-mark">AA</span><span>Artifact Archives</span></a>
     <span class="crumb">/ guides / llm-guide</span>
     <span class="spacer"></span>
-    <button class="btn" id="themeBtn" type="button" aria-label="테마 전환">◐ 테마</button>
+    <button class="btn" id="themeBtn" type="button" aria-label="Theme 전환">◐ Theme</button>
   </div>
   <div class="progress" id="progress"></div>
 </header>
@@ -257,21 +482,21 @@ footer.site a { color: var(--muted); }
 <div class="hero gutter">
   <div class="hero-in">
     <div>
-      <span class="eyebrow"><i></i>LLM 기본기 · 14 chapters · 약 15분</span>
-      <h1>채팅창 뒤에서 <em>무슨 일이</em> 벌어지는지</h1>
-      <p class="lede">컨텍스트 윈도가 뭔지, 토큰이 글자 수와 같은지, 캐시는 왜 할인되는지. AI를 매일 쓰면서도 막상 설명하기 어려운 기본기를 비유로 풀었습니다. 비유가 오해를 부를 만한 곳에는 한계도 같이 적었습니다.</p>
-      <div class="meta"><span>by <a href="https://x.com/yulmu_coffee/status/2113455967518216543" target="_blank" rel="noopener">@yulmu_coffee</a></span><span>2026-10-22</span><span>가격 정보 2026년 10월 기준</span></div>
-      <div class="hero-cta"><a class="btn primary" href="#s1">읽기 시작</a><a class="btn" href="#tips">캐시 히트 실전 팁 →</a></div>
+      <span class="eyebrow"><i></i>LLM (Large Language Model) · 14 chapters · 약 15분</span>
+      <h1>LLM <em>이해하기</em></h1>
+      <p class="lede">채팅창 뒤에서 무슨 일이 벌어지는지. Context Window가 뭔지, Token이 글자 수와 같은지, Cache는 왜 할인되는지. AI (Artificial Intelligence)를 매일 쓰면서도 막상 설명하기 어려운 기본기를 비유로 풀었습니다. 비유가 오해를 부를 만한 곳에는 한계도 같이 적었습니다.</p>
+      <div class="meta"><a href="https://x.com/yulmu_coffee/status/2113455967518216543" target="_blank" rel="noopener">Adapted from @yulmu_coffee (X post)</a></div>
+      <div class="hero-cta"><a class="btn primary" href="#s1">읽기 시작</a><a class="btn" href="#tips">Cache Hit 실전 팁 →</a></div>
     </div>
 
-    <div class="demo" aria-label="다음 토큰 예측 데모">
-      <div class="demo-head"><span class="dots"><b></b><b></b><b></b></span><span>next_token.demo</span><span class="spacer"></span><span>● 추론 중</span></div>
+    <div class="demo" aria-label="다음 Token 예측 데모">
+      <div class="demo-head"><span class="dots"><b></b><b></b><b></b></span><span>next_token.demo</span><span class="spacer"></span><span class="live">● Inference 중</span></div>
       <div class="demo-body">
         <div class="prompt" id="prompt"></div>
         <div class="cands" id="cands"></div>
         <div class="demo-foot">
           <small>후보를 눌러 문장 끝에 붙여 보세요. 확률은 설명용 예시입니다.</small>
-          <button class="btn" id="sampleBtn" type="button">샘플링</button>
+          <button class="btn" id="sampleBtn" type="button">Sampling</button>
           <button class="btn" id="resetBtn" type="button">처음으로</button>
         </div>
       </div>
@@ -281,317 +506,458 @@ footer.site a { color: var(--muted); }
 
 <div class="shell gutter">
   <nav class="toc" aria-label="목차">
-    <h4>On this page</h4>
+    <h4>ON THIS PAGE</h4>
     <ol id="toc"></ol>
   </nav>
 
   <article id="article">
     <details class="toc-mobile"><summary>목차</summary><ol id="tocMobile"></ol></details>
 
-    <section id="s1" data-n="01" data-t="다음 토큰 맞히기">
+    <section id="s1" data-n="01" data-t="다음 Token 맞히기">
       <span class="sec-label">01 · 본질</span>
-      <h2>LLM의 본질: 다음 토큰 맞히기</h2>
+      <h2>LLM의 본질: 다음 Token 맞히기</h2>
       <p>가장 중요한 것부터 말씀드리겠습니다.</p>
-      <p class="key">LLM(대규모 언어 모델)이 하는 일은 근본적으로 "지금까지의 글 다음에 올 조각이 무엇일지"를 확률로 예측하는 것입니다.</p>
-      <p>GPT 계열 모델의 출발점이 된 논문들도 학습 목표를 이렇게 정의합니다. 앞에 나온 토큰들이 주어졌을 때 다음 토큰의 확률을 최대한 잘 맞히도록 학습시킨다는 것이죠.</p>
+      <p class="key">LLM (Large Language Model)이 하는 일은 근본적으로 "지금까지의 글 다음에 올 조각이 무엇일지"를 확률로 예측하는 것입니다.</p>
+      <p>GPT (Generative Pre-trained Transformer) 계열 모델의 출발점이 된 논문들도 학습 목표를 이렇게 정의합니다. 앞에 나온 Token들이 주어졌을 때 다음 Token의 확률을 최대한 잘 맞히도록 학습시킨다는 것이죠.</p>
       <p>"오늘 아침에 커피를"이라는 문장이 있으면, 모델은 "마셨다"에 높은 확률을, "던졌다"에 낮은 확률을 매깁니다. 하나를 고르고, 그걸 문장 끝에 붙이고, 다시 다음 조각을 예측합니다. 이걸 수백, 수천 번 반복하면 긴 답변이 됩니다. 위의 데모가 바로 그 한 걸음입니다.</p>
-      <div class="analogy"><span class="tag">비유</span><p>스마트폰 키보드의 자동완성을 떠올리면 됩니다. 다만 규모가 상상을 초월하게 큰 자동완성입니다.</p></div>
-      <p>물론 "그냥 자동완성"이라고 하면 과소평가입니다. 다음 토큰을 잘 맞히려면 문법, 사실, 맥락, 추론 패턴까지 학습해야 하기 때문입니다. GPT-3 논문은 이렇게 학습한 모델이 예시 몇 개만 보여줘도 번역, 질의응답 같은 여러 과제를 해낸다는 것을 보였습니다.</p>
+      <div class="analogy"><span class="tag">비유</span><p>Smartphone keyboard의 자동완성을 떠올리면 됩니다. 다만 규모가 상상을 초월하게 큰 자동완성입니다.</p></div>
+      <p>물론 "그냥 자동완성"이라고 하면 과소평가입니다. 다음 Token을 잘 맞히려면 문법, 사실, 맥락, 추론 pattern까지 학습해야 하기 때문입니다. GPT-3 논문은 이렇게 학습한 모델이 예시 몇 개만 보여줘도 번역, 질의응답 같은 여러 과제를 해낸다는 것을 보였습니다.</p>
       <p>그럼 여기서 말하는 '조각'은 대체 뭘까요?</p>
     </section>
 
-    <section id="s2" data-n="02" data-t="토큰과 토크나이저">
+    <section id="s2" data-n="02" data-t="Token과 Tokenizer">
       <span class="sec-label">02 · 입력 단위</span>
-      <h2>토큰과 토크나이저: 모델이 읽는 단위</h2>
-      <p>모델은 글자를 그대로 읽지 않습니다. 먼저 글을 <strong>토큰</strong>이라는 조각으로 자르고, 각 조각에 번호를 붙입니다. 이 자르는 도구가 <strong>토크나이저</strong>입니다.</p>
-      <p>토큰은 단어일 수도, 단어의 일부일 수도, 글자 하나일 수도 있습니다. 자주 나오는 덩어리는 토큰 하나가 되고, 드문 단어는 여러 조각으로 쪼개집니다. 널리 쓰이는 BPE(Byte Pair Encoding)는 자주 붙어 나오는 문자 쌍을 반복해서 하나로 합쳐 가며 어휘를 만듭니다.</p>
-      <div class="figure">
-        <div class="chips-row"><small>원문</small><div class="chips"><span>I</span><span>&nbsp;love</span><span>&nbsp;straw</span><span>berry</span><span>&nbsp;latte</span></div></div>
-        <div class="chips-row"><small>한국어</small><div class="chips"><span>오늘</span><span>&nbsp;아침</span><span>에</span><span>&nbsp;커</span><span>피를</span></div></div>
-        <div class="chips-row"><small>토큰 ID</small><div class="chips"><span>40</span><span>3021</span><span>15978</span><span>19772</span><span>51766</span></div></div>
-        <p class="figcap">자르는 모양을 보여주려고 만든 예시입니다. 실제 경계와 번호는 토크나이저마다 다릅니다.</p>
+      <h2>Token과 Tokenizer: 모델이 읽는 단위</h2>
+      <p>모델은 글자를 그대로 읽지 않습니다. 먼저 글을 <strong>Token</strong>이라는 조각으로 자르고, 각 조각에 번호를 붙입니다. 이 자르는 도구가 <strong>Tokenizer</strong>입니다.</p>
+      <p>Token은 단어일 수도, 단어의 일부일 수도, 글자 하나일 수도 있습니다. 자주 나오는 덩어리는 Token 하나가 되고, 드문 단어는 여러 조각으로 쪼개집니다. 널리 쓰이는 BPE (Byte Pair Encoding)는 자주 붙어 나오는 문자 쌍을 반복해서 하나로 합쳐 가며 Vocabulary를 만듭니다.</p>
+      <div class="figure fig">
+        <div class="chips-row"><small>영어</small><div class="chips"><span class="pop">I</span><span class="pop"> love</span><span class="pop"> straw</span><span class="pop">berry</span><span class="pop"> latte</span></div></div>
+        <div class="chips-row"><small>한국어</small><div class="chips"><span class="pop">오늘</span><span class="pop"> 아침</span><span class="pop">에</span><span class="pop"> 커</span><span class="pop">피를</span></div></div>
+        <div class="chips-row"><small>Token ID (Identifier)</small><div class="chips"><span class="pop">40</span><span class="pop">3021</span><span class="pop">15978</span><span class="pop">19772</span><span class="pop">51766</span></div></div>
+        <p class="figcap">자르는 모양을 보여주려고 만든 예시입니다. 실제 경계와 번호는 Tokenizer마다 다릅니다.</p>
       </div>
-      <div class="stats">
-        <div class="stat"><b>≈ 4글자</b><span>영어 텍스트 1토큰 (OpenAI 안내)</span></div>
-        <div class="stat"><b>≈ 0.75단어</b><span>영어 기준 1토큰이 담는 단어 수</span></div>
-        <div class="stat"><b>한국어 ↑</b><span>같은 내용에 토큰이 더 드는 편. 토크나이저마다 차이가 큼</span></div>
+      <div class="stats fig">
+        <div class="stat hl"><b data-count>≈ 4글자</b><span>영어 text 1 Token (OpenAI 안내)</span></div>
+        <div class="stat"><b data-count>≈ 0.75단어</b><span>영어 기준 1 Token이 담는 단어 수</span></div>
+        <div class="stat"><b>한국어 ↑</b><span>같은 내용에 Token이 더 드는 편. Tokenizer마다 차이가 큼</span></div>
       </div>
-      <p>OpenAI 안내에 따르면 일반적인 영어 텍스트에서 1토큰은 대략 4글자, 단어로는 약 0.75단어입니다(<a href="https://help.openai.com/en/articles/4936856-what-are-tokens-and-how-to-count-them" target="_blank" rel="noopener">출처</a>). 한국어는 보통 같은 내용을 쓰는 데 토큰이 더 많이 드는데, 토크나이저마다 크게 다르니 실제 비율은 직접 확인해 보시는 게 좋습니다. 모델이 아는 토큰의 전체 목록은 <strong>어휘(vocabulary)</strong>라고 부릅니다.</p>
+      <p>OpenAI 안내에 따르면 일반적인 영어 text에서 1 Token은 대략 4글자, 단어로는 약 0.75단어입니다(<a href="https://help.openai.com/en/articles/4936856-what-are-tokens-and-how-to-count-them" target="_blank" rel="noopener">출처</a>). 한국어는 보통 같은 내용을 쓰는 데 Token이 더 많이 드는데, Tokenizer마다 크게 다르니 실제 비율은 직접 확인해 보시는 게 좋습니다. 모델이 아는 Token의 전체 목록은 <strong>Vocabulary</strong>라고 부릅니다.</p>
       <h3>이게 실생활에서 왜 중요할까요?</h3>
       <ul class="list">
-        <li>API 요금이 토큰 단위로 매겨집니다.</li>
-        <li>컨텍스트 윈도(뒤에서 설명)도 토큰 단위입니다.</li>
-        <li>"strawberry에 r이 몇 개냐" 같은 질문에서 모델이 가끔 헤매는 것도, 글자가 아니라 토큰 덩어리로 보고 있다는 점과 관련 있다고 흔히 설명합니다.</li>
+        <li>API (Application Programming Interface) 요금이 Token 단위로 매겨집니다.</li>
+        <li>Context Window(뒤에서 설명)도 Token 단위입니다.</li>
+        <li>"strawberry에 r이 몇 개냐" 같은 질문에서 모델이 가끔 헤매는 것도, 글자가 아니라 Token 덩어리로 보고 있다는 점과 관련 있다고 흔히 설명합니다.</li>
       </ul>
     </section>
 
-    <section id="s3" data-n="03" data-t="임베딩">
+    <section id="s3" data-n="03" data-t="Embedding">
       <span class="sec-label">03 · 의미 공간</span>
-      <h2>임베딩: 단어에 좌표를 주기</h2>
-      <p>토큰은 번호일 뿐입니다. '커피'가 4521번이고 '차'가 4522번이라고 해서 두 단어가 비슷하다는 뜻은 아니죠. 번호에는 의미가 없습니다.</p>
-      <p>그래서 모델은 각 토큰을 <strong>수백~수천 개의 숫자로 이뤄진 벡터</strong>로 바꿉니다. 이걸 <strong>임베딩</strong>이라고 합니다. Transformer 원 논문은 이 벡터 크기를 512로 썼고, 현재 오픈웨이트 모델 중 가장 큰 Kimi K3는 7,168입니다.</p>
+      <h2>Embedding: 단어에 좌표 주기</h2>
+      <p>Token은 번호일 뿐입니다. '커피'가 4521번이고 '차'가 4522번이라고 해서 두 단어가 비슷하다는 뜻은 아니죠. 번호에는 의미가 없습니다.</p>
+      <p>그래서 모델은 각 Token을 <strong>수백~수천 개의 숫자로 이뤄진 Vector</strong>로 바꿉니다. 이걸 <strong>Embedding</strong>이라고 합니다. Transformer 원 논문은 이 Vector 크기를 512로 썼고, 현재 open-weight 모델 중 가장 큰 Kimi K3는 7,168입니다.</p>
       <p>갑자기 뭔가 어렵죠?</p>
       <div class="analogy"><span class="tag">비유</span><p>지도를 떠올려 보세요. 모든 단어가 거대한 지도 위 어딘가에 점으로 찍혀 있고, 의미가 비슷한 단어끼리 가까이 모여 있습니다.</p></div>
-      <figure class="figure" style="margin-inline:0">
-        <svg viewBox="0 0 640 280" role="img" aria-label="임베딩 공간 예시: 음료 단어끼리, 금융 단어끼리 모여 있고 king에서 queen으로 가는 벡터가 man에서 woman으로 가는 벡터와 평행하다">
+      <figure class="figure fig" style="margin-inline:0">
+        <svg viewBox="0 0 640 280" role="img" aria-label="Embedding 공간 예시: 음료 단어끼리, 금융 단어끼리 모여 있고 king에서 queen으로 가는 Vector가 man에서 woman으로 가는 Vector와 평행하다">
           <defs><marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" style="fill:var(--accent)"/></marker></defs>
-          <g style="stroke:var(--line)" stroke-width="1">
-            <line x1="40" y1="20" x2="40" y2="250"/><line x1="40" y1="250" x2="620" y2="250"/>
+          <g style="stroke:var(--line)" stroke-width="1"><line x1="40" y1="20" x2="40" y2="250"/><line x1="40" y1="250" x2="620" y2="250"/></g>
+          <ellipse class="pop" cx="150" cy="80" rx="95" ry="50" style="fill:var(--accent-soft)"/>
+          <ellipse class="pop" cx="160" cy="195" rx="90" ry="38" style="fill:var(--signal-soft)"/>
+          <g font-size="16">
+            <g class="pop"><circle cx="110" cy="70" r="5" style="fill:var(--accent)"/><text x="120" y="76">커피</text></g>
+            <g class="pop"><circle cx="170" cy="60" r="5" style="fill:var(--accent)"/><text x="180" y="66">라떼</text></g>
+            <g class="pop"><circle cx="150" cy="105" r="5" style="fill:var(--accent)"/><text x="160" y="111">차</text></g>
+            <g class="pop"><circle cx="115" cy="190" r="5" style="fill:var(--signal)"/><text x="125" y="196">은행</text></g>
+            <g class="pop"><circle cx="190" cy="200" r="5" style="fill:var(--signal)"/><text x="200" y="206">대출</text></g>
+            <g class="pop"><circle cx="350" cy="190" r="5" style="fill:var(--mint)"/><text x="335" y="214">man</text></g>
+            <g class="pop"><circle cx="470" cy="190" r="5" style="fill:var(--mint)"/><text x="450" y="214">woman</text></g>
+            <g class="pop"><circle cx="380" cy="70" r="5" style="fill:var(--mint)"/><text x="358" y="54">king</text></g>
+            <g class="pop"><circle cx="500" cy="70" r="5" style="fill:var(--mint)"/><text x="480" y="54">queen</text></g>
           </g>
-          <ellipse cx="150" cy="80" rx="95" ry="50" style="fill:var(--accent-soft)"/>
-          <ellipse cx="160" cy="195" rx="90" ry="38" style="fill:var(--signal-soft)"/>
-          <g font-size="14">
-            <circle cx="110" cy="70" r="4" style="fill:var(--accent)"/><text x="120" y="75">커피</text>
-            <circle cx="170" cy="60" r="4" style="fill:var(--accent)"/><text x="180" y="65">라떼</text>
-            <circle cx="150" cy="105" r="4" style="fill:var(--accent)"/><text x="160" y="110">차</text>
-            <circle cx="115" cy="190" r="4" style="fill:var(--signal)"/><text x="125" y="195">은행</text>
-            <circle cx="190" cy="200" r="4" style="fill:var(--signal)"/><text x="200" y="205">대출</text>
-            <circle cx="350" cy="190" r="4" style="fill:var(--mint)"/><text x="360" y="208">man</text>
-            <circle cx="470" cy="190" r="4" style="fill:var(--mint)"/><text x="480" y="208">woman</text>
-            <circle cx="380" cy="70" r="4" style="fill:var(--mint)"/><text x="355" y="58">king</text>
-            <circle cx="500" cy="70" r="4" style="fill:var(--mint)"/><text x="510" y="58">queen</text>
-          </g>
-          <line x1="354" y1="190" x2="462" y2="190" style="stroke:var(--accent)" stroke-width="2" marker-end="url(#ar)"/>
-          <line x1="384" y1="70" x2="492" y2="70" style="stroke:var(--accent)" stroke-width="2" stroke-dasharray="5 4" marker-end="url(#ar)"/>
-          <text x="408" y="130" font-size="12.5" class="mut">− man + woman</text>
-          <text x="40" y="270" font-size="11.5" class="mut">실제 공간은 수천 차원이고, 축에 사람이 붙일 수 있는 이름도 없습니다</text>
+          <path class="draw" pathLength="1" d="M354 190H462" style="stroke:var(--accent);fill:none" stroke-width="2.5" marker-end="url(#ar)"/>
+          <path class="draw" pathLength="1" d="M384 70H492" style="stroke:var(--accent);fill:none" stroke-width="2.5" marker-end="url(#ar)"/>
+          <text x="400" y="134" font-size="14" class="mut">− man + woman</text>
         </svg>
-        <figcaption>2013년 word2vec 연구는 이런 벡터에서 "king − man + woman"을 계산하면 "queen"에 가장 가까운 벡터가 나온다는 유명한 결과를 보였습니다.</figcaption>
+        <p class="figcap">2013년 word2vec 연구는 이런 Vector에서 "king − man + woman"을 계산하면 "queen"에 가장 가까운 Vector가 나온다는 유명한 결과를 보였습니다.</p>
       </figure>
       <div class="callout"><b class="t">비유의 한계</b>실제 '지도'는 2차원이 아니라 수천 차원이고, 각 축이 "성별"이나 "크기"처럼 사람이 이름 붙일 수 있는 의미를 갖는 것도 아닙니다. 좌표 역시 사람이 정해 주지 않습니다. 학습 과정에서 저절로 만들어집니다.</div>
     </section>
 
-    <section id="s4" data-n="04" data-t="신경망과 파라미터">
+    <section id="s4" data-n="04" data-t="Neural Network와 Parameter">
       <span class="sec-label">04 · 모델 크기</span>
-      <h2>신경망과 파라미터: 수십억 개의 다이얼</h2>
-      <p>이제 이 벡터를 받아 "다음 토큰 확률"을 계산하는 기계가 필요합니다. 그게 <strong>신경망</strong>입니다. 신경망의 '뉴런'은 이름과 달리 뇌세포를 흉내 낸 것이 아닙니다. 숫자를 곱하고 더하는 계산 단위일 뿐입니다.</p>
-      <p>신경망은 본질적으로 거대한 계산식입니다. 입력 숫자에 어떤 값을 곱하고 더하고 비선형 함수에 통과시키는 일을 수없이 반복합니다. 여기서 "곱하는 값"들이 <strong>파라미터</strong>, 곧 <strong>가중치</strong>입니다.</p>
-      <div class="analogy"><span class="tag">비유</span><p>거대한 오디오 믹싱 콘솔을 떠올려 보세요. 다이얼이 수십억 개 달려 있고, 다이얼을 어떻게 돌려 두었느냐에 따라 같은 입력에서 전혀 다른 소리가 나옵니다.</p></div>
-      <p>GPT-3는 이 다이얼이 1,750억 개였습니다. "30B 모델", "70B 모델"이라고 할 때의 B(billion)가 바로 이 개수입니다. <strong>학습</strong>은 이 다이얼들을 잘 맞춰 두는 과정이고, 다 맞춘 다이얼 설정값 묶음이 우리가 내려받는 <strong>모델 파일</strong>입니다.</p>
-      <p>음악에는 정답이 없지만 모델의 지능에는 높고 낮음이 있죠. '정답'이 있다고 가정하면, 다이얼이 많을수록 더 정확한 소리를 뽑을 수 있습니다. 대신 거쳐야 할 필터가 많아지니 계산할 양도 늘어납니다.</p>
-      <div class="stats">
-        <div class="stat"><b>2 bytes</b><span>다이얼 하나를 16비트(bf16)로 저장할 때</span></div>
-        <div class="stat"><b>277.8억</b><span>Qwen3.8-27B 총 파라미터 (비전 인코더 포함)</span></div>
-        <div class="stat"><b>55.6 GB</b><span>bf16 기준 가중치 용량. 공식 BF16 체크포인트 크기와 일치</span></div>
+      <h2>Neural Network와 Parameter: 수십억 개의 Dial</h2>
+      <p>이제 이 Vector를 받아 "다음 Token 확률"을 계산하는 기계가 필요합니다. 그게 <strong>Neural Network</strong>입니다. Neural Network의 Neuron은 이름과 달리 뇌세포를 흉내 낸 것이 아닙니다. 숫자를 곱하고 더하는 계산 단위일 뿐입니다.</p>
+      <p>Neural Network는 본질적으로 거대한 계산식입니다. 입력 숫자에 어떤 값을 곱하고 더하고 비선형 함수에 통과시키는 일을 수없이 반복합니다. 여기서 "곱하는 값"들이 <strong>Parameter</strong>, 곧 <strong>Weight</strong>입니다.</p>
+      <div class="analogy"><span class="tag">비유</span><p>거대한 audio mixing console을 떠올려 보세요. Dial이 수십억 개 달려 있고, Dial을 어떻게 돌려 두었느냐에 따라 같은 입력에서 전혀 다른 소리가 나옵니다.</p></div>
+      <div class="figure fig"><div class="knobs" id="knobs"></div><p class="figcap">학습은 이 Dial들을 조금씩 돌려 맞추는 과정입니다.</p></div>
+      <p>GPT-3는 이 Dial이 1,750억 개였습니다. "30B 모델", "70B 모델"이라고 할 때의 B (Billion)가 바로 이 개수입니다. <strong>학습</strong>은 이 Dial들을 잘 맞춰 두는 과정이고, 다 맞춘 Dial 설정값 묶음이 우리가 내려받는 <strong>Model file</strong>입니다.</p>
+      <p>음악에는 정답이 없지만 모델의 지능에는 높고 낮음이 있죠. '정답'이 있다고 가정하면, Dial이 많을수록 더 정확한 소리를 뽑을 수 있습니다. 대신 거쳐야 할 계산이 많아지니 계산할 양도 늘어납니다.</p>
+      <div class="stats fig">
+        <div class="stat"><b data-count>2 bytes</b><span>Dial 하나를 bf16 (bfloat16)으로 저장할 때</span></div>
+        <div class="stat"><b data-count>277.8억</b><span>Qwen3.8-27B 총 Parameter (vision encoder 포함)</span></div>
+        <div class="stat hl"><b data-count>55.6 GB</b><span>bf16 기준 Weight 용량. 공식 BF16 checkpoint 크기와 일치</span></div>
       </div>
-      <p>이 크기를 4비트 근처로 줄이는 작업이 <strong>양자화</strong>입니다.</p>
+      <p>이 크기를 4-bit 근처로 줄이는 작업이 <strong>Quantization</strong>(양자화)입니다.</p>
     </section>
 
-    <section id="s5" data-n="05" data-t="학습: 손실과 역전파">
+    <section id="s5" data-n="05" data-t="학습 방법">
       <span class="sec-label">05 · 학습</span>
-      <h2>학습은 어떻게 하나: 손실, 역전파, 경사하강법</h2>
-      <p>수십억 개 다이얼을 사람이 손으로 맞출 수는 없습니다. 그래서 이렇게 합니다.</p>
+      <h2>학습 방법: Loss, Backpropagation, Gradient Descent</h2>
+      <p>수십억 개 Dial을 사람이 손으로 맞출 수는 없습니다. 그래서 이렇게 합니다.</p>
       <ol class="steps">
-        <li><div><b>순전파 (forward pass)</b><p>문장을 넣고, 현재 다이얼 상태로 다음 토큰 확률을 계산합니다.</p></div></li>
-        <li><div><b>손실 (loss)</b><p>정답 토큰에 매긴 확률이 낮을수록 큰 벌점을 줍니다. 다음 토큰 예측에서는 보통 정답 토큰 확률의 로그에 마이너스를 붙인 값, 교차 엔트로피를 씁니다.</p></div></li>
-        <li><div><b>역전파 (backpropagation)</b><p>이 벌점에 각 다이얼이 얼마나 책임이 있는지, 출력에서 입력 방향으로 거슬러 올라가며 계산합니다. 1986년 Rumelhart, Hinton, Williams의 논문이 이 방법을 널리 알렸습니다.</p></div></li>
-        <li><div><b>경사하강법 (gradient descent)</b><p>벌점이 줄어드는 방향으로 모든 다이얼을 아주 조금씩 돌립니다.</p></div></li>
+        <li><div><b>Forward Pass</b><p>문장을 넣고, 현재 Dial 상태로 다음 Token 확률을 계산합니다.</p></div></li>
+        <li><div><b>Loss</b><p>정답 Token에 매긴 확률이 낮을수록 큰 벌점을 줍니다. 다음 Token 예측에서는 보통 정답 Token 확률의 log에 마이너스를 붙인 값, Cross Entropy를 씁니다.</p></div></li>
+        <li><div><b>Backpropagation</b><p>이 벌점에 각 Dial이 얼마나 책임이 있는지, 출력에서 입력 방향으로 거슬러 올라가며 계산합니다. 1986년 Rumelhart, Hinton, Williams의 논문이 이 방법을 널리 알렸습니다.</p></div></li>
+        <li><div><b>Gradient Descent</b><p>벌점이 줄어드는 방향으로 모든 Dial을 아주 조금씩 돌립니다.</p></div></li>
       </ol>
       <p>으악, 어려워! 움직이는 그림으로 보면 이렇습니다.</p>
+      <div class="figure fig" id="netFig">
+        <svg id="net" class="wide" viewBox="0 0 680 300" role="img" aria-label="Neural Network에서 Forward Pass, Loss, Backpropagation, Gradient Descent가 차례로 일어나는 그림"></svg>
+        <div class="phases" id="phases"><span>① Forward Pass</span><span>② Loss</span><span>③ Backpropagation</span><span>④ Gradient Descent</span></div>
+        <p class="figcap" id="phaseCap">문장을 넣고 현재 Dial로 다음 Token 확률을 계산합니다.</p>
+      </div>
       <div class="figure gd">
-        <canvas id="gd" aria-label="손실 곡선 위에서 공이 경사를 따라 한 걸음씩 내려가는 애니메이션"></canvas>
-        <div class="gd-bar"><span class="mono" id="gdInfo">step 0 · loss —</span><button class="btn" id="gdBtn" type="button">다시 내려가기</button></div>
-        <p class="figcap">다이얼 하나를 가로축에, 손실을 세로축에 놓은 그림입니다. 실제로는 수십억 차원에서 동시에 일어납니다.</p>
+        <canvas id="gd" aria-label="Loss 곡선 위에서 공이 경사를 따라 한 걸음씩 내려가는 애니메이션"></canvas>
+        <div class="gd-info" id="gdInfo">step 0 · Loss —</div>
+        <p class="figcap">Dial 하나를 가로축에, Loss를 세로축에 놓은 그림입니다. 실제로는 수십억 차원에서 동시에 일어납니다.</p>
       </div>
-      <p>이걸 수조 개 토큰에 대해 반복합니다.</p>
-      <div class="analogy"><span class="tag">비유</span><p>안개 낀 산에서 눈을 가리고 골짜기를 찾아 내려간다고 생각해 봅시다. 발밑의 경사만 느끼면서 내리막 쪽으로 한 걸음씩. 경사를 계산하는 게 역전파, 한 걸음 내딛는 게 경사하강법입니다.</p></div>
+      <p>이걸 수조 개 Token에 대해 반복합니다.</p>
+      <div class="analogy"><span class="tag">비유</span><p>안개 낀 산에서 눈을 가리고 골짜기를 찾아 내려간다고 생각해 봅시다. 발밑의 경사만 느끼면서 내리막 쪽으로 한 걸음씩. 경사를 계산하는 게 Backpropagation, 한 걸음 내딛는 게 Gradient Descent입니다.</p></div>
     </section>
 
-    <section id="s6" data-n="06" data-t="트랜스포머와 어텐션">
+    <section id="s6" data-n="06" data-t="Transformer와 Attention">
       <span class="sec-label">06 · 문맥</span>
-      <h2>트랜스포머와 어텐션: 문맥을 읽는 방법</h2>
+      <h2>Transformer와 Attention: 문맥을 읽는 방법</h2>
       <p>여기까지 오면 질문이 생깁니다. "은행"은 "은행나무"와 "은행 대출"에서 뜻이 다르잖아요. 모델은 이걸 어떻게 구분할까요?</p>
-      <p>답은 <strong>어텐션(attention)</strong>입니다. 2017년 구글 연구진의 논문 「Attention Is All You Need」가 어텐션만으로 이뤄진 구조인 <strong>트랜스포머(Transformer)</strong>를 제안했고, 이후 거의 모든 LLM의 뼈대가 됐습니다.</p>
-      <p>아이디어는 이렇습니다. 각 토큰이 문장 안의 다른 토큰들을 둘러보고 "지금 내 의미를 정하는 데 누가 중요한가"를 점수로 매긴 뒤, 중요한 토큰의 정보를 더 많이 섞어 자기 벡터를 업데이트합니다. 조금 더 구체적으로, 논문은 각 토큰에서 벡터 세 개를 만듭니다.</p>
+      <p>답은 <strong>Attention</strong>입니다. 2017년 Google 연구진의 논문 「Attention Is All You Need」가 Attention만으로 이뤄진 구조인 <strong>Transformer</strong>를 제안했고, 이후 거의 모든 LLM의 뼈대가 됐습니다.</p>
+      <p>아이디어는 이렇습니다. 각 Token이 문장 안의 다른 Token들을 둘러보고 "지금 내 의미를 정하는 데 누가 중요한가"를 점수로 매긴 뒤, 중요한 Token의 정보를 더 많이 섞어 자기 Vector를 업데이트합니다. 조금 더 구체적으로, 논문은 각 Token에서 Vector 세 개를 만듭니다.</p>
       <div class="qkv">
-        <div><b>Query · 질문</b><span>"나는 이런 정보를 찾고 있어"</span></div>
-        <div><b>Key · 색인</b><span>"나는 이런 정보를 갖고 있어"</span></div>
-        <div><b>Value · 내용</b><span>"실제로 건네줄 내용은 이거야"</span></div>
+        <div><b>Q · Query (질문)</b><span>"나는 이런 정보를 찾고 있어"</span></div>
+        <div><b>K · Key (색인)</b><span>"나는 이런 정보를 갖고 있어"</span></div>
+        <div><b>V · Value (내용)</b><span>"실제로 건네줄 내용은 이거야"</span></div>
       </div>
-      <p>Query와 Key가 잘 맞을수록 그 토큰의 Value를 많이 가져옵니다.</p>
+      <p>Query와 Key가 잘 맞을수록 그 Token의 Value를 많이 가져옵니다.</p>
+      <div class="figure fig">
+        <div class="fig-h"><b>Attention</b>"은행"의 문맥 정하기</div>
+        <svg class="wide" viewBox="0 0 820 400" role="img" aria-label="'은행'의 Query를 대출, 금리가, 올랐다의 Key와 비교해 점수 0.58, 0.29, 0.13을 얻고, 그 비율로 Value를 섞어 문맥이 반영된 새 Vector를 만드는 과정">
+          <g font-size="15" class="mut" font-family="Geist Mono, monospace" text-anchor="middle"><text x="75" y="22">Query</text><text x="282" y="22">Key</text><text x="445" y="22">Q·K 점수</text><text x="582" y="22">Value</text><text x="748" y="22">결과</text></g>
+          <g id="qbox"><rect x="20" y="150" width="110" height="90" rx="14" style="fill:var(--accent-soft);stroke:var(--accent)" stroke-width="2"/><text x="75" y="185" font-size="22" font-weight="700" text-anchor="middle" style="fill:var(--accent)">은행</text><rect x="33" y="205" width="17" height="17" rx="3" style="fill:var(--accent)"/><rect x="54" y="205" width="17" height="17" rx="3" style="fill:var(--accent);opacity:.5"/><rect x="75" y="205" width="17" height="17" rx="3" style="fill:var(--accent);opacity:.8"/><rect x="96" y="205" width="17" height="17" rx="3" style="fill:var(--accent);opacity:.3"/></g>
+          <path class="draw" pathLength="1" d="M130 195 C 180 195 190 80 238 80" style="fill:none;stroke:var(--accent)" stroke-width="4.5"/>
+          <path class="draw" pathLength="1" d="M130 195 C 180 195 190 200 238 200" style="fill:none;stroke:var(--accent);opacity:.7" stroke-width="2.8"/>
+          <path class="draw" pathLength="1" d="M130 195 C 180 195 190 320 238 320" style="fill:none;stroke:var(--accent);opacity:.45" stroke-width="1.8"/>
+          <g text-anchor="start" font-size="16" class="mut"><text x="240" y="60" class="mut">대출</text><text x="240" y="180" class="mut">금리가</text><text x="240" y="300" class="mut">올랐다</text></g>
+          <g style="fill:var(--mint)"><rect x="240" y="71" width="17" height="17" rx="3"/><rect x="261" y="71" width="17" height="17" rx="3" opacity=".55"/><rect x="282" y="71" width="17" height="17" rx="3" opacity=".8"/><rect x="303" y="71" width="17" height="17" rx="3" opacity=".35"/><rect x="240" y="191" width="17" height="17" rx="3" opacity=".4"/><rect x="261" y="191" width="17" height="17" rx="3" opacity=".9"/><rect x="282" y="191" width="17" height="17" rx="3" opacity=".3"/><rect x="303" y="191" width="17" height="17" rx="3" opacity=".6"/><rect x="240" y="311" width="17" height="17" rx="3" opacity=".25"/><rect x="261" y="311" width="17" height="17" rx="3" opacity=".4"/><rect x="282" y="311" width="17" height="17" rx="3" opacity=".7"/><rect x="303" y="311" width="17" height="17" rx="3" opacity=".9"/></g>
+          <rect class="gx" x="380" y="68" width="116" height="24" rx="6" style="fill:var(--accent)"/><rect class="gx" x="380" y="188" width="58" height="24" rx="6" style="fill:var(--accent);opacity:.7"/><rect class="gx" x="380" y="308" width="26" height="24" rx="6" style="fill:var(--accent);opacity:.45"/>
+          <g font-size="16" font-family="Geist Mono, monospace"><text class="pop" x="504" y="86">0.58</text><text class="pop" x="446" y="206">0.29</text><text class="pop" x="414" y="326">0.13</text></g>
+          <g class="pop"><rect x="545" y="71" width="17" height="17" rx="3" style="fill:var(--signal)"/><rect x="566" y="71" width="17" height="17" rx="3" style="fill:var(--signal)"/><rect x="587" y="71" width="17" height="17" rx="3" style="fill:var(--signal)"/><rect x="608" y="71" width="17" height="17" rx="3" style="fill:var(--signal)"/></g>
+          <g class="pop" fill-opacity=".6"><rect x="545" y="191" width="17" height="17" rx="3" style="fill:var(--signal)"/><rect x="566" y="191" width="17" height="17" rx="3" style="fill:var(--signal)"/><rect x="587" y="191" width="17" height="17" rx="3" style="fill:var(--signal)"/><rect x="608" y="191" width="17" height="17" rx="3" style="fill:var(--signal)"/></g>
+          <g class="pop" fill-opacity=".3"><rect x="545" y="311" width="17" height="17" rx="3" style="fill:var(--signal)"/><rect x="566" y="311" width="17" height="17" rx="3" style="fill:var(--signal)"/><rect x="587" y="311" width="17" height="17" rx="3" style="fill:var(--signal)"/><rect x="608" y="311" width="17" height="17" rx="3" style="fill:var(--signal)"/></g>
+          <path class="draw" pathLength="1" d="M628 80 C 660 80 660 195 690 195" style="fill:none;stroke:var(--signal)" stroke-width="5"/>
+          <path class="draw" pathLength="1" d="M628 200 C 660 200 660 197 690 197" style="fill:none;stroke:var(--signal);opacity:.7" stroke-width="3"/>
+          <path class="draw" pathLength="1" d="M628 320 C 660 320 660 199 690 199" style="fill:none;stroke:var(--signal);opacity:.45" stroke-width="1.8"/>
+          <g class="pop"><rect x="690" y="145" width="116" height="104" rx="14" style="fill:var(--surface-2);stroke:var(--accent)" stroke-width="2" stroke-dasharray="6 4"/><text x="748" y="178" font-size="21" font-weight="700" text-anchor="middle">은행′</text><rect x="705" y="192" width="19" height="19" rx="3" style="fill:var(--signal)"/><rect x="727" y="192" width="19" height="19" rx="3" style="fill:var(--accent)"/><rect x="749" y="192" width="19" height="19" rx="3" style="fill:var(--signal);opacity:.6"/><rect x="771" y="192" width="19" height="19" rx="3" style="fill:var(--accent);opacity:.5"/><text x="748" y="235" font-size="14" text-anchor="middle" class="mut">금융 쪽 의미</text></g>
+          <text x="20" y="390" font-size="16" class="mut">Query와 Key가 잘 맞을수록 점수가 높고, 점수만큼 그 Token의 Value를 많이 섞습니다.</text>
+        </svg>
+      </div>
       <div class="analogy"><span class="tag">비유</span><p>회의실에서 궁금한 걸 들고(Query) 둘러보다가, 그 주제를 아는 사람(Key)에게 귀를 기울이고, 그 사람의 말(Value)을 받아 적는 것과 비슷합니다.</p></div>
-      <p>논문은 이걸 여러 갈래로 동시에 하는 <strong>멀티헤드 어텐션</strong>도 제안했습니다(원 논문 기본 모델은 헤드 8개). 부록의 시각화에서도 헤드마다 다른 일을 하는 모습이 보였는데, 문장 구조나 대명사가 가리키는 대상과 관련돼 보이는 헤드들이 있었습니다.</p>
-      <p>트랜스포머가 중요했던 또 하나의 이유는 <strong>병렬 처리</strong>입니다. 이전에 주로 쓰던 순환신경망(RNN)은 단어를 하나씩 순서대로 처리해야 했지만, 트랜스포머는 문장 전체를 한 번에 처리할 수 있어 학습이 훨씬 빨랐습니다. GPU가 비싸진 이유가 이거 하나입니다.</p>
-      <div class="callout"><b class="t">비유의 한계</b>"중요한 단어에 주목한다"는 표현 때문에 모델이 사람처럼 '의도적으로 집중'한다고 오해하기 쉽습니다. 실제로는 벡터끼리의 유사도 점수를 계산해 가중 평균을 내는 연산입니다.</div>
+      <p>논문은 이걸 여러 갈래로 동시에 하는 <strong>Multi-head Attention</strong>도 제안했습니다(원 논문 기본 모델은 Head 8개). 부록의 시각화에서도 Head마다 다른 일을 하는 모습이 보였는데, 문장 구조나 대명사가 가리키는 대상과 관련돼 보이는 Head들이 있었습니다.</p>
+      <p>Transformer가 중요했던 또 하나의 이유는 <strong>Parallel Processing</strong>입니다. 이전에 주로 쓰던 RNN (Recurrent Neural Network)은 단어를 하나씩 순서대로 처리해야 했지만, Transformer는 문장 전체를 한 번에 처리할 수 있어 학습이 훨씬 빨랐습니다. GPU (Graphics Processing Unit)가 비싸진 이유가 이거 하나입니다.</p>
+      <div class="figure fig par">
+        <div><div class="fig-h"><b>Multi-head</b>Head 8개가 각자 다른 일</div><div class="heads" id="heads"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div>
+        <div><div class="fig-h"><b>Parallel</b>하나씩 vs 한 번에</div>
+          <div class="seq rnn"><small>RNN</small><i style="--k:0"></i><i style="--k:1"></i><i style="--k:2"></i><i style="--k:3"></i><i style="--k:4"></i><i style="--k:5"></i></div>
+          <div class="seq tf"><small>Transformer</small><i></i><i></i><i></i><i></i><i></i><i></i></div></div>
+      </div>
+      <div class="callout"><b class="t">비유의 한계</b>"중요한 단어에 주목한다"는 표현 때문에 모델이 사람처럼 '의도적으로 집중'한다고 오해하기 쉽습니다. 실제로는 Vector끼리의 유사도 점수를 계산해 가중 평균을 내는 연산입니다.</div>
     </section>
 
-    <section id="s7" data-n="07" data-t="레이어와 디코더 구조">
+    <section id="s7" data-n="07" data-t="Layer와 Decoder 구조">
       <span class="sec-label">07 · 구조</span>
-      <h2>레이어와 디코더 구조</h2>
+      <h2>Layer와 Decoder 구조</h2>
       <p>점점 어려워지는 것 같기도 하지만…</p>
-      <p>트랜스포머 블록 하나는 대략 "어텐션 → 피드포워드 신경망"으로 이뤄져 있습니다. 어텐션이 토큰끼리 정보를 주고받는 단계라면, 피드포워드는 각 토큰이 받은 정보를 혼자 소화하는 단계입니다. 이 블록을 층층이 쌓은 것이 <strong>레이어</strong>입니다. 아래층은 단순한 패턴을, 위층으로 갈수록 더 추상적인 관계를 다룬다고 흔히 설명합니다.</p>
-      <div class="analogy"><span class="tag">비유</span><p>공장의 조립 라인입니다. 원재료(임베딩)가 들어와 수십 개 공정(레이어)을 거치며 다듬어지고, 마지막 공정에서 "다음 토큰 확률표"라는 완제품이 나옵니다.</p></div>
-      <p>그런데 원래 트랜스포머는 번역기였습니다. 원문을 읽는 인코더와 번역문을 쓰는 디코더, 두 부분으로 되어 있었죠. GPT 계열은 이 중 디코더 쪽만 가져와 쌓았습니다. 오늘날 ChatGPT, Claude, Llama 같은 대화형 LLM 대부분이 이 디코더 전용(decoder-only) 구조입니다. 디코더의 핵심 규칙은 하나입니다.</p>
-      <p class="key">각 토큰은 자기보다 앞에 있는 토큰만 볼 수 있습니다.</p>
-      <p>미래를 훔쳐보지 못하게 가려 둔 것이죠(마스킹). 다음 토큰을 예측하는 모델이 정답을 미리 보면 안 되니까요.</p>
+      <p>Transformer Block 하나는 대략 "Attention → Feed-forward Neural Network"로 이뤄져 있습니다. Attention이 Token끼리 정보를 주고받는 단계라면, Feed-forward는 각 Token이 받은 정보를 혼자 소화하는 단계입니다. 이 Block을 층층이 쌓은 것이 <strong>Layer</strong>입니다. 아래층은 단순한 pattern을, 위층으로 갈수록 더 추상적인 관계를 다룬다고 흔히 설명합니다.</p>
+      <div class="analogy"><span class="tag">비유</span><p>공장의 assembly line입니다. 원재료(Embedding)가 들어와 수십 개 공정(Layer)을 거치며 다듬어지고, 마지막 공정에서 "다음 Token 확률표"라는 완제품이 나옵니다.</p></div>
+      <p>그런데 원래 Transformer는 번역기였습니다. 원문을 읽는 Encoder와 번역문을 쓰는 Decoder, 두 부분으로 되어 있었죠. GPT 계열은 이 중 Decoder 쪽만 가져와 쌓았습니다. 오늘날 ChatGPT, Claude, Llama 같은 대화형 LLM 대부분이 이 <strong>Decoder-only</strong> 구조입니다. Decoder의 핵심 규칙은 하나입니다.</p>
+      <p class="key">각 Token은 자기보다 앞에 있는 Token만 볼 수 있습니다.</p>
+      <div class="figure fig"><div class="mask" id="mask"></div><p class="figcap" style="text-align:center">행: 지금 Token · 열: 볼 수 있는 Token. 오른쪽 위(미래)는 가려져 있습니다.</p></div>
+      <p>미래를 훔쳐보지 못하게 가려 둔 것이죠(Masking). 다음 Token을 예측하는 모델이 정답을 미리 보면 안 되니까요.</p>
     </section>
 
-    <section id="s8" data-n="08" data-t="사전학습 · 파인튜닝 · RLHF">
-      <span class="sec-label">08 · 후속 학습</span>
-      <h2>사전학습, 파인튜닝, RLHF: 학생에서 비서로</h2>
-      <p>지금까지 설명한 방식으로 인터넷 규모의 텍스트를 학습시키면 <strong>사전학습(pre-training)</strong> 모델이 나옵니다. 아는 건 많지만 대화 상대로는 이상합니다. 질문을 던지면 답하는 대신 비슷한 질문을 몇 개 더 써 내려갈 수도 있습니다. 문서 이어 쓰기를 배웠지, 질문에 답하기를 배운 건 아니니까요.</p>
+    <section id="s8" data-n="08" data-t="Pre-training · SFT · RLHF">
+      <span class="sec-label">08 · Post-training</span>
+      <h2>Pre-training, SFT, RLHF: 학생에서 비서로</h2>
+      <p>지금까지 설명한 방식으로 Internet 규모의 text를 학습시키면 <strong>Pre-training</strong> 모델이 나옵니다. 아는 건 많지만 대화 상대로는 이상합니다. 질문을 던지면 답하는 대신 비슷한 질문을 몇 개 더 써 내려갈 수도 있습니다. 문서 이어 쓰기를 배웠지, 질문에 답하기를 배운 건 아니니까요.</p>
+      <div class="figure fig">
+        <div class="fig-h"><b>같은 질문</b>다른 반응</div>
+        <div class="chat2">
+          <div class="chatcol"><span class="who" style="background:var(--signal-soft);color:var(--signal)">Pre-training만 한 모델</span>
+            <div class="chat"><div class="bubble user">커피를 맛있게 내리는 방법은?</div><div class="bubble bot bad"><span class="typer" data-text="커피를 맛있게 내리는 방법은? 원두는 어떻게 보관하나요? 물 온도는 몇 도가 좋나요?"></span></div></div>
+            <p class="verdict bad">✕ 답 대신 비슷한 질문을 이어 씀</p></div>
+          <div class="chatcol"><span class="who" style="background:var(--mint-soft);color:var(--mint)">SFT + RLHF를 거친 모델</span>
+            <div class="chat"><div class="bubble user">커피를 맛있게 내리는 방법은?</div><div class="bubble bot good"><span class="typer" data-text="원두를 내리기 직전에 갈고, 물 온도와 추출 시간을 일정하게 맞추면 맛이 안정됩니다."></span></div></div>
+            <p class="verdict good">✓ 질문에 답하는 형식과 태도를 배움</p></div>
+        </div>
+        <p class="figcap">답변 문구는 설명용 예시입니다.</p>
+      </div>
       <p>그래서 두 단계를 더 거칩니다. OpenAI의 <a href="https://arxiv.org/abs/2203.02155" target="_blank" rel="noopener">InstructGPT 논문</a>이 이 과정을 잘 정리했습니다.</p>
       <ol class="steps">
-        <li><div><b>지도 파인튜닝 (SFT)</b><p>사람이 직접 쓴 "질문–모범 답변" 예시로 추가 학습합니다.</p></div></li>
-        <li><div><b>RLHF (인간 피드백 기반 강화학습)</b><p>모델이 쓴 여러 답변을 사람이 순위 매기고, 그 선호를 배운 보상 모델을 만든 뒤, 보상 점수가 높아지도록 원래 모델을 강화학습으로 조정합니다.</p></div></li>
+        <li><div><b>SFT (Supervised Fine-Tuning)</b><p>사람이 직접 쓴 "질문–모범 답변" 예시로 추가 학습합니다. 질문을 받으면 답하는 형식을 배웁니다.</p></div></li>
+        <li><div><b>RLHF (Reinforcement Learning from Human Feedback)</b><p>모델이 쓴 여러 답변을 사람이 순위 매기고, 그 선호를 배운 Reward Model을 만든 뒤, Reward 점수가 높아지도록 원래 모델을 강화학습으로 조정합니다.</p></div></li>
       </ol>
-      <div class="stats">
-        <div class="stat"><b>13억</b><span>RLHF를 거친 InstructGPT</span></div>
-        <div class="stat"><b>1,750억</b><span>GPT-3. 100배 이상 크지만</span></div>
-        <div class="stat"><b>작은 쪽 승</b><span>사람 평가자는 13억 쪽 답변을 더 선호 (전설의 시작)</span></div>
+      <div class="figure fig">
+        <div class="fig-h"><b>RLHF</b>네 걸음</div>
+        <div class="rl4">
+          <div class="rlc"><small>①</small><h4>답변 여러 개 생성</h4><div class="vis gen3"><span class="pop">답변 A</span><span class="pop">답변 B</span><span class="pop">답변 C</span></div><p>같은 질문에 SFT 모델이 답변을 여러 개 씁니다.</p></div>
+          <div class="rlc"><small>②</small><h4>사람이 순위 매기기</h4><div class="vis rank"><i>1</i><i>2</i><i>3</i><span class="rk-a">답변 A</span><span class="rk-b">답변 B</span><span class="rk-c">답변 C</span></div><p>더 나은 순서로 정렬. A &gt; C &gt; B</p></div>
+          <div class="rlc"><small>③</small><h4>Reward Model 학습</h4><div class="vis meters"><div><span>A</span><b><i class="mt" style="width:90%"></i></b><em>0.9</em></div><div><span>C</span><b><i class="mt" style="width:60%;opacity:.7"></i></b><em>0.6</em></div><div><span>B</span><b><i class="mt" style="width:20%;opacity:.45"></i></b><em>0.2</em></div></div><p>사람의 선호를 점수로 흉내 내는 모델.</p></div>
+          <div class="rlc"><small>④</small><h4>강화학습으로 조정</h4><div class="vis rlv"><svg viewBox="0 0 120 120" width="90" height="90" aria-hidden="true"><defs><marker id="arR" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L10 5L0 10z" style="fill:var(--accent)"/></marker></defs><g class="spinloop"><path d="M60 14 A46 46 0 1 1 18 42" style="fill:none;stroke:var(--accent)" stroke-width="7" stroke-linecap="round" marker-end="url(#arR)"/></g><text x="60" y="58" font-size="15" text-anchor="middle" font-weight="700">Reward</text><text x="60" y="80" font-size="18" text-anchor="middle" style="fill:var(--mint)" font-weight="700">↑</text></svg></div><p>Reward가 높아지도록 원래 모델을 조정. InstructGPT는 PPO (Proximal Policy Optimization) 사용.</p></div>
+        </div>
       </div>
-      <div class="analogy"><span class="tag">비유</span><p>사전학습은 도서관 책을 전부 읽은 박식한 학생이고, 파인튜닝과 RLHF는 그 학생에게 손님 응대하는 법을 가르치는 신입 연수입니다. 지식을 새로 넣는다기보다 이미 가진 지식을 어떤 태도와 형식으로 꺼낼지 다듬는 쪽에 가깝습니다.</p></div>
-      <div class="callout"><b class="t">주석</b>요즘은 RLHF 말고도 다양한 후속 학습 기법이 쓰이며, 각 회사가 구체적인 방법을 모두 공개하지는 않습니다.</div>
+      <p>결과가 인상적이었습니다. 사람 평가자들은 RLHF를 거친 13억 Parameter InstructGPT의 답변을, 100배 이상 큰 1,750억 Parameter GPT-3의 답변보다 더 선호했습니다. (전설의 시작)</p>
+      <div class="figure fig">
+        <div class="size"><small><span>GPT-3</span><b data-count>1,750억</b></small><div class="track"><i style="width:100%"></i></div></div>
+        <div class="size"><small><span>InstructGPT (RLHF 적용)</span><b data-count>13억</b></small><div class="track win"><i style="width:1.4%;min-width:8px;--d:900ms"></i></div><span class="badge pop" style="--d:1400ms">100배 이상 작지만 사람들이 더 선호</span></div>
+      </div>
+      <div class="analogy"><span class="tag">비유</span><p>Pre-training은 도서관 책을 전부 읽은 박식한 학생이고, Fine-tuning과 RLHF는 그 학생에게 손님 응대하는 법을 가르치는 신입 연수입니다. 지식을 새로 넣는다기보다 이미 가진 지식을 어떤 태도와 형식으로 꺼낼지 다듬는 쪽에 가깝습니다.</p></div>
+      <div class="callout"><b class="t">주석</b>요즘은 RLHF 말고도 다양한 Post-training 기법이 쓰이며, 각 회사가 구체적인 방법을 모두 공개하지는 않습니다.</div>
     </section>
 
-    <section id="s9" data-n="09" data-t="학습과 추론">
+    <section id="s9" data-n="09" data-t="Training과 Inference">
       <span class="sec-label">09 · 구분</span>
-      <h2>학습과 추론: 공장 짓기와 공장 돌리기</h2>
+      <h2>Training과 Inference: 공장 짓기와 공장 돌리기</h2>
       <p>여기서 꼭 구분해야 할 두 단어가 있습니다.</p>
-      <div class="table-wrap">
-        <table>
-          <thead><tr><th></th><th>학습 (training)</th><th>추론 (inference)</th></tr></thead>
-          <tbody>
-            <tr><td><b>하는 일</b></td><td>다이얼을 맞춥니다</td><td>고정된 다이얼로 답을 만듭니다</td></tr>
-            <tr><td><b>연산</b></td><td>순전파 + 역전파 + 경사하강법 반복</td><td>순전파만. 역전파도 가중치 업데이트도 없음</td></tr>
-            <tr><td><b>비용</b></td><td>엄청난 연산. 끝나면 다이얼 고정</td><td>요청마다 발생</td></tr>
-            <tr><td><b>우리는</b></td><td>할 일이 별로 없습니다</td><td>맨날 합니다</td></tr>
-          </tbody>
-        </table>
+      <div class="figure fig factory">
+        <div class="fcol">
+          <div class="fig-h"><b>학습 · Training</b>공장 짓기</div>
+          <svg viewBox="0 0 600 262" role="img" aria-label="Training: Data가 Model로 들어가고 Forward와 Backward가 반복되며 Dial이 돌아가고 Loss가 내려간다">
+            <defs><marker id="arT" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L10 5L0 10z" style="fill:var(--muted)"/></marker></defs>
+            <g><rect x="34" y="96" width="78" height="96" rx="8" style="fill:var(--surface-2);stroke:var(--line)" stroke-width="1.5"/><rect x="26" y="88" width="78" height="96" rx="8" style="fill:var(--surface);stroke:var(--line)" stroke-width="1.5"/><rect x="18" y="80" width="78" height="96" rx="8" style="fill:var(--surface);stroke:var(--muted)" stroke-width="1.5"/><line x1="30" y1="104" x2="84" y2="104" style="stroke:var(--line)" stroke-width="3"/><line x1="30" y1="118" x2="76" y2="118" style="stroke:var(--line)" stroke-width="3"/><line x1="30" y1="132" x2="84" y2="132" style="stroke:var(--line)" stroke-width="3"/><line x1="30" y1="146" x2="70" y2="146" style="stroke:var(--line)" stroke-width="3"/><text x="62" y="222" font-size="16" text-anchor="middle" class="mut">수조 개 Token</text></g>
+            <line x1="118" y1="135" x2="170" y2="135" style="stroke:var(--muted)" stroke-width="2" marker-end="url(#arT)"/>
+            <path class="flowline" d="M186 58 Q 290 10 394 58" style="fill:none;stroke:var(--accent)" stroke-width="3" marker-end="url(#arT)"/>
+            <text x="290" y="28" font-size="15" text-anchor="middle" style="fill:var(--accent)" font-family="Geist Mono, monospace">Forward</text>
+            <path class="flowline" d="M394 212 Q 290 260 186 212" style="fill:none;stroke:var(--signal)" stroke-width="3" marker-end="url(#arT)"/>
+            <text x="290" y="258" font-size="15" text-anchor="middle" style="fill:var(--signal)" font-family="Geist Mono, monospace">Backward</text>
+            <rect x="180" y="70" width="220" height="130" rx="18" style="fill:var(--surface-2);stroke:var(--accent)" stroke-width="2"/>
+            <g class="dial" style="--sd:2.1s"><circle cx="232" cy="110" r="19" style="fill:var(--surface);stroke:var(--muted)" stroke-width="2"/><line x1="232" y1="110" x2="232" y2="94" style="stroke:var(--accent)" stroke-width="3.5" stroke-linecap="round"/></g>
+            <g class="dial" style="--sd:1.6s"><circle cx="290" cy="110" r="19" style="fill:var(--surface);stroke:var(--muted)" stroke-width="2"/><line x1="290" y1="110" x2="290" y2="94" style="stroke:var(--mint)" stroke-width="3.5" stroke-linecap="round"/></g>
+            <g class="dial" style="--sd:2.6s"><circle cx="348" cy="110" r="19" style="fill:var(--surface);stroke:var(--muted)" stroke-width="2"/><line x1="348" y1="110" x2="348" y2="94" style="stroke:var(--accent)" stroke-width="3.5" stroke-linecap="round"/></g>
+            <g class="dial" style="--sd:1.9s"><circle cx="232" cy="160" r="19" style="fill:var(--surface);stroke:var(--muted)" stroke-width="2"/><line x1="232" y1="160" x2="232" y2="144" style="stroke:var(--mint)" stroke-width="3.5" stroke-linecap="round"/></g>
+            <g class="dial" style="--sd:2.3s"><circle cx="290" cy="160" r="19" style="fill:var(--surface);stroke:var(--muted)" stroke-width="2"/><line x1="290" y1="160" x2="290" y2="144" style="stroke:var(--accent)" stroke-width="3.5" stroke-linecap="round"/></g>
+            <g class="dial" style="--sd:1.7s"><circle cx="348" cy="160" r="19" style="fill:var(--surface);stroke:var(--muted)" stroke-width="2"/><line x1="348" y1="160" x2="348" y2="144" style="stroke:var(--mint)" stroke-width="3.5" stroke-linecap="round"/></g>
+            <g><line x1="440" y1="70" x2="440" y2="190" style="stroke:var(--line)" stroke-width="1.5"/><line x1="440" y1="190" x2="585" y2="190" style="stroke:var(--line)" stroke-width="1.5"/><path class="draw" pathLength="1" d="M448 82 C 480 150 500 160 520 170 S 560 180 580 182" style="fill:none;stroke:var(--signal)" stroke-width="3"/><text x="512" y="222" font-size="16" text-anchor="middle" class="mut">Loss ↓</text></g>
+          </svg>
+          <ul class="tl"><li>Dial을 맞추는 과정. 끝나면 Dial 고정</li><li>Forward Pass + Backpropagation + Gradient Descent</li><li>엄청난 연산. 우리가 할 일은 별로 없습니다</li></ul>
+        </div>
+        <div class="fcol">
+          <div class="fig-h"><b>추론 · Inference</b>공장 돌리기</div>
+          <svg viewBox="0 0 600 262" role="img" aria-label="Inference: Prompt가 conveyor belt를 타고 Dial이 잠긴 Model로 들어가 Token이 하나씩 나온다">
+            <line class="belt" x1="10" y1="214" x2="590" y2="214" style="stroke:var(--muted)" stroke-width="6" stroke-linecap="round"/>
+            <g class="inp"><rect x="14" y="162" width="96" height="44" rx="10" style="fill:var(--accent-soft);stroke:var(--accent)" stroke-width="1.5"/><text x="62" y="190" font-size="16" text-anchor="middle" style="fill:var(--accent)" font-family="Geist Mono, monospace">Prompt</text></g>
+            <g class="inp" style="animation-delay:-1.6s"><rect x="14" y="162" width="96" height="44" rx="10" style="fill:var(--accent-soft);stroke:var(--accent)" stroke-width="1.5"/><text x="62" y="190" font-size="16" text-anchor="middle" style="fill:var(--accent)" font-family="Geist Mono, monospace">Prompt</text></g>
+            <rect x="220" y="50" width="160" height="156" rx="18" style="fill:var(--surface-2);stroke:var(--mint)" stroke-width="2"/>
+            <g><circle cx="262" cy="102" r="17" style="fill:var(--surface);stroke:var(--muted)" stroke-width="2"/><line x1="262" y1="102" x2="272" y2="89" style="stroke:var(--accent)" stroke-width="3.5" stroke-linecap="round"/></g>
+            <g><circle cx="300" cy="102" r="17" style="fill:var(--surface);stroke:var(--muted)" stroke-width="2"/><line x1="300" y1="102" x2="288" y2="90" style="stroke:var(--mint)" stroke-width="3.5" stroke-linecap="round"/></g>
+            <g><circle cx="338" cy="102" r="17" style="fill:var(--surface);stroke:var(--muted)" stroke-width="2"/><line x1="338" y1="102" x2="338" y2="85" style="stroke:var(--accent)" stroke-width="3.5" stroke-linecap="round"/></g>
+            <g><circle cx="262" cy="150" r="17" style="fill:var(--surface);stroke:var(--muted)" stroke-width="2"/><line x1="262" y1="150" x2="250" y2="140" style="stroke:var(--mint)" stroke-width="3.5" stroke-linecap="round"/></g>
+            <g><circle cx="300" cy="150" r="17" style="fill:var(--surface);stroke:var(--muted)" stroke-width="2"/><line x1="300" y1="150" x2="314" y2="140" style="stroke:var(--accent)" stroke-width="3.5" stroke-linecap="round"/></g>
+            <g><circle cx="338" cy="150" r="17" style="fill:var(--surface);stroke:var(--muted)" stroke-width="2"/><line x1="338" y1="150" x2="326" y2="137" style="stroke:var(--mint)" stroke-width="3.5" stroke-linecap="round"/></g>
+            <g class="pop"><rect x="352" y="32" width="34" height="28" rx="6" style="fill:var(--mint)"/><path d="M360 32 v-7 a9 9 0 0 1 18 0 v7" style="fill:none;stroke:var(--mint)" stroke-width="4"/></g>
+            <text x="300" y="196" font-size="15" text-anchor="middle" class="mut">Dial 고정</text>
+            <g class="outp"><rect x="392" y="168" width="62" height="38" rx="9" style="fill:var(--mint-soft);stroke:var(--mint)" stroke-width="1.5"/><text x="423" y="193" font-size="17" text-anchor="middle" style="fill:var(--mint)">마셨</text></g>
+            <g class="outp" style="animation-delay:-1.1s"><rect x="392" y="168" width="62" height="38" rx="9" style="fill:var(--mint-soft);stroke:var(--mint)" stroke-width="1.5"/><text x="423" y="193" font-size="17" text-anchor="middle" style="fill:var(--mint)">다</text></g>
+            <g class="outp" style="animation-delay:-2.2s"><rect x="392" y="168" width="62" height="38" rx="9" style="fill:var(--mint-soft);stroke:var(--mint)" stroke-width="1.5"/><text x="423" y="193" font-size="17" text-anchor="middle" style="fill:var(--mint)">.</text></g>
+            <text x="520" y="244" font-size="15" text-anchor="middle" class="mut">Token 하나씩</text>
+          </svg>
+          <ul class="tl"><li>고정된 Dial로 답을 만드는 과정</li><li>Forward Pass만. Backpropagation도 Weight 업데이트도 없음</li><li>맨날 합니다. ChatGPT와의 대화는 전부 Inference</li></ul>
+        </div>
       </div>
-      <p>ChatGPT와 나누는 대화는 전부 추론입니다. 대화 중에 모델이 "학습"되고 있는 게 아닙니다. 모델이 내 말을 기억하는 것처럼 보이는 건, 대화 내용 전체가 매번 입력(컨텍스트)으로 다시 들어가기 때문입니다. 대화 기록이 서비스 개선용 학습 데이터로 쓰일지는 각 서비스 정책의 문제이고, 그 대화 순간에 다이얼이 바뀌지는 않습니다.</p>
-      <div class="analogy"><span class="tag">비유</span><p>학습은 공장을 짓고 기계를 세팅하는 일, 추론은 다 지은 공장을 돌려 제품을 찍어내는 일입니다. 지난 글의 "맥에서 로컬로 돌린다"는 이야기는 전부 추론 이야기였습니다.</p></div>
+      <h3>흔한 오해: 대화 중에는 배우지 않는 모델</h3>
+      <p>ChatGPT와 나누는 대화는 전부 Inference입니다. 대화 중에 모델이 "학습"되고 있는 게 아닙니다. 모델이 내 말을 기억하는 것처럼 보이는 건, <strong>대화 내용 전체가 매번 입력(Context)으로 다시 들어가기 때문</strong>입니다.</p>
+      <div class="figure fig">
+        <div class="resend">
+          <div class="row3 si" style="--d:300ms"><span>Request 1</span><div class="bks"><i class="bk sys">System</i><i class="bk q new">질문 1</i></div></div>
+          <div class="row3 si" style="--d:900ms"><span>Request 2</span><div class="bks"><i class="bk sys">System</i><i class="bk q">질문 1</i><i class="bk a">답 1</i><i class="bk q new">질문 2</i></div></div>
+          <div class="row3 si" style="--d:1500ms"><span>Request 3</span><div class="bks"><i class="bk sys">Sys</i><i class="bk q">질문 1</i><i class="bk a">답 1</i><i class="bk q">질문 2</i><i class="bk a">답 2</i><i class="bk q new">질문 3</i></div></div>
+          <div class="modelbar pop" style="--d:2100ms"><b>Model</b><span>Dial 그대로 · 매번 전체를 처음부터 다시 읽음</span></div>
+        </div>
+        <p class="figcap">파란 테두리가 이번에 새로 쓴 부분입니다. 나머지 기록은 매번 다시 보냅니다.</p>
+      </div>
+      <p>대화 기록이 service 개선용 학습 data로 쓰일지는 각 service 정책의 문제이고, 그 대화 순간에 Dial이 바뀌지는 않습니다.</p>
+      <div class="analogy"><span class="tag">비유</span><p>Training은 공장을 짓고 기계를 세팅하는 일, Inference는 다 지은 공장을 돌려 제품을 찍어내는 일입니다. 지난 글의 "Mac에서 local로 돌린다"는 이야기는 전부 Inference 이야기였습니다.</p></div>
     </section>
 
-    <section id="s10" data-n="10" data-t="프리필과 디코딩">
-      <span class="sec-label">10 · 추론의 두 박자</span>
-      <h2>프리필과 디코딩: 추론의 두 박자</h2>
-      <div class="figure">
-        <div class="phase"><span>prefill</span><div class="lane"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div>
-        <div class="phase"><span>decode</span><div class="lane dec"><i class="gap" style="flex:1"></i><i></i><i class="gap"></i><i></i><i class="gap"></i><i></i><i class="gap"></i><i></i><i class="gap"></i><i></i></div></div>
-        <p class="figcap">프리필은 프롬프트 토큰을 한꺼번에 처리하고(연산력 병목), 디코딩은 토큰을 하나씩 순서대로 만듭니다(메모리 대역폭 병목).</p>
+    <section id="s10" data-n="10" data-t="Prefill과 Decoding">
+      <span class="sec-label">10 · Inference의 두 박자</span>
+      <h2>Prefill과 Decoding: Inference의 두 박자</h2>
+      <div class="figure fig">
+        <div class="phase"><span>Prefill</span><div class="lane" id="laneP"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div>
+        <div class="phase"><span>Decoding</span><div class="lane dec" id="laneD"><i class="lead-gap"></i><i></i><i class="gap"></i><i></i><i class="gap"></i><i></i><i class="gap"></i><i></i><i class="gap"></i><i></i></div></div>
+        <div class="exp"><span class="mono" style="font-family:var(--mono);font-size:12px;color:var(--muted)">ChatGPT에 긴 문서를 붙여 넣으면</span><div class="pills"><span class="pill p1">Prefill · 잠깐 멈칫</span><span class="pill p2">Decoding · 흘러나옴</span></div><span class="typer" data-delay="1800" data-speed="40" data-text="이 문서는 Token부터 MoE까지 LLM의 기본 원리를 차례로 설명합니다."></span></div>
+        <p class="figcap">Prefill은 Prompt Token을 한꺼번에 처리하고(연산력 병목), Decoding은 Token을 하나씩 순서대로 만듭니다(Memory Bandwidth 병목).</p>
       </div>
-      <h3>① 프리필 (prefill)</h3>
-      <p>내 프롬프트 전체를 한꺼번에 모델에 통과시키는 단계입니다. 프롬프트 토큰은 이미 다 주어져 있으니 동시에, 병렬로 처리할 수 있습니다. GPU의 병렬 연산을 효율적으로 쓰는 단계라 계산량이 많고, 속도는 연산력이 좌우합니다.</p>
-      <h3>② 디코딩 (decoding)</h3>
-      <p>답을 한 토큰씩 만드는 단계입니다. 1장에서 말했듯 토큰 하나를 뽑아야 다음 토큰을 예측할 수 있으니 본질적으로 순차적입니다. vLLM 논문은 이 단계가 병렬화가 어렵고 행렬-벡터 곱 위주라 GPU 연산력을 다 쓰지 못하는 <strong>메모리 병목(memory-bound)</strong> 단계라고 설명합니다. 그래서 속도는 계산 능력보다 메모리 대역폭에 더 크게 좌우됩니다(자세한 건 지난 글 참고).</p>
-      <p>ChatGPT에 긴 문서를 붙여 넣으면 첫 글자가 나오기까지 잠깐 멈칫하고(프리필), 그다음엔 일정한 속도로 글자가 흘러나오죠(디코딩). 그 두 박자입니다.</p>
+      <h3>① Prefill</h3>
+      <p>내 Prompt 전체를 한꺼번에 모델에 통과시키는 단계입니다. Prompt Token은 이미 다 주어져 있으니 동시에, 병렬로 처리할 수 있습니다. GPU의 병렬 연산을 효율적으로 쓰는 단계라 계산량이 많고, 속도는 연산력이 좌우합니다.</p>
+      <h3>② Decoding</h3>
+      <p>답을 한 Token씩 만드는 단계입니다. 1장에서 말했듯 Token 하나를 뽑아야 다음 Token을 예측할 수 있으니 본질적으로 순차적입니다. vLLM 논문은 이 단계가 병렬화가 어렵고 matrix-vector 곱 위주라 GPU 연산력을 다 쓰지 못하는 <strong>memory-bound</strong> 단계라고 설명합니다. 그래서 속도는 계산 능력보다 Memory Bandwidth에 더 크게 좌우됩니다(자세한 건 지난 글 참고).</p>
+      <p>ChatGPT에 긴 문서를 붙여 넣으면 첫 글자가 나오기까지 잠깐 멈칫하고(Prefill), 그다음엔 일정한 속도로 글자가 흘러나오죠(Decoding). 그 두 박자입니다.</p>
     </section>
 
-    <section id="s11" data-n="11" data-t="KV 캐시">
-      <span class="sec-label">11 · 메모리</span>
-      <h2>KV 캐시: 이미 읽은 건 다시 읽지 않기</h2>
-      <p>디코딩에는 낭비가 숨어 있습니다. 토큰을 하나 새로 만들 때마다 앞의 모든 토큰에 대해 어텐션을 계산해야 하거든요. 앞 토큰들의 Key와 Value(6장)를 매번 처음부터 다시 계산한다면 엄청난 중복입니다.</p>
-      <p>그래서 한 번 계산한 Key와 Value를 메모리에 저장해 두고 재사용합니다. 이게 <strong>KV 캐시</strong>입니다. 새 토큰은 자기 Query만 계산해서 저장된 Key, Value와 비교하면 됩니다.</p>
-      <div class="analogy"><span class="tag">비유</span><p>시험공부할 때 이미 읽은 챕터의 요점 노트를 만들어 두는 것과 같습니다. 새 챕터를 읽을 때마다 앞 챕터를 처음부터 다시 읽지 않고 노트만 펼쳐 보면 되죠.</p></div>
-      <p>대가는 <strong>메모리</strong>입니다. 대화가 길어질수록 노트도 두꺼워집니다.</p>
-      <div class="stats">
-        <div class="stat"><b>800 KB</b><span>OPT-13B의 토큰 1개당 KV 캐시 (vLLM 논문)</span></div>
-        <div class="stat"><b>2,048</b><span>요청 하나의 최대 토큰 수</span></div>
-        <div class="stat"><b>1.6 GB</b><span>요청 하나가 KV 캐시로만 차지할 수 있는 최대치</span></div>
+    <section id="s11" data-n="11" data-t="KV Cache">
+      <span class="sec-label">11 · Memory</span>
+      <h2>KV Cache: 이미 읽은 건 다시 읽지 않기</h2>
+      <p>Decoding에는 낭비가 숨어 있습니다. Token을 하나 새로 만들 때마다 앞의 모든 Token에 대해 Attention을 계산해야 하거든요. 앞 Token들의 Key와 Value(6장)를 매번 처음부터 다시 계산한다면 엄청난 중복입니다.</p>
+      <p>그래서 한 번 계산한 Key와 Value를 Memory에 저장해 두고 재사용합니다. 이게 <strong>KV (Key-Value) Cache</strong>입니다. 새 Token은 자기 Query만 계산해서 저장된 Key, Value와 비교하면 됩니다.</p>
+      <div class="analogy"><span class="tag">비유</span><p>시험공부할 때 이미 읽은 chapter의 요점 Note를 만들어 두는 것과 같습니다. 새 chapter를 읽을 때마다 앞 chapter를 처음부터 다시 읽지 않고 Note만 펼쳐 보면 되죠.</p></div>
+      <p>대가는 <strong>Memory</strong>입니다. 대화가 길어질수록 Note도 두꺼워집니다.</p>
+      <div class="stats fig">
+        <div class="stat"><b data-count>800 KB</b><span>OPT-13B (Open Pre-trained Transformer)의 Token 1개당 KV Cache (vLLM 논문)</span></div>
+        <div class="stat"><b data-count>2,048</b><span>Request 하나의 최대 Token 수</span></div>
+        <div class="stat hl"><b data-count>1.6 GB</b><span>Request 하나가 KV Cache로만 차지할 수 있는 최대치</span></div>
       </div>
-      <p>그래서 모델 설계자들은 KV 캐시를 줄이려고 애씁니다.</p>
-      <div class="post"><header><b>@yulmu_coffee</b><span>10월 23일</span></header><p>에이전트 비용을 줄이는 방법, 캐시 엔지니어링. 긴 작업을 하는 에이전트는 비용 대부분이 KV 캐시 읽기에서 나옵니다(논문 측정으로는 전체 API 비용의 82.4%). 그래서 다들 오래된 기록을 요약하거나 잘라내죠. 문제는 앞부분 텍스트를 바꾸는 순간 그 뒤 캐시가 전부 무효가 된다는 것…</p></div>
+      <p>그래서 모델 설계자들은 KV Cache를 줄이려고 애씁니다.</p>
+      <h3>Agent 비용 대부분은 KV Cache 읽기</h3>
+      <div class="figure fig agent">
+        <div class="ringwrap"><svg viewBox="0 0 220 220" aria-hidden="true"><circle cx="110" cy="110" r="88" style="fill:none;stroke:var(--surface-2)" stroke-width="26"/><circle class="ring" cx="110" cy="110" r="88" pathLength="100" stroke-dasharray="82.4 100" transform="rotate(-90 110 110)" style="fill:none;stroke:var(--accent)" stroke-width="26"/></svg><b class="ringnum" data-count>82.4%</b></div>
+        <div class="ctx">
+          <div class="row3 si" style="--d:400ms"><span>원래 기록</span><div class="segs"><i class="seg">T1</i><i class="seg">T2</i><i class="seg">T3</i><i class="seg">T4</i><i class="seg">T5</i><i class="seg">T6</i><i class="seg">T7</i><i class="seg">T8</i></div></div>
+          <div class="row3 si" style="--d:1100ms"><span>앞부분 요약 후</span><div class="segs"><i class="seg sum" style="flex:2.4">요약</i><i class="seg inv" style="--d:1700ms">T5</i><i class="seg inv" style="--d:1850ms">T6</i><i class="seg inv" style="--d:2000ms">T7</i><i class="seg inv" style="--d:2150ms">T8</i></div></div>
+          <p class="figcap" style="margin:0">긴 작업을 하는 Agent의 전체 API 비용 중 82.4%가 KV Cache 읽기 (논문 측정). 앞부분을 요약하면 그 뒤 Cache가 전부 무효가 됩니다.</p>
+        </div>
+      </div>
+      <div class="post"><header><b>@yulmu_coffee</b><span>10월 23일</span></header><p>Agent 비용을 줄이는 방법, Cache engineering. 긴 작업을 하는 Agent는 비용 대부분이 KV Cache 읽기에서 나옵니다(논문 측정으로는 전체 API 비용의 82.4%). 그래서 다들 오래된 기록을 요약하거나 잘라내죠. 문제는 앞부분 text를 바꾸는 순간 그 뒤 Cache가 전부 무효가 된다는 것…</p></div>
     </section>
 
-    <section id="s12" data-n="12" data-t="프롬프트 캐싱">
+    <section id="s12" data-n="12" data-t="Prompt Caching">
       <span class="sec-label">12 · 비용</span>
-      <h2>프롬프트 캐싱: 남이 만든 요점 노트를 빌려 쓰기<small>"캐시는 왜 할인해요?"</small></h2>
-      <p>API 요금표를 보면 <strong>캐시된 입력(cached input)</strong> 가격이 따로 있고, 일반 입력보다 훨씬 쌉니다. 같은 토큰인데 왜 값이 다를까요? 답은 11장의 요점 노트에 있습니다.</p>
-      <h3>① 원리: 앞부분이 같으면 노트를 다시 만들 필요가 없다</h3>
-      <p>KV 캐시는 한 번의 요청 안에서 쓰는 요점 노트라고 했습니다. 그런데 요청이 끝나면 그 노트는 보통 버려집니다. 다음 요청이 오면 프리필(10장)부터 다시, 프롬프트 전체의 Key·Value를 처음부터 계산하죠.</p>
-      <p>그런데 많은 요청은 <strong>앞부분이 똑같습니다.</strong> 같은 시스템 프롬프트, 같은 툴 정의, 같은 참고 문서를 매번 맨 앞에 붙이니까요. 그렇다면 공통 앞부분(접두부, prefix)의 노트는 보관해 뒀다가 다음 요청에서 그대로 꺼내 쓰면 됩니다. 이게 <strong>프롬프트 캐싱(prefix caching)</strong>입니다.</p>
-      <p>OpenAI도 정확히 이렇게 설명합니다. 입력을 처리하며 만든 중간 상태, 곧 Key·Value를 재사용 가능한 접두부에 대해 보관해 두고, 다음 요청이 같은 접두부를 가지면 그 토큰을 다시 처리하지 않고 저장된 상태를 쓴다는 것이죠. 저장하는 건 토큰 자체가 아니라 KV 텐서라고 명시합니다. 오픈소스 서빙 엔진 vLLM의 '자동 프리픽스 캐싱'도 같은 원리로 공유된 접두부의 계산을 건너뜁니다.</p>
+      <h2>Prompt Caching: 남이 만든 요점 Note 빌려 쓰기<small>"Cache는 왜 할인해요?"</small></h2>
+      <p>API 요금표를 보면 <strong>Cached Input</strong> 가격이 따로 있고, 일반 입력보다 훨씬 쌉니다. 같은 Token인데 왜 값이 다를까요? 답은 11장의 요점 Note에 있습니다.</p>
+      <h3>① 원리: 같은 앞부분이면 Note 재사용</h3>
+      <p>KV Cache는 한 번의 Request 안에서 쓰는 요점 Note라고 했습니다. 그런데 Request가 끝나면 그 Note는 보통 버려집니다. 다음 Request가 오면 Prefill(10장)부터 다시, Prompt 전체의 Key·Value를 처음부터 계산하죠.</p>
+      <p>그런데 많은 Request는 <strong>앞부분이 똑같습니다.</strong> 같은 System Prompt, 같은 Tool 정의, 같은 참고 문서를 매번 맨 앞에 붙이니까요. 그렇다면 공통 앞부분(Prefix)의 Note는 보관해 뒀다가 다음 Request에서 그대로 꺼내 쓰면 됩니다. 이게 <strong>Prompt Caching (Prefix Caching)</strong>입니다.</p>
+      <div class="figure fig prefix">
+        <div class="prow"><span>Request A</span><div class="blocks"><i class="hit si" style="flex:2">Tools</i><i class="hit si" style="flex:3">System</i><i class="hit si" style="flex:3">참고 문서</i><i class="miss si" style="flex:1.6">질문 A</i></div><span class="resl ok pop">Write</span></div>
+        <div class="prow"><span>Request B</span><div class="blocks"><i class="hit si" style="flex:2">Tools</i><i class="hit si" style="flex:3">System</i><i class="hit si" style="flex:3">참고 문서</i><i class="miss si" style="flex:1.6">질문 B</i></div><span class="resl ok pop">Hit</span></div>
+        <div class="prow"><span>Timestamp 넣은 Request</span><div class="blocks"><i class="miss si" style="flex:1.6">09:52</i><i class="miss si" style="flex:2">Tools</i><i class="miss si" style="flex:3">System</i><i class="miss si" style="flex:3">참고 문서</i><i class="miss si" style="flex:1.6">질문</i></div><span class="resl no pop">Miss</span></div>
+        <p class="figcap">공통 Prefix(초록)는 Cache에서 꺼내 쓰고, 맨 앞이 바뀌면 전부 다시 계산합니다.</p>
+      </div>
+      <p>OpenAI도 정확히 이렇게 설명합니다. 입력을 처리하며 만든 중간 상태, 곧 Key·Value를 재사용 가능한 Prefix에 대해 보관해 두고, 다음 Request가 같은 Prefix를 가지면 그 Token을 다시 처리하지 않고 저장된 상태를 쓴다는 것이죠. 저장하는 건 Token 자체가 아니라 KV Tensor라고 명시합니다. Open-source serving engine vLLM의 'Automatic Prefix Caching'도 같은 원리로 공유된 Prefix의 계산을 건너뜁니다.</p>
       <div class="tldr"><small>그래서 할인의 이유는</small>계산을 안 했으니 덜 받는 겁니다.</div>
-      <p>캐시를 맞힌 부분은 프리필 연산을 건너뛰고, 그만큼 첫 글자가 나오기까지의 시간도 줄어듭니다.</p>
-      <h3>② 캐시 히트와 캐시 미스</h3>
+      <p>Cache를 맞힌 부분은 Prefill 연산을 건너뛰고, 그만큼 <strong>첫 글자가 나오기까지의 시간</strong> (TTFT, Time To First Token)도 줄어듭니다.</p>
+      <h3>② Cache Hit와 Cache Miss</h3>
       <ul class="list">
-        <li><strong>캐시 히트(hit)</strong>: 보관된 노트 중 내 요청의 앞부분과 똑같은 게 있어서 꺼내 쓴 경우. 그 부분은 할인된 가격으로 계산됩니다.</li>
-        <li><strong>캐시 미스(miss)</strong>: 맞는 노트가 없어서 처음부터 계산한 경우. 노트가 아예 없었거나, 유효 기간이 지났거나, 앞부분이 조금이라도 달랐을 때입니다.</li>
+        <li><strong>Cache Hit</strong>: 보관된 Note 중 내 Request의 앞부분과 똑같은 게 있어서 꺼내 쓴 경우. 그 부분은 할인된 가격으로 계산됩니다.</li>
+        <li><strong>Cache Miss</strong>: 맞는 Note가 없어서 처음부터 계산한 경우입니다.</li>
       </ul>
-      <p>핵심은 "조금이라도"입니다. Anthropic 문서는 캐시 히트가 나려면 캐시 지점까지의 텍스트와 이미지가 <strong>100% 똑같아야</strong> 한다고 씁니다. OpenAI도 렌더링된 접두부 전체가 일치해야 재사용된다고 설명합니다. 노트는 첫 페이지부터 순서대로 쌓이니, 3쪽에서 한 글자가 바뀌면 3쪽 이후 노트는 모두 쓸 수 없습니다.</p>
-      <h3>③ 얼마나 할인되나 <span class="mono" style="font-size:12px;color:var(--muted);font-weight:500">2026년 10월 기준</span></h3>
+      <div class="miss3">
+        <div><small>MISS 1</small><h4>Note가 아예 없음</h4><p>처음 보내는 Prefix라 저장된 Note가 없을 때</p></div>
+        <div><small>MISS 2</small><h4>유효 기간이 지남</h4><p>TTL (Time To Live)이 지나 Note가 버려졌을 때</p></div>
+        <div><small>MISS 3</small><h4>앞부분이 조금이라도 다름</h4><p>Prefix가 한 글자라도 달라졌을 때</p></div>
+      </div>
+      <p>핵심은 "조금이라도"입니다. Anthropic 문서는 Cache Hit가 나려면 Cache 지점까지의 text와 이미지가 <strong>100% 똑같아야</strong> 한다고 씁니다. OpenAI도 rendering된 Prefix 전체가 일치해야 재사용된다고 설명합니다.</p>
+      <div class="figure fig">
+        <div class="pgrow"><i class="pg">p.1</i><i class="pg">p.2</i><i class="pg inv" style="--d:1300ms">p.3<b class="pop" style="--d:1000ms">한 글자 수정</b></i><i class="pg inv" style="--d:1500ms">p.4</i><i class="pg inv" style="--d:1700ms">p.5</i><i class="pg inv" style="--d:1900ms">p.6</i></div>
+        <p class="figcap">Note는 첫 페이지부터 순서대로 쌓이니, 3쪽에서 한 글자가 바뀌면 3쪽 이후의 Note는 모두 쓸 수 없습니다.</p>
+      </div>
+      <h3>③ 얼마나 할인되나</h3>
       <div class="table-wrap">
         <table>
-          <thead><tr><th>제공사</th><th>캐시 읽기</th><th>캐시 쓰기</th><th>비고</th></tr></thead>
+          <thead><tr><th>제공사</th><th>Cache Read</th><th>Cache Write</th><th>비고</th></tr></thead>
           <tbody>
             <tr><td><b>OpenAI</b></td><td class="num">0.1×<br>(GPT-6.1 Sol 0.05×)</td><td class="num">30분 1.25×<br>12시간 2.5×</td><td>GPT-5.6 이후 모델 기준. 12시간 보관은 Responses API. 이전 모델은 쓰기 추가 요금이 없고 할인율이 모델마다 다름</td></tr>
-            <tr><td><b>Anthropic</b></td><td class="num">0.1×<br>(일부 0.05×, 0.025×)</td><td class="num">5분 1.25×<br>1시간 2×</td><td>기본 입력 대비 배율</td></tr>
-            <tr><td><b>Google Gemini</b></td><td class="num">자동 반영</td><td class="num">—</td><td>2.5 이후 모델은 암묵적 캐싱이 기본으로 켜져 있고, 히트 시 절감분이 자동 반영</td></tr>
+            <tr><td><b>Anthropic</b></td><td class="num">0.1×<br>(일부 0.05×, 0.025×)</td><td class="num">5분 1.25×<br>1시간 2×</td><td>기본 Input 대비 배율</td></tr>
+            <tr><td><b>Google Gemini</b></td><td class="num">자동 반영</td><td class="num">—</td><td>2.5 이후 모델은 Implicit Caching이 기본으로 켜져 있고, Hit 시 절감분이 자동 반영</td></tr>
           </tbody>
         </table>
       </div>
-      <p>그런데 OpenAI는 최근 이걸 영구 보관해 준다고 합니다. SSD에 저장해 두는 듯합니다.</p>
-      <div class="post"><header><b>@yulmu_coffee</b><span>10월 21일</span></header><p>Codex 캐싱을… API에서 12시간, Codex에서 로그인했다면 영구적으로 유지한다는데 이게 말이 되나 싶습니다. 램이 남아도는 건 아닐 테고, SSD에 오프로딩해 뒀다가 꺼내나 봅니다. 아무튼 엄청난 업데이트네요. 리셋 없어도 되는 것 인정. 사용량 개선 체감이 꽤 클지도 모릅니다.</p></div>
+      <p>그런데 OpenAI는 최근 이걸 영구 보관해 준다고 합니다. SSD (Solid State Drive)에 저장해 두는 듯합니다.</p>
+      <div class="post"><header><b>@yulmu_coffee</b><span>10월 21일</span></header><p>Codex caching을… API에서 12시간, Codex에서 login했다면 영구적으로 유지한다는데 이게 말이 되나 싶습니다. RAM (Random Access Memory)이 남아도는 건 아닐 테고, SSD에 offloading해 뒀다가 꺼내나 봅니다. 아무튼 엄청난 update네요. Reset 없어도 되는 것 인정. 사용량 개선 체감이 꽤 클지도 모릅니다.</p></div>
     </section>
 
-    <section id="tips" data-n="↳" data-t="캐시 히트 실전 팁">
+    <section id="tips" data-n="↳" data-t="Cache Hit 실전 팁">
       <span class="sec-label">잠깐 · 실전</span>
-      <h2>캐시 히트를 내는 실전 팁</h2>
+      <h2>Cache Hit를 내는 실전 팁</h2>
       <div class="tips">
-        <div class="tip"><span class="k">TIP 1</span><h4>안 바뀌는 건 앞에, 바뀌는 건 뒤에</h4><p>시스템 프롬프트, 툴 정의, 참고 문서처럼 고정된 부분을 맨 앞에 두고, 사용자 질문처럼 매번 달라지는 부분은 맨 뒤에 둡니다. 세 회사 문서가 모두 같은 조언을 합니다. Anthropic은 캐시 접두부가 <code>tools → system → messages</code> 순서로 만들어지고, 앞 단계가 바뀌면 그 뒤가 모두 무효가 된다고 설명합니다.</p></div>
-        <div class="tip"><span class="k">TIP 2</span><h4>접두부를 바이트 단위까지 똑같이</h4><p>가장 흔한 실수는 시스템 프롬프트 맨 앞에 <code>현재 시각: 2026-10-23 09:52</code> 같은 값을 넣는 겁니다. 매 요청 첫 줄이 바뀌니 노트를 한 장도 못 씁니다. OpenAI는 타임스탬프나 사용자별 내용을 끝으로 옮기라고 하고, Anthropic도 타임스탬프가 든 블록에 캐시 지점을 두면 쓰기 비용만 내고 읽기는 한 번도 못 한다고 경고합니다.</p><p>툴 정의의 순서나 스키마를 바꾸는 것, 일부 언어에서 JSON 키 순서가 무작위로 바뀌는 것도 캐시를 깹니다. 툴을 잠시 끄고 싶다면 정의를 지우지 말고 <code>tool_choice: "none"</code> 등으로 막으라는 게 OpenAI의 권고입니다.</p></div>
-        <div class="tip"><span class="k">TIP 3</span><h4>최소 길이를 넘기세요</h4><p>너무 짧은 접두부는 아예 캐시되지 않습니다.</p><ul><li>OpenAI: GPT-5.6 이후 1,024토큰 (이전 모델은 요청 설정에 따라 다름)</li><li>Anthropic: 모델에 따라 512~4,096토큰. 더 짧으면 <code>cache_control</code>을 붙여도 오류 없이 캐싱 없이 처리</li><li>Gemini: 2.5 Flash·Pro는 2,048토큰, 이후 모델은 4,096토큰</li></ul></div>
-        <div class="tip"><span class="k">TIP 4</span><h4>유효 기간(TTL) 안에 다시 쓰세요</h4><p>노트에는 유통기한이 있습니다.</p><ul><li>Anthropic: 기본 5분, 쓸 때마다 무료 갱신. 1시간 옵션은 추가 요금</li><li>OpenAI: 앞서 말했듯 영구 보관된다고 하네요</li><li>Gemini: 문서는 "비슷한 접두부의 요청을 짧은 시간 안에 보내라"고만 권함</li></ul></div>
+        <div class="tip"><span class="k">TIP 1</span><h4>안 바뀌는 건 앞에, 바뀌는 건 뒤에</h4><p>System Prompt, Tool 정의, 참고 문서처럼 고정된 부분을 맨 앞에 두고, 사용자 질문처럼 매번 달라지는 부분은 맨 뒤에 둡니다. 세 회사 문서가 모두 같은 조언을 합니다. Anthropic은 Cache Prefix가 <code>tools → system → messages</code> 순서로 만들어지고, 앞 단계가 바뀌면 그 뒤가 모두 무효가 된다고 설명합니다.</p></div>
+        <div class="tip"><span class="k">TIP 2</span><h4>Prefix를 Byte 단위까지 똑같이</h4><p>가장 흔한 실수는 System Prompt 맨 앞에 <code>현재 시각: 2026-10-23 09:52</code> 같은 값을 넣는 겁니다. 매 Request 첫 줄이 바뀌니 Note를 한 장도 못 씁니다. OpenAI는 Timestamp나 사용자별 내용을 Prefix 끝으로 옮기라고 하고, Anthropic도 Timestamp가 들어간 블록에 Cache 지점을 두면 쓰기 비용만 내고 읽기는 한 번도 못 한다고 경고합니다.</p><p>Tool 정의의 순서나 Schema를 바꾸는 것, 일부 언어에서 JSON (JavaScript Object Notation) key 순서가 무작위로 바뀌는 것도 Cache를 깹니다. Tool을 잠시 끄고 싶다면 정의를 지우지 말고 <code>tool_choice: "none"</code> 등으로 막으라는 게 OpenAI의 권고입니다.</p></div>
+        <div class="tip"><span class="k">TIP 3</span><h4>최소 길이를 넘기세요</h4><p>너무 짧은 Prefix는 아예 Cache되지 않습니다.</p><ul><li>OpenAI: GPT-5.6 이후 1,024 Token (이전 모델은 Request 설정에 따라 다름)</li><li>Anthropic: 모델에 따라 512~4,096 Token. 더 짧으면 <code>cache_control</code>을 붙여도 오류 없이 Cache 없이 처리</li><li>Gemini: 2.5 Flash·Pro는 2,048 Token, 이후 모델은 4,096 Token</li></ul></div>
+        <div class="tip"><span class="k">TIP 4</span><h4>TTL (Time To Live) 안에 다시 쓰세요</h4><p>Note에는 유통기한이 있습니다.</p><ul><li>Anthropic: 기본 5분, 쓸 때마다 무료로 갱신. 1시간 옵션은 추가 요금</li><li>OpenAI: API는 최대 12시간, Codex login 시 영구 보관</li><li>Gemini: "비슷한 Prefix의 Request를 짧은 시간 안에 보내라"고만 권장</li></ul></div>
       </div>
       <div class="tldr"><small>한 줄 요약</small>안 바뀌는 건 앞에 두고, 한 글자도 건드리지 마세요.</div>
     </section>
 
-    <section id="s13" data-n="13" data-t="컨텍스트 윈도우">
+    <section id="s13" data-n="13" data-t="Context Window">
       <span class="sec-label">13 · 한계</span>
-      <h2>컨텍스트 윈도우: 책상의 크기</h2>
-      <p>컨텍스트 윈도우는 모델이 한 번에 볼 수 있는 토큰의 최대 개수입니다. 내 프롬프트, 대화 기록, 첨부 문서, 그리고 모델이 생성하는 답변까지 모두 이 안에 들어가야 합니다.</p>
+      <h2>Context Window: 책상의 크기</h2>
+      <p>Context Window는 모델이 한 번에 볼 수 있는 Token의 최대 개수입니다. 내 Prompt, 대화 기록, 첨부 문서, 그리고 모델이 생성하는 답변까지 모두 이 안에 들어가야 합니다.</p>
+      <div class="figure fig">
+        <svg viewBox="0 0 600 300" role="img" aria-label="Context Window 구성: System, 대화 기록, 첨부, 답변이 한 칸에 들어가고 넘친 부분은 밖으로 밀려난다">
+          <rect x="20" y="40" width="460" height="200" rx="18" style="fill:var(--surface-2);stroke:var(--accent)" stroke-width="2.5"/>
+          <g class="gx"><rect x="40" y="70" width="90" height="140" rx="10" style="fill:var(--accent-soft)"/><text x="85" y="146" font-size="19" text-anchor="middle">System</text></g>
+          <g class="gx"><rect x="140" y="70" width="130" height="140" rx="10" style="fill:var(--mint-soft)"/><text x="205" y="146" font-size="19" text-anchor="middle">대화 기록</text></g>
+          <g class="gx"><rect x="280" y="70" width="110" height="140" rx="10" style="fill:var(--signal-soft)"/><text x="335" y="146" font-size="19" text-anchor="middle">첨부</text></g>
+          <g class="gx"><rect x="400" y="70" width="60" height="140" rx="10" style="fill:var(--accent)"/><text x="430" y="146" font-size="17" text-anchor="middle" style="fill:var(--surface)">답변</text></g>
+          <g class="pop"><rect x="500" y="90" width="80" height="100" rx="10" style="fill:none;stroke:var(--muted)" stroke-dasharray="6 5" stroke-width="2"/><text x="540" y="146" font-size="17" text-anchor="middle" class="mut">넘침</text></g>
+          <text x="20" y="28" font-size="17" class="mut">Context Window</text>
+          <text x="20" y="275" font-size="16" class="mut">길수록 계산이 늘고 KV Cache도 커집니다</text>
+        </svg>
+      </div>
       <div class="analogy"><span class="tag">비유</span><p>책상 크기라고 생각하면 됩니다. 책상이 넓으면 자료를 많이 펼쳐 놓고 일할 수 있지만, 넘치는 건 책상 밖으로 밀려납니다.</p></div>
-      <p>다만 책상이 넓어지면 비용도 따라옵니다. 어텐션은 모든 토큰 쌍을 비교하므로 컨텍스트가 길수록 계산이 늘고, KV 캐시도 커집니다(11장). 긴 프롬프트일수록 프리필이 오래 걸리는 이유입니다.</p>
+      <p>다만 책상이 넓어지면 비용도 따라옵니다. Attention은 모든 Token 쌍을 비교하므로 Context가 길수록 계산이 늘고, KV Cache도 커집니다(11장). 긴 Prompt일수록 Prefill이 오래 걸리는 이유입니다.</p>
     </section>
 
     <section id="s14" data-n="14" data-t="MoE">
       <span class="sec-label">14 · 효율</span>
       <h2>MoE: 전문가 여러 명 중 몇 명만 부르기</h2>
-      <p>마지막으로, 요즘 자주 보이는 <strong>MoE(Mixture of Experts)</strong>를 간단히 짚겠습니다.</p>
-      <p>일반 모델(dense)은 토큰 하나를 처리할 때 모든 파라미터를 씁니다. MoE는 피드포워드 부분을 여러 '전문가'로 나누고, <strong>라우터</strong>가 토큰마다 그중 몇 개만 골라 쓰게 합니다.</p>
-      <div class="figure">
-        <div class="mono" style="font-size:12px;color:var(--muted)">router → 토큰 <span id="moeTok" style="color:var(--ink)">"은행"</span> · top-2 of 8</div>
+      <p>마지막으로, 요즘 자주 보이는 <strong>MoE (Mixture of Experts)</strong>를 간단히 짚겠습니다.</p>
+      <p>일반 모델(Dense)은 Token 하나를 처리할 때 모든 Parameter를 씁니다. MoE는 Feed-forward 부분을 여러 '전문가'로 나누고, <strong>Router</strong>가 Token마다 그중 몇 개만 골라 쓰게 합니다.</p>
+      <div class="figure fig">
+        <div style="font-family:var(--mono);font-size:12px;color:var(--muted)">Router ← Token <span id="moeTok" style="color:var(--ink)">"은행"</span> · top-2 of 8</div>
         <div class="moe" id="moe"><span>E1</span><span>E2</span><span>E3</span><span>E4</span><span>E5</span><span>E6</span><span>E7</span><span>E8</span></div>
-        <p class="figcap">Mixtral 8x7B: 레이어마다 전문가 8개, 토큰마다 2개만 씁니다. 전체 파라미터는 470억 개지만 토큰 하나에 실제로 쓰는 건 130억 개입니다.</p>
+        <p class="figcap">Mixtral 8x7B: Layer마다 전문가 8개, Token마다 2개만 씁니다. 전체 Parameter는 470억 개지만 Token 하나에 실제로 쓰는 건 130억 개입니다.</p>
       </div>
-      <div class="analogy"><span class="tag">비유</span><p>종합병원과 비슷합니다. 병원에는 전문의가 수십 명 있지만, 환자 한 명은 접수처(라우터)의 안내에 따라 필요한 과 두어 곳만 들릅니다.</p></div>
-      <p>전체 전문가를 메모리에 올려 둬야 하니 <strong>용량</strong>은 크게 필요하지만, 토큰마다 읽어 오는 양은 적으니 <strong>대역폭</strong> 부담은 작습니다.</p>
-      <div class="callout"><b class="t">비유의 한계</b>'전문가'라는 이름과 달리 각 전문가가 "의학", "법률"처럼 사람이 알아볼 수 있는 주제를 맡지는 않습니다. Mixtral 논문도 전문가 배정이 주제보다는 문법적·구조적 패턴과 더 관련 있어 보인다고 보고했습니다.</div>
+      <div class="analogy"><span class="tag">비유</span><p>종합병원과 비슷합니다. 병원에는 전문의가 수십 명 있지만, 환자 한 명은 접수처(Router)의 안내에 따라 필요한 과 두어 곳만 들릅니다.</p></div>
+      <p>전체 전문가를 Memory에 올려 둬야 하니 <strong>용량</strong>은 크게 필요하지만, Token마다 읽어 오는 양은 적으니 <strong>Bandwidth</strong> 부담은 작습니다.</p>
+      <div class="callout"><b class="t">비유의 한계</b>'전문가'라는 이름과 달리 각 전문가가 "의학", "법률"처럼 사람이 알아볼 수 있는 주제를 맡지는 않습니다. Mixtral 논문도 전문가 배정이 주제보다는 문법적·구조적 pattern과 더 관련 있어 보인다고 보고했습니다.</div>
     </section>
 
     <section id="end" data-n="◎" data-t="마치며">
       <span class="sec-label">마치며</span>
       <h2>다시, 채팅창 뒤에서</h2>
       <p>이제 채팅창에 질문을 입력하는 순간 벌어지는 일을 처음부터 끝까지 따라가 볼 수 있습니다.</p>
-      <ol class="steps">
-        <li><div><b>토크나이저</b><p>내 질문이 잘려 토큰 번호가 됩니다.</p></div></li>
-        <li><div><b>임베딩</b><p>각 토큰이 벡터가 됩니다.</p></div></li>
-        <li><div><b>레이어 · 어텐션 · 프리필</b><p>수십 개의 레이어를 지나며 어텐션으로 서로의 문맥을 주고받습니다. 프롬프트 전체를 한 번에 처리하는 이 단계가 프리필이고, 이때 KV 캐시가 만들어집니다.</p></div></li>
-        <li><div><b>확률표 · 샘플링</b><p>마지막 레이어가 다음 토큰의 확률표를 내고, 온도와 샘플링 규칙에 따라 하나를 고릅니다.</p></div></li>
-        <li><div><b>디코딩</b><p>그 토큰을 붙이고 다시 예측합니다. 이 모든 반복이 컨텍스트 윈도우 안에서 일어납니다.</p></div></li>
-        <li><div><b>파라미터</b><p>여기에 쓰인 수십억 개의 파라미터는 사전학습과 파인튜닝, RLHF로 미리 맞춰져 있었고, 대화하는 동안에는 바뀌지 않습니다.</p></div></li>
-      </ol>
+      <div class="figure fig">
+        <div class="flow" id="flow">
+          <div><small>STEP 1</small><b>Tokenizer</b><p>내 질문이 잘려 Token 번호가 됨</p></div>
+          <div><small>STEP 2</small><b>Embedding</b><p>각 Token이 Vector가 됨</p></div>
+          <div><small>STEP 3</small><b>Prefill</b><p>Layer·Attention을 지나며 KV Cache 생성</p></div>
+          <div><small>STEP 4</small><b>Sampling</b><p>확률표에서 Temperature와 규칙에 따라 하나 선택</p></div>
+          <div><small>STEP 5</small><b>Decoding</b><p>붙이고 다시 예측. 모두 Context Window 안에서</p></div>
+          <div><small>STEP 6</small><b>Parameter</b><p>Pre-training, Fine-tuning, RLHF로 미리 맞춰져 있고 대화 중엔 고정</p></div>
+        </div>
+        <div class="rail"><i id="rail"></i></div>
+      </div>
       <p>처음의 질문으로 돌아가 볼까요.</p>
       <p class="ending">ChatGPT는 생각을 할까요, 다음 단어를 고를까요?</p>
-      <div class="source">원문: <a href="https://x.com/yulmu_coffee/status/2113455967518216543" target="_blank" rel="noopener">「처음 읽는 LLM 이해하기」</a> · @yulmu_coffee · 2026-10-22. 이 페이지는 원문을 웹 문서 형태로 다시 엮은 것이며, 그림과 데모는 설명을 돕기 위해 새로 만들었습니다.</div>
+      <div class="source"><a href="https://x.com/yulmu_coffee/status/2113455967518216543" target="_blank" rel="noopener">Adapted from @yulmu_coffee (X post)</a>. 그림과 데모는 설명을 돕기 위해 새로 만들었습니다.</div>
     </section>
   </article>
 </div>
 
-<footer class="site gutter"><div class="in"><span>Artifact Archives · guides</span><a href="https://github.com/ndkkdn/artifactarchives" target="_blank" rel="noopener">github.com/ndkkdn/artifactarchives</a></div></footer>
+<footer class="site gutter"><div class="in-wrap"><a href="https://x.com/yulmu_coffee/status/2113455967518216543" target="_blank" rel="noopener">Adapted from @yulmu_coffee (X post)</a><a href="https://github.com/ndkkdn/artifactarchives" target="_blank" rel="noopener">github.com/ndkkdn/artifactarchives</a></div></footer>
 
 <script>
 (() => {
   const root = document.documentElement;
   try { const t = localStorage.getItem('archive-theme'); if (t) root.dataset.theme = t; } catch (e) {}
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
   document.getElementById('themeBtn').onclick = () => {
     const dark = root.dataset.theme ? root.dataset.theme === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
     root.dataset.theme = dark ? 'light' : 'dark';
     try { localStorage.setItem('archive-theme', root.dataset.theme); } catch (e) {}
     drawGD();
   };
-  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const esc = s => s.replace(/[&<>]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
+  const NS = 'http://www.w3.org/2000/svg';
+  const mk = (tag, attrs) => { const el = document.createElementNS(NS, tag); for (const k in attrs) el.setAttribute(k, attrs[k]); return el; };
 
   /* next-token demo */
   const TREE = {
@@ -605,37 +971,33 @@ footer.site a { color: var(--muted); }
   const BASE = '오늘 아침에 커피를';
   let path = [];
   const promptEl = document.getElementById('prompt'), candsEl = document.getElementById('cands');
-  const esc = s => s.replace(/[&<>]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
+  const keyOf = () => path.length === 0 ? '' : path.length === 1 ? path[0] : null;
   function renderDemo() {
     const gen = path.map((t, i) => (i === 0 ? ' ' : '') + t).join('');
     promptEl.innerHTML = esc(BASE) + '<span class="gen">' + esc(gen) + '</span><span class="caret"></span>';
-    const key = path.length === 0 ? '' : path.length === 1 ? path[0] : null;
-    const list = key === null ? [] : TREE[key];
+    const key = keyOf(), list = key === null ? [] : TREE[key];
     candsEl.innerHTML = list.length ? list.map(([t, p]) =>
       `<button class="cand" type="button" data-t="${esc(t)}"><span class="bar" style="width:0"></span><span class="tok">${esc(t)}</span><span class="p">${p < .01 ? p.toFixed(3) : p.toFixed(2)}</span></button>`).join('')
-      : '<div class="mono" style="font-size:13px;color:var(--muted);padding:10px 2px">&lt;eos&gt; 문장이 끝났습니다. 처음으로 돌아가 다른 후보도 골라 보세요.</div>';
-    requestAnimationFrame(() => candsEl.querySelectorAll('.cand').forEach((b, i) => {
-      b.querySelector('.bar').style.width = Math.max(1, list[i][1] * 100) + '%';
-    }));
+      : '<div style="font-family:var(--mono);font-size:13px;color:var(--muted);padding:10px 2px">&lt;eos&gt; 문장이 끝났습니다. 처음으로 돌아가 다른 후보도 골라 보세요.</div>';
+    requestAnimationFrame(() => candsEl.querySelectorAll('.cand').forEach((b, i) => { b.querySelector('.bar').style.width = Math.max(1, list[i][1] * 100) + '%'; }));
   }
   candsEl.addEventListener('click', e => { const b = e.target.closest('.cand'); if (b) { path.push(b.dataset.t); renderDemo(); } });
   document.getElementById('sampleBtn').onclick = () => {
-    const key = path.length === 0 ? '' : path.length === 1 ? path[0] : null;
+    const key = keyOf();
     if (key === null) { path = []; renderDemo(); return; }
-    let r = Math.random(), list = TREE[key], sum = list.reduce((a, c) => a + c[1], 0); r *= sum;
+    const list = TREE[key]; let r = Math.random() * list.reduce((a, c) => a + c[1], 0);
     for (const [t, p] of list) { r -= p; if (r <= 0) { path.push(t); break; } }
     renderDemo();
   };
   document.getElementById('resetBtn').onclick = () => { path = []; renderDemo(); };
   renderDemo();
 
-  /* TOC + scroll spy */
+  /* TOC + scroll spy + progress */
   const secs = [...document.querySelectorAll('article section')];
-  const tocHTML = secs.map(s => `<li><a href="#${s.id}" data-id="${s.id}"><span class="n">${s.dataset.n}</span><span>${s.dataset.t}</span></a></li>`).join('');
-  document.getElementById('toc').innerHTML = tocHTML;
+  document.getElementById('toc').innerHTML = secs.map(s => `<li><a href="#${s.id}" data-id="${s.id}"><span class="n">${s.dataset.n}</span><span>${s.dataset.t}</span></a></li>`).join('');
   document.getElementById('tocMobile').innerHTML = secs.map(s => `<li><a href="#${s.id}">${s.dataset.t}</a></li>`).join('');
-  const links = [...document.querySelectorAll('#toc a')];
-  const bar = document.getElementById('progress');
+  document.querySelectorAll('#tocMobile a').forEach(a => a.addEventListener('click', () => { a.closest('details').open = false; }));
+  const links = [...document.querySelectorAll('#toc a')], bar = document.getElementById('progress');
   function onScroll() {
     const h = document.documentElement.scrollHeight - innerHeight;
     bar.style.transform = `scaleX(${h > 0 ? Math.min(1, scrollY / h) : 0})`;
@@ -645,59 +1007,140 @@ footer.site a { color: var(--muted); }
   }
   addEventListener('scroll', onScroll, { passive: true }); onScroll();
 
-  /* gradient descent */
+  /* static builds */
+  document.getElementById('knobs').innerHTML = Array.from({ length: 24 }, () => '<i class="knob"></i>').join('');
+  document.querySelectorAll('#heads i').forEach((h, i) => h.style.setProperty('--t', (1.1 + (i * 0.37) % 1.3).toFixed(2) + 's'));
+  const mtoks = ['오늘', '아침에', '커피를', '마셨', '다', '.'];
+  let m = '<div></div>' + mtoks.map(t => `<div class="h">${t}</div>`).join('');
+  mtoks.forEach((t, r) => { m += `<div class="rl">${t}</div>`; mtoks.forEach((_, c) => { m += c <= r ? `<div class="${c < r ? 'on' : 'self'} pop" style="--d:${200 + (r + c) * 70}ms"></div>` : '<div class="off"></div>'; }); });
+  document.getElementById('mask').innerHTML = m;
+  document.querySelectorAll('#laneP i').forEach(el => { el.classList.add('gy'); el.style.setProperty('--d', '300ms'); });
+  [...document.querySelectorAll('#laneD i:not(.gap):not(.lead-gap)')].forEach((el, k) => { el.classList.add('gy'); el.style.setProperty('--d', (900 + k * 320) + 'ms'); });
+  document.querySelectorAll('.fig').forEach(f => { let p = 0; f.querySelectorAll('.pop, .draw, .gx, .si').forEach(el => { if (!el.style.getPropertyValue('--d')) el.style.setProperty('--d', (250 + p++ * 100) + 'ms'); }); });
+
+  /* count-up */
+  function countUp(el) {
+    if (!el.dataset.final) el.dataset.final = el.textContent;
+    const txt = el.dataset.final, mt = /[\d,]*\.?\d+/.exec(txt);
+    if (!mt || reduce) return;
+    const raw = mt[0], dec = (raw.split('.')[1] || '').length, comma = raw.includes(','), target = parseFloat(raw.replace(/,/g, ''));
+    const fmt = v => { let s = v.toFixed(dec); if (comma) s = Number(s).toLocaleString('en-US', { minimumFractionDigits: dec, maximumFractionDigits: dec }); return txt.slice(0, mt.index) + s + txt.slice(mt.index + raw.length); };
+    const t0 = performance.now(), dur = 1300;
+    const tick = now => { const k = Math.min(1, (now - t0) / dur), e = 1 - Math.pow(1 - k, 3); if (k < 1) { el.textContent = fmt(target * e); requestAnimationFrame(tick); } else el.textContent = txt; };
+    el.textContent = fmt(0); requestAnimationFrame(tick);
+    setTimeout(() => { el.textContent = txt; }, dur + 400);
+  }
+  function typeIn(el, i) {
+    const t = el.dataset.text; if (reduce) { el.textContent = t; return; }
+    el.textContent = '';
+    const base = +(el.dataset.delay || (500 + i * 500)), sp = +(el.dataset.speed || 45);
+    [...t].forEach((ch, k) => setTimeout(() => { el.textContent += ch; }, base + k * sp));
+  }
+  document.querySelectorAll('.typer').forEach(el => { el.textContent = el.dataset.text; });
+
+  /* gradient descent canvas */
   const cv = document.getElementById('gd'), ctx = cv.getContext('2d'), info = document.getElementById('gdInfo');
   const f = x => 0.6 * Math.pow(x - 1.1, 2) + 0.35 * Math.sin(3.2 * x) + 1.2;
   const df = x => 1.2 * (x - 1.1) + 1.12 * Math.cos(3.2 * x);
   const X0 = -1.6, X1 = 3.4;
-  let trail = [], x = -1.35, step = 0, timer = null;
-  function css(v) { return getComputedStyle(root).getPropertyValue(v).trim(); }
+  let trail = [], x = -1.35, step = 0, gdTimer = null;
+  const css = v => getComputedStyle(root).getPropertyValue(v).trim();
   function drawGD() {
     const w = cv.clientWidth, h = cv.clientHeight, dpr = devicePixelRatio || 1;
-    if (cv.width !== w * dpr) { cv.width = w * dpr; cv.height = h * dpr; }
+    if (!w) return;
+    if (cv.width !== Math.round(w * dpr) || cv.height !== Math.round(h * dpr)) { cv.width = Math.round(w * dpr); cv.height = Math.round(h * dpr); }
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.clearRect(0, 0, w, h);
     let ymin = Infinity, ymax = -Infinity;
     for (let i = 0; i <= 200; i++) { const y = f(X0 + (X1 - X0) * i / 200); ymin = Math.min(ymin, y); ymax = Math.max(ymax, y); }
-    const pad = 22, sx = v => pad + (v - X0) / (X1 - X0) * (w - pad * 2), sy = v => h - pad - (v - ymin) / (ymax - ymin) * (h - pad * 2 - 10);
+    const pad = 22, sx = v => pad + (v - X0) / (X1 - X0) * (w - pad * 2), sy = v => h - pad - (v - ymin) / (ymax - ymin) * (h - pad * 2 - 14);
     ctx.strokeStyle = css('--line'); ctx.lineWidth = 1;
-    for (let i = 1; i < 4; i++) { ctx.beginPath(); ctx.moveTo(pad, pad + i * (h - pad * 2) / 4); ctx.lineTo(w - pad, pad + i * (h - pad * 2) / 4); ctx.stroke(); }
-    ctx.beginPath();
-    for (let i = 0; i <= 200; i++) { const v = X0 + (X1 - X0) * i / 200; i ? ctx.lineTo(sx(v), sy(f(v))) : ctx.moveTo(sx(v), sy(f(v))); }
-    ctx.lineTo(w - pad, h - pad); ctx.lineTo(pad, h - pad); ctx.closePath();
-    ctx.fillStyle = css('--accent-soft'); ctx.fill();
-    ctx.beginPath();
-    for (let i = 0; i <= 200; i++) { const v = X0 + (X1 - X0) * i / 200; i ? ctx.lineTo(sx(v), sy(f(v))) : ctx.moveTo(sx(v), sy(f(v))); }
-    ctx.strokeStyle = css('--accent'); ctx.lineWidth = 2; ctx.stroke();
+    for (let i = 1; i < 4; i++) { const y = pad + i * (h - pad * 2) / 4; ctx.beginPath(); ctx.moveTo(pad, y); ctx.lineTo(w - pad, y); ctx.stroke(); }
+    const curve = () => { ctx.beginPath(); for (let i = 0; i <= 200; i++) { const v = X0 + (X1 - X0) * i / 200; i ? ctx.lineTo(sx(v), sy(f(v))) : ctx.moveTo(sx(v), sy(f(v))); } };
+    curve(); ctx.lineTo(w - pad, h - pad); ctx.lineTo(pad, h - pad); ctx.closePath(); ctx.fillStyle = css('--accent-soft'); ctx.fill();
+    curve(); ctx.strokeStyle = css('--accent'); ctx.lineWidth = 2; ctx.stroke();
     ctx.fillStyle = css('--muted');
     trail.forEach(t => { ctx.beginPath(); ctx.arc(sx(t), sy(f(t)), 2.5, 0, 7); ctx.fill(); });
-    ctx.beginPath(); ctx.arc(sx(x), sy(f(x)) - 7, 7, 0, 7); ctx.fillStyle = css('--signal'); ctx.fill();
+    const bx = sx(x), by = sy(f(x)), slope = (sy(f(x + .01)) - by) / (sx(x + .01) - bx);
+    ctx.strokeStyle = css('--signal'); ctx.lineWidth = 1.5; ctx.setLineDash([5, 4]);
+    ctx.beginPath(); ctx.moveTo(bx - 34, by - 34 * slope); ctx.lineTo(bx + 34, by + 34 * slope); ctx.stroke(); ctx.setLineDash([]);
+    ctx.beginPath(); ctx.arc(bx, by - 7, 7, 0, 7); ctx.fillStyle = css('--signal'); ctx.fill();
     ctx.font = '11px ' + css('--mono'); ctx.fillStyle = css('--muted');
-    ctx.fillText('loss', pad, 14); ctx.fillText('다이얼 값 →', w - pad - 70, h - 6);
-    info.textContent = `step ${String(step).padStart(2, '0')} · loss ${f(x).toFixed(3)} · 기울기 ${df(x).toFixed(3)}`;
+    ctx.fillText('Loss', pad, 14); ctx.fillText('Dial 값 →', w - pad - 64, h - 6);
+    info.textContent = `step ${String(step).padStart(2, '0')} · Loss ${f(x).toFixed(3)} · Gradient ${df(x).toFixed(3)}`;
   }
   function runGD() {
-    clearInterval(timer); trail = []; x = -1.35; step = 0;
+    clearInterval(gdTimer); trail = []; x = -1.35; step = 0;
     if (reduce) { for (; step < 40; step++) { trail.push(x); x -= 0.18 * df(x); } drawGD(); return; }
     drawGD();
-    timer = setInterval(() => {
+    gdTimer = setInterval(() => {
+      if (step >= 40 || Math.abs(df(x)) < 1e-3) { trail = []; x = -1.35 + Math.random() * 0.4; step = 0; }
       trail.push(x); x -= 0.18 * df(x); step++; drawGD();
-      if (step >= 40 || Math.abs(df(x)) < 1e-3) clearInterval(timer);
     }, 140);
   }
-  document.getElementById('gdBtn').onclick = runGD;
   addEventListener('resize', drawGD);
-  runGD();
+  drawGD();
 
-  /* moe router */
-  const moe = [...document.querySelectorAll('#moe span')], moeTok = document.getElementById('moeTok');
-  const toks = ['"은행"', '"마셨"', '"는데"', '"KV"', '"캐시"', '"."'];
-  let mi = 0;
-  function route() {
-    const a = (mi * 3) % 8, b = (mi * 5 + 2) % 8 === a ? (a + 1) % 8 : (mi * 5 + 2) % 8;
-    moe.forEach((s, i) => s.classList.toggle('on', i === a || i === b));
-    moeTok.textContent = toks[mi % toks.length]; mi++;
+  /* training network */
+  const net = document.getElementById('net');
+  const LAY = [3, 4, 4, 3], LX = [60, 220, 380, 540], ny = (n, i) => 150 + (i - (n - 1) / 2) * 62;
+  const edges = [[], [], []];
+  for (let g = 0; g < 3; g++) for (let a = 0; a < LAY[g]; a++) for (let b = 0; b < LAY[g + 1]; b++) {
+    const e = mk('line', { x1: LX[g], y1: ny(LAY[g], a), x2: LX[g + 1], y2: ny(LAY[g + 1], b), class: 'e', 'stroke-width': (1 + Math.random() * 2.5).toFixed(1) });
+    edges[g].push(e); net.appendChild(e);
   }
-  route(); if (!reduce) setInterval(route, 1600);
+  const nodes = LAY.map((n, l) => Array.from({ length: n }, (_, i) => { const c = mk('circle', { cx: LX[l], cy: ny(n, i), r: 15, class: 'n' }); net.appendChild(c); return c; }));
+  ['마셨다', '샀다', '내렸다'].forEach((t, i) => { const tx = mk('text', { x: 566, y: ny(3, i) + 6, 'font-size': 17 }); tx.textContent = t; net.appendChild(tx); });
+  [['Input', 60], ['Layer', 300], ['Output', 540]].forEach(([t, xx]) => { const tx = mk('text', { x: xx, y: 292, 'font-size': 14, 'text-anchor': 'middle', class: 'mut', 'font-family': 'Geist Mono, monospace' }); tx.textContent = t; net.appendChild(tx); });
+  const lossTag = mk('g', { id: 'lossTag' });
+  lossTag.appendChild(mk('rect', { x: 470, y: 8, width: 140, height: 34, rx: 17, style: 'fill:var(--signal-soft);stroke:var(--signal)' }));
+  const lossTxt = mk('text', { x: 540, y: 31, 'font-size': 16, 'text-anchor': 'middle', 'font-family': 'Geist Mono, monospace', style: 'fill:var(--signal)' });
+  lossTag.appendChild(lossTxt); net.appendChild(lossTag);
+  const chips = [...document.querySelectorAll('#phases span')], phaseCap = document.getElementById('phaseCap');
+  const CAPS = ['문장을 넣고 현재 Dial로 다음 Token 확률을 계산합니다.', '정답 Token의 확률이 낮을수록 큰 벌점(Cross Entropy)을 줍니다.', '벌점에 각 Dial이 얼마나 책임 있는지 출력에서 입력 쪽으로 거슬러 계산합니다 (Rumelhart·Hinton·Williams, 1986).', '벌점이 줄어드는 방향으로 모든 Dial을 아주 조금씩 돌립니다.'];
+  let netLoss = 2.31;
+  const setPhase = p => { chips.forEach((c, i) => { c.classList.toggle('on', i === p); c.classList.toggle('warm', i === p && p > 0 && p < 3); }); phaseCap.textContent = CAPS[p]; };
+  const netReset = () => { edges.flat().forEach(e => e.classList.remove('f', 'b')); nodes.flat().forEach(n => n.classList.remove('on', 'hot')); lossTag.classList.remove('show'); };
+  function netCycle() {
+    netReset(); setPhase(0);
+    nodes[0].forEach(n => n.classList.add('on'));
+    [0, 1, 2].forEach(g => setTimeout(() => { edges[g].forEach(e => e.classList.add('f')); nodes[g + 1].forEach(n => n.classList.add('on')); }, 300 + g * 300));
+    setTimeout(() => { setPhase(1); nodes[3].forEach(n => n.classList.replace('on', 'hot')); lossTxt.textContent = `Loss ${netLoss.toFixed(2)}`; lossTag.classList.add('show'); }, 1300);
+    setTimeout(() => setPhase(2), 1900);
+    [2, 1, 0].forEach((g, k) => setTimeout(() => { edges[g].forEach(e => { e.classList.remove('f'); e.classList.add('b'); }); nodes[g].forEach(n => n.classList.replace('on', 'hot')); }, 1900 + k * 300));
+    setTimeout(() => {
+      setPhase(3); edges.flat().forEach(e => { e.classList.remove('b'); e.setAttribute('stroke-width', (1 + Math.random() * 2.5).toFixed(1)); });
+      nodes.flat().forEach(n => n.classList.remove('on', 'hot'));
+      netLoss = Math.max(0.35, netLoss * 0.8); lossTxt.textContent = `Loss ${netLoss.toFixed(2)} ↓`;
+    }, 3000);
+  }
+
+  /* moe */
+  const moe = [...document.querySelectorAll('#moe span')], moeTok = document.getElementById('moeTok');
+  const mt = ['"은행"', '"마셨"', '"는데"', '"KV"', '"Cache"', '"."'];
+  let mi = 0;
+  function route() { const a = (mi * 3) % 8, b0 = (mi * 5 + 2) % 8, b = b0 === a ? (a + 1) % 8 : b0; moe.forEach((s, i) => s.classList.toggle('on', i === a || i === b)); moeTok.textContent = mt[mi % mt.length]; mi++; }
+  route();
+
+  /* play figures when they scroll into view */
+  function start(el) {
+    el.querySelectorAll('[data-count]').forEach(countUp);
+    el.querySelectorAll('.typer').forEach(typeIn);
+    if (reduce) return;
+    if (el.id === 'netFig') { netCycle(); setInterval(netCycle, 4400); }
+    if (el.querySelector('#knobs')) { const ks = [...el.querySelectorAll('.knob')]; const spin = () => ks.forEach(k => k.style.setProperty('--r', (Math.random() * 270 - 135).toFixed(0) + 'deg')); spin(); setInterval(spin, 1800); }
+    if (el.querySelector('#moe')) setInterval(route, 1500);
+    if (el.querySelector('#flow')) {
+      const items = [...el.querySelectorAll('#flow > div')], rail = document.getElementById('rail'); let k = 0;
+      const stepFlow = () => { items.forEach((it, i) => it.classList.toggle('lit', i === k % 6)); rail.style.setProperty('--p', ((k % 6) + 1) / 6); k++; };
+      stepFlow(); setInterval(stepFlow, 1100);
+    }
+  }
+  const io = 'IntersectionObserver' in window ? new IntersectionObserver(entries => entries.forEach(e => {
+    if (e.isIntersecting) { e.target.classList.add('in'); start(e.target); io.unobserve(e.target); }
+  }), { threshold: 0.15 }) : null;
+  document.querySelectorAll('.fig').forEach(el => io ? io.observe(el) : (el.classList.add('in'), start(el)));
+  const gdIo = 'IntersectionObserver' in window ? new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { runGD(); gdIo.disconnect(); } })) : null;
+  gdIo ? gdIo.observe(cv) : runGD();
 })();
 </script>
 
