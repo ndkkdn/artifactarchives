@@ -1,0 +1,694 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="처음 읽는 LLM 이해하기를 발표용으로 엮은 22장 슬라이드. 발표자 노트 포함">
+<title>처음 읽는 LLM 발표</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&family=Geist+Mono:wght@400;500;600&family=IBM+Plex+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* Layout: fixed 1600x900 stage scaled to fit; one idea per slide, left-aligned type with a visual on the right; same tokens as the llm-guide web page */
+:root {
+  --bg: #f7f8fa;
+  --surface: #ffffff;
+  --surface-2: #eef1f5;
+  --ink: #0b0d12;
+  --muted: #5b6270;
+  --line: #e2e6ec;
+  --accent: #2b62f0;
+  --accent-soft: #e6edff;
+  --signal: #b86e00;
+  --signal-soft: #fff3df;
+  --mint: #0f8f6e;
+  --mint-soft: #e2f5ef;
+  --shadow: 0 1px 2px rgba(15, 25, 50, .04), 0 14px 40px rgba(15, 25, 50, .07);
+  --display: "Geist", "IBM Plex Sans KR", -apple-system, system-ui, sans-serif;
+  --body: "IBM Plex Sans KR", "Geist", -apple-system, system-ui, sans-serif;
+  --mono: "Geist Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0a0b0e; --surface: #121419; --surface-2: #191c23; --ink: #eef0f4; --muted: #9aa1ae;
+    --line: #252a33; --accent: #7b9fff; --accent-soft: #18203a; --signal: #f2b14c; --signal-soft: #2a2112;
+    --mint: #3fd1a4; --mint-soft: #10261f; --shadow: 0 1px 2px rgba(0,0,0,.4), 0 14px 40px rgba(0,0,0,.4);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0a0b0e; --surface: #121419; --surface-2: #191c23; --ink: #eef0f4; --muted: #9aa1ae;
+  --line: #252a33; --accent: #7b9fff; --accent-soft: #18203a; --signal: #f2b14c; --signal-soft: #2a2112;
+  --mint: #3fd1a4; --mint-soft: #10261f; --shadow: 0 1px 2px rgba(0,0,0,.4), 0 14px 40px rgba(0,0,0,.4);
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html, body { height: 100%; overflow: hidden; }
+body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--body); -webkit-font-smoothing: antialiased; word-break: keep-all; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.mono { font-family: var(--mono); }
+
+#viewport { position: fixed; inset: 0; display: grid; place-items: center; overflow: hidden; }
+#stage { width: 1600px; height: 900px; position: relative; flex: none; transform-origin: center center; }
+
+.slide { position: absolute; inset: 0; padding: 84px 112px 104px; display: flex; flex-direction: column;
+  opacity: 0; visibility: hidden; transform: translateX(28px); transition: opacity .4s ease, transform .4s cubic-bezier(.2,.8,.2,1), visibility .4s; }
+.slide.active { opacity: 1; visibility: visible; transform: none; }
+.slide.past { transform: translateX(-28px); }
+@media (prefers-reduced-motion: reduce) { .slide, .bar-fill, .moe span { transition: none !important; } .caret { animation: none !important; } }
+
+.kicker { font-family: var(--mono); font-size: 19px; color: var(--accent); letter-spacing: .06em; display: flex; align-items: center; gap: 14px; }
+.kicker b { font-weight: 600; padding: 4px 12px; border-radius: 999px; background: var(--accent-soft); }
+h1 { font-family: var(--display); font-size: 104px; line-height: 1.06; letter-spacing: -.04em; font-weight: 800; margin: 0; text-wrap: balance; }
+h2 { font-family: var(--display); font-size: 58px; line-height: 1.16; letter-spacing: -.032em; font-weight: 750; margin: 18px 0 0; text-wrap: balance; }
+h1 em, h2 em { font-style: normal; color: var(--accent); }
+p { margin: 0; }
+.lead { font-size: 29px; line-height: 1.6; color: var(--muted); margin-top: 24px; max-width: 1180px; }
+.lead strong, .body strong { color: var(--ink); font-weight: 700; }
+.body { flex: 1; min-height: 0; display: flex; flex-direction: column; justify-content: center; margin-top: 34px; }
+.cols { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 56px; align-items: center; }
+.cols.wide-r { grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); }
+.txt p { font-size: 27px; line-height: 1.65; color: var(--muted); }
+.txt p + p { margin-top: 18px; }
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: 24px; padding: 30px 32px; box-shadow: var(--shadow); min-width: 0; }
+.cap { font-size: 18px; color: var(--muted); margin-top: 16px; line-height: 1.55; }
+.analogy { display: flex; gap: 16px; align-items: flex-start; margin-top: 26px; font-size: 23px; line-height: 1.6; color: var(--ink); }
+.analogy .tag { font-family: var(--mono); font-size: 15px; letter-spacing: .08em; color: var(--mint); border: 1.5px solid var(--mint); border-radius: 999px; padding: 3px 12px; white-space: nowrap; margin-top: 3px; }
+.limit { margin-top: 22px; background: var(--signal-soft); border-radius: 14px; padding: 16px 20px; font-size: 20px; line-height: 1.6; }
+.limit b { font-family: var(--mono); font-size: 14px; letter-spacing: .08em; color: var(--signal); display: block; margin-bottom: 4px; }
+
+.stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 22px; }
+.stat { background: var(--surface); border: 1px solid var(--line); border-radius: 22px; padding: 28px 30px; box-shadow: var(--shadow); }
+.stat b { display: block; font-family: var(--display); font-size: 62px; letter-spacing: -.04em; line-height: 1.05; font-variant-numeric: tabular-nums; }
+.stat span { display: block; font-size: 21px; color: var(--muted); margin-top: 12px; line-height: 1.5; }
+.stat.hl b { color: var(--accent); }
+
+.quote { font-family: var(--display); font-size: 50px; line-height: 1.32; letter-spacing: -.03em; font-weight: 700; border-left: 6px solid var(--accent); padding-left: 32px; max-width: 1280px; text-wrap: balance; }
+
+/* candidates */
+.prompt { font-size: 34px; font-weight: 600; margin-bottom: 22px; }
+.prompt .caret { display: inline-block; width: 3px; height: 1em; background: var(--accent); vertical-align: -4px; margin-left: 4px; animation: blink 1s steps(1) infinite; }
+@keyframes blink { 50% { opacity: 0; } }
+.cand { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; height: 58px; border: 1px solid var(--line); background: var(--bg); border-radius: 12px; position: relative; overflow: hidden; }
+.cand + .cand { margin-top: 10px; }
+.bar-fill { position: absolute; inset: 0 auto 0 0; background: var(--accent-soft); width: 0; transition: width .9s cubic-bezier(.2,.8,.2,1); }
+.cand span { position: relative; padding: 0 20px; font-size: 24px; font-weight: 600; }
+.cand .p { font-family: var(--mono); font-size: 19px; color: var(--muted); font-weight: 400; font-variant-numeric: tabular-nums; }
+
+/* chips */
+.chiprow { display: grid; grid-template-columns: 130px minmax(0, 1fr); gap: 18px; align-items: center; padding: 16px 0; border-bottom: 1px dashed var(--line); }
+.chiprow:last-child { border-bottom: 0; }
+.chiprow small { font-family: var(--mono); font-size: 16px; color: var(--muted); }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; font-family: var(--mono); font-size: 25px; }
+.chips span { padding: 5px 12px; border-radius: 8px; background: var(--accent-soft); }
+.chips span:nth-child(3n+2) { background: var(--mint-soft); }
+.chips span:nth-child(3n) { background: var(--signal-soft); }
+
+svg text { font-family: var(--body); fill: var(--ink); }
+svg .mut { fill: var(--muted); }
+
+/* steps */
+.steps { list-style: none; margin: 0; padding: 0; counter-reset: s; display: grid; gap: 14px; }
+.steps li { counter-increment: s; display: grid; grid-template-columns: 52px minmax(0, 1fr); gap: 18px; align-items: start; }
+.steps li::before { content: counter(s); width: 46px; height: 46px; border-radius: 12px; display: grid; place-items: center; font-family: var(--mono); font-weight: 600; font-size: 20px; background: var(--accent-soft); color: var(--accent); }
+.steps b { font-family: var(--display); font-size: 26px; letter-spacing: -.01em; }
+.steps p { font-size: 21px; color: var(--muted); line-height: 1.5; margin-top: 2px; }
+#gd { width: 100%; height: 360px; display: block; }
+.gd-info { font-family: var(--mono); font-size: 17px; color: var(--muted); margin-top: 12px; font-variant-numeric: tabular-nums; }
+
+/* qkv */
+.qkv { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 22px; }
+.qkv div { background: var(--surface); border: 1px solid var(--line); border-radius: 22px; padding: 30px; box-shadow: var(--shadow); }
+.qkv b { font-family: var(--mono); font-size: 20px; color: var(--accent); }
+.qkv h3 { font-family: var(--display); font-size: 40px; margin: 8px 0 12px; letter-spacing: -.03em; }
+.qkv p { font-size: 23px; color: var(--muted); line-height: 1.5; }
+
+/* mask */
+.mask { display: grid; grid-template-columns: 110px repeat(6, 64px); gap: 6px; font-size: 18px; justify-content: center; }
+.mask div { height: 52px; display: grid; place-items: center; border-radius: 8px; }
+.mask .h { color: var(--muted); font-size: 17px; }
+.mask .rl { justify-content: end; padding-right: 10px; display: flex; align-items: center; color: var(--muted); font-size: 17px; }
+.mask .on { background: var(--accent); opacity: .85; }
+.mask .self { background: var(--accent); }
+.mask .off { background: var(--surface-2); border: 1px dashed var(--line); }
+
+/* table */
+table { border-collapse: collapse; width: 100%; font-size: 23px; background: var(--surface); border-radius: 20px; overflow: hidden; box-shadow: var(--shadow); }
+th, td { text-align: left; padding: 20px 26px; border-bottom: 1px solid var(--line); vertical-align: top; line-height: 1.5; }
+tr:last-child td { border-bottom: 0; }
+th { font-family: var(--mono); font-size: 16px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); font-weight: 500; background: var(--surface-2); }
+td b { font-family: var(--display); }
+td.num { font-family: var(--mono); font-size: 21px; font-variant-numeric: tabular-nums; }
+td.note { color: var(--muted); font-size: 19px; }
+
+/* lanes */
+.lane-row { display: grid; grid-template-columns: 150px minmax(0, 1fr); gap: 20px; align-items: center; }
+.lane-row + .lane-row { margin-top: 18px; }
+.lane-row > span { font-family: var(--mono); font-size: 20px; color: var(--muted); }
+.lane { display: flex; gap: 6px; height: 54px; }
+.lane i { flex: 1; border-radius: 8px; background: var(--accent); }
+.lane.dec i { background: var(--mint); flex: 0 0 40px; }
+.lane .gap { background: transparent !important; flex: 0 0 26px !important; }
+.lane .lead-gap { background: transparent !important; flex: 1 !important; }
+
+/* prefix */
+.prefix { display: grid; gap: 14px; }
+.prow { display: grid; grid-template-columns: 170px minmax(0, 1fr) 120px; gap: 16px; align-items: center; }
+.prow > span { font-family: var(--mono); font-size: 17px; color: var(--muted); }
+.blocks { display: flex; gap: 6px; }
+.blocks i { font-style: normal; height: 56px; border-radius: 10px; display: grid; place-items: center; font-size: 19px; font-family: var(--mono); padding: 0 14px; }
+.blocks .hit { background: var(--mint-soft); color: var(--mint); border: 1.5px solid var(--mint); }
+.blocks .miss { background: var(--signal-soft); color: var(--signal); border: 1.5px dashed var(--signal); }
+.res { font-family: var(--mono); font-size: 18px; font-weight: 600; }
+.res.ok { color: var(--mint); } .res.no { color: var(--signal); }
+
+.tips { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 22px; }
+.tip { background: var(--surface); border: 1px solid var(--line); border-radius: 22px; padding: 26px 30px; box-shadow: var(--shadow); }
+.tip .k { font-family: var(--mono); font-size: 16px; color: var(--accent); letter-spacing: .06em; }
+.tip h3 { font-family: var(--display); font-size: 30px; letter-spacing: -.02em; margin: 6px 0 10px; }
+.tip p { font-size: 20px; line-height: 1.55; color: var(--muted); }
+.tip code { font-family: var(--mono); font-size: .9em; background: var(--surface-2); padding: 1px 8px; border-radius: 6px; color: var(--ink); }
+
+.moe { display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); gap: 12px; }
+.moe span { aspect-ratio: 1; border-radius: 14px; border: 1.5px dashed var(--line); display: grid; place-items: center; font-family: var(--mono); font-size: 20px; color: var(--muted); transition: all .35s; }
+.moe span.on { border: 1.5px solid var(--accent); background: var(--accent-soft); color: var(--accent); font-weight: 600; }
+.router { font-family: var(--mono); font-size: 20px; color: var(--muted); margin-bottom: 18px; }
+.router b { color: var(--ink); }
+
+.flow { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 14px; }
+.flow div { background: var(--surface); border: 1px solid var(--line); border-radius: 20px; padding: 22px 20px; box-shadow: var(--shadow); position: relative; }
+.flow small { font-family: var(--mono); font-size: 15px; color: var(--accent); }
+.flow b { display: block; font-family: var(--display); font-size: 25px; letter-spacing: -.02em; margin: 6px 0 8px; }
+.flow p { font-size: 18px; line-height: 1.5; color: var(--muted); }
+
+.title-slide { justify-content: center; }
+.title-slide .meta { font-family: var(--mono); font-size: 20px; color: var(--muted); margin-top: 44px; display: flex; gap: 28px; }
+.title-slide .glow { position: absolute; right: -120px; top: -160px; width: 900px; height: 700px; background: radial-gradient(closest-side, color-mix(in srgb, var(--accent) 16%, transparent), transparent); pointer-events: none; }
+.qs { display: grid; gap: 18px; }
+.qs div { font-family: var(--display); font-size: 46px; font-weight: 700; letter-spacing: -.03em; display: flex; gap: 24px; align-items: baseline; }
+.qs div span { font-family: var(--mono); font-size: 20px; color: var(--accent); font-weight: 500; }
+
+/* chrome */
+.foot { position: absolute; left: 112px; right: 112px; bottom: 44px; display: flex; justify-content: space-between; font-family: var(--mono); font-size: 15px; color: var(--muted); }
+#progress { position: fixed; left: 0; right: 0; top: 0; height: 3px; background: var(--accent); transform-origin: left; transform: scaleX(0); transition: transform .35s; z-index: 5; }
+#controls { position: fixed; right: max(16px, env(safe-area-inset-right, 0px)); bottom: calc(16px + env(safe-area-inset-bottom, 0px)); display: flex; gap: 6px; align-items: center; z-index: 6;
+  background: color-mix(in srgb, var(--surface) 88%, transparent); border: 1px solid var(--line); border-radius: 12px; padding: 5px; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); opacity: .55; transition: opacity .2s; }
+#controls:hover, #controls:focus-within { opacity: 1; }
+#controls button { appearance: none; border: 0; background: transparent; color: var(--ink); height: 32px; min-width: 32px; padding: 0 9px; border-radius: 8px; cursor: pointer; font: 500 13px/1 var(--display); }
+#controls button:hover { background: var(--surface-2); }
+#count { font-family: var(--mono); font-size: 12.5px; color: var(--muted); padding: 0 6px; font-variant-numeric: tabular-nums; }
+#notes { position: fixed; left: max(16px, env(safe-area-inset-left, 0px)); bottom: calc(16px + env(safe-area-inset-bottom, 0px)); max-width: min(560px, calc(100% - 32px)); z-index: 6;
+  background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 12px 16px; font-size: 14px; line-height: 1.65; box-shadow: var(--shadow); }
+#notes b { font-family: var(--mono); font-size: 11px; letter-spacing: .08em; color: var(--accent); display: block; margin-bottom: 4px; }
+@media (max-width: 700px) { #notes { bottom: calc(64px + env(safe-area-inset-bottom, 0px)); } }
+</style>
+</head>
+<body>
+
+<div id="progress"></div>
+<div id="viewport"><div id="stage">
+
+<section class="slide title-slide" data-notes="AI를 매일 쓰는 분들이 자주 묻는 기본기 질문에서 출발합니다. 어려운 건 없고, 비유를 많이 쓰되 오해를 부를 곳에서는 한계도 같이 말합니다.">
+  <div class="glow"></div>
+  <div class="kicker"><b>LLM 기본기</b>14 chapters</div>
+  <h1 style="margin-top:28px">채팅창 뒤에서<br><em>무슨 일이</em> 벌어지는지</h1>
+  <p class="lead">토큰부터 임베딩, 어텐션, KV 캐시, 프롬프트 캐싱, MoE까지</p>
+  <div class="meta"><span>원문 @yulmu_coffee</span><span>2026-10-22</span><span>가격 정보 2026년 10월 기준</span></div>
+</section>
+
+<section class="slide" data-notes="목표는 하나. 다 듣고 나면 채팅창 뒤에서 무슨 일이 벌어지는지 머릿속에 그림이 그려지는 것.">
+  <div class="kicker"><b>INTRO</b>자주 받는 질문</div>
+  <h2>이런 질문, 받아 보셨나요?</h2>
+  <div class="body">
+    <div class="qs">
+      <div><span>Q1</span>"컨텍스트 윈도가 뭐예요?"</div>
+      <div><span>Q2</span>"토큰이 글자 수랑 같은 거예요?"</div>
+      <div><span>Q3</span>"캐시는 왜 할인해요?"</div>
+    </div>
+    <p class="lead" style="margin-top:48px">오늘의 목표: 다 듣고 나면 <strong>채팅창 뒤에서 무슨 일이 벌어지는지 그림이 그려지는 것.</strong></p>
+  </div>
+</section>
+
+<section class="slide" data-notes="GPT 계열의 출발점이 된 논문들도 학습 목표를 이렇게 정의합니다. 그냥 자동완성이라고 하면 과소평가. 다음 토큰을 잘 맞히려면 문법, 사실, 맥락, 추론 패턴까지 배워야 하고, GPT-3는 예시 몇 개만으로 번역·질의응답을 해냈습니다.">
+  <div class="kicker"><b>01</b>본질</div>
+  <h2>LLM이 하는 일은 <em>다음 토큰 맞히기</em></h2>
+  <div class="body cols">
+    <div class="txt">
+      <p>지금까지의 글 다음에 올 조각이 무엇일지 <strong>확률로 예측</strong>합니다. 하나를 고르고, 문장 끝에 붙이고, 다시 예측합니다.</p>
+      <p>이걸 수백, 수천 번 반복하면 긴 답변이 됩니다.</p>
+      <div class="analogy"><span class="tag">비유</span><span>스마트폰 키보드 자동완성. 다만 규모가 상상을 초월하게 큰.</span></div>
+    </div>
+    <div class="panel" data-bars>
+      <div class="prompt">오늘 아침에 커피를<span class="caret"></span></div>
+      <div class="cand"><i class="bar-fill" data-w="62"></i><span>마셨다</span><span class="p">0.62</span></div>
+      <div class="cand"><i class="bar-fill" data-w="21"></i><span>샀다</span><span class="p">0.21</span></div>
+      <div class="cand"><i class="bar-fill" data-w="12"></i><span>내렸다</span><span class="p">0.12</span></div>
+      <div class="cand"><i class="bar-fill" data-w="4"></i><span>쏟았다</span><span class="p">0.04</span></div>
+      <div class="cand"><i class="bar-fill" data-w="0.4"></i><span>던졌다</span><span class="p">0.001</span></div>
+      <p class="cap">확률은 설명용 예시입니다.</p>
+    </div>
+  </div>
+</section>
+
+<section class="slide" data-notes="BPE는 자주 붙어 나오는 문자 쌍을 반복해서 합쳐 어휘를 만듭니다. 한국어 비율은 토크나이저마다 크게 다르니 직접 확인. strawberry의 r 개수를 헤매는 것도 토큰 단위로 보기 때문이라고 흔히 설명합니다.">
+  <div class="kicker"><b>02</b>입력 단위</div>
+  <h2>모델은 글자가 아니라 <em>토큰</em>을 읽습니다</h2>
+  <div class="body cols wide-r">
+    <div class="txt">
+      <p>토크나이저가 글을 조각으로 자르고 번호를 붙입니다. 자주 나오는 덩어리는 토큰 하나, 드문 단어는 여러 조각.</p>
+      <p>그래서 <strong>API 요금</strong>도, <strong>컨텍스트 윈도</strong>도 토큰 단위입니다.</p>
+    </div>
+    <div class="panel">
+      <div class="chiprow"><small>영어</small><div class="chips"><span>I</span><span>&nbsp;love</span><span>&nbsp;straw</span><span>berry</span></div></div>
+      <div class="chiprow"><small>한국어</small><div class="chips"><span>오늘</span><span>&nbsp;아침</span><span>에</span><span>&nbsp;커</span><span>피를</span></div></div>
+      <div class="chiprow"><small>토큰 ID</small><div class="chips"><span>40</span><span>3021</span><span>15978</span><span>19772</span></div></div>
+      <p class="cap">자르는 모양을 보여주는 예시. 실제 경계와 번호는 토크나이저마다 다릅니다.</p>
+    </div>
+  </div>
+</section>
+
+<section class="slide" data-notes="OpenAI 안내 기준 영어 1토큰은 약 4글자, 0.75단어. 한국어는 같은 내용에 토큰이 더 드는 편입니다.">
+  <div class="kicker"><b>02</b>입력 단위</div>
+  <h2>토큰은 글자 수와 다릅니다</h2>
+  <div class="body">
+    <div class="stats">
+      <div class="stat hl"><b>≈ 4글자</b><span>영어 텍스트 1토큰<br>(OpenAI 안내)</span></div>
+      <div class="stat"><b>≈ 0.75단어</b><span>영어 기준 1토큰이 담는 단어 수</span></div>
+      <div class="stat"><b>한국어 ↑</b><span>같은 내용에 토큰이 더 드는 편.<br>토크나이저마다 차이가 큼</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="slide" data-notes="원 논문은 벡터 크기 512, 현재 가장 큰 오픈웨이트 모델 Kimi K3는 7,168. word2vec의 king − man + woman ≈ queen. 실제 공간은 수천 차원이고 축에 이름이 없으며, 좌표는 학습 중에 저절로 만들어집니다.">
+  <div class="kicker"><b>03</b>의미 공간</div>
+  <h2>임베딩: 단어에 <em>좌표</em>를 주기</h2>
+  <div class="body cols">
+    <div class="txt">
+      <p>토큰 번호에는 의미가 없습니다. 그래서 각 토큰을 <strong>수백~수천 개 숫자의 벡터</strong>로 바꿉니다.</p>
+      <div class="analogy"><span class="tag">비유</span><span>거대한 지도. 의미가 비슷한 단어끼리 가까이 모여 있습니다.</span></div>
+      <div class="limit"><b>비유의 한계</b>실제 지도는 수천 차원이고, 축에 사람이 붙일 수 있는 이름도 없습니다.</div>
+    </div>
+    <div class="panel">
+      <svg viewBox="0 0 640 400" width="100%" role="img" aria-label="임베딩 공간 예시">
+        <defs><marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" style="fill:var(--accent)"/></marker></defs>
+        <ellipse cx="160" cy="110" rx="120" ry="70" style="fill:var(--accent-soft)"/>
+        <ellipse cx="170" cy="290" rx="110" ry="55" style="fill:var(--signal-soft)"/>
+        <g font-size="22">
+          <circle cx="110" cy="95" r="6" style="fill:var(--accent)"/><text x="122" y="102">커피</text>
+          <circle cx="190" cy="80" r="6" style="fill:var(--accent)"/><text x="202" y="87">라떼</text>
+          <circle cx="160" cy="145" r="6" style="fill:var(--accent)"/><text x="172" y="152">차</text>
+          <circle cx="110" cy="280" r="6" style="fill:var(--signal)"/><text x="122" y="287">은행</text>
+          <circle cx="200" cy="300" r="6" style="fill:var(--signal)"/><text x="212" y="307">대출</text>
+          <circle cx="380" cy="300" r="6" style="fill:var(--mint)"/><text x="365" y="335">man</text>
+          <circle cx="540" cy="300" r="6" style="fill:var(--mint)"/><text x="515" y="335">woman</text>
+          <circle cx="400" cy="100" r="6" style="fill:var(--mint)"/><text x="375" y="80">king</text>
+          <circle cx="560" cy="100" r="6" style="fill:var(--mint)"/><text x="535" y="80">queen</text>
+        </g>
+        <line x1="386" y1="300" x2="530" y2="300" style="stroke:var(--accent)" stroke-width="3" marker-end="url(#ar)"/>
+        <line x1="406" y1="100" x2="550" y2="100" style="stroke:var(--accent)" stroke-width="3" stroke-dasharray="7 6" marker-end="url(#ar)"/>
+        <text x="410" y="205" font-size="19" class="mut">− man + woman</text>
+      </svg>
+      <p class="cap">word2vec(2013): king − man + woman을 계산하면 queen에 가장 가까운 벡터가 나옵니다.</p>
+    </div>
+  </div>
+</section>
+
+<section class="slide" data-notes="뉴런은 뇌세포 흉내가 아니라 곱하고 더하는 계산 단위. 30B, 70B의 B가 다이얼 개수. 다이얼 하나를 bf16으로 저장하면 2바이트, Qwen3.8-27B는 277.8억 개라 55.6GB. 이걸 4비트 근처로 줄이는 게 양자화입니다.">
+  <div class="kicker"><b>04</b>모델 크기</div>
+  <h2>파라미터: <em>수십억 개의 다이얼</em></h2>
+  <p class="lead">신경망은 거대한 계산식이고, 곱하는 값들이 파라미터(가중치)입니다. 학습은 다이얼을 맞추는 과정, 맞춘 설정값 묶음이 모델 파일입니다.</p>
+  <div class="body">
+    <div class="stats">
+      <div class="stat hl"><b>1,750억</b><span>GPT-3의 다이얼 수.<br>"70B 모델"의 B가 이 개수</span></div>
+      <div class="stat"><b>2 bytes</b><span>다이얼 하나를 bf16으로 저장할 때</span></div>
+      <div class="stat"><b>55.6 GB</b><span>Qwen3.8-27B(277.8억) bf16 가중치.<br>4비트 근처로 줄이면 양자화</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="slide" data-notes="수십억 다이얼을 손으로 맞출 수 없으니 이 네 단계를 수조 개 토큰에 대해 반복합니다. 비유: 안개 낀 산에서 눈을 가리고 발밑 경사만 느끼며 한 걸음씩 내려가기. 경사를 계산하는 게 역전파, 한 걸음이 경사하강법.">
+  <div class="kicker"><b>05</b>학습</div>
+  <h2>손실 → 역전파 → <em>경사하강법</em></h2>
+  <div class="body cols wide-r">
+    <ol class="steps">
+      <li><div><b>순전파</b><p>현재 다이얼로 다음 토큰 확률 계산</p></div></li>
+      <li><div><b>손실</b><p>정답 확률이 낮을수록 큰 벌점 (교차 엔트로피)</p></div></li>
+      <li><div><b>역전파</b><p>벌점에 대한 각 다이얼의 책임을 거꾸로 계산 (1986)</p></div></li>
+      <li><div><b>경사하강법</b><p>벌점이 줄어드는 쪽으로 다이얼을 조금씩</p></div></li>
+    </ol>
+    <div class="panel">
+      <canvas id="gd" aria-label="손실 곡선을 따라 한 걸음씩 내려가는 애니메이션"></canvas>
+      <div class="gd-info" id="gdInfo">step 00</div>
+    </div>
+  </div>
+</section>
+
+<section class="slide" data-notes="은행나무의 은행과 은행 대출의 은행을 어떻게 구분할까? 2017년 Attention Is All You Need. 각 토큰이 다른 토큰을 둘러보고 누가 중요한지 점수를 매겨 정보를 섞습니다. 비유: 회의실에서 궁금한 걸 들고(Q) 아는 사람(K)에게 귀 기울여 그 말(V)을 받아 적기.">
+  <div class="kicker"><b>06</b>문맥</div>
+  <h2>어텐션: 각 토큰이 <em>Query·Key·Value</em>를 만든다</h2>
+  <div class="body">
+    <div class="qkv">
+      <div><b>Q · 질문</b><h3>Query</h3><p>"나는 이런 정보를<br>찾고 있어"</p></div>
+      <div><b>K · 색인</b><h3>Key</h3><p>"나는 이런 정보를<br>갖고 있어"</p></div>
+      <div><b>V · 내용</b><h3>Value</h3><p>"실제로 건네줄<br>내용은 이거야"</p></div>
+    </div>
+    <p class="lead">Query와 Key가 잘 맞을수록 그 토큰의 Value를 많이 가져옵니다.</p>
+  </div>
+</section>
+
+<section class="slide" data-notes="멀티헤드: 원 논문 기본 모델은 헤드 8개, 헤드마다 다른 일을 하는 모습이 보였습니다. 트랜스포머는 문장 전체를 한 번에 처리해 학습이 빨랐고, GPU가 비싸진 이유가 이것.">
+  <div class="kicker"><b>06</b>문맥</div>
+  <h2>트랜스포머가 바꾼 두 가지</h2>
+  <div class="body cols">
+    <div class="panel"><div class="kicker"><b>멀티헤드</b></div><div class="txt" style="margin-top:18px"><p>여러 갈래로 동시에 어텐션. 원 논문 기본 모델은 <strong>헤드 8개</strong>. 문장 구조, 대명사가 가리키는 대상 등 헤드마다 다른 일을 하는 듯 보였습니다.</p></div></div>
+    <div class="panel"><div class="kicker"><b>병렬 처리</b></div><div class="txt" style="margin-top:18px"><p>RNN은 단어를 하나씩 순서대로. 트랜스포머는 <strong>문장 전체를 한 번에</strong>. 학습이 훨씬 빨라졌고, GPU가 비싸진 이유가 이거 하나입니다.</p></div></div>
+  </div>
+  <div class="limit"><b>비유의 한계</b>"주목한다"는 의도적 집중이 아닙니다. 벡터끼리 유사도 점수를 계산해 가중 평균을 내는 연산입니다.</div>
+</section>
+
+<section class="slide" data-notes="블록 = 어텐션(토큰끼리 정보 교환) + 피드포워드(각자 소화). 이걸 쌓은 게 레이어. 원래 트랜스포머는 인코더+디코더 번역기였고, GPT 계열은 디코더만 쌓았습니다. ChatGPT, Claude, Llama 대부분이 decoder-only.">
+  <div class="kicker"><b>07</b>구조</div>
+  <h2>디코더의 규칙: <em>앞만 본다</em></h2>
+  <div class="body cols">
+    <div class="txt">
+      <p>어텐션 → 피드포워드 블록을 층층이 쌓은 것이 레이어. 대화형 LLM 대부분은 <strong>디코더 전용</strong> 구조입니다.</p>
+      <p>각 토큰은 자기보다 앞에 있는 토큰만 볼 수 있습니다(마스킹). 다음 토큰을 맞히는 모델이 정답을 미리 보면 안 되니까요.</p>
+      <div class="analogy"><span class="tag">비유</span><span>조립 라인. 원재료(임베딩)가 수십 개 공정(레이어)을 거쳐 확률표라는 완제품이 됩니다.</span></div>
+    </div>
+    <div class="panel"><div class="mask" id="mask"></div><p class="cap" style="text-align:center">행: 지금 토큰 · 열: 볼 수 있는 토큰</p></div>
+  </div>
+</section>
+
+<section class="slide" data-notes="사전학습 모델은 질문에 답하는 대신 비슷한 질문을 더 써 내려갈 수도 있습니다. InstructGPT 논문: SFT 후 RLHF. 13억 InstructGPT가 1,750억 GPT-3보다 선호됐습니다. 지식을 넣는다기보다 꺼내는 태도와 형식을 다듬는 것. 요즘은 다른 후속 학습 기법도 많고 다 공개되지는 않습니다.">
+  <div class="kicker"><b>08</b>후속 학습</div>
+  <h2>사전학습 → SFT → RLHF: <em>학생에서 비서로</em></h2>
+  <div class="body cols">
+    <ol class="steps">
+      <li><div><b>사전학습</b><p>인터넷 규모 텍스트로 이어 쓰기를 배움. 아는 건 많지만 대화는 어색</p></div></li>
+      <li><div><b>지도 파인튜닝 (SFT)</b><p>사람이 쓴 "질문–모범 답변"으로 추가 학습</p></div></li>
+      <li><div><b>RLHF</b><p>사람 순위로 보상 모델을 만들고, 그 점수가 오르도록 강화학습</p></div></li>
+    </ol>
+    <div class="stats" style="grid-template-columns:minmax(0,1fr) minmax(0,1fr)">
+      <div class="stat hl"><b>13억</b><span>RLHF를 거친<br>InstructGPT</span></div>
+      <div class="stat"><b>1,750억</b><span>GPT-3.<br>사람들은 13억 쪽을 더 선호</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="slide" data-notes="대화 중에 모델이 학습되는 게 아닙니다. 기억하는 것처럼 보이는 건 대화 전체가 매번 입력으로 다시 들어가기 때문. 학습 데이터 활용 여부는 서비스 정책 문제이고, 그 순간 다이얼이 바뀌지는 않습니다.">
+  <div class="kicker"><b>09</b>구분</div>
+  <h2>학습은 공장 짓기, 추론은 <em>공장 돌리기</em></h2>
+  <div class="body">
+    <table>
+      <thead><tr><th></th><th>학습 (training)</th><th>추론 (inference)</th></tr></thead>
+      <tbody>
+        <tr><td><b>하는 일</b></td><td>다이얼을 맞춥니다</td><td>고정된 다이얼로 답을 만듭니다</td></tr>
+        <tr><td><b>연산</b></td><td>순전파 + 역전파 + 경사하강법</td><td>순전파만</td></tr>
+        <tr><td><b>우리는</b></td><td>할 일이 별로 없습니다</td><td>맨날 합니다. ChatGPT와의 대화는 전부 추론</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="slide" data-notes="프리필: 프롬프트 토큰을 동시에 처리, 연산력이 속도를 좌우. 디코딩: 토큰 하나씩, 행렬-벡터 곱 위주라 메모리 대역폭이 좌우(vLLM 논문). 긴 문서를 붙여 넣으면 잠깐 멈칫(프리필) 후 일정 속도로 흘러나옴(디코딩).">
+  <div class="kicker"><b>10</b>추론의 두 박자</div>
+  <h2>프리필은 한꺼번에, 디코딩은 <em>한 토큰씩</em></h2>
+  <div class="body">
+    <div class="panel">
+      <div class="lane-row"><span>prefill</span><div class="lane"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div>
+      <div class="lane-row"><span>decode</span><div class="lane dec"><i class="lead-gap"></i><i></i><i class="gap"></i><i></i><i class="gap"></i><i></i><i class="gap"></i><i></i><i class="gap"></i><i></i><i class="gap"></i><i></i></div></div>
+    </div>
+    <div class="cols" style="margin-top:34px;gap:40px">
+      <div class="txt"><p><strong>① 프리필</strong>: 프롬프트 전체를 병렬로 통과. 계산량이 많고 <strong>연산력</strong>이 속도를 좌우.</p></div>
+      <div class="txt"><p><strong>② 디코딩</strong>: 앞 토큰이 나와야 다음을 예측하니 순차적. <strong>메모리 대역폭</strong>이 속도를 좌우.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="slide" data-notes="새 토큰마다 앞 토큰 전부의 K, V를 다시 계산하면 엄청난 중복. 그래서 저장해 두고 재사용, 새 토큰은 자기 Query만 계산. 비유: 이미 읽은 챕터의 요점 노트. 대가는 메모리. 그래서 설계자들이 KV 캐시를 줄이려 애씁니다.">
+  <div class="kicker"><b>11</b>메모리</div>
+  <h2>KV 캐시: 이미 읽은 건 <em>다시 읽지 않기</em></h2>
+  <p class="lead">한 번 계산한 Key·Value를 저장해 두고, 새 토큰은 자기 Query만 계산합니다. 시험공부의 요점 노트처럼요. 대가는 <strong>메모리</strong>입니다.</p>
+  <div class="body">
+    <div class="stats">
+      <div class="stat"><b>800 KB</b><span>OPT-13B의 토큰 1개당<br>KV 캐시 (vLLM 논문)</span></div>
+      <div class="stat"><b>2,048</b><span>요청 하나의<br>최대 토큰 수</span></div>
+      <div class="stat hl"><b>1.6 GB</b><span>요청 하나가 KV 캐시로만<br>차지할 수 있는 최대치</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="slide" data-notes="요청이 끝나면 노트는 보통 버려집니다. 하지만 많은 요청은 시스템 프롬프트, 툴 정의, 참고 문서가 똑같이 앞에 붙습니다. 그 접두부의 KV 텐서를 보관해 다음 요청에서 꺼내 씁니다. OpenAI, vLLM 모두 같은 원리. Anthropic은 캐시 지점까지 100% 같아야 한다고 씁니다.">
+  <div class="kicker"><b>12</b>비용</div>
+  <h2>프롬프트 캐싱: <em>앞부분이 같으면</em> 노트를 빌려 쓴다</h2>
+  <div class="body">
+    <div class="panel prefix">
+      <div class="prow"><span>요청 A</span><div class="blocks"><i class="hit" style="flex:2">tools</i><i class="hit" style="flex:3">system</i><i class="hit" style="flex:3">참고 문서</i><i class="miss" style="flex:1.4">질문 A</i></div><span class="res ok">저장</span></div>
+      <div class="prow"><span>요청 B</span><div class="blocks"><i class="hit" style="flex:2">tools</i><i class="hit" style="flex:3">system</i><i class="hit" style="flex:3">참고 문서</i><i class="miss" style="flex:1.4">질문 B</i></div><span class="res ok">HIT</span></div>
+      <div class="prow"><span>시각 넣은 요청</span><div class="blocks"><i class="miss" style="flex:1.6">09:52</i><i class="miss" style="flex:2">tools</i><i class="miss" style="flex:3">system</i><i class="miss" style="flex:3">참고 문서</i><i class="miss" style="flex:1.4">질문</i></div><span class="res no">MISS</span></div>
+    </div>
+    <p class="quote" style="margin-top:40px;font-size:44px">할인의 이유: 계산을 안 했으니 덜 받는 겁니다.</p>
+  </div>
+</section>
+
+<section class="slide" data-notes="OpenAI는 최근 Codex 로그인 사용자에게 캐시를 영구 유지한다고 합니다. SSD에 오프로딩해 두는 듯. Gemini는 2.5 이후 암묵적 캐싱이 기본으로 켜져 있습니다.">
+  <div class="kicker"><b>12</b>비용 · 2026년 10월 기준</div>
+  <h2>얼마나 할인되나</h2>
+  <div class="body">
+    <table>
+      <thead><tr><th>제공사</th><th>캐시 읽기</th><th>캐시 쓰기</th><th>비고</th></tr></thead>
+      <tbody>
+        <tr><td><b>OpenAI</b></td><td class="num">0.1×<br>(GPT-6.1 Sol 0.05×)</td><td class="num">30분 1.25×<br>12시간 2.5×</td><td class="note">GPT-5.6 이후 기준. 최근 Codex 로그인 시 영구 보관</td></tr>
+        <tr><td><b>Anthropic</b></td><td class="num">0.1×<br>(일부 0.05×, 0.025×)</td><td class="num">5분 1.25×<br>1시간 2×</td><td class="note">기본 입력 대비 배율</td></tr>
+        <tr><td><b>Gemini</b></td><td class="num">자동 반영</td><td class="num">—</td><td class="note">2.5 이후 암묵적 캐싱 기본 켜짐</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="slide" data-notes="세 회사 문서가 모두 같은 조언. Anthropic은 tools → system → messages 순서로 접두부를 만듭니다. 툴 순서나 스키마 변경, JSON 키 순서가 바뀌는 것도 캐시를 깹니다. 툴을 끄려면 tool_choice none.">
+  <div class="kicker"><b>TIP</b>캐시 히트 내는 법</div>
+  <h2>안 바뀌는 건 앞에, <em>한 글자도 건드리지 않기</em></h2>
+  <div class="body">
+    <div class="tips">
+      <div class="tip"><span class="k">TIP 1</span><h3>고정은 앞, 변동은 뒤</h3><p>시스템 프롬프트·툴 정의·참고 문서를 맨 앞에, 사용자 질문은 맨 뒤에.</p></div>
+      <div class="tip"><span class="k">TIP 2</span><h3>바이트 단위까지 똑같이</h3><p>맨 앞의 <code>현재 시각</code>은 노트를 한 장도 못 쓰게 만듭니다. 툴 순서·JSON 키 순서도 주의.</p></div>
+      <div class="tip"><span class="k">TIP 3</span><h3>최소 길이 넘기기</h3><p>OpenAI 1,024 · Anthropic 512~4,096 · Gemini 2,048~4,096토큰 미만은 캐시 안 됨.</p></div>
+      <div class="tip"><span class="k">TIP 4</span><h3>TTL 안에 다시 쓰기</h3><p>Anthropic 기본 5분(쓸 때마다 갱신), OpenAI는 영구 보관으로 바뀌는 중.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="slide" data-notes="프롬프트, 대화 기록, 첨부 문서, 생성 답변까지 모두 이 안에 들어가야 합니다. 어텐션은 모든 토큰 쌍을 비교하므로 길수록 계산과 KV 캐시가 늘고 프리필이 오래 걸립니다.">
+  <div class="kicker"><b>13</b>한계</div>
+  <h2>컨텍스트 윈도우: <em>책상의 크기</em></h2>
+  <div class="body cols">
+    <div class="txt">
+      <p>모델이 한 번에 볼 수 있는 토큰의 최대 개수. 프롬프트, 대화 기록, 첨부 문서, <strong>생성하는 답변까지</strong> 모두 이 안에 들어갑니다.</p>
+      <p>책상이 넓으면 자료를 많이 펼칠 수 있지만, 넘치면 밀려납니다.</p>
+    </div>
+    <div class="panel">
+      <svg viewBox="0 0 600 300" width="100%" role="img" aria-label="컨텍스트 윈도우 구성: 시스템, 대화 기록, 첨부 문서, 답변이 한 칸에 들어가고 넘친 부분은 밖으로 밀려난다">
+        <rect x="20" y="40" width="460" height="200" rx="18" style="fill:var(--surface-2);stroke:var(--accent)" stroke-width="2.5"/>
+        <rect x="40" y="70" width="90" height="140" rx="10" style="fill:var(--accent-soft)"/><text x="85" y="146" font-size="19" text-anchor="middle">system</text>
+        <rect x="140" y="70" width="130" height="140" rx="10" style="fill:var(--mint-soft)"/><text x="205" y="146" font-size="19" text-anchor="middle">대화 기록</text>
+        <rect x="280" y="70" width="110" height="140" rx="10" style="fill:var(--signal-soft)"/><text x="335" y="146" font-size="19" text-anchor="middle">첨부</text>
+        <rect x="400" y="70" width="60" height="140" rx="10" style="fill:var(--accent)"/><text x="430" y="146" font-size="17" text-anchor="middle" style="fill:var(--surface)">답변</text>
+        <rect x="500" y="90" width="80" height="100" rx="10" style="fill:none;stroke:var(--muted)" stroke-dasharray="6 5" stroke-width="2"/><text x="540" y="146" font-size="17" text-anchor="middle" class="mut">넘침</text>
+        <text x="20" y="28" font-size="17" class="mut">context window</text>
+        <text x="20" y="275" font-size="16" class="mut">길수록 계산이 늘고 KV 캐시도 커집니다</text>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<section class="slide" data-notes="dense 모델은 토큰마다 모든 파라미터를 씁니다. MoE는 피드포워드를 전문가로 나누고 라우터가 몇 개만 고릅니다. 용량은 크게 필요하지만 대역폭 부담은 작습니다. 전문가가 의학·법률 같은 주제를 맡지는 않고, 문법적·구조적 패턴과 더 관련 있어 보인다고 Mixtral 논문이 보고했습니다.">
+  <div class="kicker"><b>14</b>효율</div>
+  <h2>MoE: 전문가 8명 중 <em>2명만</em> 부르기</h2>
+  <div class="body cols">
+    <div class="txt">
+      <p>라우터가 토큰마다 전문가 몇 개만 골라 씁니다. 종합병원 접수처가 필요한 과 두어 곳만 안내하듯이요.</p>
+      <p>Mixtral 8x7B: 전체 <strong>470억</strong> 중 토큰 하나에 쓰는 건 <strong>130억</strong>. 용량은 크게, 대역폭 부담은 작게.</p>
+    </div>
+    <div class="panel">
+      <div class="router">router ← 토큰 <b id="moeTok">"은행"</b> · top-2 of 8</div>
+      <div class="moe" id="moe"><span>E1</span><span>E2</span><span>E3</span><span>E4</span><span>E5</span><span>E6</span><span>E7</span><span>E8</span></div>
+      <div class="limit"><b>비유의 한계</b>전문가가 "의학", "법률" 같은 주제를 맡지는 않습니다.</div>
+    </div>
+  </div>
+</section>
+
+<section class="slide" data-notes="한 번에 따라가 보기. 토크나이저 → 임베딩 → 레이어·어텐션(프리필, KV 캐시 생성) → 확률표와 샘플링 → 디코딩 반복. 모두 컨텍스트 윈도우 안. 파라미터는 사전학습과 파인튜닝, RLHF로 미리 맞춰져 있고 대화 중에는 바뀌지 않습니다.">
+  <div class="kicker"><b>RECAP</b>다시, 채팅창 뒤에서</div>
+  <h2>질문을 입력하는 순간 벌어지는 일</h2>
+  <div class="body">
+    <div class="flow">
+      <div><small>STEP 1</small><b>토크나이저</b><p>질문이 잘려 토큰 번호가 됨</p></div>
+      <div><small>STEP 2</small><b>임베딩</b><p>각 토큰이 벡터가 됨</p></div>
+      <div><small>STEP 3</small><b>프리필</b><p>레이어·어텐션 통과, KV 캐시 생성</p></div>
+      <div><small>STEP 4</small><b>샘플링</b><p>확률표에서 온도·규칙에 따라 하나 선택</p></div>
+      <div><small>STEP 5</small><b>디코딩</b><p>붙이고 다시 예측. 컨텍스트 윈도우 안에서</p></div>
+      <div><small>STEP 6</small><b>파라미터</b><p>미리 맞춰져 있고 대화 중엔 고정</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="slide title-slide" data-notes="처음 질문으로 돌아가며 마무리. 청중에게 생각해 볼 거리로 남깁니다.">
+  <div class="kicker"><b>FIN</b>처음의 질문으로</div>
+  <h1 style="margin-top:28px;font-size:88px">ChatGPT는 생각을 할까요,<br><em>다음 단어를 고를까요?</em></h1>
+  <div class="meta"><span>원문 「처음 읽는 LLM 이해하기」 · @yulmu_coffee · 2026-10-22</span></div>
+</section>
+
+</div></div>
+
+<div id="notes" hidden><b>SPEAKER NOTES</b><span id="notesText"></span></div>
+<div id="controls">
+  <button type="button" id="prevBtn" aria-label="이전 슬라이드">‹</button>
+  <span id="count">1 / 1</span>
+  <button type="button" id="nextBtn" aria-label="다음 슬라이드">›</button>
+  <button type="button" id="notesBtn" aria-label="발표자 노트 (N)">노트</button>
+  <button type="button" id="themeBtn" aria-label="테마 전환">◐</button>
+  <button type="button" id="fsBtn" aria-label="전체 화면 (F)">⤢</button>
+</div>
+
+<script>
+(() => {
+  const root = document.documentElement;
+  try { const t = localStorage.getItem('archive-theme'); if (t) root.dataset.theme = t; } catch (e) {}
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const stage = document.getElementById('stage');
+  const slides = [...stage.querySelectorAll('.slide')];
+  const N = slides.length;
+
+  // footer on each content slide
+  slides.forEach((s, i) => {
+    if (s.classList.contains('title-slide')) return;
+    s.insertAdjacentHTML('beforeend', `<div class="foot"><span>처음 읽는 LLM</span></div>`);
+  });
+
+  function fit() {
+    const s = Math.min(innerWidth / 1600, innerHeight / 900);
+    stage.style.transform = `scale(${s})`;
+  }
+  addEventListener('resize', fit); fit();
+
+  let cur = 0;
+  const fromHash = () => { const m = /^#slide-(\d+)$/.exec(location.hash); return m ? Math.min(N, Math.max(1, +m[1])) - 1 : 0; };
+  function go(i, push = true) {
+    cur = Math.max(0, Math.min(N - 1, i));
+    slides.forEach((s, k) => { s.classList.toggle('active', k === cur); s.classList.toggle('past', k < cur); });
+    document.getElementById('count').textContent = `${cur + 1} / ${N}`;
+    document.getElementById('progress').style.transform = `scaleX(${(cur + 1) / N})`;
+    document.getElementById('notesText').textContent = slides[cur].dataset.notes || '';
+    if (push && location.hash !== '#slide-' + (cur + 1)) history.replaceState(null, '', '#slide-' + (cur + 1));
+    onEnter(slides[cur]);
+  }
+  const next = () => go(cur + 1), prev = () => go(cur - 1);
+  document.getElementById('nextBtn').onclick = next;
+  document.getElementById('prevBtn').onclick = prev;
+  const notes = document.getElementById('notes');
+  const toggleNotes = () => { notes.hidden = !notes.hidden; };
+  document.getElementById('notesBtn').onclick = toggleNotes;
+  const toggleFs = () => {
+    try { document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen().catch(() => {}); } catch (e) {}
+  };
+  document.getElementById('fsBtn').onclick = toggleFs;
+  document.getElementById('themeBtn').onclick = () => {
+    const dark = root.dataset.theme ? root.dataset.theme === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
+    root.dataset.theme = dark ? 'light' : 'dark';
+    try { localStorage.setItem('archive-theme', root.dataset.theme); } catch (e) {}
+    drawGD();
+  };
+  addEventListener('keydown', e => {
+    if (e.metaKey || e.ctrlKey || e.altKey) return;
+    if (['ArrowRight', 'PageDown', ' ', 'Enter'].includes(e.key)) { e.preventDefault(); next(); }
+    else if (['ArrowLeft', 'PageUp', 'Backspace'].includes(e.key)) { e.preventDefault(); prev(); }
+    else if (e.key === 'Home') go(0);
+    else if (e.key === 'End') go(N - 1);
+    else if (e.key === 'n' || e.key === 'N') toggleNotes();
+    else if (e.key === 'f' || e.key === 'F') toggleFs();
+  });
+  document.getElementById('viewport').addEventListener('click', e => {
+    if (e.target.closest('a,button')) return;
+    (e.clientX > innerWidth * 0.35 ? next : prev)();
+  });
+  let tx = null;
+  addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, { passive: true });
+  addEventListener('touchend', e => {
+    if (tx === null) return;
+    const dx = e.changedTouches[0].clientX - tx; tx = null;
+    if (Math.abs(dx) > 40) (dx < 0 ? next : prev)();
+  });
+  addEventListener('hashchange', () => go(fromHash(), false));
+
+  // causal mask grid
+  const toks = ['오늘', '아침에', '커피를', '마셨', '다', '.'];
+  let m = '<div></div>' + toks.map(t => `<div class="h">${t}</div>`).join('');
+  toks.forEach((t, r) => {
+    m += `<div class="rl">${t}</div>`;
+    toks.forEach((_, c) => { m += `<div class="${c < r ? 'on' : c === r ? 'self' : 'off'}"></div>`; });
+  });
+  document.getElementById('mask').innerHTML = m;
+
+  // gradient descent
+  const cv = document.getElementById('gd'), ctx = cv.getContext('2d'), info = document.getElementById('gdInfo');
+  const f = x => 0.6 * Math.pow(x - 1.1, 2) + 0.35 * Math.sin(3.2 * x) + 1.2;
+  const df = x => 1.2 * (x - 1.1) + 1.12 * Math.cos(3.2 * x);
+  const X0 = -1.6, X1 = 3.4;
+  let trail = [], x = -1.35, step = 0, timer = null;
+  const css = v => getComputedStyle(root).getPropertyValue(v).trim();
+  function drawGD() {
+    const w = 640, h = 360, dpr = Math.max(2, devicePixelRatio || 1);
+    if (cv.width !== w * dpr) { cv.width = w * dpr; cv.height = h * dpr; }
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.clearRect(0, 0, w, h);
+    let ymin = Infinity, ymax = -Infinity;
+    for (let i = 0; i <= 200; i++) { const y = f(X0 + (X1 - X0) * i / 200); ymin = Math.min(ymin, y); ymax = Math.max(ymax, y); }
+    const pad = 26, sx = v => pad + (v - X0) / (X1 - X0) * (w - pad * 2), sy = v => h - pad - (v - ymin) / (ymax - ymin) * (h - pad * 2 - 16);
+    ctx.strokeStyle = css('--line'); ctx.lineWidth = 1;
+    for (let i = 1; i < 4; i++) { const y = pad + i * (h - pad * 2) / 4; ctx.beginPath(); ctx.moveTo(pad, y); ctx.lineTo(w - pad, y); ctx.stroke(); }
+    const curve = () => { ctx.beginPath(); for (let i = 0; i <= 200; i++) { const v = X0 + (X1 - X0) * i / 200; i ? ctx.lineTo(sx(v), sy(f(v))) : ctx.moveTo(sx(v), sy(f(v))); } };
+    curve(); ctx.lineTo(w - pad, h - pad); ctx.lineTo(pad, h - pad); ctx.closePath(); ctx.fillStyle = css('--accent-soft'); ctx.fill();
+    curve(); ctx.strokeStyle = css('--accent'); ctx.lineWidth = 3; ctx.stroke();
+    ctx.fillStyle = css('--muted');
+    trail.forEach(t => { ctx.beginPath(); ctx.arc(sx(t), sy(f(t)), 3.5, 0, 7); ctx.fill(); });
+    ctx.beginPath(); ctx.arc(sx(x), sy(f(x)) - 10, 10, 0, 7); ctx.fillStyle = css('--signal'); ctx.fill();
+    ctx.font = '14px ' + css('--mono'); ctx.fillStyle = css('--muted');
+    ctx.fillText('loss', pad, 16); ctx.fillText('다이얼 값 →', w - pad - 90, h - 6);
+    info.textContent = `step ${String(step).padStart(2, '0')} · loss ${f(x).toFixed(3)} · 기울기 ${df(x).toFixed(3)}`;
+  }
+  function runGD() {
+    clearInterval(timer); trail = []; x = -1.35; step = 0;
+    if (reduce) { for (; step < 40; step++) { trail.push(x); x -= 0.18 * df(x); } drawGD(); return; }
+    drawGD();
+    timer = setInterval(() => {
+      trail.push(x); x -= 0.18 * df(x); step++; drawGD();
+      if (step >= 40 || Math.abs(df(x)) < 1e-3) clearInterval(timer);
+    }, 130);
+  }
+
+  // moe router
+  const moe = [...document.querySelectorAll('#moe span')], moeTok = document.getElementById('moeTok');
+  const mt = ['"은행"', '"마셨"', '"는데"', '"KV"', '"캐시"', '"."'];
+  let mi = 0, moeTimer = null;
+  function route() {
+    const a = (mi * 3) % 8, b0 = (mi * 5 + 2) % 8, b = b0 === a ? (a + 1) % 8 : b0;
+    moe.forEach((s, i) => s.classList.toggle('on', i === a || i === b));
+    moeTok.textContent = mt[mi % mt.length]; mi++;
+  }
+  route();
+
+  function onEnter(s) {
+    s.querySelectorAll('.bar-fill').forEach(b => { b.style.width = '0'; });
+    requestAnimationFrame(() => requestAnimationFrame(() => s.querySelectorAll('.bar-fill').forEach(b => { b.style.width = Math.max(1, +b.dataset.w) + '%'; })));
+    if (s.contains(cv)) runGD();
+    clearInterval(moeTimer);
+    if (s.querySelector('#moe') && !reduce) moeTimer = setInterval(route, 1500);
+  }
+
+  drawGD();
+  go(fromHash(), false);
+})();
+</script>
+
+</body>
+</html>
