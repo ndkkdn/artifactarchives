@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>맛번역 커피 · 내 말로 찾는 원두</title>
+<meta name="author" content="nelcome.dhkim@gmail.com">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=Gowun+Batang:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+:root{
+  --roast:#3B2418; --roast-2:#5A3A28; --ink:#24170F; --muted:#6B5A4E;
+  --cream:#FBF6EE; --paper:#FFFFFF; --crema:#EFE3D2; --line:#E2D4C1;
+  --accent:#B4472F; --accent-soft:#F8E4DC;
+  --high:#2F6B4F; --high-soft:#E3F0E8; --mid:#8A5A00; --mid-soft:#FBEFD3; --low:#7A3B2E; --low-soft:#F6E1DC;
+  --radius:16px; --radius-sm:10px;
+  --shadow:0 1px 2px rgba(59,36,24,.06),0 6px 18px rgba(59,36,24,.07);
+  --fs-xs:.78rem; --fs-sm:.875rem; --fs-md:1rem; --fs-lg:1.2rem; --fs-xl:1.55rem; --fs-2xl:2.1rem;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:"Noto Sans KR",system-ui,sans-serif;background:var(--cream);color:var(--ink);font-size:var(--fs-md);line-height:1.6;-webkit-font-smoothing:antialiased}
+a{color:var(--accent)}
+button,input,textarea,select{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px;border-radius:8px}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+h1,h2,h3{line-height:1.3;margin:0 0 .5rem}
+h1{font-size:var(--fs-xl);font-weight:900;letter-spacing:-.02em}
+h2{font-size:var(--fs-lg);font-weight:700}
+h3{font-size:var(--fs-md);font-weight:700}
+p{margin:0 0 .75rem}
+.muted{color:var(--muted)}
+.small{font-size:var(--fs-sm)}
+.xs{font-size:var(--fs-xs)}
+
+/* Header */
+.site-header{position:sticky;top:0;z-index:40;background:rgba(251,246,238,.94);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.header-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;gap:1rem;padding:.5rem 1rem;min-height:60px}
+.brand{display:flex;align-items:center;gap:.55rem;text-decoration:none;color:var(--roast);font-weight:900;font-size:1.1rem;letter-spacing:-.02em;min-height:44px}
+.brand small{display:block;font-weight:500;font-size:.66rem;color:var(--muted);letter-spacing:.08em}
+.top-nav{display:none;gap:.25rem;margin-left:auto}
+.top-nav a{text-decoration:none;color:var(--muted);padding:.6rem .9rem;border-radius:999px;font-weight:500;min-height:44px;display:inline-flex;align-items:center;gap:.4rem}
+.top-nav a[aria-current="page"]{background:var(--roast);color:var(--cream)}
+.top-nav a:hover:not([aria-current="page"]){background:var(--crema);color:var(--ink)}
+.login-btn{margin-left:auto}
+@media(min-width:768px){.top-nav{display:flex}.login-btn{margin-left:.5rem}}
+
+/* Bottom nav (mobile) */
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;z-index:40;background:var(--paper);border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(5,1fr)}
+.bottom-nav a{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;min-height:60px;text-decoration:none;color:var(--muted);font-size:.72rem;font-weight:500;position:relative}
+.bottom-nav a i{font-size:1.05rem}
+.bottom-nav a[aria-current="page"]{color:var(--roast);font-weight:700}
+.bottom-nav a[aria-current="page"]::before{content:"";position:absolute;top:0;left:30%;right:30%;height:3px;border-radius:0 0 3px 3px;background:var(--accent)}
+.badge-dot{position:absolute;top:8px;right:calc(50% - 18px);min-width:18px;height:18px;padding:0 5px;border-radius:9px;background:var(--accent);color:#fff;font-size:.66rem;line-height:18px;text-align:center;font-weight:700}
+@media(min-width:768px){.bottom-nav{display:none}}
+
+main{max-width:1200px;margin:0 auto;padding:1.25rem 1rem 6.5rem}
+@media(min-width:768px){main{padding:2rem 1.5rem 3rem}}
+[data-screen]{display:none}
+[data-screen].active{display:block;animation:fade .25s ease}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+/* Buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;min-height:48px;padding:.7rem 1.2rem;border-radius:12px;border:1.5px solid transparent;font-weight:700;cursor:pointer;text-decoration:none;transition:background .15s,transform .05s}
+.btn:active{transform:translateY(1px)}
+.btn-primary{background:var(--roast);color:var(--cream)}
+.btn-primary:hover{background:var(--roast-2)}
+.btn-secondary{background:var(--paper);color:var(--roast);border-color:var(--roast)}
+.btn-secondary:hover{background:var(--crema)}
+.btn-ghost{background:transparent;color:var(--roast);border-color:var(--line)}
+.btn-ghost:hover{background:var(--crema)}
+.btn-kakao{background:#FEE500;color:#191600}
+.btn-kakao:hover{background:#F5DB00}
+.btn-block{width:100%}
+.btn-sm{min-height:44px;padding:.45rem .9rem;font-size:var(--fs-sm)}
+.btn[disabled],.btn[aria-disabled="true"]{opacity:.5;cursor:not-allowed}
+.spinner{width:18px;height:18px;border-radius:50%;border:2.5px solid currentColor;border-right-color:transparent;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+.card{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:1.1rem}
+.eyebrow{display:inline-flex;align-items:center;gap:.4rem;font-size:var(--fs-xs);font-weight:700;letter-spacing:.06em;color:var(--accent);text-transform:uppercase;margin-bottom:.4rem}
+.stack>*+*{margin-top:1rem}
+.row{display:flex;gap:.6rem;flex-wrap:wrap;align-items:center}
+
+/* Welcome */
+.hero{display:grid;gap:1.5rem;align-items:center}
+.hero h1{font-size:var(--fs-2xl);font-family:"Gowun Batang",serif;font-weight:700;letter-spacing:-.03em}
+.hero h1 em{font-style:normal;color:var(--accent)}
+.hero-visual{background:var(--roast);color:var(--cream);border-radius:24px;padding:1.4rem;position:relative;overflow:hidden}
+.hero-visual::after{content:"";position:absolute;right:-60px;bottom:-60px;width:200px;height:200px;border-radius:50%;background:rgba(232,217,196,.08)}
+.bubble{background:var(--cream);color:var(--ink);border-radius:18px 18px 18px 4px;padding:.8rem 1rem;font-family:"Gowun Batang",serif;max-width:90%}
+.bubble.reply{background:#4E3123;color:var(--cream);border-radius:18px 18px 4px 18px;margin-left:auto;font-family:"Noto Sans KR";font-size:var(--fs-sm)}
+.hv-chips{display:flex;flex-wrap:wrap;gap:.35rem;margin-top:.4rem}
+.hv-chips span{border:1px solid rgba(251,246,238,.4);border-radius:999px;padding:.1rem .6rem;font-size:.74rem}
+.steps{display:grid;gap:.8rem;margin-top:2rem}
+.step{display:flex;gap:.9rem;align-items:flex-start}
+.step-num{flex:none;width:40px;height:40px;border-radius:12px;background:var(--crema);color:var(--roast);display:grid;place-items:center;font-weight:900}
+.trust{display:grid;gap:.6rem;margin-top:1.5rem}
+.trust div{display:flex;gap:.6rem;align-items:center;font-size:var(--fs-sm);color:var(--muted)}
+.trust i{color:var(--high);width:18px}
+@media(min-width:768px){.hero{grid-template-columns:1.1fr .9fr;gap:2.5rem}.steps{grid-template-columns:repeat(3,1fr)}.step{flex-direction:column}.trust{grid-template-columns:repeat(3,1fr)}}
+@media(min-width:1200px){.hero h1{font-size:2.7rem}}
+
+/* Talk */
+.talk-layout{display:grid;gap:1.25rem}
+@media(min-width:768px){.talk-layout{grid-template-columns:1.4fr 1fr;align-items:start}}
+.field label{font-weight:700;display:block;margin-bottom:.4rem}
+.textarea{width:100%;min-height:130px;padding:1rem;border-radius:14px;border:1.5px solid var(--line);background:var(--paper);resize:vertical;font-family:"Gowun Batang",serif;font-size:1.1rem;line-height:1.6}
+.textarea:focus{border-color:var(--roast);outline:none;box-shadow:0 0 0 3px rgba(180,71,47,.25)}
+.textarea[aria-invalid="true"]{border-color:var(--accent);background:#FFF9F7}
+.field-meta{display:flex;justify-content:space-between;gap:.5rem;margin-top:.35rem;font-size:var(--fs-xs);color:var(--muted)}
+.field-error{color:var(--accent);font-weight:700;font-size:var(--fs-sm);display:flex;gap:.35rem;align-items:center;margin-top:.4rem}
+.chip{display:inline-flex;align-items:center;gap:.35rem;min-height:44px;padding:.35rem .85rem;border-radius:999px;border:1.5px solid var(--line);background:var(--paper);cursor:pointer;font-size:var(--fs-sm);font-weight:500;color:var(--ink)}
+.chip:hover{border-color:var(--roast)}
+.chip[aria-pressed="true"]{background:var(--roast);color:var(--cream);border-color:var(--roast)}
+.chip-trans{background:var(--crema);border-color:transparent;font-weight:700;color:var(--roast)}
+.chip-trans .x{display:inline-grid;place-items:center;width:24px;height:24px;border-radius:50%;background:rgba(59,36,24,.1);font-size:.7rem}
+.chip-dashed{border-style:dashed;color:var(--muted)}
+.chips{display:flex;flex-wrap:wrap;gap:.45rem}
+.alert{border-radius:14px;padding:1rem;display:flex;gap:.75rem;align-items:flex-start}
+.alert i{margin-top:.2rem}
+.alert-error{background:var(--low-soft);color:var(--low);border:1px solid #E8C4BB}
+.alert-warn{background:var(--mid-soft);color:#5E3D00;border:1px solid #EED9A8}
+.alert-info{background:var(--paper);border:1px dashed var(--line);color:var(--muted);font-size:var(--fs-sm)}
+.notice{font-size:var(--fs-xs);color:var(--muted);display:flex;gap:.45rem;align-items:flex-start;line-height:1.55}
+.notice i{color:var(--roast);margin-top:.2rem}
+.quiz fieldset{border:0;padding:0;margin:0 0 1rem}
+.quiz legend{font-weight:700;margin-bottom:.4rem}
+.seg{display:flex;flex-wrap:wrap;gap:.4rem}
+.seg input{position:absolute;opacity:0;pointer-events:none}
+.seg label{display:inline-flex;align-items:center;min-height:44px;padding:.35rem .9rem;border-radius:999px;border:1.5px solid var(--line);background:var(--paper);cursor:pointer;font-size:var(--fs-sm)}
+.seg input:checked+label{background:var(--roast);color:var(--cream);border-color:var(--roast)}
+.seg input:focus-visible+label{outline:3px solid var(--accent);outline-offset:2px}
+
+/* Result */
+.result-layout{display:grid;gap:1.25rem}
+@media(min-width:768px){.result-layout{grid-template-columns:320px 1fr;align-items:start}.result-aside{position:sticky;top:80px}}
+.said{font-family:"Gowun Batang",serif;font-size:1.2rem;line-height:1.5;color:var(--roast);margin:.2rem 0 .9rem}
+.notices{border-top:1px dashed var(--line);border-bottom:1px dashed var(--line);padding:.75rem 0;display:grid;gap:.45rem;margin-top:1rem}
+.cards{display:grid;gap:1rem}
+@media(min-width:1200px){.cards{grid-template-columns:repeat(3,1fr)}}
+.bean-card{display:flex;flex-direction:column;gap:.75rem;position:relative}
+.rank{position:absolute;top:-10px;left:14px;background:var(--roast);color:var(--cream);font-weight:900;font-size:.8rem;width:28px;height:28px;border-radius:8px;display:grid;place-items:center}
+.band{display:inline-flex;align-items:center;gap:.35rem;padding:.2rem .65rem;border-radius:999px;font-size:var(--fs-xs);font-weight:700;width:fit-content}
+.band-high{background:var(--high-soft);color:var(--high)}
+.band-medium{background:var(--mid-soft);color:var(--mid)}
+.band-low{background:var(--low-soft);color:var(--low)}
+.band-desc{font-size:var(--fs-sm);color:var(--muted);margin:.3rem 0 0}
+.bean-title{font-size:1.08rem;font-weight:900;margin:0}
+.roaster{font-size:var(--fs-sm);color:var(--muted);font-weight:500}
+.quote{font-family:"Gowun Batang",serif;background:var(--cream);border-left:3px solid var(--accent);border-radius:0 10px 10px 0;padding:.75rem .9rem;margin:0;font-size:.98rem;line-height:1.65}
+.bars{display:grid;grid-template-columns:auto 1fr auto;gap:.25rem .6rem;align-items:center;font-size:var(--fs-xs);color:var(--muted)}
+.bar{height:6px;background:var(--crema);border-radius:3px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--roast-2);border-radius:3px}
+.sizes{border:0;margin:0;padding:0}
+.sizes legend{font-size:var(--fs-sm);font-weight:700;margin-bottom:.35rem}
+.size-opts{display:grid;gap:.35rem}
+.size-opts input{position:absolute;opacity:0;pointer-events:none}
+.size-opts label{display:flex;justify-content:space-between;align-items:center;gap:.5rem;min-height:44px;padding:.45rem .8rem;border:1.5px solid var(--line);border-radius:10px;cursor:pointer;font-size:var(--fs-sm)}
+.size-opts label .rec{font-size:.68rem;font-weight:700;color:var(--high);background:var(--high-soft);border-radius:6px;padding:.05rem .4rem;margin-left:.3rem}
+.size-opts input:checked+label{border-color:var(--roast);background:var(--cream);font-weight:700;box-shadow:inset 0 0 0 1px var(--roast)}
+.size-opts input:focus-visible+label{outline:3px solid var(--accent);outline-offset:2px}
+.meta{border-top:1px solid var(--line);padding-top:.6rem;font-size:var(--fs-xs);color:var(--muted);display:flex;flex-wrap:wrap;gap:.2rem .8rem}
+.skeleton{background:linear-gradient(90deg,var(--crema) 0%,#F7EEE2 50%,var(--crema) 100%);background-size:200% 100%;animation:sk 1.1s infinite;border-radius:8px}
+@keyframes sk{to{background-position:-200% 0}}
+.editor{border:2px solid var(--roast)}
+.axis-row{margin-bottom:.9rem}
+.axis-row .seg label{font-size:.8rem;padding:.3rem .7rem}
+.empty{text-align:center;padding:2.2rem 1.2rem}
+.empty .ill{width:72px;height:72px;border-radius:22px;background:var(--crema);color:var(--roast);display:grid;place-items:center;margin:0 auto 1rem;font-size:1.6rem}
+.bottom-actions{display:grid;gap:.6rem;margin-top:1.25rem}
+@media(min-width:768px){.bottom-actions{grid-template-columns:1fr 1fr}}
+
+/* Handoff / feedback / my */
+.narrow{max-width:640px;margin:0 auto}
+.summary{display:flex;gap:.9rem;align-items:center}
+.bean-ico{flex:none;width:56px;height:56px;border-radius:14px;background:var(--roast);color:var(--crema);display:grid;place-items:center;font-size:1.4rem}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:.35rem 1rem;font-size:var(--fs-sm);margin:0}
+.kv dt{color:var(--muted)} .kv dd{margin:0;font-weight:500}
+.success-ill{width:64px;height:64px;border-radius:50%;background:var(--high-soft);color:var(--high);display:grid;place-items:center;font-size:1.6rem;margin:0 auto .8rem}
+.fb-opts{display:grid;gap:.5rem}
+.fb-opts button{min-height:56px;border-radius:14px;border:1.5px solid var(--line);background:var(--paper);display:flex;align-items:center;gap:.8rem;padding:.5rem 1rem;cursor:pointer;font-weight:500;text-align:left}
+.fb-opts button .emo{font-size:1.3rem;width:30px;text-align:center}
+.fb-opts button[aria-checked="true"]{border-color:var(--roast);background:var(--cream);font-weight:700;box-shadow:inset 0 0 0 1px var(--roast)}
+@media(min-width:768px){.fb-opts{grid-template-columns:repeat(5,1fr)}.fb-opts button{flex-direction:column;text-align:center;min-height:100px;justify-content:center;font-size:var(--fs-sm)}}
+.my-grid{display:grid;gap:1rem}
+@media(min-width:768px){.my-grid{grid-template-columns:1fr 1fr}.my-grid .span-2{grid-column:span 2}}
+@media(min-width:1200px){.my-grid{grid-template-columns:1.3fr 1fr 1fr}.my-grid .span-2{grid-column:span 1}}
+.taste-card{background:var(--roast);color:var(--cream);border:0}
+.taste-card .sentence{font-family:"Gowun Batang",serif;font-size:1.3rem;line-height:1.55;margin:.4rem 0 1rem}
+.taste-card .muted{color:#D9C7B2}
+.stat{font-size:2rem;font-weight:900;color:var(--roast);line-height:1}
+.list{list-style:none;margin:0;padding:0}
+.list li{display:flex;gap:.75rem;align-items:center;padding:.75rem 0;border-bottom:1px solid var(--line)}
+.list li:last-child{border-bottom:0}
+.list .grow{flex:1;min-width:0}
+.status{font-size:.7rem;font-weight:700;padding:.15rem .55rem;border-radius:999px;white-space:nowrap}
+.status-pending{background:var(--mid-soft);color:var(--mid)}
+.status-done{background:var(--high-soft);color:var(--high)}
+
+/* Footer */
+.site-footer{max-width:1200px;margin:0 auto;padding:1.5rem 1rem 7rem;font-size:var(--fs-xs);color:var(--muted);border-top:1px solid var(--line)}
+@media(min-width:768px){.site-footer{padding-bottom:2rem}}
+.devlog{display:none;margin-top:1rem;background:#1F140E;color:#E8D9C4;border-radius:12px;padding:.8rem;font-family:ui-monospace,Menlo,monospace;font-size:.72rem;max-height:180px;overflow:auto}
+body.show-req .devlog{display:block}
+
+/* Toast */
+.toast-wrap{position:fixed;left:50%;bottom:76px;transform:translateX(-50%);z-index:60;display:grid;gap:.5rem;width:min(92vw,420px);pointer-events:none}
+@media(min-width:768px){.toast-wrap{bottom:24px}}
+.toast{background:var(--ink);color:var(--cream);padding:.8rem 1rem;border-radius:12px;box-shadow:var(--shadow);display:flex;gap:.6rem;align-items:center;font-size:var(--fs-sm);animation:fade .2s ease}
+.toast i{color:#8FD3AE}
+
+/* REQ annotations */
+[data-req]{position:relative}
+body.show-req [data-req]{outline:1.5px dashed rgba(180,71,47,.55);outline-offset:3px}
+body.show-req [data-req]::before{content:attr(data-req);position:absolute;top:-11px;right:6px;z-index:5;background:var(--accent);color:#fff;font:700 10px/1.4 ui-monospace,Menlo,monospace;padding:1px 6px;border-radius:5px;white-space:nowrap;pointer-events:none}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<a href="#main" class="sr-only">본문 바로가기</a>
+<header class="site-header">
+  <div class="header-inner">
+    <a class="brand" href="#welcome" aria-label="맛번역 커피 홈">
+      <svg width="36" height="36" viewBox="0 0 36 36" aria-hidden="true">
+        <path d="M18 3c8.3 0 15 5.8 15 13s-6.7 13-15 13c-1.6 0-3.1-.2-4.5-.6L6 32l1.8-6.3C4.8 23.4 3 20 3 16 3 8.8 9.7 3 18 3z" fill="#3B2418"/>
+        <ellipse cx="18" cy="16" rx="6.5" ry="8.5" fill="#E8D9C4" transform="rotate(20 18 16)"/>
+        <path d="M15.5 9.5c3 2.5 2 9.5 5 13" stroke="#3B2418" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+      </svg>
+      <span>맛번역 커피<small>TASTE TRANSLATOR</small></span>
+    </a>
+    <nav class="top-nav" aria-label="주요 메뉴" id="topNav"></nav>
+    <button class="btn btn-ghost btn-sm login-btn" id="loginBtn" data-req="REQ-20 로그인"><i class="fa-solid fa-user" aria-hidden="true"></i><span>로그인</span></button>
+  </div>
+</header>
+
+<main id="main" tabindex="-1">
+
+<!-- S-1 WELCOME -->
+<section data-screen="welcome" data-title="시작하기" aria-labelledby="t-welcome">
+  <div class="hero">
+    <div>
+      <span class="eyebrow"><i class="fa-solid fa-mug-hot" aria-hidden="true"></i>30~40대 홈카페를 위한 원두 번역</span>
+      <h1 id="t-welcome">맛을 몰라서가 아니라,<br><em>맛을 부를 말</em>이 없었던 겁니다.</h1>
+      <p class="muted">"산미 적고 고소한" 같은 평소 말투로 적어 주세요. 로스터의 커핑 용어로 번역해, 그 맛을 가진 원두 3개를 찾아 드려요.</p>
+      <div class="row" style="margin-top:1.2rem">
+        <a class="btn btn-primary" href="#talk"><i class="fa-solid fa-comment-dots" aria-hidden="true"></i>내 말로 원두 찾기</a>
+        <button class="btn btn-secondary" id="demoBtn">예시 문장으로 체험</button>
+      </div>
+      <div class="trust" data-req="POL-B5 · D9 광고 없음">
+        <div><i class="fa-solid fa-scale-balanced" aria-hidden="true"></i>추천 순서는 수수료와 무관해요</div>
+        <div><i class="fa-solid fa-user-check" aria-hidden="true"></i>큐레이터 검수 원두 312개 · 로스터 17곳</div>
+        <div><i class="fa-solid fa-ban" aria-hidden="true"></i>상위 노출 광고 없음</div>
+      </div>
+    </div>
+    <div class="hero-visual" aria-hidden="true">
+      <p class="xs" style="opacity:.75;margin-bottom:.6rem">이렇게 번역돼요</p>
+      <div class="bubble">"산미 적고 고소한, 우유랑 잘 어울리는"</div>
+      <div style="height:.8rem"></div>
+      <div class="bubble reply">로스터 말로는 <b>헤이즐넛 · 밀크초콜릿</b>이에요.
+        <div class="hv-chips"><span>산미 1~2</span><span>견과·초콜릿</span><span>우유와 잘 어울림</span></div>
+      </div>
+      <div style="height:.8rem"></div>
+      <div class="bubble reply" style="max-width:75%">● 높음 · 모래내 로스터리 브라질 세하도</div>
+    </div>
+  </div>
+  <div class="steps">
+    <div class="step card"><div class="step-num">1</div><div><h3>내 말로 말하기</h3><p class="small muted">한 문장이면 충분해요. 전문 용어는 몰라도 돼요.</p></div></div>
+    <div class="step card"><div class="step-num">2</div><div><h3>번역 확인 후 고르기</h3><p class="small muted">번역된 맛 칩을 고치고, 왜 이 원두인지 설명을 읽어요.</p></div></div>
+    <div class="step card"><div class="step-num">3</div><div><h3>7일 뒤 3초 피드백</h3><p class="small muted">한 번 탭으로 남기면 다음 추천과 내 취향 문장이 정확해져요.</p></div></div>
+  </div>
+</section>
+
+<!-- S0 TALK -->
+<section data-screen="talk" data-title="맛 말하기" aria-labelledby="t-talk">
+  <div class="talk-layout">
+    <div class="card">
+      <span class="eyebrow">S0 · 입력</span>
+      <h1 id="t-talk">어떤 맛의 커피를 원하세요?</h1>
+      <p class="muted small">평소 말투 그대로 적어 주세요. 좋아하는 맛도, 싫은 맛도 괜찮아요.</p>
+      <form id="talkForm" novalidate data-req="REQ-01 자연어 입력">
+        <div class="field">
+          <label for="q">원하는 맛을 한 문장으로</label>
+          <textarea id="q" class="textarea" placeholder="예) 산미 적고 고소한, 우유랑 잘 어울리는" aria-describedby="qHelp qErr"></textarea>
+          <div class="field-meta"><span id="qHelp">4~100자 · 엔터로 줄바꿈</span><span id="qCount" aria-live="polite">0 / 100</span></div>
+          <div id="qErr" class="field-error" role="alert" hidden></div>
+        </div>
+        <p class="small" style="margin:.9rem 0 .4rem;font-weight:700">이렇게 말하는 분들이 많아요</p>
+        <div class="chips" id="examples"></div>
+        <div id="parseError" hidden style="margin-top:1rem"></div>
+        <button type="submit" class="btn btn-primary btn-block" id="submitBtn" style="margin-top:1.2rem">번역하고 원두 찾기</button>
+        <p class="notice" style="margin-top:.8rem" data-req="POL-C3 AI 고지"><i class="fa-solid fa-robot" aria-hidden="true"></i>AI가 입력을 해석해요. 추천은 큐레이터가 검수한 원두 데이터에서만 골라요.</p>
+      </form>
+    </div>
+    <aside class="card quiz" aria-labelledby="t-quiz" data-req="REQ-03 퀴즈 대안">
+      <span class="eyebrow">말이 안 떠오르면</span>
+      <h2 id="t-quiz">3문항 퀴즈로 찾기</h2>
+      <p class="small muted">답을 고르면 문장을 대신 만들어 드려요.</p>
+      <form id="quizForm">
+        <fieldset><legend>신맛은 어떠세요?</legend><div class="seg">
+          <input type="radio" name="qa" id="qa1" value="low" checked><label for="qa1">싫어요</label>
+          <input type="radio" name="qa" id="qa2" value="mid"><label for="qa2">조금은 괜찮아요</label>
+          <input type="radio" name="qa" id="qa3" value="high"><label for="qa3">새콤한 게 좋아요</label></div></fieldset>
+        <fieldset><legend>주로 어떻게 마셔요?</legend><div class="seg">
+          <input type="radio" name="qm" id="qm1" value="milk" checked><label for="qm1">라떼로</label>
+          <input type="radio" name="qm" id="qm2" value="black"><label for="qm2">블랙으로</label></div></fieldset>
+        <fieldset><legend>어떤 느낌이 좋아요?</legend><div class="seg">
+          <input type="radio" name="qb" id="qb1" value="nut" checked><label for="qb1">고소·진한</label>
+          <input type="radio" name="qb" id="qb2" value="sweet"><label for="qb2">달콤·부드러운</label>
+          <input type="radio" name="qb" id="qb3" value="floral"><label for="qb3">향긋·깔끔</label></div></fieldset>
+        <button type="submit" class="btn btn-secondary btn-block">이 답으로 찾기</button>
+      </form>
+    </aside>
+  </div>
+</section>
+
+<!-- S1 RESULT -->
+<section data-screen="result" data-title="추천 결과" aria-labelledby="t-result">
+  <h1 id="t-result" class="sr-only">추천 결과</h1>
+  <div id="resultRoot"></div>
+</section>
+
+<!-- S2 HANDOFF -->
+<section data-screen="handoff" data-title="판매처 이동" aria-labelledby="t-handoff">
+  <div class="narrow" id="handoffRoot"></div>
+</section>
+
+<!-- S3 FEEDBACK -->
+<section data-screen="feedback" data-title="3초 피드백" aria-labelledby="t-feedback">
+  <div class="narrow" id="feedbackRoot"></div>
+</section>
+
+<!-- S4 MY TASTE -->
+<section data-screen="my-taste" data-title="내 취향" aria-labelledby="t-my">
+  <div id="myRoot"></div>
+</section>
+
+</main>
+
+<footer class="site-footer">
+  <p data-req="POL-B4 중개자 고지"><b>맛번역 커피</b>는 통신판매중개자로서 상품 판매의 당사자가 아닙니다. 상품 정보·주문·배송·환불의 책임은 각 판매처(로스터)에 있습니다. 제휴 링크로 구매 시 판매처로부터 수수료를 받을 수 있으며, 추천 순서에는 영향을 주지 않습니다.</p>
+  <div class="row">
+    <span>© 2026 맛번역 커피 · MVP 프로토타입 v1.0</span>
+    <button class="btn btn-ghost btn-sm" id="reqToggle" aria-pressed="false"><i class="fa-solid fa-tags" aria-hidden="true"></i>기획 주석(REQ) · 이벤트 로그 보기</button>
+  </div>
+  <div class="devlog" id="devlog" aria-label="이벤트 로그"><div>// 이벤트 로그 (analytics)</div></div>
+</footer>
+
+<nav class="bottom-nav" aria-label="하단 메뉴" id="bottomNav"></nav>
+<div class="toast-wrap" id="toasts" aria-live="polite" aria-atomic="false"></div>
+
+<script>
+/* ---------- Data ---------- */
+const FL = {nutchoco:'견과·초콜릿',caramel:'캐러멜·당',grain:'곡물·구운',berry:'베리·붉은과일',citrus:'시트러스',floral:'꽃',spice:'향신료·허브',ferment:'발효·와인'};
+const AX = {acidity:'산미',sweet:'단맛',bitter:'쓴맛',body:'무게감'};
+const PRESETS = {low:[1,2],mid:[2.5,3.5],high:[4,5]};
+const PRICE_AT = '10/31 14:00';
+const P = [
+ {id:'p1',roaster:'모래내 로스터리',name:'브라질 세하도 내추럴',origin:'브라질',process:'내추럴',roast:'미디엄다크',acidity:1.5,sweet:3.5,bitter:3,body:3.5,fl:['nutchoco'],milk:true,notes:['헤이즐넛','밀크초콜릿'],p200:16000,p100:9500,drip:11000},
+ {id:'p2',roaster:'온기커피',name:'콜롬비아 우일라 워시드',origin:'콜롬비아',process:'워시드',roast:'미디엄',acidity:2.5,sweet:3.5,bitter:2.5,body:3,fl:['caramel','nutchoco'],milk:true,notes:['캐러멜','아몬드'],p200:17500,p100:10000,drip:12000},
+ {id:'p3',roaster:'느린숲 로스터스',name:'과테말라 안티구아',origin:'과테말라',process:'워시드',roast:'미디엄다크',acidity:2,sweet:3,bitter:3.5,body:4,fl:['nutchoco','spice'],milk:true,notes:['다크초콜릿','시나몬'],p200:18000,p100:10500,drip:12500},
+ {id:'p4',roaster:'하루볕 커피',name:'에티오피아 예가체프 워시드',origin:'에티오피아',process:'워시드',roast:'라이트',acidity:4.5,sweet:3,bitter:1.5,body:2,fl:['floral','citrus'],milk:false,notes:['재스민','베르가못','레몬'],p200:21000,p100:12000,drip:13000},
+ {id:'p5',roaster:'결 로스터리',name:'케냐 니에리 AA',origin:'케냐',process:'워시드',roast:'라이트미디엄',acidity:4.5,sweet:3.5,bitter:2,body:3,fl:['berry','citrus'],milk:false,notes:['블랙커런트','자몽'],p200:24000,p100:13500,drip:14000},
+ {id:'p6',roaster:'마포 브루웍스',name:'인도네시아 만델링',origin:'인도네시아',process:'웻헐',roast:'다크',acidity:1,sweet:2.5,bitter:4,body:4.5,fl:['grain','spice'],milk:true,notes:['구운 곡물','삼나무'],p200:15500,p100:9000,drip:10500},
+ {id:'p7',roaster:'온기커피',name:'에티오피아 구지 내추럴',origin:'에티오피아',process:'내추럴',roast:'라이트미디엄',acidity:3.5,sweet:4,bitter:1.5,body:2.5,fl:['berry','ferment'],milk:false,notes:['블루베리','레드와인'],p200:22000,p100:12500,drip:13500},
+ {id:'p8',roaster:'모래내 로스터리',name:'하우스 블렌드 ‘밤산책’',origin:'브라질·콜롬비아',process:'블렌드',roast:'미디엄다크',acidity:1.5,sweet:3,bitter:3.5,body:4,fl:['nutchoco','grain'],milk:true,notes:['구운 견과','누룽지'],p200:14000,p100:8500,drip:10000},
+ {id:'p9',roaster:'하루볕 커피',name:'코스타리카 따라주 허니',origin:'코스타리카',process:'허니',roast:'미디엄',acidity:3,sweet:4,bitter:2,body:3,fl:['caramel','citrus'],milk:false,notes:['흑설탕','오렌지'],p200:19500,p100:11000,drip:12500},
+ {id:'p10',roaster:'결 로스터리',name:'파나마 게이샤 워시드',origin:'파나마',process:'워시드',roast:'라이트',acidity:4,sweet:3.5,bitter:1,body:2,fl:['floral','citrus'],milk:false,notes:['재스민','복숭아'],p200:38000,p100:21000,drip:18000},
+ {id:'p11',roaster:'느린숲 로스터스',name:'페루 카하마르카',origin:'페루',process:'워시드',roast:'미디엄',acidity:2.5,sweet:3.5,bitter:2.5,body:3,fl:['nutchoco','caramel'],milk:true,notes:['코코아','꿀'],p200:16500,p100:9500,drip:11000},
+ {id:'p12',roaster:'마포 브루웍스',name:'르완다 버본 워시드',origin:'르완다',process:'워시드',roast:'라이트미디엄',acidity:3.5,sweet:3.5,bitter:2,body:2.5,fl:['berry','floral'],milk:false,notes:['크랜베리','히비스커스'],p200:20000,p100:11500,drip:12500}
+];
+const EXAMPLES = ['산미 적고 고소한, 우유랑 잘 어울리는','쓴맛 싫고 달달한 거','향긋하고 깔끔한, 과일 같은','진하고 구수한 아침 커피'];
+const RULES = [
+ {re:/산미\s*(가|는|도)?\s*(적|없|약|덜|낮)|안\s*시|안\s*신|신\s*맛\s*(이|은|은\s*)?\s*(싫|별로|없|적)|시지\s*않/,axis:'acidity',range:[1,2],word:'산미 적은'},
+ {re:/쓴\s*맛\s*(이|은|은\s*)?\s*(싫|별로|없|적)|안\s*쓴|덜\s*쓴|쓰지\s*않/,axis:'bitter',range:[1,2.5],word:'쓰지 않은'},
+ {re:/새콤|상큼|산미|신\s*맛/,axis:'acidity',range:[3.5,5],flavor:'citrus',word:'산미',skip:true},
+ {re:/고소/,flavor:'nutchoco',word:'고소함'},
+ {re:/초콜릿|초코|카카오|코코아/,flavor:'nutchoco',word:'초콜릿 같은 맛'},
+ {re:/견과|땅콩|아몬드|헤이즐넛/,flavor:'nutchoco',word:'견과 맛'},
+ {re:/달달|달콤|단\s*맛|달큰/,axis:'sweet',range:[3.5,5],flavor:'caramel',word:'달달함'},
+ {re:/캐러멜|카라멜|꿀|흑설탕/,flavor:'caramel',word:'캐러멜 같은 단맛'},
+ {re:/구수|누룽지|곡물|보리|숭늉/,flavor:'grain',word:'구수함'},
+ {re:/과일|베리|딸기|블루베리|체리/,flavor:'berry',axis:'acidity',range:[3,5],word:'과일 같은 맛',skip:true},
+ {re:/꽃|향긋|플로럴|화사/,flavor:'floral',word:'향긋함'},
+ {re:/레몬|자몽|오렌지|귤|시트러스|유자/,flavor:'citrus',word:'시트러스'},
+ {re:/와인|발효/,flavor:'ferment',word:'와인 같은 느낌'},
+ {re:/계피|시나몬|스파이시|허브|향신료/,flavor:'spice',word:'향신료 느낌'},
+ {re:/진한|진하|묵직|무거|바디|찐한/,axis:'body',range:[4,5],word:'진한'},
+ {re:/가벼|깔끔|연한|연하|맑은/,axis:'body',range:[1.5,3],word:'깔끔한'},
+ {re:/부드러/,axis:'bitter',range:[1,2.5],word:'부드러움',skip:true},
+ {re:/쌉쌀|씁쓸|쓴\s*맛\s*(이|을)?\s*(좋|강)/,axis:'bitter',range:[3.5,5],word:'쌉쌀함',skip:true},
+ {re:/우유|라떼|라테|밀크|플랫화이트/,milk:true,word:'우유와 잘 어울리는'}
+];
+const NAV = [
+ {id:'welcome',label:'홈',icon:'fa-house'},
+ {id:'talk',label:'말하기',icon:'fa-comment-dots'},
+ {id:'result',label:'추천',icon:'fa-mug-saucer'},
+ {id:'feedback',label:'피드백',icon:'fa-hand-pointer'},
+ {id:'my-taste',label:'내 취향',icon:'fa-user'}
+];
+
+/* ---------- State (memory only) ---------- */
+const S = {query:'',q:null,draft:null,editorOpen:false,results:[],sizeSel:{},pending:null,handoff:'confirm',purchases:[],history:[],loggedIn:false,fb:{sel:null,stage:'ask',last:null},seq:0};
+
+/* ---------- Utils ---------- */
+const $ = s=>document.querySelector(s);
+const esc = s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const won = n=>'₩'+n.toLocaleString('ko-KR');
+function jong(w){const c=w.charCodeAt(w.length-1);return c>=0xAC00&&c<=0xD7A3&&(c-0xAC00)%28>0}
+const eun = w=>w+(jong(w)?'은':'는');
+const ira = w=>w+(jong(w)?'이라고':'라고');
+const gwa = w=>w+(jong(w)?'과':'와');
+const fmtR = r=>r[0]===r[1]?r[0]:`${r[0]}~${r[1]}`;
+function toast(msg,icon='fa-circle-check'){const t=document.createElement('div');t.className='toast';t.innerHTML=`<i class="fa-solid ${icon}" aria-hidden="true"></i><span>${msg}</span>`;$('#toasts').appendChild(t);setTimeout(()=>t.remove(),2800)}
+function logEvent(name,props={}){const d=document.createElement('div');d.textContent=`${new Date().toLocaleTimeString('ko-KR')}  ${name} ${JSON.stringify(props)}`;$('#devlog').appendChild(d);$('#devlog').scrollTop=1e5}
+function cloneQ(q){return {...q,axes:{...q.axes},axisWords:{...q.axisWords},flavors:new Set(q.flavors),words:{...q.words}}}
+function busy(btn,label){btn.dataset.label=btn.innerHTML;btn.disabled=true;btn.setAttribute('aria-busy','true');btn.innerHTML=`<span class="spinner" aria-hidden="true"></span>${label}`}
+function unbusy(btn){btn.disabled=false;btn.removeAttribute('aria-busy');btn.innerHTML=btn.dataset.label}
+
+/* ---------- Translation engine (mock) ---------- */
+function parse(text){
+  const t=text.replace(/\s+/g,' ');
+  const q={axes:{acidity:null,sweet:null,bitter:null,body:null},axisWords:{},flavors:new Set(),words:{},milk:false,cues:[],confirmed:false};
+  RULES.forEach(r=>{
+    if(!r.re.test(t))return;
+    if(r.skip&&r.axis&&q.axes[r.axis])return;
+    if(r.axis&&!q.axes[r.axis]){q.axes[r.axis]=r.range.slice();q.axisWords[r.axis]=r.word}
+    if(r.flavor){q.flavors.add(r.flavor);if(!q.words[r.flavor])q.words[r.flavor]=r.word}
+    if(r.milk)q.milk=true;
+    q.cues.push(r.word);
+  });
+  return q;
+}
+function condCount(q){return Object.values(q.axes).filter(Boolean).length+q.flavors.size+(q.milk?1:0)}
+function score(p,q){
+  let dist=0;
+  for(const a in q.axes){const r=q.axes[a];if(!r)continue;const v=p[a];dist+=v<r[0]?r[0]-v:v>r[1]?v-r[1]:0}
+  let s=100-dist*22;
+  if(q.flavors.size){const ov=[...q.flavors].filter(f=>p.fl.includes(f)).length;s-=(1-ov/q.flavors.size)*40}
+  if(q.milk&&!p.milk)s-=12;
+  return Math.max(0,Math.round(s));
+}
+function interp(q){const n=condCount(q);const base=[0,40,70,90,100][Math.min(n,4)];return Math.min(100,base+(q.confirmed?15:0))}
+function bandOf(c){return c>=82?'high':c>=65?'medium':'low'}
+const BAND={high:{icon:'●',txt:'높음',desc:'당신 말과 잘 맞는 원두예요.'},medium:{icon:'◐',txt:'보통',desc:'꽤 가까워요. 작은 용량으로 먼저 확인해 보세요.'},low:{icon:'○',txt:'낮음',desc:'번역이 확실하지 않아요. 드립백으로 맛을 먼저 보세요.'}};
+function match(q){
+  if(!condCount(q))return [];
+  const ip=interp(q);
+  return P.map(p=>{const s=score(p,q);const c=Math.round(ip*.4+s*.6);return {p,s,conf:c,band:bandOf(c)}})
+    .filter(x=>x.s>=60).sort((a,b)=>b.s-a.s||a.p.p200-b.p.p200).slice(0,3);
+}
+function backTranslate(p,q){
+  const out=[];
+  const fls=[...q.flavors];
+  const hit=fls.find(f=>p.fl.includes(f));
+  if(hit){const w=q.words[hit]||FL[hit];out.push(`당신이 말한 ‘${eun(w)}’ 로스터들이 ‘${ira(p.notes.join(', '))}’ 부르는 맛이에요. 이 원두가 그 계열이에요.`)}
+  else if(fls.length){const w=q.words[fls[0]]||FL[fls[0]];out.push(`말씀하신 ‘${gwa(w)}’는 결이 조금 달라요. 이 원두는 ‘${p.notes.join(', ')}’ 계열이에요.`)}
+  else out.push(`로스터는 이 원두를 ‘${ira(p.notes.join(', '))}’ 설명해요.`);
+  const r=q.axes.acidity;
+  if(r){const w=q.axisWords.acidity||'산미';
+    if(p.acidity>=r[0]&&p.acidity<=r[1])out.push(`‘${w}’ 조건에 맞게 산미는 5점 중 ${p.acidity}예요.`);
+    else out.push(`산미는 5점 중 ${p.acidity}로, 말씀하신 것보다 ${p.acidity>r[1]?'조금 더 있어요':'조금 낮아요'}.`)}
+  if(q.milk)out.push(p.milk?'우유를 넣어도 맛이 묻히지 않는 무게감이에요.':'우유보다는 그대로 마실 때 더 좋아요.');
+  return out.slice(0,3).join(' ');
+}
+function sizeOptions(p,band){
+  const o=[{k:'200g',label:'200g',price:p.p200},{k:'100g',label:'100g',price:p.p100},{k:'drip',label:'드립백 8개',price:p.drip}];
+  const def=band==='high'?'200g':band==='medium'?'100g':'drip';
+  return {o,def};
+}
+
+/* ---------- Router ---------- */
+const screens=[...document.querySelectorAll('[data-screen]')];
+function buildNav(){
+  $('#topNav').innerHTML=NAV.map(n=>`<a href="#${n.id}" data-nav="${n.id}"><i class="fa-solid ${n.icon}" aria-hidden="true"></i>${n.label}</a>`).join('');
+  $('#bottomNav').innerHTML=NAV.map(n=>`<a href="#${n.id}" data-nav="${n.id}"><i class="fa-solid ${n.icon}" aria-hidden="true"></i><span>${n.label}</span>${n.id==='feedback'?'<span class="badge-dot" data-fbbadge hidden></span>':''}</a>`).join('');
+}
+function updateBadges(){const n=S.purchases.filter(x=>x.status==='pending').length;document.querySelectorAll('[data-fbbadge]').forEach(b=>{b.hidden=!n;b.textContent=n;b.setAttribute('aria-label',`피드백 대기 ${n}건`)})}
+const RENDER={result:renderResult,handoff:renderHandoff,feedback:renderFeedback,'my-taste':renderMy};
+function route(){
+  let id=location.hash.slice(1);
+  if(!screens.some(s=>s.dataset.screen===id))id=screens[0].dataset.screen;
+  screens.forEach(s=>s.classList.toggle('active',s.dataset.screen===id));
+  const navId=id==='handoff'?'result':id;
+  document.querySelectorAll('[data-nav]').forEach(a=>a.dataset.nav===navId?a.setAttribute('aria-current','page'):a.removeAttribute('aria-current'));
+  const sec=screens.find(s=>s.dataset.screen===id);
+  document.title=`${sec.dataset.title} · 맛번역 커피`;
+  if(RENDER[id])RENDER[id]();
+  updateBadges();
+  window.scrollTo(0,0);
+  $('#main').focus({preventScroll:true});
+}
+window.addEventListener('hashchange',route);
+
+/* ---------- Talk (S0) ---------- */
+const qEl=$('#q');
+$('#examples').innerHTML=EXAMPLES.map(e=>`<button type="button" class="chip" data-ex="${esc(e)}">“${esc(e)}”</button>`).join('');
+$('#examples').addEventListener('click',e=>{const b=e.target.closest('[data-ex]');if(!b)return;qEl.value=b.dataset.ex;onInput();qEl.focus()});
+function onInput(){const n=qEl.value.trim().length;$('#qCount').textContent=`${qEl.value.length} / 100`;$('#qCount').style.color=qEl.value.length>100?'var(--accent)':'';if(qEl.getAttribute('aria-invalid')==='true'&&n>=4&&qEl.value.length<=100)setErr('')}
+qEl.addEventListener('input',onInput);
+function setErr(msg){const e=$('#qErr');if(msg){e.innerHTML=`<i class="fa-solid fa-circle-exclamation" aria-hidden="true"></i>${msg}`;e.hidden=false;qEl.setAttribute('aria-invalid','true')}else{e.hidden=true;qEl.removeAttribute('aria-invalid')}}
+$('#talkForm').addEventListener('submit',e=>{e.preventDefault();runQuery(qEl.value,'text')});
+qEl.addEventListener('keydown',e=>{if(e.key==='Enter'&&(e.metaKey||e.ctrlKey)){e.preventDefault();runQuery(qEl.value,'text')}});
+function runQuery(text,source){
+  const v=text.trim();
+  $('#parseError').hidden=true;
+  if(!v){setErr('원하는 맛을 한 문장으로 적어 주세요.');qEl.focus();return}
+  if(v.length<4){setErr('조금만 더 길게 적어 주세요. (4자 이상)');qEl.focus();return}
+  if(text.length>100){setErr(`100자 이내로 줄여 주세요. 지금 ${text.length}자예요.`);qEl.focus();return}
+  setErr('');
+  const btn=$('#submitBtn');busy(btn,'번역하는 중…');
+  logEvent('query_submitted',{source,len:v.length});
+  setTimeout(()=>{
+    unbusy(btn);
+    const q=parse(v);
+    if(!q.cues.length){
+      logEvent('parse_failed',{reason:'NO_CUE'});
+      const pe=$('#parseError');pe.hidden=false;
+      pe.innerHTML=`<div class="alert alert-error" role="alert" data-req="REQ-01 AC4 해석 실패"><i class="fa-solid fa-language" aria-hidden="true"></i><div><b>번역할 맛 단서를 찾지 못했어요.</b><p class="small" style="margin:.2rem 0 .6rem">“${esc(v)}”에서 맛을 떠올릴 단어가 없었어요. 신맛·고소함·단맛·진하기 중 하나만 넣어 보거나, 오른쪽 퀴즈로 찾아보세요.</p><div class="row"><button type="button" class="btn btn-secondary btn-sm" data-fill="고소하고 진한">“고소하고 진한”으로 해 보기</button><a class="btn btn-ghost btn-sm" href="#t-quiz">퀴즈로 찾기</a></div></div></div>`;
+      pe.querySelector('[data-fill]').onclick=ev=>{qEl.value=ev.currentTarget.dataset.fill;onInput();runQuery(qEl.value,'suggest')};
+      pe.querySelector('.alert').focus?.();
+      return;
+    }
+    S.query=v;S.q=q;S.editorOpen=false;S.sizeSel={};
+    S.results=match(q);
+    S.history.unshift({id:++S.seq,text:v,at:'오늘 '+new Date().toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'}),n:S.results.length});
+    logEvent('recommendation_viewed',{n:S.results.length,cues:q.cues.length});
+    location.hash='#result';
+    toast(S.results.length?`번역 완료 · 원두 ${S.results.length}개를 찾았어요`:'번역은 했지만 맞는 원두가 없어요','fa-language');
+  },900);
+}
+$('#quizForm').addEventListener('submit',e=>{
+  e.preventDefault();const f=new FormData(e.target);
+  const a={low:'산미 적고',mid:'산미는 은은하고',high:'새콤하고'}[f.get('qa')];
+  const b={nut:'고소하고 진한',sweet:'달콤하고 부드러운',floral:'향긋하고 깔끔한'}[f.get('qb')];
+  const m=f.get('qm')==='milk'?', 라떼로 마실':' 블랙으로 마실';
+  let text=`${a} ${b}${m}`;if(f.get('qa')==='mid')text=text.replace('산미는 은은하고 ','');
+  qEl.value=text;onInput();runQuery(text,'quiz');
+});
+$('#demoBtn').addEventListener('click',()=>{qEl.value=EXAMPLES[0];onInput();location.hash='#talk';setTimeout(()=>runQuery(EXAMPLES[0],'demo'),150)});
+
+/* ---------- Result (S1) ---------- */
+function chipsHTML(q){
+  const c=[];
+  for(const a in q.axes){const r=q.axes[a];if(r)c.push(`<span class="chip chip-trans" style="padding-right:.35rem"><button type="button" class="chip" style="all:unset;cursor:pointer;min-height:44px;display:inline-flex;align-items:center;gap:.3rem" data-open-editor aria-label="${AX[a]} ${fmtR(r)} 수정">${AX[a]} ${fmtR(r)} <i class="fa-solid fa-caret-down" aria-hidden="true"></i></button><button type="button" class="x" style="border:0;cursor:pointer;width:32px;height:32px" data-remove="axis:${a}" aria-label="${AX[a]} 조건 지우기">✕</button></span>`)}
+  q.flavors.forEach(f=>c.push(`<button type="button" class="chip chip-trans" data-remove="flavor:${f}" aria-label="${FL[f]} 지우기">${FL[f]} <span class="x" aria-hidden="true">✕</span></button>`));
+  if(q.milk)c.push(`<button type="button" class="chip chip-trans" data-remove="milk" aria-label="우유와 잘 어울림 지우기">우유와 잘 어울림 <span class="x" aria-hidden="true">✕</span></button>`);
+  c.push(`<button type="button" class="chip chip-dashed" data-open-editor><i class="fa-solid fa-plus" aria-hidden="true"></i>맛 추가·수정</button>`);
+  return c.join('');
+}
+function editorHTML(d){
+  const axisRows=Object.keys(AX).map(a=>{
+    const cur=d.axes[a];const key=!cur?'none':Object.keys(PRESETS).find(k=>PRESETS[k][0]===cur[0]&&PRESETS[k][1]===cur[1])||'custom';
+    const opts=[['none','상관없음'],['low','낮게 1~2'],['mid','중간 2.5~3.5'],['high','높게 4~5']];
+    if(key==='custom')opts.push(['custom',`현재 ${fmtR(cur)}`]);
+    return `<fieldset class="axis-row" style="border:0;padding:0"><legend class="small" style="font-weight:700;margin-bottom:.3rem">${AX[a]}</legend><div class="seg">${opts.map(([k,l])=>`<input type="radio" name="ed-${a}" id="ed-${a}-${k}" value="${k}" ${k===key?'checked':''} data-axis="${a}"><label for="ed-${a}-${k}">${l}</label>`).join('')}</div></fieldset>`}).join('');
+  const fl=Object.keys(FL).map(f=>`<button type="button" class="chip" aria-pressed="${d.flavors.has(f)}" data-toggle-fl="${f}">${FL[f]}</button>`).join('');
+  return `<div class="card editor" id="editor" data-req="REQ-01 AC5 칩 수정 · 1초 내 재매칭">
+    <h2 id="editorTitle" tabindex="-1">해석 칩 고치기</h2><p class="small muted">번역이 내 말과 다르면 직접 고쳐 주세요. 고친 조건은 확신도에 반영돼요.</p>
+    ${axisRows}
+    <p class="small" style="font-weight:700;margin:.2rem 0 .4rem">향미 계열 (여러 개 선택)</p><div class="chips">${fl}</div>
+    <div style="margin-top:.8rem"><button type="button" class="chip" aria-pressed="${d.milk}" data-toggle-milk><i class="fa-solid fa-glass-water" aria-hidden="true"></i>우유와 잘 어울림</button></div>
+    <div class="row" style="margin-top:1rem"><button type="button" class="btn btn-primary" data-apply>이대로 다시 찾기</button><button type="button" class="btn btn-ghost" data-close-editor>취소</button></div></div>`;
+}
+function cardHTML(r,i){
+  const {p,band,conf}=r;const b=BAND[band];const {o,def}=sizeOptions(p,band);
+  const sel=S.sizeSel[p.id]||def;
+  return `<article class="card bean-card" aria-labelledby="bt-${p.id}">
+    <span class="rank" aria-label="${i+1}순위">${i+1}</span>
+    <div style="margin-top:.3rem" data-req="POL-R6 확신도 배지 · D8 구간 문구">
+      <span class="band band-${band}"><span aria-hidden="true">${b.icon}</span>확신도 ${b.txt}</span>
+      <p class="band-desc">${b.desc}</p>
+    </div>
+    <div><div class="roaster">${esc(p.roaster)}</div><h3 class="bean-title" id="bt-${p.id}">${esc(p.name)}</h3></div>
+    <blockquote class="quote" data-req="REQ-04 역번역 문장">❝ ${esc(backTranslate(p,S.q))} ❞</blockquote>
+    <div class="bars" aria-label="맛 좌표">${Object.keys(AX).map(a=>`<span>${AX[a]}</span><span class="bar"><i style="width:${p[a]/5*100}%"></i></span><span>${p[a]}</span>`).join('')}</div>
+    <fieldset class="sizes" data-req="POL-R8 확신도별 기본 용량"><legend>용량 선택</legend><div class="size-opts">
+      ${o.map(x=>`<input type="radio" name="size-${p.id}" id="sz-${p.id}-${x.k}" value="${x.k}" ${x.k===sel?'checked':''} data-size="${p.id}"><label for="sz-${p.id}-${x.k}"><span>${x.label}${x.k===def?'<span class="rec">추천</span>':''}</span><span>${won(x.price)}</span></label>`).join('')}
+    </div><p class="xs muted" style="margin:.35rem 0 0" data-req="POL-B6 가격 기준 시각">${PRICE_AT} 기준 · 최종 가격은 판매처에서 확인</p></fieldset>
+    <div><button type="button" class="btn btn-primary btn-block" data-outlink="${p.id}" data-rank="${i+1}" data-band="${band}" data-req="Primary · outlink_clicked">판매처에서 보기 <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i></button>
+    <p class="xs muted" style="margin:.35rem 0 0;text-align:center" data-req="POL-B3 CTA 인접 제휴 고지">제휴 링크 · 추천 순서와 무관해요</p></div>
+    <div class="meta" data-req="POL-R9 보조 정보"><span>원산지 ${esc(p.origin)}</span><span>가공 ${esc(p.process)}</span><span>로스팅 ${esc(p.roast)}</span></div>
+  </article>`;
+}
+function skeletonCards(){return `<div class="cards" aria-busy="true" aria-label="다시 매칭하는 중">${[0,1,2].map(()=>`<div class="card"><div class="skeleton" style="height:18px;width:40%"></div><div class="skeleton" style="height:22px;width:80%;margin-top:.8rem"></div><div class="skeleton" style="height:80px;margin-top:.8rem"></div><div class="skeleton" style="height:48px;margin-top:.8rem"></div></div>`).join('')}</div>`}
+function cardsAreaHTML(){
+  if(!S.results.length){
+    const none=!condCount(S.q);
+    return `<div class="card empty" data-req="빈 상태 · 매칭 0건"><div class="ill"><i class="fa-solid ${none?'fa-eraser':'fa-magnifying-glass'}" aria-hidden="true"></i></div>
+    <h2>${none?'번역된 조건이 모두 지워졌어요':'이 조합에 맞는 원두가 아직 없어요'}</h2>
+    <p class="muted small">${none?'맛 조건을 하나 이상 추가해야 원두를 찾을 수 있어요.':'제휴 로스터 17곳의 원두 312개 중 기준을 넘는 원두가 없어요. 조건 하나를 ‘상관없음’으로 풀어 보세요.'}</p>
+    <div class="row" style="justify-content:center"><button type="button" class="btn btn-primary" data-open-editor>조건 고치기</button><a class="btn btn-ghost" href="#talk">다시 말하기</a></div></div>`;
+  }
+  return `<div class="cards">${S.results.map(cardHTML).join('')}</div>`;
+}
+function renderResult(){
+  const root=$('#resultRoot');
+  if(!S.q){
+    root.innerHTML=`<div class="card empty narrow" data-req="빈 상태 · 입력 전"><div class="ill"><i class="fa-solid fa-mug-saucer" aria-hidden="true"></i></div><h2>아직 말해 준 맛이 없어요</h2><p class="muted small">원하는 맛을 한 문장으로 알려 주시면, 그 맛의 원두 3개를 찾아 드려요.</p><a class="btn btn-primary" href="#talk">맛 말하러 가기</a></div>`;
+    return;
+  }
+  const lowInput=condCount(S.q)<=1&&!S.q.confirmed;
+  root.innerHTML=`<div class="result-layout">
+    <aside class="result-aside">
+      <div class="card">
+        <div class="row" style="justify-content:space-between"><span class="eyebrow" style="margin:0">내가 한 말</span><a href="#talk" class="btn btn-ghost btn-sm" data-resay>다시 말하기</a></div>
+        <p class="said">“${esc(S.query)}”</p>
+        <h2 class="small" style="font-weight:700;margin-bottom:.4rem">이렇게 번역했어요 <span class="muted" style="font-weight:400">· 탭해서 고칠 수 있어요</span></h2>
+        <div class="chips" data-req="REQ-02 5축 맛 좌표 칩">${chipsHTML(S.q)}</div>
+        <div class="notices">
+          <p class="notice" data-req="POL-B3 · F1 제휴 고지(전문)"><i class="fa-solid fa-circle-info" aria-hidden="true"></i>제휴 링크: 구매 시 판매처로부터 수수료를 받을 수 있어요. 추천 순서에는 영향을 주지 않아요.</p>
+          <p class="notice" data-req="POL-C3 · F2 AI 고지"><i class="fa-solid fa-robot" aria-hidden="true"></i>AI가 입력을 해석했어요. 추천은 큐레이터가 검수한 원두 데이터에서만 골라요.</p>
+        </div>
+      </div>
+    </aside>
+    <div>
+      ${S.editorOpen?editorHTML(S.draft)+'<div style="height:1rem"></div>':''}
+      ${lowInput?`<div class="alert alert-warn" style="margin-bottom:1rem" role="status" data-req="LOW_CONFIDENCE · 재입력 CTA 승격"><i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i><div><b>번역 단서가 하나뿐이라 확신이 낮아요.</b><p class="small" style="margin:.2rem 0 .6rem">“진하기”나 “신맛” 같은 말을 하나 더 알려 주시면 훨씬 정확해져요. 그동안은 드립백처럼 작은 용량을 권해요.</p><div class="row"><a class="btn btn-secondary btn-sm" href="#talk">다시 말하기</a><a class="btn btn-ghost btn-sm" href="#talk">퀴즈로 찾기</a></div></div></div>`:''}
+      <div id="cardsArea">${cardsAreaHTML()}</div>
+      ${S.results.length?`<div class="bottom-actions"><a class="btn btn-secondary" href="#talk"><i class="fa-solid fa-rotate-left" aria-hidden="true"></i>다시 말하기</a><a class="btn btn-ghost" href="#talk"><i class="fa-solid fa-list-check" aria-hidden="true"></i>퀴즈로 찾기</a></div>`:''}
+      ${!S.loggedIn?`<div class="card" style="margin-top:1rem;display:flex;gap:1rem;align-items:center;flex-wrap:wrap" data-req="Tertiary · 피드백 예약 로그인"><div style="flex:1;min-width:200px"><b>7일 뒤 “어땠어요?” 한 번만 물어볼게요</b><p class="small muted" style="margin:0">로그인하면 피드백 알림과 취향 문장을 저장해요.</p></div><button type="button" class="btn btn-kakao" data-login><i class="fa-solid fa-comment" aria-hidden="true"></i>카카오로 3초 만에 시작</button></div>`:''}
+    </div></div>`;
+  if(S.editorOpen)setTimeout(()=>$('#editorTitle')?.focus(),0);
+}
+function rematch(msg){
+  const area=$('#cardsArea');if(area)area.innerHTML=skeletonCards();
+  const t0=performance.now();
+  setTimeout(()=>{S.results=match(S.q);S.sizeSel={};renderResult();logEvent('chip_edited',{ms:Math.round(performance.now()-t0),n:S.results.length});toast(msg||`다시 매칭했어요 · ${S.results.length}개`,'fa-rotate')},650);
+}
+$('#resultRoot').addEventListener('click',e=>{
+  const t=e.target.closest('button,a');if(!t)return;
+  if(t.hasAttribute('data-open-editor')){S.draft=cloneQ(S.q);S.editorOpen=true;renderResult();return}
+  if(t.hasAttribute('data-close-editor')){S.editorOpen=false;renderResult();return}
+  if(t.dataset.remove){
+    const [k,v]=t.dataset.remove.split(':');
+    if(k==='axis')S.q.axes[v]=null;else if(k==='flavor')S.q.flavors.delete(v);else S.q.milk=false;
+    S.q.confirmed=true;S.editorOpen=false;rematch('조건을 지우고 다시 매칭했어요');return;
+  }
+  if(t.dataset.toggleFl){const f=t.dataset.toggleFl;S.draft.flavors.has(f)?S.draft.flavors.delete(f):S.draft.flavors.add(f);if(!S.draft.words[f])S.draft.words[f]=FL[f];t.setAttribute('aria-pressed',S.draft.flavors.has(f));return}
+  if(t.hasAttribute('data-toggle-milk')){S.draft.milk=!S.draft.milk;t.setAttribute('aria-pressed',S.draft.milk);return}
+  if(t.hasAttribute('data-apply')){S.draft.confirmed=true;S.q=S.draft;S.editorOpen=false;renderResult();rematch();return}
+  if(t.hasAttribute('data-login')){doLogin(t);return}
+  if(t.dataset.outlink){
+    const p=P.find(x=>x.id===t.dataset.outlink);const r=S.results.find(x=>x.p.id===p.id);
+    const {o,def}=sizeOptions(p,r.band);const k=S.sizeSel[p.id]||def;const size=o.find(x=>x.k===k);
+    const click_id='clk_'+Date.now().toString(36);
+    S.pending={p,size,band:r.band,rank:+t.dataset.rank,click_id};S.handoff='confirm';
+    logEvent('outlink_clicked',{click_id,rank:+t.dataset.rank,confidence_band:r.band,size_option:k});
+    location.hash='#handoff';
+  }
+});
+$('#resultRoot').addEventListener('change',e=>{
+  const t=e.target;
+  if(t.dataset.size){S.sizeSel[t.dataset.size]=t.value;logEvent('size_selected',{pid:t.dataset.size,size:t.value})}
+  if(t.dataset.axis){const a=t.dataset.axis;if(t.value==='none')S.draft.axes[a]=null;else if(PRESETS[t.value]){S.draft.axes[a]=PRESETS[t.value].slice();S.draft.axisWords[a]=AX[a]+' '+fmtR(PRESETS[t.value])}}
+});
+
+/* ---------- Login ---------- */
+function doLogin(btn){
+  if(S.loggedIn){toast('이미 김○○님으로 로그인돼 있어요','fa-user');return}
+  busy(btn,'카카오 연결 중…');
+  setTimeout(()=>{S.loggedIn=true;unbusy(btn);updateLogin();logEvent('login_completed',{provider:'kakao'});toast('카카오로 시작했어요 · 7일 뒤 피드백을 알려 드릴게요','fa-bell');const h=location.hash.slice(1);if(RENDER[h])RENDER[h]()},900);
+}
+function updateLogin(){$('#loginBtn span').textContent=S.loggedIn?'김○○님':'로그인'}
+$('#loginBtn').addEventListener('click',e=>doLogin(e.currentTarget));
+
+/* ---------- Handoff (S2) ---------- */
+function renderHandoff(){
+  const root=$('#handoffRoot');const x=S.pending;
+  if(!x){root.innerHTML=`<div class="card empty"><div class="ill"><i class="fa-solid fa-store" aria-hidden="true"></i></div><h1 id="t-handoff">고른 원두가 아직 없어요</h1><p class="muted small">추천 카드에서 ‘판매처에서 보기’를 누르면 이곳에서 이동을 확인해요.</p><a class="btn btn-primary" href="#result">추천 보러 가기</a></div>`;return}
+  const p=x.p;
+  const summary=`<div class="summary"><div class="bean-ico"><i class="fa-solid fa-seedling" aria-hidden="true"></i></div><div><div class="roaster">${esc(p.roaster)}</div><b>${esc(p.name)}</b><div class="small muted">${x.size.label} · ${won(x.size.price)} <span class="band band-${x.band}" style="margin-left:.3rem"><span aria-hidden="true">${BAND[x.band].icon}</span>${BAND[x.band].txt}</span></div></div></div>`;
+  if(S.handoff==='confirm'||S.handoff==='loading'){
+    root.innerHTML=`<div class="card stack">
+      <span class="eyebrow">아웃링크 직전 확인</span>
+      <h1 id="t-handoff">${esc(p.roaster)} 공식몰로 이동해요</h1>
+      ${summary}
+      <dl class="kv"><dt>원산지</dt><dd>${esc(p.origin)}</dd><dt>가공 · 로스팅</dt><dd>${esc(p.process)} · ${esc(p.roast)}</dd><dt>가격 기준</dt><dd>${PRICE_AT} 기준 · 최종 가격은 판매처에서 확인</dd><dt>추천 근거</dt><dd>${S.rankText||`${x.rank}순위 · 맛 좌표 거리 기준`}</dd></dl>
+      <div class="alert alert-info" data-req="POL-B4 · F7 아웃링크 직전 중개자 고지"><i class="fa-solid fa-handshake" aria-hidden="true"></i><div>맛번역 커피는 <b>통신판매중개자</b>예요. 주문·결제·배송·환불은 ${esc(p.roaster)}에서 진행되며, 그 책임도 판매처에 있어요. 이 링크로 구매하면 저희가 수수료를 받을 수 있어요.</div></div>
+      ${x.band!=='high'&&x.size.k==='200g'?`<div class="alert alert-warn" data-req="POL-R8 저확신 대용량 경고"><i class="fa-solid fa-scale-unbalanced" aria-hidden="true"></i><div class="small">확신도가 ${BAND[x.band].txt}인데 200g을 골랐어요. 처음이라면 100g이나 드립백이 실패 부담이 적어요.</div></div>`:''}
+      <button type="button" class="btn btn-primary btn-block" id="goSeller">${S.handoff==='loading'?'<span class="spinner" aria-hidden="true"></span>판매처 페이지 여는 중…':`판매처로 이동 <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i>`}</button>
+      <a class="btn btn-ghost btn-block" href="#result">추천으로 돌아가기</a></div>`;
+    const g=$('#goSeller');if(S.handoff==='loading')g.disabled=true;
+    g.onclick=()=>{S.handoff='loading';renderHandoff();setTimeout(()=>{S.handoff='opened';logEvent('outlink_opened',{click_id:x.click_id});renderHandoff();toast('판매처 페이지를 새 창에서 열었어요 (시연)','fa-arrow-up-right-from-square')},1100)};
+    return;
+  }
+  if(S.handoff==='opened'){
+    root.innerHTML=`<div class="card stack" style="text-align:center">
+      <div class="success-ill"><i class="fa-solid fa-store" aria-hidden="true"></i></div>
+      <h1 id="t-handoff">${esc(p.roaster)} 페이지가 열렸어요</h1>
+      <p class="muted small">시연 환경이라 실제로 이동하지는 않아요. 주문을 마쳤다면 알려 주세요. 7일 뒤 3초 피드백을 요청할게요.</p>
+      <div style="text-align:left">${summary}</div>
+      <button type="button" class="btn btn-primary btn-block" id="recordBuy" data-req="REQ-07 구매 기록 · 피드백 예약">구매를 마쳤어요</button>
+      <a class="btn btn-ghost btn-block" href="#result">아직 안 샀어요 · 다른 원두 보기</a></div>`;
+    $('#recordBuy').onclick=e=>{
+      busy(e.currentTarget,'기록하는 중…');
+      setTimeout(()=>{
+        S.purchases.unshift({id:++S.seq,p,size:x.size,band:x.band,date:'10/31',status:'pending',v:null,q:cloneQ(S.q)});
+        S.handoff='recorded';logEvent('purchase_reported',{click_id:x.click_id});renderHandoff();updateBadges();toast('구매를 기록했어요 · 11/07에 피드백을 여쭤볼게요','fa-calendar-check');
+      },700);
+    };
+    return;
+  }
+  root.innerHTML=`<div class="card stack" style="text-align:center">
+    <div class="success-ill"><i class="fa-solid fa-check" aria-hidden="true"></i></div>
+    <h1 id="t-handoff">맛있게 드세요!</h1>
+    <p class="muted small">11월 7일에 “${esc(p.name)}, 어땠어요?” 한 문항만 여쭤볼게요.${S.loggedIn?' 카카오 알림으로 보내 드려요.':' 로그인하면 알림으로 받을 수 있어요.'}</p>
+    ${!S.loggedIn?`<button type="button" class="btn btn-kakao btn-block" id="hLogin"><i class="fa-solid fa-comment" aria-hidden="true"></i>카카오로 3초 만에 시작</button>`:''}
+    <a class="btn btn-secondary btn-block" href="#feedback" data-req="시연용 시간 건너뛰기"><i class="fa-solid fa-forward" aria-hidden="true"></i>7일 뒤로 건너뛰기 (시연)</a>
+    <a class="btn btn-ghost btn-block" href="#my-taste">내 취향 보기</a></div>`;
+  $('#hLogin')&&($('#hLogin').onclick=e=>doLogin(e.currentTarget));
+}
+
+/* ---------- Feedback (S3) ---------- */
+const FB=[{v:2,emo:'😖',t:'너무 셨어요'},{v:1,emo:'😗',t:'조금 셨어요'},{v:0,emo:'😋',t:'딱 좋아요'},{v:-1,emo:'😐',t:'조금 밋밋했어요'},{v:-2,emo:'😶',t:'너무 밋밋했어요'}];
+function renderFeedback(){
+  const root=$('#feedbackRoot');
+  if(S.fb.stage==='done'&&S.fb.last){
+    const l=S.fb.last;
+    root.innerHTML=`<div class="card stack" style="text-align:center" role="status">
+      <div class="success-ill"><i class="fa-solid fa-heart" aria-hidden="true"></i></div>
+      <h1 id="t-feedback">고마워요! 취향을 ${l.hit?'더 확실히':'다시'} 알았어요</h1>
+      <p class="muted small">${l.hit?'적중으로 기록했어요. 다음 추천도 이 방향으로 맞출게요.':'이번엔 빗나갔어요. 실패 원인을 기록해 같은 실수를 반복하지 않을게요.'}</p>
+      <div class="card taste-card" style="text-align:left"><span class="xs muted">업데이트된 내 취향 문장</span><p class="sentence">${tasteSentence()}</p></div>
+      ${S.purchases.some(x=>x.status==='pending')?`<button type="button" class="btn btn-primary btn-block" id="nextFb">다음 원두 피드백하기</button>`:''}
+      <a class="btn btn-secondary btn-block" href="#my-taste">내 취향 보기</a></div>`;
+    $('#nextFb')&&($('#nextFb').onclick=()=>{S.fb={sel:null,stage:'ask',last:null};renderFeedback()});
+    return;
+  }
+  const item=S.purchases.find(x=>x.status==='pending');
+  if(!item){
+    root.innerHTML=`<div class="card empty" data-req="빈 상태 · 피드백 대기 없음"><div class="ill"><i class="fa-solid fa-inbox" aria-hidden="true"></i></div><h1 id="t-feedback">지금 남길 피드백이 없어요</h1><p class="muted small">원두를 구매하고 7일이 지나면 여기에 “어땠어요?” 한 문항이 나타나요.</p><a class="btn btn-primary" href="${S.q?'#result':'#talk'}">${S.q?'추천 원두 보기':'원두 찾으러 가기'}</a></div>`;
+    return;
+  }
+  const loading=S.fb.stage==='loading';
+  root.innerHTML=`<div class="card stack" data-req="REQ-07 · D3 3초 피드백 (1문항)">
+    <span class="eyebrow">11/07 · 구매 7일 뒤</span>
+    <div class="summary"><div class="bean-ico"><i class="fa-solid fa-mug-hot" aria-hidden="true"></i></div><div><div class="roaster">${esc(item.p.roaster)}</div><b>${esc(item.p.name)}</b><div class="small muted">${item.size.label} · ${item.date} 구매</div></div></div>
+    <h1 id="t-feedback">산미는 어땠어요?</h1>
+    <p class="small muted" style="margin-top:-.4rem">한 번만 탭하면 끝나요.</p>
+    <div class="fb-opts" role="radiogroup" aria-labelledby="t-feedback">${FB.map(o=>`<button type="button" role="radio" aria-checked="${S.fb.sel===o.v}" data-fb="${o.v}" ${loading?'disabled':''}><span class="emo" aria-hidden="true">${o.emo}</span><span>${o.t}</span></button>`).join('')}</div>
+    <div id="fbErr" class="field-error" role="alert" hidden></div>
+    <button type="button" class="btn btn-primary btn-block" id="fbSubmit" ${loading?'disabled':''}>${loading?'<span class="spinner" aria-hidden="true"></span>저장하는 중…':'보내기'}</button>
+    <button type="button" class="btn btn-ghost btn-block" id="fbSkip">다음에 할게요</button></div>`;
+  root.querySelectorAll('[data-fb]').forEach(b=>b.onclick=()=>{S.fb.sel=+b.dataset.fb;root.querySelectorAll('[data-fb]').forEach(x=>x.setAttribute('aria-checked',x===b));$('#fbErr').hidden=true});
+  $('#fbSubmit').onclick=()=>{
+    if(S.fb.sel===null){const e=$('#fbErr');e.hidden=false;e.innerHTML='<i class="fa-solid fa-circle-exclamation" aria-hidden="true"></i>보기 중 하나를 골라 주세요.';return}
+    S.fb.stage='loading';renderFeedback();
+    setTimeout(()=>{
+      item.status='done';item.v=S.fb.sel;const hit=Math.abs(item.v)<=1;item.hit=hit;
+      logEvent('feedback_submitted',{pid:item.p.id,answer:item.v,hit});
+      S.fb={sel:null,stage:'done',last:{hit}};renderFeedback();updateBadges();toast('피드백을 저장했어요 · 3초면 충분했죠?');
+    },800);
+  };
+  $('#fbSkip').onclick=()=>{logEvent('feedback_skipped',{pid:item.p.id});toast('내일 한 번만 다시 여쭤볼게요','fa-clock');location.hash='#my-taste'};
+}
+
+/* ---------- My taste (S4) ---------- */
+function tasteSentence(){
+  const done=S.purchases.filter(x=>x.status==='done');
+  if(!done.length)return null;
+  const acid=done.reduce((s,x)=>s+(x.p.acidity-x.v*0.75),0)/done.length;
+  const a=Math.max(1,Math.min(5,Math.round(acid*2)/2));
+  const cnt={};done.forEach(x=>{if(Math.abs(x.v)<=1)x.p.fl.forEach(f=>cnt[f]=(cnt[f]||0)+1)});
+  const top=Object.entries(cnt).sort((x,y)=>y[1]-x[1]).slice(0,2).map(([f])=>FL[f]);
+  const milk=done.some(x=>x.q&&x.q.milk);
+  const al=a<=2?'산미는 낮게':a<=3.5?'산미는 은은하게':'산미는 또렷하게';
+  return `나는 ${al}(5점 중 ${a}) ${top.length?`<b>${top.join(', ')}</b> 계열을`:'아직 계열을 찾는 중이고,'} ${milk?'우유와 함께 즐기는 편이에요.':'블랙으로 즐기는 편이에요.'}`;
+}
+function renderMy(){
+  const done=S.purchases.filter(x=>x.status==='done');const hits=done.filter(x=>x.hit).length;
+  const sent=tasteSentence();
+  $('#myRoot').innerHTML=`<span class="eyebrow">${S.loggedIn?'김○○님의 커피 언어':'내 커피 언어'}</span><h1 id="t-my">내 취향</h1>
+  <div class="my-grid" style="margin-top:1rem">
+    <div class="card taste-card span-2" data-req="REQ-08 취향 문장 · D4 공유 카드(P2)">
+      <span class="xs muted">내 취향 문장</span>
+      ${sent?`<p class="sentence">${sent}</p>`:`<p class="sentence" style="opacity:.85">아직 취향 문장을 만들 데이터가 부족해요.</p><p class="small muted">피드백 1개부터 문장이 만들어져요. 마실수록 내 말이 정확해져요.</p>`}
+      <div class="row"><button type="button" class="btn btn-secondary btn-sm" id="shareBtn" ${sent?'':'aria-disabled="true"'}><i class="fa-solid fa-share-nodes" aria-hidden="true"></i>취향 카드 공유</button><span class="xs muted">Phase 2 미리보기</span></div>
+    </div>
+    <div class="card" data-req="Primary KPI · 취향 적중률">
+      <h2 class="small" style="font-weight:700">취향 적중률</h2>
+      <p class="stat">${done.length?Math.round(hits/done.length*100)+'%':'–'}</p>
+      <p class="small muted" style="margin:.3rem 0 0">${done.length?`피드백 ${done.length}건 중 ${hits}건 적중 (딱 좋음 ±1단계)`:'피드백이 쌓이면 보여 드려요'}</p>
+    </div>
+    <div class="card">
+      <h2 class="small" style="font-weight:700">구매한 원두</h2>
+      ${S.purchases.length?`<ul class="list">${S.purchases.map(x=>`<li><div class="bean-ico" style="width:40px;height:40px;font-size:1rem"><i class="fa-solid fa-seedling" aria-hidden="true"></i></div><div class="grow"><b class="small">${esc(x.p.name)}</b><div class="xs muted">${esc(x.p.roaster)} · ${x.size.label} · ${x.date}</div></div>${x.status==='pending'?`<a class="status status-pending" href="#feedback">피드백 대기</a>`:`<span class="status status-done">${FB.find(f=>f.v===x.v).t}</span>`}</li>`).join('')}</ul>`
+      :`<div class="empty" style="padding:1.2rem .5rem" data-req="빈 상태 · 구매 기록 없음"><div class="ill" style="width:56px;height:56px;font-size:1.2rem"><i class="fa-solid fa-bag-shopping" aria-hidden="true"></i></div><p class="small muted">아직 구매 기록이 없어요.<br>추천 원두를 판매처에서 산 뒤 ‘구매를 마쳤어요’를 눌러 주세요.</p><a class="btn btn-primary btn-sm" href="${S.q?'#result':'#talk'}">원두 찾기</a></div>`}
+    </div>
+    <div class="card">
+      <h2 class="small" style="font-weight:700">내가 했던 말</h2>
+      ${S.history.length?`<ul class="list">${S.history.slice(0,6).map(h=>`<li><div class="grow"><span style="font-family:'Gowun Batang',serif">“${esc(h.text)}”</span><div class="xs muted">${h.at} · 추천 ${h.n}개</div></div><button type="button" class="btn btn-ghost btn-sm" data-rerun="${h.id}" aria-label="${esc(h.text)} 다시 찾기"><i class="fa-solid fa-rotate-right" aria-hidden="true"></i></button></li>`).join('')}</ul>`
+      :`<p class="small muted">아직 말한 맛이 없어요. <a href="#talk">첫 문장 남기기</a></p>`}
+    </div>
+    ${!S.loggedIn?`<div class="card"><b>기록을 잃지 않으려면</b><p class="small muted">지금 기록은 이 화면을 닫으면 사라져요. 로그인하면 취향과 피드백 알림이 저장돼요.</p><button type="button" class="btn btn-kakao btn-block" id="myLogin"><i class="fa-solid fa-comment" aria-hidden="true"></i>카카오로 3초 만에 시작</button></div>`:''}
+  </div>`;
+  $('#shareBtn').onclick=e=>{if(e.currentTarget.getAttribute('aria-disabled')==='true'){toast('피드백을 1개 남기면 공유 카드가 만들어져요','fa-circle-info');return}logEvent('taste_card_shared',{});toast('공유 카드 링크를 만들었어요 (Phase 2 시연)','fa-share-nodes')};
+  $('#myLogin')&&($('#myLogin').onclick=e=>doLogin(e.currentTarget));
+  $('#myRoot').querySelectorAll('[data-rerun]').forEach(b=>b.onclick=()=>{const h=S.history.find(x=>x.id==b.dataset.rerun);qEl.value=h.text;onInput();location.hash='#talk';setTimeout(()=>runQuery(h.text,'history'),150)});
+}
+
+/* ---------- REQ toggle ---------- */
+$('#reqToggle').addEventListener('click',e=>{const on=document.body.classList.toggle('show-req');e.currentTarget.setAttribute('aria-pressed',on);toast(on?'기획 주석과 이벤트 로그를 표시해요':'기획 주석을 숨겼어요','fa-tags')});
+
+buildNav();updateLogin();route();
+</script>
+</body>
+</html>
