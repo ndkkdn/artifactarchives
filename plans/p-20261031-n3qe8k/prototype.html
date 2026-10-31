@@ -1,0 +1,1055 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FlexFlow · AI 맞춤 10분 스트레칭</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;800&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+:root{
+  --brand:#0E7C6B;--brand-d:#0A5C50;--brand-dd:#073F37;--brand-l:#E3F4F0;--brand-ll:#F1FAF7;
+  --ink:#13201F;--muted:#4F5D59;--line:#DCE5E2;--bg:#F4F7F6;--card:#FFFFFF;
+  --warn:#B23E1C;--warn-l:#FDECE5;--amber:#7A5200;--amber-l:#FFF3D1;--ok:#17703A;--ok-l:#E2F5E8;
+  --coral:#F07A55;--sky:#3B82C4;
+  --r-sm:10px;--r:16px;--r-lg:24px;
+  --sh:0 1px 2px rgba(10,60,50,.06),0 6px 20px rgba(10,60,50,.07);
+  --fs-xs:12px;--fs-sm:14px;--fs-md:16px;--fs-lg:20px;--fs-xl:24px;--fs-2xl:32px;--fs-3xl:44px;
+  --font:'Noto Sans KR',system-ui,sans-serif;--num:'Outfit','Noto Sans KR',sans-serif;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:var(--font);font-size:var(--fs-md);line-height:1.55;color:var(--ink);background:var(--bg);-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4{margin:0;line-height:1.3;letter-spacing:-.01em}
+p{margin:0}
+button,input,select{font:inherit;color:inherit}
+a{color:var(--brand-d)}
+:focus-visible{outline:3px solid #F2A33A;outline-offset:2px;border-radius:8px}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+[hidden]{display:none!important}
+
+/* header */
+.top{position:sticky;top:0;z-index:30;background:rgba(255,255,255,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.top-in{max-width:1200px;margin:0 auto;padding:0 16px;height:60px;display:flex;align-items:center;gap:16px}
+.logo{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--ink);font-family:var(--num);font-weight:800;font-size:20px;letter-spacing:-.02em;min-height:44px}
+.logo b{color:var(--brand)}
+.top-nav{display:none;margin-left:auto;gap:4px}
+.top-nav a{display:flex;align-items:center;gap:8px;min-height:44px;padding:0 14px;border-radius:12px;text-decoration:none;color:var(--muted);font-weight:500;font-size:var(--fs-sm)}
+.top-nav a:hover{background:var(--brand-ll);color:var(--brand-d)}
+.top-nav a[aria-current="page"]{background:var(--brand-l);color:var(--brand-dd);font-weight:700}
+.top-actions{margin-left:auto;display:flex;gap:6px;align-items:center}
+.icon-btn{width:44px;height:44px;border-radius:12px;border:0;background:transparent;display:grid;place-items:center;cursor:pointer;color:var(--muted);position:relative}
+.icon-btn:hover{background:var(--brand-ll)}
+.dot{position:absolute;top:10px;right:10px;width:8px;height:8px;border-radius:50%;background:var(--coral);border:2px solid #fff}
+.status-chip{font-size:var(--fs-xs);font-weight:700;padding:4px 10px;border-radius:99px;background:var(--brand-l);color:var(--brand-dd);white-space:nowrap}
+
+/* bottom nav */
+.bnav{position:fixed;bottom:0;left:0;right:0;z-index:30;background:#fff;border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(5,1fr);padding:4px 4px calc(4px + env(safe-area-inset-bottom))}
+.bnav a{min-height:56px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;text-decoration:none;color:var(--muted);font-size:11px;font-weight:500;border-radius:12px}
+.bnav a i{font-size:18px}
+.bnav a[aria-current="page"]{color:var(--brand-d);font-weight:700;background:var(--brand-ll)}
+
+main{max-width:1200px;margin:0 auto;padding:20px 16px 110px}
+section[data-screen]{animation:fade .28s ease}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+.screen-head{margin-bottom:18px}
+.eyebrow{font-size:var(--fs-xs);font-weight:700;color:var(--brand);letter-spacing:.06em;text-transform:uppercase;font-family:var(--num)}
+.h1{font-size:var(--fs-xl);font-weight:800;margin-top:4px}
+.lead{color:var(--muted);margin-top:6px;font-size:var(--fs-sm)}
+
+.card{background:var(--card);border-radius:var(--r);box-shadow:var(--sh);padding:20px;border:1px solid rgba(220,229,226,.6)}
+.card+.card{margin-top:16px}
+.card-title{font-size:var(--fs-md);font-weight:700;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.card-sub{font-size:var(--fs-sm);color:var(--muted);margin-top:4px}
+.stack>*+*{margin-top:16px}
+.grid{display:grid;gap:16px}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.between{justify-content:space-between}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:0 20px;border-radius:14px;border:1.5px solid transparent;font-weight:700;font-size:var(--fs-md);cursor:pointer;text-decoration:none;transition:background .15s,transform .1s;white-space:nowrap}
+.btn:active{transform:scale(.98)}
+.btn-primary{background:var(--brand);color:#fff}
+.btn-primary:hover{background:var(--brand-d)}
+.btn-ghost{background:#fff;border-color:var(--line);color:var(--ink)}
+.btn-ghost:hover{border-color:var(--brand);color:var(--brand-d)}
+.btn-soft{background:var(--brand-l);color:var(--brand-dd)}
+.btn-danger{background:#fff;border-color:#F1C4B6;color:var(--warn)}
+.btn-block{width:100%}
+.btn-lg{min-height:56px;font-size:17px;border-radius:16px}
+.btn[disabled],.btn[aria-busy="true"]{opacity:.65;cursor:not-allowed}
+.spin{width:18px;height:18px;border:2.5px solid currentColor;border-right-color:transparent;border-radius:50%;animation:rot .7s linear infinite}
+@keyframes rot{to{transform:rotate(360deg)}}
+
+.pill{display:inline-flex;align-items:center;gap:6px;font-size:var(--fs-xs);font-weight:700;padding:4px 10px;border-radius:99px}
+.pill.danger{background:var(--warn-l);color:var(--warn)}
+.pill.warn{background:var(--amber-l);color:var(--amber)}
+.pill.ok{background:var(--ok-l);color:var(--ok)}
+.pill.brand{background:var(--brand-l);color:var(--brand-dd)}
+.pill.gray{background:#EEF1F0;color:var(--muted)}
+.req{display:inline-flex;font-family:var(--num);font-size:10px;font-weight:700;letter-spacing:.04em;padding:2px 7px;border-radius:6px;background:#EEE8FF;color:#4B2FA8;border:1px dashed #B8A6F0;vertical-align:middle}
+body.hide-req .req{display:none}
+
+/* forms */
+.field{display:flex;flex-direction:column;gap:6px}
+.field>label,.legend{font-size:var(--fs-sm);font-weight:700}
+.input,select.input{min-height:48px;border:1.5px solid var(--line);border-radius:12px;padding:0 14px;background:#fff;width:100%}
+.input:focus{border-color:var(--brand);outline:none;box-shadow:0 0 0 3px rgba(14,124,107,.18)}
+.input[aria-invalid="true"]{border-color:var(--warn);background:#FFFAF8}
+.err{color:var(--warn);font-size:var(--fs-xs);font-weight:500;display:flex;gap:6px;align-items:center;min-height:0}
+.err:empty{display:none}
+.hint{color:var(--muted);font-size:var(--fs-xs)}
+fieldset{border:0;padding:0;margin:0}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.chip{position:relative}
+.chip input{position:absolute;opacity:0;inset:0;cursor:pointer;margin:0}
+.chip span{display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:0 16px;border-radius:99px;border:1.5px solid var(--line);background:#fff;font-size:var(--fs-sm);font-weight:500;cursor:pointer}
+.chip input:checked+span{background:var(--brand);border-color:var(--brand);color:#fff}
+.chip input:focus-visible+span{outline:3px solid #F2A33A;outline-offset:2px}
+.check{display:flex;gap:12px;align-items:flex-start;padding:14px;border-radius:12px;background:var(--brand-ll);border:1.5px solid var(--line);cursor:pointer}
+.check input{width:22px;height:22px;margin:1px 0 0;accent-color:var(--brand);flex:none}
+.check.invalid{border-color:var(--warn);background:#FFFAF8}
+.switch{display:flex;justify-content:space-between;align-items:center;gap:12px;min-height:48px;cursor:pointer}
+.switch input{appearance:none;width:48px;height:28px;border-radius:99px;background:#C8D3D0;position:relative;cursor:pointer;flex:none;transition:background .2s}
+.switch input::after{content:"";position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#fff;transition:transform .2s;box-shadow:0 1px 3px rgba(0,0,0,.2)}
+.switch input:checked{background:var(--brand)}
+.switch input:checked::after{transform:translateX(20px)}
+.steps{display:flex;gap:6px;margin-bottom:12px}
+.steps i{flex:1;height:5px;border-radius:99px;background:var(--line)}
+.steps i.on{background:var(--brand)}
+
+/* onboarding hero */
+.hero{background:linear-gradient(155deg,var(--brand-dd),var(--brand) 70%,#22A38C);color:#fff;border-radius:var(--r-lg);padding:28px 24px;position:relative;overflow:hidden}
+.hero h2{font-size:26px;font-weight:800}
+.hero p{opacity:.9;margin-top:8px;font-size:var(--fs-sm)}
+.hero ul{list-style:none;padding:0;margin:20px 0 0;display:grid;gap:12px}
+.hero li{display:flex;gap:12px;align-items:flex-start;font-size:var(--fs-sm)}
+.hero li i{width:32px;height:32px;border-radius:10px;background:rgba(255,255,255,.16);display:grid;place-items:center;flex:none}
+.hero .wave{position:absolute;right:-40px;bottom:-30px;opacity:.18;width:220px}
+
+/* camera */
+.cam{position:relative;aspect-ratio:3/4;max-height:520px;width:100%;border-radius:var(--r-lg);background:radial-gradient(circle at 50% 30%,#2C4A45,#0D1D1B);overflow:hidden;display:grid;place-items:center;color:#fff}
+.cam.dim{background:radial-gradient(circle at 50% 30%,#1B2523,#060A09)}
+.cam .guide{width:46%;height:82%;border:2.5px dashed rgba(167,240,222,.75);border-radius:50% 50% 18% 18%/22% 22% 12% 12%;position:relative}
+.cam .silh{position:absolute;inset:0;display:grid;place-items:center;font-size:150px;color:rgba(255,255,255,.14)}
+.cam.dim .silh{color:rgba(255,255,255,.05)}
+.cam .scan{position:absolute;left:0;right:0;height:3px;background:linear-gradient(90deg,transparent,#6EF0CF,transparent);top:10%;animation:scan 2s ease-in-out infinite;display:none}
+.cam.scanning .scan{display:block}
+@keyframes scan{0%,100%{top:10%}50%{top:88%}}
+.cam .badge-tl{position:absolute;top:14px;left:14px;font-size:var(--fs-xs);background:rgba(0,0,0,.45);padding:6px 10px;border-radius:99px;display:flex;gap:6px;align-items:center}
+.cam .badge-tl .rec{width:8px;height:8px;border-radius:50%;background:#FF6B57;animation:blink 1s infinite}
+@keyframes blink{50%{opacity:.2}}
+.cam-overlay{position:absolute;inset:0;background:rgba(5,25,22,.72);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px;gap:14px}
+.count{font-family:var(--num);font-size:88px;font-weight:800;line-height:1}
+.pulse-ring{width:84px;height:84px;border-radius:50%;border:4px solid rgba(110,240,207,.25);border-top-color:#6EF0CF;animation:rot 1s linear infinite}
+.tip{font-size:var(--fs-sm);opacity:.92;max-width:280px;min-height:44px}
+.alert{display:flex;gap:12px;padding:14px 16px;border-radius:14px;font-size:var(--fs-sm)}
+.alert i{margin-top:3px}
+.alert.danger{background:var(--warn-l);color:#7A2A12;border:1px solid #F4C9BA}
+.alert.warn{background:var(--amber-l);color:#5C3E00;border:1px solid #F1DC9C}
+.alert.info{background:var(--brand-ll);color:var(--brand-dd);border:1px solid #CBE8E0}
+.alert strong{display:block;margin-bottom:2px}
+
+/* report */
+.score-wrap{display:flex;align-items:center;gap:20px}
+.ring{width:120px;height:120px;flex:none;position:relative}
+.ring svg{transform:rotate(-90deg)}
+.ring .v{position:absolute;inset:0;display:grid;place-items:center;text-align:center;font-family:var(--num)}
+.ring .v b{font-size:34px;font-weight:800;display:block;line-height:1}
+.ring .v small{font-size:11px;color:var(--muted)}
+.metric{display:flex;gap:14px;align-items:center;padding:14px 0;border-top:1px solid var(--line)}
+.metric:first-child{border-top:0}
+.metric .ic{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;flex:none;font-size:18px}
+.metric .ic.danger{background:var(--warn-l);color:var(--warn)}
+.metric .ic.warn{background:var(--amber-l);color:var(--amber)}
+.metric .ic.ok{background:var(--ok-l);color:var(--ok)}
+.metric .val{margin-left:auto;text-align:right;font-family:var(--num);font-weight:700;font-size:var(--fs-lg)}
+.bar{height:8px;border-radius:99px;background:#E8EEEC;overflow:hidden;margin-top:6px}
+.bar>i{display:block;height:100%;border-radius:99px;background:var(--brand);transition:width .6s}
+.body-fig{background:var(--brand-ll);border-radius:var(--r);display:grid;place-items:center;padding:12px}
+
+/* home */
+.status-banner{border-radius:var(--r-lg);padding:20px;background:linear-gradient(135deg,#FFF4EF,#FFE6DB);border:1px solid #F7CDBD;display:flex;flex-direction:column;gap:14px}
+.status-banner.neutral{background:linear-gradient(135deg,var(--brand-ll),var(--brand-l));border-color:#CBE8E0}
+.status-banner .big{font-size:var(--fs-lg);font-weight:800}
+.trial-bar{display:flex;gap:12px;align-items:center;padding:12px 16px;border-radius:14px;background:#fff;border:1px solid var(--line);font-size:var(--fs-sm)}
+.trial-bar i{color:var(--brand)}
+.empty{text-align:center;padding:28px 16px;display:flex;flex-direction:column;align-items:center;gap:10px}
+.empty .ill{width:72px;height:72px;border-radius:22px;background:var(--brand-l);color:var(--brand);display:grid;place-items:center;font-size:28px}
+.empty h3{font-size:var(--fs-lg);font-weight:800}
+.empty p{color:var(--muted);font-size:var(--fs-sm);max-width:320px}
+.rt-list{display:flex;gap:12px;overflow-x:auto;padding:4px 2px 10px;scroll-snap-type:x mandatory}
+.rt{flex:0 0 160px;scroll-snap-align:start;border-radius:var(--r);overflow:hidden;background:#fff;border:1px solid var(--line);text-align:left;padding:0;cursor:pointer}
+.rt .thumb{height:96px;display:grid;place-items:center;font-size:38px;color:#fff;position:relative}
+.rt .thumb .t{position:absolute;bottom:8px;right:8px;background:rgba(0,0,0,.45);font-size:11px;padding:2px 8px;border-radius:99px;font-family:var(--num)}
+.rt .info{padding:10px 12px}
+.rt .info b{font-size:var(--fs-sm);display:block}
+.rt .info small{color:var(--muted);font-size:var(--fs-xs)}
+.week{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-top:12px}
+.week div{display:flex;flex-direction:column;align-items:center;gap:6px;font-size:11px;color:var(--muted)}
+.week span{width:34px;height:34px;border-radius:50%;background:#EEF2F1;display:grid;place-items:center;color:#9AA7A3;font-size:13px}
+.week span.done{background:var(--brand);color:#fff}
+.week span.today{box-shadow:0 0 0 2px var(--coral)}
+.streak-num{font-family:var(--num);font-size:var(--fs-3xl);font-weight:800;line-height:1;color:var(--brand-d)}
+.cert{display:inline-flex;gap:6px;align-items:center;font-size:var(--fs-xs);font-weight:700;color:#1F5F9E;background:#E7F1FB;padding:4px 10px;border-radius:99px}
+
+/* player */
+.player{border-radius:var(--r-lg);overflow:hidden;background:#0C1F1C;color:#fff}
+.stage{position:relative;aspect-ratio:16/10;display:grid;place-items:center;background:radial-gradient(circle at 50% 40%,#1F5F55,#0C1F1C 70%)}
+.stage .fig{font-size:110px;color:#BFF5E6;animation:breath 4s ease-in-out infinite}
+.player.paused .stage .fig{animation-play-state:paused}
+@keyframes breath{0%,100%{transform:scale(1) rotate(-2deg)}50%{transform:scale(1.07) rotate(2deg)}}
+.stage .top-l{position:absolute;top:14px;left:14px;display:flex;gap:8px;flex-wrap:wrap}
+.stage .top-l span{font-size:var(--fs-xs);background:rgba(0,0,0,.45);padding:5px 10px;border-radius:99px}
+.subtitle{position:absolute;bottom:14px;left:14px;right:14px;text-align:center;background:rgba(0,0,0,.65);padding:8px 12px;border-radius:10px;font-size:var(--fs-sm)}
+.subtitle .ca{color:#FFD27A;font-weight:700}
+.p-body{padding:18px 20px 20px}
+.p-time{font-family:var(--num);font-size:44px;font-weight:800;line-height:1}
+.p-ctrl{display:flex;justify-content:center;align-items:center;gap:16px;margin-top:16px}
+.p-ctrl button{width:52px;height:52px;border-radius:50%;border:0;background:rgba(255,255,255,.12);color:#fff;cursor:pointer;font-size:18px}
+.p-ctrl button.main{width:72px;height:72px;background:#6EF0CF;color:#073F37;font-size:26px}
+.p-ctrl button:hover{background:rgba(255,255,255,.2)}
+.p-ctrl button.main:hover{background:#8FF5DB}
+.p-prog{height:6px;background:rgba(255,255,255,.15);border-radius:99px;overflow:hidden;margin-top:14px}
+.p-prog i{display:block;height:100%;background:#6EF0CF;width:0}
+.seg{display:flex;gap:4px;margin-top:10px}
+.seg i{flex:1;height:4px;border-radius:99px;background:rgba(255,255,255,.18)}
+.seg i.done{background:#6EF0CF}
+.seg i.cur{background:#FFD27A}
+.step-list{list-style:none;margin:0;padding:0}
+.step-list li+li{margin-top:8px}
+.step-list button{width:100%;display:flex;gap:12px;align-items:center;min-height:60px;padding:10px 12px;border-radius:14px;border:1.5px solid var(--line);background:#fff;cursor:pointer;text-align:left}
+.step-list button[aria-current="step"]{border-color:var(--brand);background:var(--brand-ll)}
+.step-list .n{width:32px;height:32px;border-radius:10px;background:#EEF2F1;display:grid;place-items:center;font-family:var(--num);font-weight:700;flex:none;font-size:var(--fs-sm)}
+.step-list button.done .n{background:var(--brand);color:#fff}
+.step-list b{font-size:var(--fs-sm);display:block}
+.step-list small{color:var(--muted);font-size:var(--fs-xs)}
+.seg-ctl{display:inline-flex;background:#EEF2F1;border-radius:12px;padding:3px}
+.seg-ctl button{min-height:40px;min-width:52px;border:0;background:transparent;border-radius:10px;font-weight:700;font-size:var(--fs-sm);cursor:pointer;color:var(--muted)}
+.seg-ctl button[aria-pressed="true"]{background:#fff;color:var(--brand-dd);box-shadow:0 1px 3px rgba(0,0,0,.08)}
+
+/* complete */
+.celebrate{text-align:center;background:linear-gradient(160deg,var(--brand-dd),var(--brand));color:#fff;border-radius:var(--r-lg);padding:30px 20px;position:relative;overflow:hidden}
+.celebrate .flame{font-size:42px;color:#FFD27A}
+.celebrate .num{font-family:var(--num);font-size:64px;font-weight:800;line-height:1;margin-top:6px}
+.celebrate p{opacity:.92}
+.confetti{position:absolute;width:8px;height:14px;border-radius:2px;top:-20px;animation:fall 2.6s ease-in forwards}
+@keyframes fall{to{transform:translateY(340px) rotate(540deg);opacity:0}}
+.kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.kpi{background:#fff;border-radius:14px;padding:14px;border:1px solid var(--line);text-align:center}
+.kpi b{font-family:var(--num);font-size:var(--fs-xl);font-weight:800;display:block;color:var(--brand-d)}
+.kpi small{color:var(--muted);font-size:var(--fs-xs)}
+.badge-reward{display:flex;gap:14px;align-items:center;padding:14px;border-radius:14px;background:var(--amber-l);border:1px solid #F1DC9C}
+.badge-reward .md{width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#FFCF5C,#F29E2E);display:grid;place-items:center;color:#fff;font-size:22px;flex:none}
+
+/* my */
+.sub-card{background:linear-gradient(135deg,#0F2E2A,#14524A);color:#fff;border-radius:var(--r-lg);padding:22px}
+.sub-card .card-sub{color:rgba(255,255,255,.8)}
+.plan{display:flex;gap:12px;align-items:center;padding:14px 16px;border:1.5px solid var(--line);border-radius:14px;cursor:pointer;min-height:64px;background:#fff}
+.plan input{width:20px;height:20px;accent-color:var(--brand);margin:0}
+.plan:has(input:checked){border-color:var(--brand);background:var(--brand-ll)}
+.plan .pr{margin-left:auto;text-align:right;font-family:var(--num);font-weight:700}
+.plan .pr small{display:block;font-family:var(--font);font-weight:500;color:var(--muted);font-size:11px}
+.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-top:12px}
+.cal span{aspect-ratio:1;border-radius:8px;background:#EEF2F1;display:grid;place-items:center;font-size:11px;color:#8A9894;font-family:var(--num)}
+.cal span.done{background:var(--brand);color:#fff}
+.cal span.today{box-shadow:inset 0 0 0 2px var(--coral)}
+.hist{list-style:none;margin:0;padding:0}
+.hist li{display:flex;gap:12px;align-items:center;padding:12px 0;border-top:1px solid var(--line);animation:fade .3s}
+.hist li:first-child{border-top:0}
+.hist .ic{width:40px;height:40px;border-radius:12px;background:var(--brand-l);color:var(--brand-d);display:grid;place-items:center;flex:none}
+.push-prev{background:#F5F7F7;border-radius:14px;padding:12px 14px;display:flex;gap:12px;border:1px solid var(--line)}
+.push-prev .ap{width:36px;height:36px;border-radius:10px;background:var(--brand);display:grid;place-items:center;flex:none}
+.days{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.days .chip span{min-width:44px;justify-content:center;padding:0 10px}
+
+/* toast/modal/review */
+.toast-wrap{position:fixed;left:50%;transform:translateX(-50%);bottom:88px;z-index:60;display:flex;flex-direction:column;gap:8px;align-items:center;width:calc(100% - 32px);max-width:420px;pointer-events:none}
+.toast{background:#13201F;color:#fff;padding:12px 16px;border-radius:14px;font-size:var(--fs-sm);display:flex;gap:10px;align-items:center;box-shadow:0 8px 24px rgba(0,0,0,.2);animation:tin .25s ease;width:100%}
+.toast.ok i{color:#6EF0CF}.toast.err i{color:#FF9B80}
+@keyframes tin{from{opacity:0;transform:translateY(10px)}}
+.modal-bg{position:fixed;inset:0;background:rgba(10,25,22,.5);z-index:70;display:grid;place-items:center;padding:20px}
+.modal{background:#fff;border-radius:var(--r-lg);padding:24px;max-width:400px;width:100%;text-align:center;animation:fade .2s}
+.modal .mi{width:60px;height:60px;border-radius:18px;margin:0 auto 12px;display:grid;place-items:center;font-size:24px}
+.modal h2{font-size:var(--fs-lg);font-weight:800}
+.modal p{color:var(--muted);font-size:var(--fs-sm);margin-top:8px}
+.modal .acts{display:grid;gap:8px;margin-top:20px}
+.review-btn{position:fixed;right:16px;bottom:84px;z-index:40;min-height:44px;padding:0 14px;border-radius:99px;border:0;background:#2D1F66;color:#fff;font-weight:700;font-size:var(--fs-xs);display:flex;gap:8px;align-items:center;cursor:pointer;box-shadow:0 6px 18px rgba(45,31,102,.3)}
+.review-panel{position:fixed;right:16px;bottom:136px;z-index:45;width:min(320px,calc(100% - 32px));background:#fff;border-radius:var(--r);box-shadow:0 12px 40px rgba(0,0,0,.18);padding:16px;border:1px solid var(--line);max-height:70vh;overflow:auto}
+.review-panel h2{font-size:var(--fs-sm);font-weight:800;display:flex;gap:8px;align-items:center}
+.review-panel .switch{font-size:var(--fs-sm)}
+.jump{display:grid;gap:4px;margin-top:8px}
+.jump a{min-height:40px;display:flex;align-items:center;padding:0 10px;border-radius:10px;text-decoration:none;color:var(--ink);font-size:var(--fs-sm);background:#F5F7F7}
+.jump a:hover{background:var(--brand-l)}
+.hr{height:1px;background:var(--line);margin:12px 0}
+
+@media (min-width:768px){
+  .top-nav{display:flex}
+  .top-actions{margin-left:8px}
+  .bnav{display:none}
+  main{padding:32px 24px 60px}
+  .h1{font-size:var(--fs-2xl)}
+  .grid-2{grid-template-columns:1fr 1fr}
+  .grid-2-wide{grid-template-columns:1.25fr 1fr}
+  .grid-side{grid-template-columns:1fr 1fr}
+  .toast-wrap{bottom:28px}
+  .review-btn{bottom:24px}
+  .review-panel{bottom:76px}
+  .status-banner{flex-direction:row;align-items:center;justify-content:space-between}
+  .rt-list{display:grid;grid-template-columns:repeat(3,1fr);overflow:visible}
+  .rt{flex:auto}
+}
+@media (min-width:1200px){
+  main{padding:40px 24px 60px}
+  .grid-3{grid-template-columns:repeat(3,1fr)}
+  .grid-side{grid-template-columns:1.6fr 1fr}
+  .grid-onb{grid-template-columns:.9fr 1.4fr}
+  .rt-list{grid-template-columns:repeat(5,1fr)}
+  .span-2{grid-column:span 2}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<a href="#main" class="sr-only">본문 바로가기</a>
+
+<header class="top">
+  <div class="top-in">
+    <a class="logo" href="#home" aria-label="FlexFlow 홈">
+      <svg width="34" height="34" viewBox="0 0 34 34" aria-hidden="true"><rect width="34" height="34" rx="10" fill="#0E7C6B"/><path d="M7 22c4-10 8-10 10-5s6 5 10-5" stroke="#fff" stroke-width="3.2" fill="none" stroke-linecap="round"/><circle cx="26.5" cy="9" r="2.4" fill="#6EF0CF"/></svg>
+      <span>Flex<b>Flow</b></span>
+    </a>
+    <nav class="top-nav" aria-label="주요 메뉴">
+      <a href="#home" data-nav="home"><i class="fa-solid fa-house" aria-hidden="true"></i>홈</a>
+      <a href="#diagnosis" data-nav="diagnosis"><i class="fa-solid fa-camera" aria-hidden="true"></i>AI 진단</a>
+      <a href="#report" data-nav="report"><i class="fa-solid fa-chart-simple" aria-hidden="true"></i>리포트</a>
+      <a href="#routine" data-nav="routine"><i class="fa-solid fa-person-walking" aria-hidden="true"></i>루틴</a>
+      <a href="#my" data-nav="my"><i class="fa-solid fa-user" aria-hidden="true"></i>마이</a>
+    </nav>
+    <div class="top-actions">
+      <span class="status-chip" id="hdrStatus">Trial · D-7</span>
+      <button class="icon-btn" type="button" aria-label="알림 설정으로 이동" onclick="location.hash='#my';setTimeout(()=>document.getElementById('pushCard').scrollIntoView({behavior:'smooth'}),80)"><i class="fa-regular fa-bell" aria-hidden="true"></i><span class="dot"></span></button>
+    </div>
+  </div>
+</header>
+
+<main id="main" tabindex="-1">
+
+<!-- 1. ONBOARDING -->
+<section data-screen="onboarding" data-title="회원가입 · 설문" aria-labelledby="t-onb">
+  <div class="grid grid-onb">
+    <aside class="hero">
+      <svg class="wave" viewBox="0 0 34 34" aria-hidden="true"><path d="M3 22c5-12 10-12 13-6s8 6 15-6" stroke="#fff" stroke-width="3" fill="none" stroke-linecap="round"/></svg>
+      <span class="eyebrow" style="color:#A7F0DE">7일 무료 체험</span>
+      <h2 style="margin-top:6px">하루 10분,<br>내 몸에 맞춘 스트레칭</h2>
+      <p>AI가 자세를 분석하고, 전문의가 검수한 루틴으로 굳은 목과 허리를 풀어드려요.</p>
+      <ul>
+        <li><i class="fa-solid fa-camera" aria-hidden="true"></i><span><b>AI 자세 진단</b><br>카메라 한 번으로 거북목·골반 비대칭 분석</span></li>
+        <li><i class="fa-solid fa-stopwatch" aria-hidden="true"></i><span><b>10분 맞춤 루틴</b><br>점심시간에도 부담 없는 마이크로 웰니스</span></li>
+        <li><i class="fa-solid fa-shield-halved" aria-hidden="true"></i><span><b>영상 즉시 파기</b><br>촬영 영상은 서버에 저장되지 않아요</span></li>
+      </ul>
+    </aside>
+
+    <form class="card" id="onbForm" novalidate aria-describedby="onbDesc">
+      <div class="steps" aria-hidden="true"><i class="on"></i><i class="on"></i><i></i><i></i></div>
+      <span class="eyebrow">STEP 1 · 온보딩</span>
+      <h1 class="h1" id="t-onb">반가워요! 몇 가지만 알려주세요</h1>
+      <p class="lead" id="onbDesc">입력한 정보는 맞춤 루틴 추천에만 사용되며 비식별화되어 처리돼요.</p>
+
+      <div class="grid grid-2" style="margin-top:20px">
+        <div class="field">
+          <label for="f-name">이름</label>
+          <input class="input" id="f-name" name="name" autocomplete="name" placeholder="예: 김도현" aria-describedby="e-name">
+          <p class="err" id="e-name" role="alert"></p>
+        </div>
+        <div class="field">
+          <label for="f-email">이메일</label>
+          <input class="input" id="f-email" name="email" type="email" autocomplete="email" placeholder="name@company.com" aria-describedby="e-email">
+          <p class="err" id="e-email" role="alert"></p>
+        </div>
+        <div class="field">
+          <label for="f-pw">비밀번호</label>
+          <input class="input" id="f-pw" name="pw" type="password" autocomplete="new-password" placeholder="영문+숫자 8자 이상" aria-describedby="h-pw e-pw">
+          <p class="hint" id="h-pw">영문과 숫자를 조합해 8자 이상 입력해 주세요.</p>
+          <p class="err" id="e-pw" role="alert"></p>
+        </div>
+        <div class="field">
+          <label for="f-job">직업군</label>
+          <select class="input" id="f-job" name="job" aria-describedby="e-job">
+            <option value="">선택해 주세요</option>
+            <option>사무직 (하루 6시간 이상 앉아서 근무)</option>
+            <option>개발·디자인 (모니터 집중 업무)</option>
+            <option>서비스·판매직 (오래 서서 근무)</option>
+            <option>학생·취업준비생</option>
+            <option>기타</option>
+          </select>
+          <p class="err" id="e-job" role="alert"></p>
+        </div>
+      </div>
+
+      <fieldset style="margin-top:18px" aria-describedby="e-pain">
+        <legend class="legend">요즘 불편한 부위를 모두 골라주세요</legend>
+        <div class="chips" id="painChips">
+          <label class="chip"><input type="checkbox" name="pain" value="목"><span><i class="fa-solid fa-user" aria-hidden="true"></i>목·거북목</span></label>
+          <label class="chip"><input type="checkbox" name="pain" value="어깨"><span>어깨·승모근</span></label>
+          <label class="chip"><input type="checkbox" name="pain" value="등"><span>등·날개뼈</span></label>
+          <label class="chip"><input type="checkbox" name="pain" value="허리"><span>허리</span></label>
+          <label class="chip"><input type="checkbox" name="pain" value="골반"><span>골반·고관절</span></label>
+          <label class="chip"><input type="checkbox" name="pain" value="손목"><span>손목</span></label>
+        </div>
+        <p class="err" id="e-pain" role="alert" style="margin-top:6px"></p>
+      </fieldset>
+
+      <div style="margin-top:18px" class="stack">
+        <label class="check" id="chkWrap">
+          <input type="checkbox" id="f-agree" aria-describedby="e-agree">
+          <span style="font-size:14px"><b>[필수] 운동 안전 고지 및 면책 조항에 동의합니다.</b><br><span style="color:var(--muted)">통증·질환이 있는 경우 전문의와 상담 후 이용해 주세요. 동작 중 통증이 느껴지면 즉시 중단해야 합니다.</span></span>
+        </label>
+        <p class="err" id="e-agree" role="alert"></p>
+        <div class="alert info"><i class="fa-solid fa-circle-info" aria-hidden="true"></i><div><strong>7일 무료 체험 후 자동 구독돼요 <span class="req">REQ-03</span></strong>체험 종료 1일 전 알림을 보내드리며, 언제든 마이페이지에서 해지할 수 있어요. (월 9,900원)</div></div>
+      </div>
+
+      <button class="btn btn-primary btn-lg btn-block" style="margin-top:20px" type="submit" id="onbSubmit">무료 체험 시작하고 AI 진단 받기 <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></button>
+    </form>
+  </div>
+</section>
+
+<!-- 2. DIAGNOSIS -->
+<section data-screen="diagnosis" data-title="AI 자세 진단" aria-labelledby="t-diag" hidden>
+  <div class="screen-head">
+    <span class="eyebrow">STEP 2 · 진단 <span class="req">REQ-01</span></span>
+    <h1 class="h1" id="t-diag">AI 자세 진단</h1>
+    <p class="lead">휴대폰을 허리 높이에 세우고 2m 떨어져 옆으로 서 주세요. 촬영은 약 10초 걸려요.</p>
+  </div>
+  <div class="grid grid-2-wide">
+    <div>
+      <div class="cam" id="cam" role="img" aria-label="카메라 미리보기 영역 (프로토타입 시뮬레이션)">
+        <div class="guide"><div class="silh"><i class="fa-solid fa-person" aria-hidden="true"></i></div></div>
+        <div class="scan"></div>
+        <div class="badge-tl"><span class="rec"></span>실시간 분석 · 저장 안 함</div>
+        <div class="cam-overlay" id="camOverlay" hidden aria-live="polite"></div>
+      </div>
+    </div>
+    <div class="stack">
+      <div class="card">
+        <h2 class="card-title"><i class="fa-solid fa-list-check" style="color:var(--brand)" aria-hidden="true"></i>촬영 전 체크리스트</h2>
+        <p class="card-sub">아래 환경은 프로토타입에서 진단 실패를 시뮬레이션하기 위한 스위치예요.</p>
+        <div style="margin-top:8px">
+          <label class="switch"><span><i class="fa-regular fa-sun" aria-hidden="true"></i> 밝은 곳에서 촬영해요 (조도 충분)</span><input type="checkbox" id="envLight" checked></label>
+          <label class="switch"><span><i class="fa-solid fa-expand" aria-hidden="true"></i> 머리부터 발끝까지 화면에 들어와요</span><input type="checkbox" id="envBody" checked></label>
+        </div>
+      </div>
+      <div id="diagError" aria-live="assertive"></div>
+      <div class="alert info"><i class="fa-solid fa-shield-halved" aria-hidden="true"></i><div><strong>Privacy-by-design</strong>촬영 영상은 기기에서 실시간 분석 후 즉시 파기되며, 서버에 저장되지 않아요. 수치 결과만 암호화되어 저장돼요.</div></div>
+      <button class="btn btn-primary btn-lg btn-block" id="diagStart" type="button"><i class="fa-solid fa-camera" aria-hidden="true"></i>촬영 시작하기</button>
+      <a class="btn btn-ghost btn-block" href="#home">나중에 할게요</a>
+    </div>
+  </div>
+</section>
+
+<!-- 3. REPORT -->
+<section data-screen="report" data-title="체형 분석 리포트" aria-labelledby="t-report" hidden>
+  <div class="screen-head">
+    <span class="eyebrow">STEP 3 · 리포트 <span class="req">REQ-01</span></span>
+    <h1 class="h1" id="t-report">체형 분석 리포트</h1>
+    <p class="lead" id="reportDate"></p>
+  </div>
+  <div id="reportBody"></div>
+</section>
+
+<!-- 4. HOME -->
+<section data-screen="home" data-title="홈 · 오늘의 루틴" aria-labelledby="t-home" hidden>
+  <div class="screen-head">
+    <span class="eyebrow" id="homeDate"></span>
+    <h1 class="h1" id="t-home">안녕하세요</h1>
+  </div>
+  <div id="homeBody"></div>
+</section>
+
+<!-- 5. ROUTINE -->
+<section data-screen="routine" data-title="루틴 수행" aria-labelledby="t-routine" hidden>
+  <div class="screen-head row between">
+    <div>
+      <span class="eyebrow">맞춤형 10분 루틴 <span class="req">REQ-02</span></span>
+      <h1 class="h1" id="t-routine">거북목 리셋 10분</h1>
+    </div>
+    <span class="cert"><i class="fa-solid fa-user-doctor" aria-hidden="true"></i>재활의학과 전문의 검수</span>
+  </div>
+  <div class="grid grid-side">
+    <div>
+      <div class="player paused" id="player">
+        <div class="stage">
+          <div class="top-l"><span id="pStepLbl">1 / 5</span><span id="pFocus">목</span></div>
+          <div class="fig" aria-hidden="true"><i class="fa-solid fa-child-reaching" id="pIcon"></i></div>
+          <div class="subtitle" id="pSub" aria-live="polite"></div>
+        </div>
+        <div class="p-body">
+          <div class="row between">
+            <div>
+              <h2 id="pName" style="font-size:20px;font-weight:800">턱 당기기</h2>
+              <p id="pCue" style="opacity:.8;font-size:14px;margin-top:2px"></p>
+            </div>
+            <div class="p-time" id="pTime" aria-live="off">01:30</div>
+          </div>
+          <div class="seg" id="pSeg" aria-hidden="true"></div>
+          <div class="p-prog" role="progressbar" aria-label="전체 루틴 진행률" aria-valuemin="0" aria-valuemax="100" id="pProgWrap"><i id="pProg"></i></div>
+          <div class="row between" style="font-size:12px;opacity:.75;margin-top:6px"><span id="pElapsed">00:00</span><span>10:00</span></div>
+          <div class="p-ctrl">
+            <button type="button" id="pPrev" aria-label="이전 동작"><i class="fa-solid fa-backward-step" aria-hidden="true"></i></button>
+            <button type="button" class="main" id="pPlay" aria-label="재생"><i class="fa-solid fa-play" aria-hidden="true"></i></button>
+            <button type="button" id="pNext" aria-label="다음 동작"><i class="fa-solid fa-forward-step" aria-hidden="true"></i></button>
+          </div>
+        </div>
+      </div>
+      <div class="row between" style="margin-top:14px">
+        <div class="row" style="gap:8px"><span style="font-size:14px;font-weight:700">미리보기 속도</span>
+          <div class="seg-ctl" role="group" aria-label="재생 속도" id="speedCtl">
+            <button type="button" data-sp="1" aria-pressed="false">1x</button>
+            <button type="button" data-sp="10" aria-pressed="true">10x</button>
+            <button type="button" data-sp="40" aria-pressed="false">40x</button>
+          </div>
+        </div>
+        <button type="button" class="btn btn-ghost" id="pQuit">그만두기</button>
+      </div>
+    </div>
+    <div class="stack">
+      <div class="card">
+        <h2 class="card-title">루틴 구성 <span class="pill brand">5동작 · 10분</span></h2>
+        <p class="card-sub" id="rtReason">AI 진단 결과(거북목 위험)를 기반으로 큐레이션했어요.</p>
+        <ul class="step-list" id="stepList" style="margin-top:12px"></ul>
+      </div>
+      <div class="alert warn"><i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i><div><strong>안전 수칙</strong>저리거나 날카로운 통증이 느껴지면 즉시 멈추세요. 반동을 주지 말고 호흡을 유지하세요.</div></div>
+      <button class="btn btn-primary btn-lg btn-block" id="pFinish" type="button"><i class="fa-solid fa-flag-checkered" aria-hidden="true"></i>루틴 완료하기</button>
+    </div>
+  </div>
+</section>
+
+<!-- 6. COMPLETE -->
+<section data-screen="complete" data-title="루틴 완료 · AI 피드백" aria-labelledby="t-complete" hidden>
+  <h1 class="sr-only" id="t-complete">루틴 완료</h1>
+  <div id="completeBody"></div>
+</section>
+
+<!-- 7. MY -->
+<section data-screen="my" data-title="마이 · 구독 관리" aria-labelledby="t-my" hidden>
+  <div class="screen-head">
+    <span class="eyebrow">마이페이지</span>
+    <h1 class="h1" id="t-my">내 구독과 습관</h1>
+  </div>
+  <div class="grid grid-2 grid-3">
+    <div class="stack">
+      <div class="sub-card" id="subCard"></div>
+      <div class="card" id="planCard">
+        <h2 class="card-title">구독 플랜 <span class="req">REQ-03</span></h2>
+        <fieldset style="margin-top:12px" class="stack">
+          <legend class="sr-only">플랜 선택</legend>
+          <label class="plan"><input type="radio" name="plan" value="monthly" checked><span><b>월간 구독</b><br><small style="color:var(--muted)">매월 자동 결제</small></span><span class="pr">9,900원<small>/월</small></span></label>
+          <label class="plan"><input type="radio" name="plan" value="yearly"><span><b>연간 구독</b> <span class="pill ok">33% 할인</span><br><small style="color:var(--muted)">월 6,580원 꼴</small></span><span class="pr">79,000원<small>/년</small></span></label>
+        </fieldset>
+        <div id="payMsg" style="margin-top:12px" aria-live="assertive"></div>
+        <div class="stack" style="margin-top:12px">
+          <button class="btn btn-primary btn-block" type="button" id="payBtn"><i class="fa-solid fa-lock" aria-hidden="true"></i>지금 구독 결제하기</button>
+          <button class="btn btn-danger btn-block" type="button" id="cancelBtn">구독 해지</button>
+        </div>
+        <p class="hint" style="margin-top:10px">인앱 결제(IAP)로 처리돼요. 결제 실패 시 최대 3회 자동 재시도 후 구독이 일시 정지됩니다.</p>
+      </div>
+    </div>
+
+    <div class="stack">
+      <form class="card" id="pushCard" novalidate>
+        <h2 class="card-title"><i class="fa-regular fa-bell" style="color:var(--brand)" aria-hidden="true"></i>루틴 알림 <span class="req">REQ-04</span></h2>
+        <label class="switch" style="margin-top:6px"><span style="font-size:14px">매일 스트레칭 알림 받기</span><input type="checkbox" id="pushOn" checked></label>
+        <div class="field" style="margin-top:8px">
+          <label for="pushTime">알림 시간</label>
+          <input class="input" type="time" id="pushTime" value="12:30" aria-describedby="e-ptime">
+          <p class="err" id="e-ptime" role="alert"></p>
+        </div>
+        <fieldset style="margin-top:12px">
+          <legend class="legend">반복 요일</legend>
+          <div class="days" id="pushDays"></div>
+          <p class="err" id="e-pdays" role="alert" style="margin-top:6px"></p>
+        </fieldset>
+        <fieldset style="margin-top:12px">
+          <legend class="legend">알림 문구 스타일 <span class="pill gray">A/B 실험</span></legend>
+          <div class="chips">
+            <label class="chip"><input type="radio" name="pstyle" value="emotion" checked><span>A · 감성형</span></label>
+            <label class="chip"><input type="radio" name="pstyle" value="info"><span>B · 정보형</span></label>
+          </div>
+        </fieldset>
+        <div class="push-prev" style="margin-top:12px" aria-label="알림 미리보기">
+          <span class="ap"><svg width="20" height="20" viewBox="0 0 34 34" aria-hidden="true"><path d="M5 22c4-10 8-10 10-5s6 5 12-6" stroke="#fff" stroke-width="3.6" fill="none" stroke-linecap="round"/></svg></span>
+          <div><b style="font-size:13px">FlexFlow · <span id="prevTime">12:30</span></b><p id="prevText" style="font-size:13px;color:var(--muted)"></p></div>
+        </div>
+        <button class="btn btn-soft btn-block" type="submit" style="margin-top:14px" id="pushSave">알림 설정 저장</button>
+      </form>
+    </div>
+
+    <div class="stack span-2-md">
+      <div class="card">
+        <div class="row between"><h2 class="card-title"><i class="fa-solid fa-fire" style="color:var(--coral)" aria-hidden="true"></i>스트릭 <span class="req">REQ-05</span></h2><span class="pill brand" id="myStreak">0일 연속</span></div>
+        <p class="card-sub">최근 4주 루틴 완료 기록 · 최고 기록 <b id="myBest">0</b>일</p>
+        <div class="cal" id="cal" role="img" aria-label="최근 28일 완료 달력"></div>
+      </div>
+      <div class="card">
+        <h2 class="card-title">완료한 루틴</h2>
+        <div id="histBox" style="margin-top:6px"></div>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+
+<nav class="bnav" aria-label="하단 메뉴">
+  <a href="#home" data-nav="home"><i class="fa-solid fa-house" aria-hidden="true"></i>홈</a>
+  <a href="#diagnosis" data-nav="diagnosis"><i class="fa-solid fa-camera" aria-hidden="true"></i>진단</a>
+  <a href="#report" data-nav="report"><i class="fa-solid fa-chart-simple" aria-hidden="true"></i>리포트</a>
+  <a href="#routine" data-nav="routine"><i class="fa-solid fa-person-walking" aria-hidden="true"></i>루틴</a>
+  <a href="#my" data-nav="my"><i class="fa-solid fa-user" aria-hidden="true"></i>마이</a>
+</nav>
+
+<button class="review-btn" type="button" id="reviewBtn" aria-expanded="false" aria-controls="reviewPanel"><i class="fa-solid fa-flask" aria-hidden="true"></i>검토 도구</button>
+<div class="review-panel" id="reviewPanel" hidden role="region" aria-label="프로토타입 검토 도구">
+  <h2><i class="fa-solid fa-flask" aria-hidden="true"></i>프로토타입 검토 도구</h2>
+  <p class="hint" style="margin-top:4px">예외 상태를 시뮬레이션하고 화면 간 이동할 수 있어요.</p>
+  <div class="hr"></div>
+  <label class="switch"><span>네트워크 오류 (API 5초 초과)</span><input type="checkbox" id="simNet"></label>
+  <label class="switch"><span>결제 실패</span><input type="checkbox" id="simPay"></label>
+  <label class="switch"><span>REQ 라벨 표시</span><input type="checkbox" id="simReq" checked></label>
+  <div class="hr"></div>
+  <b style="font-size:13px">화면 바로가기</b>
+  <div class="jump" id="jump"></div>
+</div>
+
+<div class="toast-wrap" id="toasts" aria-live="polite" role="status"></div>
+<div id="modalRoot"></div>
+
+<script>
+(function(){
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const pad=n=>String(n).padStart(2,'0');
+const fmt=s=>{s=Math.max(0,Math.ceil(s));return pad(Math.floor(s/60))+':'+pad(s%60)};
+const TODAY=new Date();
+const dKey=d=>d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());
+const KDAY=['일','월','화','수','목','금','토'];
+const md=d=>(d.getMonth()+1)+'월 '+d.getDate()+'일';
+const addDays=(d,n)=>{const x=new Date(d);x.setDate(x.getDate()+n);return x};
+const TRIAL_END=addDays(TODAY,7);
+
+const S={
+  user:{name:'',pains:[],job:''},onboarded:false,diag:null,
+  completedToday:false,streak:0,best:0,history:[],
+  sub:{status:'Trial',plan:'monthly',retries:0,paused:false},
+  push:{on:true,time:'12:30',days:['월','화','수','목','금'],style:'emotion'},
+  sim:{net:false,pay:false},
+  p:{idx:0,remain:90,playing:false,speed:10,timer:null}
+};
+
+const STEPS=[
+ {name:'턱 당기기 (Chin Tuck)',dur:90,focus:'목',icon:'fa-user',cue:'턱을 수평으로 뒤로 밀어 5초 유지, 10회 반복',caution:'고개를 숙이지 말고 시선은 정면을 유지하세요',grad:'#3B9C8A,#1E6B5E'},
+ {name:'흉쇄유돌근 이완',dur:120,focus:'목·어깨',icon:'fa-child',cue:'고개를 대각선 위로 돌리고 쇄골을 지그시 누르기',caution:'목에 저림이 느껴지면 즉시 중단하세요',grad:'#4F8FC4,#2C5E8E'},
+ {name:'문틀 가슴 열기',dur:120,focus:'가슴·어깨',icon:'fa-child-reaching',cue:'팔꿈치 90°로 문틀을 짚고 한 발 앞으로',caution:'어깨 앞쪽 통증 시 팔 높이를 낮추세요',grad:'#E0835F,#B4552F'},
+ {name:'고양이-소 자세',dur:120,focus:'등·허리',icon:'fa-person-praying',cue:'호흡에 맞춰 등을 둥글게, 다시 길게',caution:'허리를 과하게 꺾지 마세요',grad:'#8B6FCB,#5B3FA0'},
+ {name:'90/90 골반 스트레칭',dur:150,focus:'골반',icon:'fa-person-walking',cue:'양 무릎 90°로 앉아 상체를 앞으로 기울이기',caution:'무릎 안쪽 통증 시 범위를 줄이세요',grad:'#3AA36B,#1F7247'}
+];
+const TOTAL=STEPS.reduce((a,s)=>a+s.dur,0);
+const TIPS=['🧘 1시간마다 1분 스트레칭은 목 통증을 줄여줘요','💡 모니터 상단은 눈높이와 맞추는 게 좋아요','🔒 영상은 분석 즉시 파기되고 있어요','📐 귀-어깨-골반을 잇는 선을 측정 중이에요'];
+
+/* ---------- utilities ---------- */
+function toast(msg,type='ok'){
+  const t=document.createElement('div');t.className='toast '+type;
+  t.innerHTML=`<i class="fa-solid ${type==='ok'?'fa-circle-check':type==='err'?'fa-circle-exclamation':'fa-circle-info'}" aria-hidden="true"></i><span>${msg}</span>`;
+  $('#toasts').appendChild(t);setTimeout(()=>t.remove(),3200);
+}
+let lastFocus=null;
+function modal({icon='fa-circle-info',tone='info',title,body,actions}){
+  lastFocus=document.activeElement;
+  const colors={info:['var(--brand-l)','var(--brand-d)'],danger:['var(--warn-l)','var(--warn)'],warn:['var(--amber-l)','var(--amber)']}[tone];
+  $('#modalRoot').innerHTML=`<div class="modal-bg"><div class="modal" role="dialog" aria-modal="true" aria-labelledby="mTitle" aria-describedby="mBody">
+    <div class="mi" style="background:${colors[0]};color:${colors[1]}"><i class="fa-solid ${icon}" aria-hidden="true"></i></div>
+    <h2 id="mTitle">${title}</h2><p id="mBody">${body}</p>
+    <div class="acts">${actions.map((a,i)=>`<button type="button" class="btn ${a.primary?'btn-primary':a.danger?'btn-danger':'btn-ghost'} btn-block" data-i="${i}">${a.label}</button>`).join('')}</div></div></div>`;
+  const root=$('#modalRoot');
+  root.querySelectorAll('[data-i]').forEach(b=>b.onclick=()=>{closeModal();actions[+b.dataset.i].fn&&actions[+b.dataset.i].fn()});
+  root.querySelector('.modal-bg').addEventListener('keydown',e=>{
+    if(e.key==='Escape'){closeModal()}
+    if(e.key==='Tab'){const f=[...root.querySelectorAll('button')];const i=f.indexOf(document.activeElement);if(e.shiftKey&&i<=0){e.preventDefault();f[f.length-1].focus()}else if(!e.shiftKey&&i===f.length-1){e.preventDefault();f[0].focus()}}
+  });
+  root.querySelector('button').focus();
+}
+function closeModal(){$('#modalRoot').innerHTML='';lastFocus&&lastFocus.focus&&lastFocus.focus()}
+function setBusy(btn,busy,label){
+  if(!btn)return;
+  if(busy){btn.dataset.html=btn.innerHTML;btn.setAttribute('aria-busy','true');btn.disabled=true;btn.innerHTML=`<span class="spin" aria-hidden="true"></span>${label||'처리 중…'}`}
+  else{btn.removeAttribute('aria-busy');btn.disabled=false;if(btn.dataset.html)btn.innerHTML=btn.dataset.html}
+}
+/* simulated API with timeout policy */
+function api(btn,label,delay,ok){
+  setBusy(btn,true,label);
+  setTimeout(()=>{
+    setBusy(btn,false);
+    if(S.sim.net){
+      modal({icon:'fa-wifi',tone:'danger',title:'네트워크 오류',body:'서버 응답이 5초를 초과했어요. 연결 상태를 확인한 뒤 다시 시도해 주세요.',
+        actions:[{label:'<i class="fa-solid fa-rotate-right" aria-hidden="true"></i> 다시 시도',primary:true,fn:()=>api(btn,label,delay,ok)},
+                 {label:'저장된 루틴으로 오프라인 이용',fn:()=>{toast('오프라인 모드: 저장된 루틴을 불러왔어요','info');location.hash='#routine'}},
+                 {label:'닫기'}]});
+    } else ok();
+  },delay);
+}
+
+/* ---------- routing ---------- */
+const screens=$$('section[data-screen]');
+const renders={home:renderHome,report:renderReport,complete:renderComplete,my:renderMy,routine:renderRoutine};
+function route(){
+  const id=location.hash.slice(1);
+  const target=screens.find(s=>s.dataset.screen===id)||screens[0];
+  if(target.dataset.screen!=='routine')pause();
+  screens.forEach(s=>s.hidden=s!==target);
+  const key=target.dataset.screen;
+  $$('[data-nav]').forEach(a=>a.dataset.nav===key?a.setAttribute('aria-current','page'):a.removeAttribute('aria-current'));
+  document.title=target.dataset.title+' · FlexFlow';
+  renders[key]&&renders[key]();
+  window.scrollTo(0,0);
+  $('#main').focus({preventScroll:true});
+}
+window.addEventListener('hashchange',route);
+$('#jump').innerHTML=screens.map((s,i)=>`<a href="#${s.dataset.screen}">${i+1}. ${s.dataset.title}</a>`).join('');
+
+/* ---------- header status ---------- */
+function updateHdr(){
+  const m={Trial:'Trial · D-7',Active:'Active · 구독 중',Churn:'Churn · 해지됨',Pending:S.sub.paused?'Pending · 일시정지':'Pending · 결제 대기'};
+  const el=$('#hdrStatus');el.textContent=m[S.sub.status];
+  el.style.background=S.sub.status==='Pending'||S.sub.status==='Churn'?'var(--warn-l)':'var(--brand-l)';
+  el.style.color=S.sub.status==='Pending'||S.sub.status==='Churn'?'var(--warn)':'var(--brand-dd)';
+}
+
+/* ---------- 1. onboarding ---------- */
+function setErr(id,inputEl,msg){
+  $('#'+id).innerHTML=msg?`<i class="fa-solid fa-circle-exclamation" aria-hidden="true"></i>${msg}`:'';
+  if(inputEl)inputEl.setAttribute('aria-invalid',msg?'true':'false');
+  return !msg;
+}
+function vName(){const v=$('#f-name').value.trim();return setErr('e-name',$('#f-name'),!v?'이름을 입력해 주세요.':v.length<2?'이름은 2자 이상 입력해 주세요.':'')}
+function vEmail(){const v=$('#f-email').value.trim();return setErr('e-email',$('#f-email'),!v?'이메일을 입력해 주세요.':!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v)?'올바른 이메일 형식이 아니에요. (예: name@company.com)':'')}
+function vPw(){const v=$('#f-pw').value;return setErr('e-pw',$('#f-pw'),!v?'비밀번호를 입력해 주세요.':(v.length<8||!/[A-Za-z]/.test(v)||!/\d/.test(v))?'영문과 숫자를 포함해 8자 이상이어야 해요.':'')}
+function vJob(){return setErr('e-job',$('#f-job'),$('#f-job').value?'':'직업군을 선택해 주세요.')}
+function vPain(){return setErr('e-pain',null,$$('input[name=pain]:checked').length?'':'불편한 부위를 1개 이상 선택해 주세요.')}
+function vAgree(){const ok=$('#f-agree').checked;$('#chkWrap').classList.toggle('invalid',!ok);return setErr('e-agree',$('#f-agree'),ok?'':'안전 고지 및 면책 조항에 동의해야 서비스를 이용할 수 있어요.')}
+$('#f-name').addEventListener('blur',vName);$('#f-email').addEventListener('blur',vEmail);$('#f-pw').addEventListener('blur',vPw);
+$('#f-job').addEventListener('change',vJob);$$('input[name=pain]').forEach(i=>i.addEventListener('change',vPain));$('#f-agree').addEventListener('change',vAgree);
+$('#onbForm').addEventListener('submit',e=>{
+  e.preventDefault();
+  const r=[vName(),vEmail(),vPw(),vJob(),vPain(),vAgree()];
+  if(r.includes(false)){const f=$('#onbForm [aria-invalid=true]')||$('#painChips input');f&&f.focus();toast('입력 내용을 확인해 주세요','err');return}
+  api($('#onbSubmit'),'계정을 만드는 중…',1100,()=>{
+    S.user={name:$('#f-name').value.trim(),pains:$$('input[name=pain]:checked').map(i=>i.value),job:$('#f-job').value};
+    S.onboarded=true;S.sub.status='Trial';updateHdr();
+    toast(`${S.user.name}님, 7일 무료 체험이 시작됐어요!`);
+    location.hash='#diagnosis';
+  });
+});
+
+/* ---------- 2. diagnosis ---------- */
+let diagBusy=false;
+function syncCam(){$('#cam').classList.toggle('dim',!$('#envLight').checked)}
+$('#envLight').addEventListener('change',syncCam);
+$('#diagStart').addEventListener('click',()=>{
+  if(diagBusy)return;diagBusy=true;
+  $('#diagError').innerHTML='';
+  const ov=$('#camOverlay'),btn=$('#diagStart');setBusy(btn,true,'촬영 중…');
+  ov.hidden=false;let n=3;
+  ov.innerHTML=`<div class="count">${n}</div><p class="tip">옆으로 서서 정면을 바라봐 주세요</p>`;
+  const cd=setInterval(()=>{
+    n--;
+    if(n>0){ov.querySelector('.count').textContent=n;return}
+    clearInterval(cd);
+    $('#cam').classList.add('scanning');
+    ov.innerHTML=`<p class="tip">전신 인식 중…</p>`;
+    setTimeout(()=>{
+      const light=$('#envLight').checked,body=$('#envBody').checked;
+      if(!light||!body){
+        $('#cam').classList.remove('scanning');ov.hidden=true;setBusy(btn,false);diagBusy=false;
+        btn.innerHTML='<i class="fa-solid fa-rotate-right" aria-hidden="true"></i>다시 촬영하기';
+        $('#diagError').innerHTML=`<div class="alert danger" role="alert"><i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i><div><strong>${!light?'조명이 너무 어두워요':'전신이 인식되지 않았어요'}</strong>${!light?'창가나 천장 조명 아래에서 다시 촬영해 주세요. 역광은 피하는 게 좋아요.':'휴대폰과 2m 이상 떨어져 머리부터 발끝까지 가이드 선 안에 들어오도록 서 주세요.'}</div></div>`;
+        $('#diagError .alert').scrollIntoView({behavior:'smooth',block:'center'});
+        return;
+      }
+      let ti=0;
+      ov.innerHTML=`<div class="pulse-ring" aria-hidden="true"></div><b style="font-size:18px">분석 중입니다</b><p class="tip" id="tipTxt">${TIPS[0]}</p>`;
+      const tt=setInterval(()=>{ti=(ti+1)%TIPS.length;const el=$('#tipTxt');if(el)el.textContent=TIPS[ti]},900);
+      setTimeout(()=>{
+        clearInterval(tt);$('#cam').classList.remove('scanning');ov.hidden=true;
+        setBusy(btn,false);diagBusy=false;
+        const finish=()=>{
+          const pel=S.user.pains.includes('골반')||S.user.pains.includes('허리');
+          S.diag={date:new Date(),score:pel?61:64,neck:18.4,pelvis:pel?4.1:3.2,shoulder:1.1};
+          toast('AI 분석이 완료됐어요. 영상은 즉시 파기되었어요.');
+          location.hash='#report';
+        };
+        if(S.sim.net){api(null,'',10,finish)}else finish();
+      },3200);
+    },900);
+  },700);
+});
+
+/* ---------- 3. report ---------- */
+function lvl(v,w,d){return v>=d?['danger','위험']:v>=w?['warn','주의']:['ok','정상']}
+function renderReport(){
+  const d=S.diag,box=$('#reportBody');
+  if(!d){
+    $('#reportDate').textContent='';
+    box.innerHTML=`<div class="card empty"><div class="ill"><i class="fa-solid fa-person-rays" aria-hidden="true"></i></div><h3>아직 진단 기록이 없어요</h3><p>10초 촬영으로 거북목과 골반 비대칭을 확인하고 내 몸에 맞는 루틴을 받아보세요.</p><a class="btn btn-primary" href="#diagnosis"><i class="fa-solid fa-camera" aria-hidden="true"></i>AI 진단 시작하기</a></div>`;
+    return;
+  }
+  $('#reportDate').textContent=`${md(d.date)} ${pad(d.date.getHours())}:${pad(d.date.getMinutes())} 측정 · 측면 촬영 기준`;
+  const n=lvl(d.neck,10,15),p=lvl(d.pelvis,2,5),s=lvl(d.shoulder,2,4);
+  const C=2*Math.PI*52,off=C*(1-d.score/100);
+  box.innerHTML=`<div class="grid grid-2 grid-3">
+   <div class="card">
+     <h2 class="card-title">종합 자세 점수</h2>
+     <div class="score-wrap" style="margin-top:14px">
+       <div class="ring"><svg width="120" height="120" viewBox="0 0 120 120" aria-hidden="true"><circle cx="60" cy="60" r="52" stroke="#E8EEEC" stroke-width="12" fill="none"/><circle cx="60" cy="60" r="52" stroke="#F07A55" stroke-width="12" fill="none" stroke-linecap="round" stroke-dasharray="${C}" stroke-dashoffset="${off}"/></svg><div class="v"><span><b>${d.score}</b><small>/ 100</small></span></div></div>
+       <div><span class="pill warn">개선 필요</span><p style="font-size:14px;margin-top:8px">같은 연령대 사무직 평균(72점)보다 <b>${72-d.score}점 낮아요.</b> 목 정렬 개선이 가장 시급해요.</p></div>
+     </div>
+   </div>
+   <div class="card">
+     <h2 class="card-title">부위별 분석</h2>
+     <div style="margin-top:6px">
+       ${[['fa-user','거북목 (목 전방 경사각)',d.neck+'°','정상 범위 0~10°',n,Math.min(100,d.neck/25*100)],
+          ['fa-scale-unbalanced','골반 좌우 비대칭',d.pelvis+'°','정상 범위 0~2°',p,Math.min(100,d.pelvis/6*100)],
+          ['fa-arrows-left-right','어깨 높이 차이',d.shoulder+'°','정상 범위 0~2°',s,Math.min(100,d.shoulder/6*100)]]
+         .map(m=>`<div class="metric"><span class="ic ${m[4][0]}"><i class="fa-solid ${m[0]}" aria-hidden="true"></i></span><div style="flex:1;min-width:0"><b style="font-size:14px">${m[1]}</b> <span class="pill ${m[4][0]}">${m[4][1]}</span><div class="bar"><i style="width:${m[5]}%;background:${m[4][0]==='danger'?'var(--coral)':m[4][0]==='warn'?'#E8B33A':'var(--ok)'}"></i></div><small class="hint">${m[3]}</small></div><span class="val">${m[2]}</span></div>`).join('')}
+     </div>
+   </div>
+   <div class="card">
+     <h2 class="card-title">측면 정렬 시각화</h2>
+     <div class="body-fig" style="margin-top:12px">
+       <svg width="200" height="220" viewBox="0 0 200 220" role="img" aria-label="귀와 어깨의 정렬선이 18도 앞으로 기울어진 측면 자세 그림">
+         <line x1="100" y1="10" x2="100" y2="210" stroke="#9ACFC2" stroke-dasharray="5 5" stroke-width="2"/>
+         <circle cx="128" cy="40" r="20" fill="#fff" stroke="#0E7C6B" stroke-width="3"/>
+         <path d="M120 60 Q108 80 100 95 L98 150 L100 205" stroke="#0E7C6B" stroke-width="6" fill="none" stroke-linecap="round"/>
+         <line x1="100" y1="95" x2="128" y2="40" stroke="#F07A55" stroke-width="3"/>
+         <circle cx="128" cy="40" r="5" fill="#F07A55"/><circle cx="100" cy="95" r="6" fill="#F07A55"/><circle cx="98" cy="150" r="6" fill="#E8B33A"/>
+         <text x="140" y="90" font-size="14" font-weight="700" fill="#B23E1C" font-family="Outfit">${d.neck}°</text>
+         <text x="110" y="155" font-size="12" font-weight="700" fill="#7A5200" font-family="Outfit">골반 ${d.pelvis}°</text>
+       </svg>
+     </div>
+   </div>
+   <div class="card span-2" style="grid-column:1/-1">
+     <div class="row between">
+       <div><h2 class="card-title"><i class="fa-solid fa-wand-magic-sparkles" style="color:var(--brand)" aria-hidden="true"></i>AI 처방 요약 <span class="req">REQ-02</span></h2>
+       <p class="card-sub">하루 10분, 4주간 꾸준히 하면 목 전방 경사각을 <b>약 6° 줄일 수 있어요.</b> (유사 체형 사용자 1,240명 기준)</p></div>
+       <div class="row"><a class="btn btn-ghost" href="#diagnosis"><i class="fa-solid fa-rotate-right" aria-hidden="true"></i>재진단</a><a class="btn btn-primary" href="#home">맞춤 루틴 받기 <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></div>
+     </div>
+   </div></div>`;
+}
+
+/* ---------- 4. home ---------- */
+function weekHTML(){
+  const start=addDays(TODAY,-((TODAY.getDay()+6)%7));
+  const done=new Set(S.history.map(h=>h.key));
+  return `<div class="week">${[0,1,2,3,4,5,6].map(i=>{const d=addDays(start,i);const k=dKey(d);return `<div><span class="${done.has(k)?'done':''} ${k===dKey(TODAY)?'today':''}">${done.has(k)?'<i class="fa-solid fa-check" aria-hidden="true"></i>':d.getDate()}</span>${KDAY[d.getDay()]}</div>`}).join('')}</div>`;
+}
+function renderHome(){
+  $('#homeDate').textContent=`${md(TODAY)} ${KDAY[TODAY.getDay()]}요일`;
+  $('#t-home').textContent=`${S.user.name||'회원'}님, 오늘도 가볍게 풀어볼까요?`;
+  const d=S.diag;
+  const status=d?`<div class="status-banner"><div><span class="pill danger"><i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i>오늘의 상태 <span class="req">REQ-01</span></span><p class="big" style="margin-top:8px">거북목 주의 · 목 전방 경사 ${d.neck}°</p><p class="hint" style="color:#7A2A12">골반 비대칭 ${d.pelvis}° (주의) · 자세 점수 ${d.score}점</p></div><a class="btn btn-ghost" href="#report"><i class="fa-solid fa-chart-simple" aria-hidden="true"></i>AI 분석 리포트 보기</a></div>`
+    :`<div class="status-banner neutral"><div><span class="pill brand">진단 전</span><p class="big" style="margin-top:8px">내 체형을 먼저 확인해 볼까요?</p><p class="hint">진단 전에는 사무직 표준 루틴이 추천돼요.</p></div><a class="btn btn-primary" href="#diagnosis"><i class="fa-solid fa-camera" aria-hidden="true"></i>AI 진단하기</a></div>`;
+  const sub=S.sub.status==='Trial'?`<div class="trial-bar"><i class="fa-solid fa-gift" aria-hidden="true"></i><span>무료 체험 <b>D-7</b> · ${md(TRIAL_END)} 월 9,900원 자동 결제 예정</span><a href="#my" style="margin-left:auto;font-weight:700;font-size:13px;white-space:nowrap">관리</a></div>`
+    :S.sub.status==='Pending'?`<div class="trial-bar" style="border-color:#F4C9BA;background:var(--warn-l)"><i class="fa-solid fa-credit-card" style="color:var(--warn)" aria-hidden="true"></i><span>${S.sub.paused?'결제 실패로 구독이 일시 정지됐어요.':'결제가 대기 중이에요.'}</span><a href="#my" style="margin-left:auto;font-weight:700;font-size:13px;color:var(--warn)">결제수단 변경</a></div>`
+    :S.sub.status==='Churn'?`<div class="trial-bar"><i class="fa-solid fa-circle-pause" aria-hidden="true"></i><span>구독이 해지됐어요. 기본 루틴 1개만 이용할 수 있어요.</span><a href="#my" style="margin-left:auto;font-weight:700;font-size:13px">다시 구독</a></div>`:'';
+  const today=S.completedToday
+    ?`<div class="card"><div class="row between"><div><span class="pill ok"><i class="fa-solid fa-check" aria-hidden="true"></i>오늘 완료</span><h2 style="font-size:20px;font-weight:800;margin-top:8px">오늘의 루틴을 마쳤어요 🎉</h2><p class="card-sub">내일 ${S.push.time}에 다시 알려드릴게요.</p></div><a class="btn btn-soft" href="#complete">AI 피드백 보기</a></div></div>`
+    :`<div class="card empty"><div class="ill"><i class="fa-solid fa-play" aria-hidden="true"></i></div><h3>오늘의 루틴을 시작해보세요</h3><p>아직 오늘 완료한 루틴이 없어요. 10분이면 굳은 목과 어깨가 한결 가벼워져요.</p><a class="btn btn-primary btn-lg" href="#routine"><i class="fa-solid fa-play" aria-hidden="true"></i>지금 바로 스트레칭 시작하기</a></div>`;
+  $('#homeBody').innerHTML=`<div class="stack">${status}${sub}</div>
+   <div class="grid grid-side" style="margin-top:16px">
+     <div class="stack">${today}
+       <div class="card"><div class="row between"><h2 class="card-title">${d?'거북목 리셋 10분':'오피스 기본 10분'} <span class="req">REQ-02</span></h2><span class="cert"><i class="fa-solid fa-user-doctor" aria-hidden="true"></i>전문의 검수</span></div>
+         <p class="card-sub">${d?'진단 결과에 맞춰 목·어깨 중심으로 구성했어요.':'앉아서 일하는 분들을 위한 표준 루틴이에요.'}</p>
+         <div class="rt-list" style="margin-top:12px">${STEPS.map((s,i)=>`<button type="button" class="rt" data-go="${i}"><div class="thumb" style="background:linear-gradient(135deg,${s.grad})"><i class="fa-solid ${s.icon}" aria-hidden="true"></i><span class="t">${fmt(s.dur)}</span></div><div class="info"><b>${s.name}</b><small>${s.focus}</small></div></button>`).join('')}</div>
+       </div>
+     </div>
+     <div class="stack">
+       <div class="card"><div class="row between"><h2 class="card-title"><i class="fa-solid fa-fire" style="color:var(--coral)" aria-hidden="true"></i>연속 달성 <span class="req">REQ-05</span></h2><a href="#my" style="font-size:13px;font-weight:700">기록 보기</a></div>
+         <div class="row" style="margin-top:10px;align-items:flex-end"><span class="streak-num">${S.streak}</span><span style="font-weight:700">일째</span><span class="hint" style="margin-left:auto">7일 달성 시 '꾸준함' 배지</span></div>
+         ${weekHTML()}
+       </div>
+       <div class="card"><h2 class="card-title"><i class="fa-regular fa-bell" style="color:var(--brand)" aria-hidden="true"></i>다음 알림 <span class="req">REQ-04</span></h2>
+         <p class="card-sub">${S.push.on?`${S.push.days.join('·')} ${S.push.time}에 알려드려요.`:'알림이 꺼져 있어요.'}</p>
+         <a class="btn btn-ghost btn-block" style="margin-top:12px" href="#my">알림 시간 변경</a></div>
+     </div>
+   </div>`;
+  $$('#homeBody [data-go]').forEach(b=>b.onclick=()=>{goStep(+b.dataset.go);location.hash='#routine'});
+}
+
+/* ---------- 5. routine ---------- */
+function goStep(i){S.p.idx=Math.max(0,Math.min(STEPS.length-1,i));S.p.remain=STEPS[S.p.idx].dur;paintPlayer()}
+function elapsed(){return STEPS.slice(0,S.p.idx).reduce((a,s)=>a+s.dur,0)+(STEPS[S.p.idx].dur-S.p.remain)}
+function paintPlayer(){
+  const s=STEPS[S.p.idx];
+  $('#pStepLbl').textContent=`${S.p.idx+1} / ${STEPS.length}`;$('#pFocus').textContent=s.focus;
+  $('#pIcon').className='fa-solid '+s.icon;$('#pName').textContent=s.name;$('#pCue').textContent=s.cue;
+  $('#pSub').innerHTML=`<span class="ca">⚠ 주의</span> ${s.caution}`;
+  $('#pTime').textContent=fmt(S.p.remain);
+  const pct=Math.round(elapsed()/TOTAL*100);$('#pProg').style.width=pct+'%';$('#pProgWrap').setAttribute('aria-valuenow',pct);
+  $('#pElapsed').textContent=fmt(elapsed());
+  $('#pSeg').innerHTML=STEPS.map((_,i)=>`<i class="${i<S.p.idx?'done':i===S.p.idx?'cur':''}"></i>`).join('');
+  $('#stepList').querySelectorAll('button').forEach((b,i)=>{b.classList.toggle('done',i<S.p.idx);i===S.p.idx?b.setAttribute('aria-current','step'):b.removeAttribute('aria-current')});
+  $('#pPlay').innerHTML=`<i class="fa-solid ${S.p.playing?'fa-pause':'fa-play'}" aria-hidden="true"></i>`;
+  $('#pPlay').setAttribute('aria-label',S.p.playing?'일시정지':'재생');
+  $('#player').classList.toggle('paused',!S.p.playing);
+}
+function play(){if(S.p.playing)return;S.p.playing=true;S.p.timer=setInterval(()=>{
+  S.p.remain-=0.1*S.p.speed;
+  if(S.p.remain<=0){
+    if(S.p.idx<STEPS.length-1){S.p.idx++;S.p.remain=STEPS[S.p.idx].dur;toast(`다음 동작: ${STEPS[S.p.idx].name}`,'info')}
+    else{S.p.remain=0;pause();paintPlayer();finishRoutine();return}
+  }
+  paintPlayer();
+},100);paintPlayer()}
+function pause(){S.p.playing=false;clearInterval(S.p.timer);if(!$('#player').closest('section').hidden)paintPlayer()}
+function renderRoutine(){
+  $('#t-routine').textContent=S.diag?'거북목 리셋 10분':'오피스 기본 10분';
+  $('#rtReason').textContent=S.diag?`AI 진단 결과(거북목 ${S.diag.neck}° · 골반 ${S.diag.pelvis}°)를 기반으로 큐레이션했어요.`:'진단 전이라 사무직 표준 루틴으로 구성했어요.';
+  $('#stepList').innerHTML=STEPS.map((s,i)=>`<li><button type="button" data-i="${i}"><span class="n">${i+1}</span><span><b>${s.name}</b><small>${s.focus} · ${fmt(s.dur)}</small></span></button></li>`).join('');
+  $('#stepList').querySelectorAll('button').forEach(b=>b.onclick=()=>goStep(+b.dataset.i));
+  paintPlayer();
+}
+$('#pPlay').onclick=()=>S.p.playing?pause():play();
+$('#pPrev').onclick=()=>goStep(S.p.idx-1);
+$('#pNext').onclick=()=>goStep(S.p.idx+1);
+$('#speedCtl').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;S.p.speed=+b.dataset.sp;$$('#speedCtl button').forEach(x=>x.setAttribute('aria-pressed',x===b))});
+$('#pQuit').onclick=()=>{pause();modal({icon:'fa-circle-pause',tone:'warn',title:'루틴을 그만둘까요?',body:`지금까지 ${fmt(elapsed())} 진행했어요. 그만두면 오늘의 스트릭이 적립되지 않아요.`,actions:[{label:'계속하기',primary:true,fn:play},{label:'그만두고 홈으로',fn:()=>{toast('루틴을 중단했어요. 언제든 다시 시작할 수 있어요','info');location.hash='#home'}}]})};
+$('#pFinish').onclick=()=>{
+  if(elapsed()<TOTAL*0.5){pause();modal({icon:'fa-hourglass-half',tone:'warn',title:'아직 절반도 안 했어요',body:'루틴의 50% 이상 수행해야 완료로 인정돼요. 그래도 완료 처리할까요? (프로토타입 검토용)',actions:[{label:'이어서 하기',primary:true,fn:play},{label:'완료 처리하기',fn:finishRoutine}]});return}
+  finishRoutine();
+};
+function finishRoutine(){
+  pause();
+  api($('#pFinish'),'기록 저장 중…',900,()=>{
+    if(!S.completedToday){
+      S.completedToday=true;S.streak++;S.best=Math.max(S.best,S.streak);
+      const n=new Date();
+      S.history.unshift({key:dKey(n),title:$('#t-routine').textContent,when:`${md(n)} ${pad(n.getHours())}:${pad(n.getMinutes())}`,acc:87});
+      toast(`루틴 완료! 스트릭 ${S.streak}일째 🔥`);
+    } else toast('오늘 루틴을 한 번 더 완료했어요! (스트릭은 하루 1회 적립)','info');
+    goStep(0);location.hash='#complete';
+  });
+}
+
+/* ---------- 6. complete ---------- */
+function renderComplete(){
+  const box=$('#completeBody');
+  if(!S.completedToday){
+    box.innerHTML=`<div class="card empty"><div class="ill"><i class="fa-solid fa-flag-checkered" aria-hidden="true"></i></div><h3>아직 완료한 루틴이 없어요</h3><p>루틴을 마치면 AI 피드백과 자세 변화 리포트를 보상으로 받을 수 있어요.</p><a class="btn btn-primary" href="#routine">루틴 시작하기</a></div>`;return;
+  }
+  const neck=S.diag?S.diag.neck:15;
+  const pts=[neck,neck-1.2,neck-2.6,neck-4.1,neck-5.8];
+  const y=v=>20+(20-v)/20*0+ (v-8)/(neck-8+0.01)*-90+110;
+  const path=pts.map((v,i)=>`${i?'L':'M'}${20+i*65} ${y(v).toFixed(1)}`).join(' ');
+  box.innerHTML=`<div class="grid grid-2">
+    <div class="celebrate" id="cel"><div class="flame"><i class="fa-solid fa-fire" aria-hidden="true"></i></div><div class="num">${S.streak}일</div><p style="font-weight:700;font-size:18px">연속 스트레칭 달성!</p><p style="font-size:14px;margin-top:6px">오늘도 10분, 몸에게 휴식을 선물했어요.</p>
+      <div class="row" style="justify-content:center;margin-top:18px"><a class="btn" style="background:#fff;color:var(--brand-dd)" href="#home">홈으로</a><a class="btn" style="background:rgba(255,255,255,.16);color:#fff" href="#my">기록 보기</a></div></div>
+    <div class="stack">
+      <div class="kpis"><div class="kpi"><b>100%</b><small>완료율</small></div><div class="kpi"><b>10:00</b><small>수행 시간</small></div><div class="kpi"><b>87%</b><small>동작 정확도</small></div></div>
+      <div class="badge-reward"><span class="md"><i class="fa-solid fa-seedling" aria-hidden="true"></i></span><div><b>첫 걸음 배지 획득 <span class="req">REQ-05</span></b><p class="hint" style="color:#5C3E00">7일 연속 달성 시 '꾸준함' 배지와 프리미엄 루틴 1종이 열려요. (${Math.min(S.streak,7)}/7)</p><div class="bar" style="background:#F3E3B5"><i style="width:${Math.min(S.streak,7)/7*100}%;background:#F29E2E"></i></div></div></div>
+      <div class="card"><h2 class="card-title"><i class="fa-solid fa-robot" style="color:var(--brand)" aria-hidden="true"></i>AI 피드백</h2>
+        <ul style="margin:10px 0 0;padding-left:18px;font-size:14px;display:grid;gap:6px"><li><b>턱 당기기</b>는 정확도 92%로 아주 좋았어요.</li><li><b>문틀 가슴 열기</b>에서 어깨가 살짝 올라갔어요. 견갑을 아래로 눌러주세요.</li><li>점심 직후 수행 시 이완 효과가 가장 높아요.</li></ul></div>
+    </div>
+    <div class="card"><h2 class="card-title">목 전방 경사각 예상 추이</h2><p class="card-sub">지금처럼 주 5회 유지하면 4주 후 목표치에 가까워져요.</p>
+      <svg viewBox="0 0 300 150" width="100%" style="margin-top:10px" role="img" aria-label="현재 ${neck}도에서 4주 후 ${(neck-5.8).toFixed(1)}도로 감소하는 예상 그래프">
+        <line x1="20" y1="130" x2="290" y2="130" stroke="#DCE5E2"/><path d="${path}" stroke="#0E7C6B" stroke-width="3" fill="none" stroke-linecap="round"/>
+        ${pts.map((v,i)=>`<circle cx="${20+i*65}" cy="${y(v).toFixed(1)}" r="5" fill="${i?'#fff':'#F07A55'}" stroke="${i?'#0E7C6B':'#F07A55'}" stroke-width="2.5"/><text x="${20+i*65}" y="${(y(v)-12).toFixed(1)}" text-anchor="middle" font-size="11" font-family="Outfit" font-weight="700" fill="#13201F">${v.toFixed(1)}°</text><text x="${20+i*65}" y="146" text-anchor="middle" font-size="10" fill="#4F5D59">${i?i+'주':'오늘'}</text>`).join('')}
+      </svg></div>
+    <div class="card"><h2 class="card-title">부위별 이완도</h2>
+      ${[['목',82],['어깨·가슴',74],['등·허리',68],['골반',61]].map(r=>`<div style="margin-top:12px"><div class="row between" style="font-size:14px"><b>${r[0]}</b><span style="font-family:Outfit;font-weight:700">${r[1]}%</span></div><div class="bar"><i style="width:${r[1]}%"></i></div></div>`).join('')}
+    </div></div>`;
+  const cel=$('#cel'),cols=['#FFD27A','#6EF0CF','#F07A55','#fff'];
+  for(let i=0;i<24;i++){const c=document.createElement('i');c.className='confetti';c.style.left=Math.random()*100+'%';c.style.background=cols[i%4];c.style.animationDelay=Math.random()*.8+'s';cel.appendChild(c)}
+}
+
+/* ---------- 7. my ---------- */
+function renderSub(){
+  const st=S.sub.status,plan=S.sub.plan==='yearly'?'연간 79,000원':'월간 9,900원';
+  const pill={Trial:'<span class="pill" style="background:#6EF0CF;color:#073F37">Trial · 무료 체험</span>',Active:'<span class="pill ok">Active · 구독 중</span>',Pending:'<span class="pill danger">Pending · '+(S.sub.paused?'일시 정지':'결제 대기')+'</span>',Churn:'<span class="pill gray">Churn · 해지됨</span>'}[st];
+  const desc={Trial:`7일 무료 체험 중 · <b>${md(TRIAL_END)}</b>에 ${plan} 자동 결제 예정`,Active:`${plan} 정기 구독 중 · 다음 결제일 ${md(addDays(TODAY,30))}`,Pending:S.sub.paused?'결제 3회 실패로 구독이 일시 정지됐어요. 결제수단을 변경해 주세요.':`결제 재시도 중 (${S.sub.retries}/3)`,Churn:`${md(TRIAL_END)}까지 이용 후 만료돼요. 기본 루틴만 이용할 수 있어요.`}[st];
+  $('#subCard').innerHTML=`<div class="row between"><b style="font-size:18px">${S.user.name||'회원'}님</b>${pill}</div><p class="card-sub" style="margin-top:8px">${desc}</p>
+   <div class="row" style="margin-top:14px;font-size:13px;gap:16px"><span><i class="fa-solid fa-briefcase" aria-hidden="true"></i> ${S.user.job?S.user.job.split(' ')[0]:'사무직'}</span><span><i class="fa-solid fa-bullseye" aria-hidden="true"></i> ${S.user.pains.length?S.user.pains.join('·'):'목·어깨'}</span></div>`;
+  const pb=$('#payBtn');
+  pb.hidden=st==='Active';
+  pb.innerHTML=st==='Pending'?'<i class="fa-solid fa-rotate-right" aria-hidden="true"></i>결제 다시 시도':st==='Churn'?'<i class="fa-solid fa-lock" aria-hidden="true"></i>다시 구독하기':'<i class="fa-solid fa-lock" aria-hidden="true"></i>지금 구독 결제하기';
+  $('#cancelBtn').hidden=st==='Churn';
+  updateHdr();
+}
+$$('input[name=plan]').forEach(r=>r.addEventListener('change',()=>{S.sub.plan=r.value;renderSub()}));
+$('#payBtn').onclick=()=>{
+  $('#payMsg').innerHTML='';
+  api($('#payBtn'),'결제 진행 중…',1300,()=>{
+    if(S.sim.pay){
+      S.sub.retries=Math.min(3,S.sub.retries+1);S.sub.status='Pending';
+      if(S.sub.retries>=3){S.sub.paused=true;
+        $('#payMsg').innerHTML=`<div class="alert danger" role="alert"><i class="fa-solid fa-circle-pause" aria-hidden="true"></i><div><strong>구독이 일시 정지됐어요</strong>결제가 3회 실패했어요. 등록된 이메일과 앱 알림으로 안내를 보냈어요. 결제수단을 변경한 뒤 다시 시도해 주세요.</div></div>`;
+        toast('결제 3회 실패 · 구독 일시 정지 알림을 발송했어요','err');
+      } else {
+        $('#payMsg').innerHTML=`<div class="alert warn" role="alert"><i class="fa-solid fa-credit-card" aria-hidden="true"></i><div><strong>결제에 실패했어요 (${S.sub.retries}/3)</strong>카드 한도 또는 잔액을 확인해 주세요. 실패 3회 시 구독이 일시 정지돼요.</div></div>`;
+        toast(`결제 실패 · 재시도 ${S.sub.retries}/3`,'err');
+      }
+    } else {
+      S.sub={...S.sub,status:'Active',retries:0,paused:false};
+      $('#payMsg').innerHTML=`<div class="alert info"><i class="fa-solid fa-circle-check" aria-hidden="true"></i><div><strong>구독이 시작됐어요</strong>${S.sub.plan==='yearly'?'연간 79,000원':'월 9,900원'} 결제가 완료됐어요. 영수증은 이메일로 보내드렸어요.</div></div>`;
+      toast('결제 완료 · 이제 모든 루틴을 이용할 수 있어요');
+    }
+    renderSub();
+  });
+};
+$('#cancelBtn').onclick=()=>modal({icon:'fa-heart-crack',tone:'danger',title:'정말 해지하시겠어요?',body:`지금 해지해도 ${md(TRIAL_END)}까지는 이용할 수 있어요. 해지하면 맞춤 루틴과 AI 피드백, 스트릭 리워드가 중단돼요.`,
+  actions:[{label:'계속 이용하기',primary:true},{label:'해지하기',danger:true,fn:()=>api(null,'',600,()=>{S.sub={...S.sub,status:'Churn',retries:0,paused:false};$('#payMsg').innerHTML='';renderSub();toast('구독이 해지됐어요','info')})}]});
+
+const DAYS=['월','화','수','목','금','토','일'];
+$('#pushDays').innerHTML=DAYS.map(d=>`<label class="chip"><input type="checkbox" name="pday" value="${d}" ${S.push.days.includes(d)?'checked':''}><span>${d}</span></label>`).join('');
+function pushPreview(){
+  const t=$('#pushTime').value||'--:--';$('#prevTime').textContent=t;
+  const st=($('input[name=pstyle]:checked')||{}).value;
+  const neck=S.diag?S.diag.neck:'18.4';
+  $('#prevText').textContent=st==='info'?`거북목 각도 ${neck}° · 오늘의 10분 루틴(5동작)이 준비됐어요.`:`오늘도 애쓴 어깨에게 10분의 휴식을 선물해 볼까요? 🌿`;
+  const on=$('#pushOn').checked;['#pushTime'].forEach(s=>$(s).disabled=!on);$$('input[name=pday]').forEach(i=>i.disabled=!on);
+}
+['#pushTime','#pushOn'].forEach(s=>$(s).addEventListener('input',pushPreview));
+$('#pushCard').addEventListener('change',pushPreview);
+$('#pushCard').addEventListener('submit',e=>{
+  e.preventDefault();
+  const on=$('#pushOn').checked,t=$('#pushTime').value,days=$$('input[name=pday]:checked').map(i=>i.value);
+  let ok=true;
+  if(on){ok=setErr('e-ptime',$('#pushTime'),t?'':'알림 시간을 입력해 주세요.')&ok;ok=setErr('e-pdays',null,days.length?'':'요일을 하나 이상 선택해 주세요.')&ok}
+  else{setErr('e-ptime',$('#pushTime'),'');setErr('e-pdays',null,'')}
+  if(!ok){toast('알림 설정을 확인해 주세요','err');return}
+  api($('#pushSave'),'저장 중…',900,()=>{
+    S.push={on,time:t,days,style:$('input[name=pstyle]:checked').value};
+    toast(on?`${days.join('·')} ${t}에 루틴 알림을 보내드릴게요`:'루틴 알림을 껐어요');
+  });
+});
+
+function renderMy(){
+  renderSub();pushPreview();
+  $('#myStreak').textContent=S.streak+'일 연속';$('#myBest').textContent=S.best;
+  const done=new Set(S.history.map(h=>h.key));
+  $('#cal').innerHTML=Array.from({length:28},(_,i)=>{const d=addDays(TODAY,i-27),k=dKey(d);return `<span class="${done.has(k)?'done':''} ${k===dKey(TODAY)?'today':''}" title="${md(d)}">${d.getDate()}</span>`}).join('');
+  $('#histBox').innerHTML=S.history.length?`<ul class="hist">${S.history.map(h=>`<li><span class="ic"><i class="fa-solid fa-check" aria-hidden="true"></i></span><div style="flex:1"><b style="font-size:14px">${h.title}</b><br><small class="hint">${h.when} · 10분 · 정확도 ${h.acc}%</small></div><a href="#complete" class="btn btn-ghost" style="min-height:44px;padding:0 12px;font-size:13px">피드백</a></li>`).join('')}</ul>`
+    :`<div class="empty" style="padding:16px 8px"><div class="ill" style="width:56px;height:56px;font-size:22px"><i class="fa-regular fa-calendar" aria-hidden="true"></i></div><h3 style="font-size:16px">아직 완료 기록이 없어요</h3><p>첫 루틴을 완료하면 여기에 기록이 쌓여요.</p><a class="btn btn-primary" href="#routine">첫 루틴 시작하기</a></div>`;
+}
+
+/* ---------- review panel ---------- */
+$('#reviewBtn').onclick=()=>{const p=$('#reviewPanel');p.hidden=!p.hidden;$('#reviewBtn').setAttribute('aria-expanded',!p.hidden)};
+$('#simNet').onchange=e=>{S.sim.net=e.target.checked;toast(S.sim.net?'네트워크 오류 시뮬레이션 ON':'네트워크 정상','info')};
+$('#simPay').onchange=e=>{S.sim.pay=e.target.checked;toast(S.sim.pay?'결제 실패 시뮬레이션 ON':'결제 정상','info')};
+$('#simReq').onchange=e=>document.body.classList.toggle('hide-req',!e.target.checked);
+$('#reviewPanel').addEventListener('click',e=>{if(e.target.closest('.jump a')&&innerWidth<768){$('#reviewPanel').hidden=true;$('#reviewBtn').setAttribute('aria-expanded','false')}});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#reviewPanel').hidden&&!$('#modalRoot').innerHTML){$('#reviewPanel').hidden=true;$('#reviewBtn').setAttribute('aria-expanded','false');$('#reviewBtn').focus()}});
+
+updateHdr();goStep(0);route();
+})();
+</script>
+</body>
+</html>
