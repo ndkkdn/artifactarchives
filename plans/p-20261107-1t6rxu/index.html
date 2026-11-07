@@ -1,0 +1,4289 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light dark">
+<title>2030 맛집 경험 공유 서비스 · PITL 기획서</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>:root { color-scheme: light; --sb-green: var(--accent-strong); --sb-accent: var(--accent-neon); --sb-house: var(--bg-card); --sb-uplift: var(--bg-editor); --sb-mint: rgba(var(--accent-rgb), 0.12); --sb-cream: #F0EEE9; --sb-ceramic: #E9E6DF; --sb-gold: #cba258; --sb-gold-light: #faf6ee; --bl: 8px; --lh: 24px; --cols: 12; --gutter: 16px; --margin: 24px; --maxw: 1280px; --sp-1: 4px; --sp-2: 8px; --sp-3: 16px; --sp-4: 24px; --sp-5: 32px; --sp-6: 40px; --sp-7: 48px; --sp-8: 56px; --sp-9: 64px; --buttonBorderRadius: 50px; --cardBorderRadius: 12px; --letterSpacingNormal: -0.01em; --buttonActiveScale: scale(0.95); --bg-base: #F0EEE9; --bg-sidebar: #E9E6DF; --bg-chat: #F5F3EF; --bg-editor: #FAF9F6; --bg-card: #FAF9F6; --border-color: rgba(27, 26, 31, 0.10); --border-active: #5B3BF0; --glass-blur: blur(20px); --glass-border: 1px solid rgba(27, 26, 31, 0.10); --glass-border-active: 1px solid #5B3BF0; --glass-surface: #FAF9F6; --glass-surface-hover: #F5F3EF; --text-primary: #1B1A1F; --text-secondary: rgba(27, 26, 31, 0.68); --text-muted: #66616D; --accent-rgb: 91, 59, 240; --accent-2-rgb: 201, 36, 90; --success-rgb: 11, 122, 90; --surface-rgb: 250, 249, 246; --hairline-rgb: 27, 26, 31; --accent-neon: #5B3BF0; --accent-text: #287113; --accent-strong: #4A2BD6; --accent-soft: #8F75FF; --accent-coral: #C9245A; --cta-gradient: linear-gradient(135deg, #6D4AFF 0%, #C9245A 100%); --success: #0B7A5A; --focus-ring: #5B3BF0; --accent-blue: #2F5BD3; --accent-purple: #5B3BF0; --accent-cyan: #0E7490; --accent-green: #0B7A5A; --accent-red: #C4242B; --accent-amber: #9A6A00; --glow-neon: 0 4px 20px rgba(91, 59, 240, 0.22); --glow-neon-sm: 0 2px 10px rgba(91, 59, 240, 0.16); --grid-color: rgba(91, 59, 240, 0.05); --radius-sm: 6px; --radius-md: 10px; --radius-lg: 12px; --radius-xl: 50px; --surface-chrome: rgba(233, 230, 223, 0.88); --radius-card: 16px; --radius-tile: 20px; --shadow-card: var(--neu-raised); --shadow-card-hover: var(--neu-raised-hover), 0 0 0 1px rgba(var(--accent-rgb), 0.30); --ease-out: cubic-bezier(0.16, 1, 0.3, 1); --ease-smooth: cubic-bezier(0.16, 1, 0.3, 1); --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1); --dur-fast: 160ms; --dur-base: 260ms; --dur-slow: 560ms; --neu-surface: linear-gradient(145deg, #F7F5F1 0%, #E9E6DF 100%); --neu-raised: -6px -6px 14px rgba(255, 255, 255, 0.9), 6px 6px 14px rgba(156, 153, 150, 0.38); --neu-raised-hover: -8px -8px 18px rgba(255, 255, 255, 0.95), 10px 10px 22px rgba(156, 153, 150, 0.45); --neu-raised-sm: -3px -3px 6px rgba(255, 255, 255, 0.85), 3px 3px 6px rgba(156, 153, 150, 0.35); --neu-inset: inset 3px 3px 7px rgba(156, 153, 150, 0.42), inset -3px -3px 7px rgba(255, 255, 255, 0.9); --neu-inset-sm: inset 2px 2px 4px rgba(156, 153, 150, 0.40), inset -2px -2px 4px rgba(255, 255, 255, 0.85); --font-future: 'Unbounded', 'Space Grotesk', 'Noto Sans KR', sans-serif; --chrome-text: linear-gradient(180deg, #1B1A1F 0%, #3A3742 44%, #6A6672 52%, #2A2830 62%, #1B1A1F 100%); --neon-glow: none; --viz-surface: #FAF9F6; --viz-1: #5B3BF0; --viz-2: #eb6834; --viz-3: #1baf7a; --viz-4: #eda100; --viz-muted: #8A8590; --viz-grid: #E6E3DC; --viz-axis: #C9C5BC; --viz-seq-1: #B0A0FF; --viz-seq-1-ink: #1B1A1F; --viz-seq-2: #8C72FC; --viz-seq-2-ink: #1B1A1F; --viz-seq-3: #5B3BF0; --viz-seq-3-ink: #FFFFFF; --viz-seq-4: #4526C9; --viz-seq-4-ink: #FFFFFF; --viz-seq-5: #2F178F; --viz-seq-5-ink: #FFFFFF; }
+                @media (prefers-color-scheme: dark) { :root { color-scheme: dark; --sb-green: var(--accent-strong); --sb-accent: var(--accent-neon); --sb-house: var(--bg-card); --sb-uplift: var(--bg-editor); --sb-mint: rgba(var(--accent-rgb), 0.12); --sb-cream: #F0EEE9; --sb-ceramic: #E9E6DF; --sb-gold: #cba258; --sb-gold-light: #faf6ee; --bl: 8px; --lh: 24px; --cols: 12; --gutter: 16px; --margin: 24px; --maxw: 1280px; --sp-1: 4px; --sp-2: 8px; --sp-3: 16px; --sp-4: 24px; --sp-5: 32px; --sp-6: 40px; --sp-7: 48px; --sp-8: 56px; --sp-9: 64px; --buttonBorderRadius: 50px; --cardBorderRadius: 12px; --letterSpacingNormal: -0.01em; --buttonActiveScale: scale(0.95); --bg-base: #141318; --bg-sidebar: #19181F; --bg-chat: rgba(31, 29, 38, 0.55); --bg-editor: #1A1920; --bg-card: #1F1D26; --border-color: rgba(240, 238, 233, 0.12); --border-active: #8B6CFF; --glass-blur: blur(20px); --glass-border: 1px solid rgba(240, 238, 233, 0.12); --glass-border-active: 1px solid #8B6CFF; --glass-surface: rgba(31, 29, 38, 0.65); --glass-surface-hover: rgba(42, 39, 52, 0.85); --text-primary: #F0EEE9; --text-secondary: rgba(240, 238, 233, 0.72); --text-muted: #9C97A6; --accent-rgb: 139, 108, 255; --accent-2-rgb: 255, 122, 144; --success-rgb: 52, 211, 153; --surface-rgb: 31, 29, 38; --hairline-rgb: 240, 238, 233; --accent-neon: #8B6CFF; --accent-text: #A5FC8D; --accent-strong: #A891FF; --accent-soft: #B6A4FF; --accent-coral: #FF7A90; --cta-gradient: linear-gradient(135deg, #7357FF 0%, #D23A6E 100%); --success: #34D399; --focus-ring: #B6A4FF; --accent-blue: #60A5FA; --accent-purple: #8B6CFF; --accent-cyan: #22D3EE; --accent-green: #34D399; --accent-red: #FF6B6B; --accent-amber: #F5B841; --glow-neon: 0 4px 20px rgba(139, 108, 255, 0.35); --glow-neon-sm: 0 2px 10px rgba(139, 108, 255, 0.25); --grid-color: rgba(139, 108, 255, 0.07); --radius-sm: 6px; --radius-md: 10px; --radius-lg: 12px; --radius-xl: 50px; --surface-chrome: rgba(25, 24, 31, 0.86); --radius-card: 16px; --radius-tile: 20px; --shadow-card: var(--neu-raised); --shadow-card-hover: var(--neu-raised-hover), 0 0 0 1px rgba(var(--accent-rgb), 0.40); --ease-out: cubic-bezier(0.16, 1, 0.3, 1); --ease-smooth: cubic-bezier(0.16, 1, 0.3, 1); --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1); --dur-fast: 160ms; --dur-base: 260ms; --dur-slow: 560ms; --neu-surface: linear-gradient(145deg, #23212B 0%, #1B1A21 100%); --neu-raised: -5px -5px 12px rgba(255, 255, 255, 0.035), 6px 6px 16px rgba(0, 0, 0, 0.55); --neu-raised-hover: -7px -7px 16px rgba(255, 255, 255, 0.045), 10px 10px 24px rgba(0, 0, 0, 0.6); --neu-raised-sm: -2px -2px 5px rgba(255, 255, 255, 0.03), 3px 3px 7px rgba(0, 0, 0, 0.5); --neu-inset: inset 3px 3px 8px rgba(0, 0, 0, 0.5), inset -2px -2px 6px rgba(255, 255, 255, 0.04); --neu-inset-sm: inset 2px 2px 5px rgba(0, 0, 0, 0.5), inset -1px -1px 3px rgba(255, 255, 255, 0.04); --font-future: 'Unbounded', 'Space Grotesk', 'Noto Sans KR', sans-serif; --chrome-text: linear-gradient(180deg, #FFFFFF 0%, #DCD8E4 44%, #8E8A99 52%, #F0EEE9 62%, #FFFFFF 100%); --neon-glow: 0 0 10px rgba(var(--accent-rgb), 0.55); --viz-surface: #1F1D26; --viz-1: #8B6CFF; --viz-2: #d95926; --viz-3: #199e70; --viz-4: #c98500; --viz-muted: #77727F; --viz-grid: #2E2B36; --viz-axis: #4A4654; --viz-seq-1: #4F3FAE; --viz-seq-1-ink: #FFFFFF; --viz-seq-2: #5F4AD6; --viz-seq-2-ink: #FFFFFF; --viz-seq-3: #8D78FB; --viz-seq-3-ink: #1B1A1F; --viz-seq-4: #AE9EFF; --viz-seq-4-ink: #1B1A1F; --viz-seq-5: #D2C8FF; --viz-seq-5-ink: #1B1A1F; } }
+                .viz-panel { margin: 8px 0px 36px; }
+.viz-eyebrow { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700; letter-spacing: 1.5px; color: var(--accent-text); margin-bottom: 12px; }
+.viz-grid { display: grid; grid-template-columns: repeat(2, minmax(0px, 1fr)); gap: 16px; }
+.viz-card { margin: 0px; padding: 18px 20px 20px; background: var(--viz-surface); border: 1px solid var(--border-color); border-radius: 16px; box-shadow: var(--neu-inset-sm, none); min-width: 0px; }
+.viz-card.wide { grid-column: 1 / -1; }
+.viz-card-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 12px; }
+.markdown-body .viz-title { font-size: 15px; font-weight: 700; color: var(--text-primary); margin: 0px; padding: 0px; border-width: medium; border-style: none; border-color: currentcolor; border-image: none; }
+.markdown-body .viz-sub { font-size: 12px; color: var(--text-secondary); margin: 4px 0px 0px; }
+.viz-table-toggle { flex-shrink: 0; font-size: 11.5px; font-weight: 600; padding: 5px 10px; border-radius: 999px; border: 1px solid var(--border-color); background: transparent; color: var(--text-secondary); cursor: pointer; }
+.viz-table-toggle:hover { color: var(--text-primary); border-color: rgba(var(--accent-rgb), 0.45); }
+.viz-table { margin-top: 14px; overflow-x: auto; }
+.viz-table table { font-size: 12.5px; font-variant-numeric: tabular-nums; }
+.viz-svg { width: 100%; height: auto; display: block; overflow: visible; }
+.viz-square { max-width: 420px; margin: 0px auto; }
+.viz-svg .viz-gridline { stroke: var(--viz-grid); stroke-width: 1; }
+.viz-svg .viz-axis { stroke: var(--viz-axis); stroke-width: 1; }
+.viz-svg text { font-family: "Noto Sans KR", "Space Grotesk", sans-serif; }
+.viz-svg .viz-tick { fill: var(--text-muted); font-size: 11px; font-variant-numeric: tabular-nums; }
+.viz-svg .viz-label { fill: var(--text-secondary); font-size: 11.5px; }
+.viz-svg .viz-label-strong { fill: var(--text-primary); font-size: 12.5px; font-weight: 700; }
+.viz-svg .viz-axis-title { fill: var(--text-secondary); font-size: 11.5px; font-weight: 600; }
+.viz-svg .viz-quad-label { fill: var(--text-muted); font-size: 11px; font-weight: 600; }
+.viz-mark { cursor: default; outline: none; }
+.viz-mark:focus-visible circle:nth-child(2) { stroke: var(--focus-ring); stroke-width: 3; }
+.viz-legend { display: flex; flex-wrap: wrap; gap: 6px 16px; margin-bottom: 10px; font-size: 12px; color: var(--text-secondary); }
+.viz-legend-item { display: inline-flex; align-items: center; gap: 6px; }
+.viz-swatch { display: inline-block; width: 10px; height: 10px; border-radius: 3px; flex-shrink: 0; }
+.viz-3c { display: grid; grid-template-columns: minmax(240px, 360px) 1fr; gap: 20px; align-items: center; }
+.viz-3c-lists { display: grid; gap: 12px; }
+.viz-3c-head { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 700; color: var(--text-primary); }
+.markdown-body .viz-3c ul, .markdown-body .viz-quad ul { margin: 6px 0px 0px; padding-left: 18px; }
+.markdown-body .viz-3c li, .markdown-body .viz-quad li { font-size: 12.5px; color: var(--text-secondary); margin: 2px 0px; }
+.viz-heat { display: grid; gap: 2px; overflow-x: auto; }
+.viz-heat-row { display: grid; grid-template-columns: minmax(110px, 1.2fr) repeat(var(--cols), minmax(64px, 1fr)); gap: 2px; align-items: stretch; }
+.viz-heat-header span { font-size: 11.5px; font-weight: 600; color: var(--text-secondary); padding: 4px 6px; text-align: center; }
+.viz-heat-name { font-size: 12.5px; color: var(--text-secondary); padding: 8px 6px; display: flex; align-items: center; }
+.viz-heat-row.self .viz-heat-name { color: var(--text-primary); font-weight: 700; }
+.viz-heat-row.self .viz-heat-name::before { content: "★"; color: var(--accent-text); margin-right: 4px; }
+.viz-heat-cell { display: flex; align-items: center; justify-content: center; min-height: 36px; border-radius: 6px; font-size: 13px; font-weight: 700; font-variant-numeric: tabular-nums; outline: none; }
+.viz-heat-cell:focus-visible { box-shadow: 0 0 0 2px var(--viz-surface), 0 0 0 4px var(--focus-ring); }
+.viz-heat-scale { display: flex; align-items: center; gap: 2px; justify-content: flex-end; margin-top: 8px; font-size: 11px; color: var(--text-muted); }
+.viz-heat-scale i { width: 22px; height: 10px; border-radius: 3px; }
+.viz-heat-scale span { margin: 0px 6px; }
+.viz-2x2 { display: grid; grid-template-columns: auto 1fr 1fr; gap: 8px; }
+.viz-axis-head { font-size: 11.5px; font-weight: 700; color: var(--text-muted); text-align: center; align-self: end; }
+.viz-axis-side { writing-mode: vertical-rl; text-orientation: upright; align-self: center; text-align: center; letter-spacing: 2px; }
+.viz-quad { padding: 12px 14px; border-radius: 12px; background: var(--bg-base); border: 1px solid var(--border-color); min-width: 0px; }
+.viz-quad-head { display: flex; align-items: center; flex-wrap: wrap; gap: 6px; font-size: 12.5px; color: var(--text-secondary); }
+.viz-quad-head b { color: var(--text-primary); font-size: 13.5px; }
+.markdown-body .viz-tows-cell p { font-size: 12.5px; color: var(--text-primary); margin: 8px 0px 6px; line-height: 1.55; }
+.viz-priority { margin-left: auto; font-size: 10.5px; font-weight: 700; padding: 2px 8px; border-radius: 999px; }
+.viz-meta { font-size: 11px; color: var(--text-muted); }
+.viz-stats { display: flex; align-items: stretch; gap: 8px; flex-wrap: wrap; }
+.viz-sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0px, 0px, 0px, 0px); white-space: nowrap; }
+.viz-stat { flex: 1 1 120px; display: flex; flex-direction: column; gap: 2px; padding: 14px; border-radius: 12px; background: var(--bg-base); border: 1px solid var(--border-color); }
+.viz-stat-key { font-size: 11px; font-weight: 700; letter-spacing: 1px; color: var(--text-muted); }
+.viz-stat-value { font-size: 24px; font-weight: 700; color: var(--text-primary); line-height: 1.2; }
+.viz-stat-value small { font-size: 12px; font-weight: 600; color: var(--text-secondary); margin-left: 3px; }
+.viz-stat-label { font-size: 11.5px; color: var(--text-secondary); }
+.viz-funnel-arrow { display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--text-muted); font-size: 16px; }
+.viz-funnel-arrow small { font-size: 10.5px; font-variant-numeric: tabular-nums; }
+.viz-tree { display: flex; flex-direction: column; align-items: center; gap: 18px; overflow-x: auto; }
+.viz-tree-root { padding: 8px 18px; border-radius: 999px; background: var(--cta-gradient); color: rgb(255, 255, 255); font-size: 13px; font-weight: 700; position: relative; }
+.viz-tree-root::after { content: ""; position: absolute; left: 50%; top: 100%; width: 1px; height: 18px; background: var(--viz-axis); }
+.viz-tree-branches { display: grid; grid-template-columns: repeat(var(--n), minmax(140px, 1fr)); gap: 10px; width: 100%; position: relative; padding-top: 14px; border-top: 1px solid var(--viz-axis); }
+.viz-tree-branch { display: flex; flex-direction: column; gap: 6px; position: relative; }
+.viz-tree-branch::before { content: ""; position: absolute; left: 50%; top: -14px; width: 1px; height: 14px; background: var(--viz-axis); }
+.viz-tree-domain { padding: 8px 10px; border-radius: 10px; text-align: center; font-size: 12.5px; font-weight: 700; color: var(--text-primary); background: rgba(var(--accent-rgb), 0.10); border: 1px solid rgba(var(--accent-rgb), 0.35); }
+.viz-tree-leaf { padding: 6px 10px; border-radius: 8px; font-size: 12px; color: var(--text-secondary); background: var(--bg-base); border: 1px solid var(--border-color); }
+.viz-bars { display: flex; flex-direction: column; gap: 8px; }
+.viz-bar-row { display: grid; grid-template-columns: minmax(120px, 40%) 1fr; gap: 10px; align-items: center; padding: 2px 0px; border-radius: 6px; outline: none; }
+.viz-bar-row:hover, .viz-bar-row:focus-visible { background: rgba(var(--accent-rgb), 0.06); }
+.viz-bar-label { font-size: 12px; color: var(--text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.viz-bar-label b { color: var(--text-primary); margin-right: 4px; }
+.viz-bar-track { display: flex; align-items: center; gap: 8px; min-width: 0px; }
+.viz-bar { display: block; height: 18px; border-radius: 0px 4px 4px 0px; }
+.viz-bar-value { font-size: 12px; font-weight: 600; color: var(--text-secondary); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.viz-empty { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 18px 20px; border-radius: 16px; border: 1px dashed rgba(var(--accent-rgb), 0.45); background: rgba(var(--accent-rgb), 0.04); }
+.markdown-body .viz-empty p { margin: 4px 0px 0px; font-size: 13px; color: var(--text-secondary); }
+#viz-tooltip { position: fixed; z-index: 10050; max-width: 280px; padding: 8px 10px; border-radius: 8px; background: var(--bg-card); color: var(--text-primary); border: 1px solid var(--border-color); box-shadow: rgba(0, 0, 0, 0.25) 0px 8px 24px; font-size: 12px; line-height: 1.5; white-space: pre-line; pointer-events: none; }
+@media (max-width: 900px) {
+  .viz-grid { grid-template-columns: 1fr; }
+  .viz-3c { grid-template-columns: 1fr; }
+}
+            * { box-sizing: border-box; }
+            body { margin: 0; background: var(--bg-base); color: var(--text-primary); font-family: 'Pretendard Variable', 'Noto Sans KR', -apple-system, sans-serif; line-height: 1.7; }
+            .wrap { max-width: 1080px; margin: 0 auto; padding: 0 20px; }
+            .hero { padding: 56px 0 28px; }
+            .eyebrow { font-size: 12px; font-weight: 700; letter-spacing: 1.5px; color: var(--accent-text); }
+            .hero h1 { font-size: clamp(28px, 4vw, 42px); line-height: 1.25; margin: 10px 0 14px; letter-spacing: -0.02em; }
+            .idea { color: var(--text-secondary); white-space: pre-wrap; margin: 0 0 18px; max-width: 760px; }
+            .meta { display: flex; flex-wrap: wrap; gap: 8px; }
+            .chip { font-size: 12.5px; padding: 4px 12px; border-radius: 999px; border: 1px solid var(--border-color); background: var(--bg-card); color: var(--text-secondary); }
+            nav.toc { position: sticky; top: 0; z-index: 10; background: color-mix(in srgb, var(--bg-base) 88%, transparent); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border-color); }
+            nav.toc .wrap { display: flex; gap: 6px; overflow-x: auto; padding-block: 10px; }
+            nav.toc a { flex-shrink: 0; font-size: 12.5px; font-weight: 600; text-decoration: none; color: var(--text-secondary); padding: 5px 12px; border-radius: 999px; border: 1px solid var(--border-color); background: var(--bg-card); }
+            nav.toc a:hover, nav.toc a:focus-visible { color: var(--text-primary); border-color: var(--accent-neon); }
+            .doc { margin: 28px 0; padding: 28px clamp(18px, 3vw, 36px); background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 20px; scroll-margin-top: 64px; }
+            .doc > h2 { display: flex; align-items: center; gap: 10px; font-size: 22px; margin: 0 0 4px; }
+            .doc > h2::before { content: ''; width: 6px; height: 22px; border-radius: 3px; background: var(--cta-gradient); }
+            .doc-time { font-size: 12px; color: var(--text-muted); margin: 0 0 18px; }
+            .markdown-body h1 { font-size: 20px; } .markdown-body h2 { font-size: 18px; margin-top: 28px; } .markdown-body h3 { font-size: 15.5px; margin-top: 22px; }
+            .table-wrap { overflow-x: auto; margin: 14px 0; border: 1px solid var(--border-color); border-radius: 12px; }
+            .markdown-body table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+            .markdown-body tr:last-child td { border-bottom: 0; }
+            .markdown-body th { background: rgba(var(--accent-rgb), 0.07); text-align: left; }
+            .markdown-body th, .markdown-body td { padding: 8px 12px; border-bottom: 1px solid var(--border-color); vertical-align: top; }
+            .markdown-body pre { background: var(--bg-base); border: 1px solid var(--border-color); border-radius: 12px; padding: 14px; overflow-x: auto; font-size: 12.5px; line-height: 1.45; }
+            .markdown-body code { font-family: 'JetBrains Mono', 'Fira Code', monospace; }
+            .markdown-body blockquote { margin: 14px 0; padding: 10px 16px; border-left: 3px solid var(--accent-neon); background: var(--bg-base); border-radius: 0 10px 10px 0; color: var(--text-secondary); }
+            .proto-frame { height: min(80vh, 820px); border: 1px solid var(--border-color); border-radius: 14px; overflow: hidden; background: #fff; }
+            .proto-frame iframe { width: 100%; height: 100%; border: 0; display: block; }
+            .doc a.open { display: inline-block; margin-top: 12px; font-size: 13px; font-weight: 600; color: var(--accent-text); }
+            footer { padding: 24px 0 56px; color: var(--text-muted); font-size: 12.5px; }
+            :focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 2px; }
+            @media (max-width: 640px) { .hero { padding-top: 36px; } .doc { border-radius: 14px; } }
+        </style>
+</head>
+<body>
+<header class="hero"><div class="wrap">
+    <div class="eyebrow">PITL · PLANNING-IN-THE-LOOP</div>
+    <h1>2030 맛집 경험 공유 서비스</h1>
+    <p class="idea">20~30대 사용자가 자신이 다닌 맛집을 공유하는 서비스를 만들고자 한다. 네이버 지도, 구글 지도 별점이 경쟁사다.</p>
+    <div class="meta"><span class="chip">2026-11-07</span><span class="chip">9개 문서</span><span class="chip">총 분석 소요 36분 25초</span></div>
+</div></header>
+<nav class="toc" aria-label="문서 목차"><div class="wrap"><a href="#1pager">1-Pager 비즈니스 요약</a><a href="#threec">3C 환경 분석</a><a href="#swot">SWOT · TOWS 전략</a><a href="#stp">STP 타깃 포지셔닝</a><a href="#mece">MECE · RICE 구조화</a><a href="#prd">PRD 요구사항 명세</a><a href="#wireframe">와이어프레임 3안</a><a href="#audit">QA 정합성 감사</a><a href="#prototype">서비스 UX 프로토타입</a><a href="#timings">소요시간</a></div></nav>
+<main class="wrap"><section class="doc" id="1pager"><h2>1-Pager 비즈니스 요약</h2><p class="doc-time">분석 소요 1분 22초</p><div class="markdown-body"><h1>다시감: 별점 대신 '다시 간 기록'을 나누는 맛집 공유 서비스</h1>
+<h2>0. 성찰적 기획 인사이트 (Reflective Insight)</h2>
+<p>사람들은 맛집을 몰라서 헤매지 않습니다. 정보가 너무 많아 무엇을 믿어야 할지 모를 때 헤맵니다. 별점은 수천 명의 평균을 보여주지만, 저녁 한 끼를 고르는 사람에게 필요한 건 "나와 입맛이 닮은 한 사람이 정말 또 갔는가"라는 사실 하나입니다. 이 서비스는 '평가'를 '기록'으로, '익명의 다수'를 '아는 소수'로 바꿔서, 실패하지 않을 저녁과 자기 취향이라는 작은 정체성을 함께 돌려주려 합니다.</p>
+<h2>1. 프로젝트 한 줄 요약 (핵심 메시지)</h2>
+<blockquote>
+<p><strong>"별 다섯 개보다, 친구가 세 번 간 집."</strong></p>
+</blockquote>
+<p>다시감은 두 번 이상 방문한 곳만 '내 맛집'으로 남고, 그 목록을 취향이 맞는 사람끼리 나누는 서비스입니다. 재방문을 가장 정직한 리뷰로 봅니다.</p>
+<h2>2. 왜(Why): 본질적 니즈 및 5 Why 분석</h2>
+<blockquote>
+<p>아래 수치는 공개 현상과 현장 관찰에서 세운 <strong>가설값</strong>입니다. MVP 전 사용자 인터뷰 20명과 설문 300명으로 검증합니다.</p>
+</blockquote>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>단계</th>
+<th>질문</th>
+<th>근거가 되는 행동·시장 현상</th>
+<th>도출</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Why 1</td>
+<td>왜 맛집을 공유하려 하는가?</td>
+<td>20~30대는 지도 앱 '저장'보다 카카오톡으로 지도 링크를 보내거나 인스타그램 게시물을 저장하는 방식을 더 자주 쓴다. 단톡방에서 "거기 어때?"라는 질문이 반복된다.</td>
+<td>공유는 이미 일어나고 있다. 다만 흩어져 있고 다시 찾기 어렵다.</td>
+</tr>
+<tr>
+<td>Why 2</td>
+<td>왜 지도 앱 별점만으로는 부족한가?</td>
+<td>'리뷰 작성 시 음료 서비스' 같은 리뷰 이벤트, 체험단 블로그, 키워드 선택형 영수증 리뷰가 흔하다. 인기 매장 평점은 4.3~4.7 구간에 몰려 변별력이 거의 없다.</td>
+<td>별점은 '좋음'은 알려주지만 '나에게 맞음'은 알려주지 못한다.</td>
+</tr>
+<tr>
+<td>Why 3</td>
+<td>왜 지인 추천을 더 믿는가?</td>
+<td>식당을 고를 때 지인 추천을 지도 앱 평점보다 우선한다는 응답이 많을 것으로 본다(가설: 60% 이상). 추천한 사람의 평소 취향을 알기 때문에 그 사람의 말을 해석할 수 있다.</td>
+<td>신뢰의 단위가 '평균'에서 '사람'으로 옮겨갔다.</td>
+</tr>
+<tr>
+<td>Why 4</td>
+<td>왜 취향이 맞는지가 그렇게 중요한가?</td>
+<td>서울 기준 2인 저녁 한 끼는 5<del>8만 원 수준이다. 직장인에게 평일 저녁과 주말 외식 기회는 일주일에 2</del>3번 정도다. 한 번 실패하면 돈과 기회를 함께 잃는다.</td>
+<td>실패 비용이 커질수록 사람들은 탐색보다 확신을 원한다.</td>
+</tr>
+<tr>
+<td>Why 5</td>
+<td>결국 원하는 것은 무엇인가?</td>
+<td>맛집 계정을 따로 운영하고, 지도 앱에 '찐맛집', '부모님 모시고' 같은 폴더를 직접 만드는 사용자가 늘고 있다.</td>
+<td><strong>본질적 니즈</strong>는 두 가지다. 고르는 사람은 실패하지 않을 확신을 원하고, 기록하는 사람은 자기 취향을 인정받고 싶어 한다.</td>
+</tr>
+</tbody></table></div>
+<p><strong>의사결정 기준</strong>: 기능을 넣을지 판단할 때 "이 기능이 '믿을 만한 사람의 진짜 재방문'이라는 신호를 더 선명하게 만드는가?"를 묻습니다. 그렇지 않으면 넣지 않습니다.</p>
+<h2>3. 개념 (Concept): 핵심 가치, 이점 및 포지셔닝 렌즈</h2>
+<p><strong>이상 공간 정의</strong></p>
+<ul>
+<li><strong>핵심 가치(User Value)</strong>: 실패하지 않는 한 끼. 그리고 '내 취향'이 쌓이는 기록.</li>
+<li><strong>사용자 이점(User Benefit)</strong><ul>
+<li>고르는 사람은 친구의 재방문 목록 안에서 10초 만에 후보를 3곳으로 줄입니다.</li>
+<li>기록하는 사람은 방문할 때마다 자동으로 쌓이는 '나만의 맛집 지도'를 링크 하나로 보여줄 수 있습니다.</li>
+</ul>
+</li>
+<li><strong>한 줄 메시지</strong>: "별점은 처음 간 사람이 남기고, 진짜 맛집은 다시 간 사람이 압니다."</li>
+<li><strong>명분과 근거</strong>: 리뷰는 보상이나 선의, 순간의 기분에 따라 흔들립니다. 재방문은 내 돈과 시간을 다시 쓴 행동입니다. 꾸며내기 가장 어려운 신호이기 때문에 신뢰의 기준으로 삼습니다.</li>
+</ul>
+<p><strong>포지셔닝 렌즈</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>렌즈</th>
+<th>선택</th>
+<th>이유</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>새로움 vs 개선</td>
+<td><strong>새로움(개념 전환)</strong></td>
+<td>별점을 더 정확하게 만드는 일이 아닙니다. 평가 대신 기록, 다수 대신 아는 사람이라는 다른 신뢰 체계를 만듭니다.</td>
+</tr>
+<tr>
+<td>대체재 vs 보완재</td>
+<td><strong>보완재</strong></td>
+<td>길찾기, 영업시간, 예약은 네이버 지도와 구글 지도에 맡깁니다. 다시감은 '어디로 갈지'를 정하는 순간만 맡습니다.</td>
+</tr>
+<tr>
+<td>보편성 vs 차별성</td>
+<td><strong>차별성 우선, 이후 보편성</strong></td>
+<td>처음에는 맛집을 기록하는 습관이 있는 20~30대 사용자에 집중합니다. 이후 그 목록을 받아보는 친구 집단으로 넓힙니다.</td>
+</tr>
+</tbody></table></div>
+<h2>4. 시나리오 (Scenario): 사용자 여정, 페인포인트 및 개념 전환 해결책</h2>
+<p><strong>현실 공간 시나리오</strong></p>
+<blockquote>
+<p>금요일 오후 4시, 29세 직장인 지은은 오랜만에 대학 동기 두 명과 성수동에서 저녁을 먹기로 했습니다. 장소는 지은이 고르기로 했습니다. 지도 앱에서 '성수 맛집'을 검색하니 평점 4.5 이상인 곳이 40곳 넘게 나옵니다. 리뷰를 읽다 보면 "서비스 받고 씁니다"라는 문장이 계속 보이고, 블로그 후기는 대부분 협찬입니다. 20분을 헤매다 결국 단톡방에 "성수 아는 데 있어?"라고 묻습니다. 답은 1시간 뒤에야 옵니다.</p>
+</blockquote>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>여정 단계</th>
+<th>페인포인트</th>
+<th>증상 대처 (기존 방식)</th>
+<th>개념 전환 해결책 (다시감)</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>탐색</td>
+<td>후보가 많지만 믿을 수 없다</td>
+<td>필터 추가, 리뷰 신뢰도 점수</td>
+<td><strong>친구의 '2회 이상 방문' 장소만 지역별로 보여줍니다.</strong> 후보 40곳이 3~5곳으로 줄어듭니다.</td>
+</tr>
+<tr>
+<td>판단</td>
+<td>나와 입맛이 맞는지 모른다</td>
+<td>리뷰를 더 길게 쓰도록 유도</td>
+<td><strong>취향 겹침 표시</strong>: "지은 님이 다시 간 곳 12곳 중 7곳을 민수 님도 다시 갔어요."</td>
+</tr>
+<tr>
+<td>결정</td>
+<td>친구에게 묻고 기다린다</td>
+<td>채팅 기능 추가</td>
+<td>친구 목록이 이미 열려 있으므로 물어볼 필요가 없습니다.</td>
+</tr>
+<tr>
+<td>기록</td>
+<td>리뷰 쓰기가 귀찮다</td>
+<td>포인트 보상</td>
+<td><strong>쓰지 않아도 기록됩니다.</strong> 영수증 사진이나 방문 체크인 한 번이면 끝나고, 한 줄 메모는 선택입니다.</td>
+</tr>
+<tr>
+<td>공유</td>
+<td>링크를 받은 친구가 앱을 깔아야 한다</td>
+<td>설치 유도 팝업</td>
+<td>앱 없이 웹에서 바로 열리는 '내 맛집 지도' 링크를 제공합니다.</td>
+</tr>
+</tbody></table></div>
+<p><strong>Must-have vs Nice-to-have</strong></p>
+<ul>
+<li><strong>Must-have</strong>: 방문 체크인(영수증 또는 위치), 재방문 자동 집계, 웹 공유 링크, 친구 연결, 지역별 친구 재방문 목록</li>
+<li><strong>Nice-to-have</strong>: 취향 겹침 지표, 한 줄 메모, 상황 태그(데이트, 혼밥, 부모님), 지도 앱 바로가기</li>
+</ul>
+<h2>5. 핵심 목표 (KPI &amp; 메트릭 테이블)</h2>
+<blockquote>
+<p>Baseline은 출시 전 베타 테스트(n=200) 또는 유사 서비스 공개 벤치마크를 기준으로 한 가정값입니다.</p>
+</blockquote>
+<p><strong>Primary KPI</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>지표</th>
+<th>정의</th>
+<th>데이터 소스 / 측정 주기</th>
+<th>Baseline → Target (6개월)</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>재방문 기록률</td>
+<td>전체 기록된 장소 중 2회 이상 방문한 장소의 비율. 서비스의 존재 이유와 직결됩니다.</td>
+<td>체크인 로그 / 주간</td>
+<td>15% → 35%</td>
+</tr>
+<tr>
+<td>추천 경유 방문 전환율</td>
+<td>친구 목록에서 저장한 장소를 30일 안에 실제로 방문해 체크인한 비율</td>
+<td>저장·체크인 이벤트 매칭 / 월간</td>
+<td>8% → 20%</td>
+</tr>
+<tr>
+<td>4주 리텐션</td>
+<td>가입 후 4주차에 체크인 또는 열람을 1회 이상 한 사용자 비율</td>
+<td>앱·웹 이벤트 로그 / 주간 코호트</td>
+<td>18% → 30%</td>
+</tr>
+</tbody></table></div>
+<p><strong>Secondary KPI</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>지표</th>
+<th>정의</th>
+<th>데이터 소스 / 측정 주기</th>
+<th>Baseline → Target (6개월)</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1인당 연결 친구 수</td>
+<td>맞팔 관계인 친구 수의 중앙값</td>
+<td>소셜 그래프 DB / 월간</td>
+<td>2명 → 6명</td>
+</tr>
+<tr>
+<td>외부 공유 링크 유입</td>
+<td>웹 링크를 통해 들어온 비회원 방문자 중 가입 전환 비율</td>
+<td>UTM, 웹 로그 / 주간</td>
+<td>3% → 10%</td>
+</tr>
+<tr>
+<td>결정 소요 시간</td>
+<td>지역 목록을 연 뒤 장소를 저장하거나 지도 앱으로 이동하기까지 걸린 시간의 중앙값</td>
+<td>세션 이벤트 타임스탬프 / 월간</td>
+<td>측정 시작 → 90초 이내</td>
+</tr>
+</tbody></table></div>
+<h2>6. 가지치기 (Pruning) &amp; 가치 검증 (Must-have vs Nice-to-have)</h2>
+<p><strong>오컴의 면도날로 쳐낸 것</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>제거한 기능</th>
+<th>제거 이유</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>별점, 점수</td>
+<td>경쟁사와 같은 판에 서게 되고, 재방문이라는 신호를 흐립니다.</td>
+</tr>
+<tr>
+<td>팔로워 수 공개, 인플루언서 랭킹</td>
+<td>기록이 과시로 바뀌는 순간 협찬과 연출이 들어옵니다.</td>
+</tr>
+<tr>
+<td>AI 맞춤 추천</td>
+<td>초기 데이터가 적으면 정확도가 낮습니다. "친구가 다시 갔다"는 설명이 더 설득력 있습니다.</td>
+</tr>
+<tr>
+<td>예약, 쿠폰, 결제</td>
+<td>지도 앱과 예약 플랫폼이 이미 잘합니다. 보완재라는 위치를 지킵니다.</td>
+</tr>
+<tr>
+<td>사진 필터, 긴 리뷰 에디터</td>
+<td>기록 부담을 키워 체크인율을 떨어뜨립니다.</td>
+</tr>
+</tbody></table></div>
+<p><strong>검증 관문: "사용자에게 주려는 가치가 정말 이게 맞는가?"</strong></p>
+<ol>
+<li><strong>기능 판단 질문</strong>: 이 기능을 빼도 "친구가 다시 간 집을 10초 안에 고른다"는 경험이 유지되는가? 유지된다면 그 기능은 뺍니다.</li>
+<li><strong>가설 검증 실험</strong>: 베타 사용자 200명을 두 그룹으로 나눕니다. A는 별점과 리뷰를, B는 친구 재방문 목록만 보게 합니다. B그룹의 결정 시간이 30% 이상 짧고 만족도가 같거나 높으면 개념을 확정합니다.</li>
+</ol>
+<p><strong>핍진성 확보</strong></p>
+<ul>
+<li><strong>구체성</strong>: "맛있었다" 대신 "3번 갔다, 마지막 방문 10월 12일"처럼 사실로 기록합니다.</li>
+<li><strong>진정성</strong>: 영수증이나 위치로 방문을 인증하고, 사업주의 기록 요청과 보상 연동을 정책으로 금지합니다.</li>
+<li><strong>일관성</strong>: 기록, 탐색, 공유 화면 어디에서나 기준이 '재방문'으로 같습니다.</li>
+</ul>
+<h2>7. 실행 로드맵 &amp; 리스크 대응 방안</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Phase</th>
+<th>기간</th>
+<th>핵심 목표</th>
+<th>주요 실행</th>
+<th>리스크</th>
+<th>대응책</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Phase 1 MVP</strong></td>
+<td>0~3개월</td>
+<td>재방문 기록이 의미 있는 신호인지 확인</td>
+<td>체크인, 재방문 집계, 웹 공유 링크, 친구 연결. 성수·연남·을지로 3개 상권에 한정. 베타 사용자 500명</td>
+<td>친구가 없으면 볼 게 없는 콜드 스타트 문제</td>
+<td>지도 앱 저장 목록을 가져오는 기능 제공. 맛집 기록 습관이 있는 초기 사용자 50명을 직접 모집해 목록을 미리 채움</td>
+</tr>
+<tr>
+<td><strong>Phase 2 Growth</strong></td>
+<td>3~6개월</td>
+<td>공유 링크로 친구 집단을 확장</td>
+<td>취향 겹침 지표, 상황 태그, 서울 전역 확대. MAU 3만 명 목표</td>
+<td>위치 인증에 대한 개인정보 거부감</td>
+<td>위치는 체크인 순간에만 쓰고 이동 경로는 저장하지 않음. 영수증 인증을 대안으로 제공. 목록은 기본 비공개, 공개 범위는 사용자가 선택</td>
+</tr>
+<tr>
+<td><strong>Phase 3 Scale</strong></td>
+<td>6~12개월</td>
+<td>지속 가능한 수익 구조 확인</td>
+<td>부산·대구 확장, 친구 목록 기반 그룹 장소 정하기 기능. 수익 모델 실험(프리미엄 지도 테마, 단체 예약 제휴 수수료)</td>
+<td>사업주 마케팅이 들어오면서 신호가 오염될 위험</td>
+<td>광고 장소는 친구 목록과 분리해 별도 표시. 비정상 체크인 패턴(같은 기기에서 같은 장소 반복 등)을 탐지하고 제재</td>
+</tr>
+</tbody></table></div>
+<h2>8. 기획 검증 및 스토리텔링 결언</h2>
+<p>지은은 다음 금요일에 단톡방에 묻지 않았습니다. 다시감을 열고 '성수'를 누르자 친구 민수가 네 번 간 국숫집과 동기 하나가 세 번 간 와인바가 보였습니다. 별점은 하나도 없었지만, 고르는 데 1분이 걸리지 않았습니다. 그날 저녁이 마음에 들었던 지은은 영수증을 한 번 찍었고, 그 국숫집은 지은의 목록에도 남았습니다.</p>
+<p>이 서비스는 리뷰를 더 많이 모으려 하지 않습니다. 사람들이 이미 하고 있는 행동, 즉 좋은 곳에 다시 가고 그곳을 아끼는 사람에게 알려주는 일을 흩어지지 않게 담아두려 할 뿐입니다. 수천 개의 별보다 아는 사람의 세 번이 더 믿음직하다는 건 누구나 경험으로 알고 있습니다.</p>
+<blockquote>
+<p><strong>"별점은 처음 간 사람이 남기고, 진짜 맛집은 다시 간 사람이 압니다."</strong>
+음, 말 되네.</p>
+</blockquote>
+</div></section><section class="doc" id="threec"><h2>3C 환경 분석</h2><p class="doc-time">분석 소요 2분 54초</p><div class="markdown-body"><section class="viz-panel" aria-label="시각화 요약">
+                    <span class="viz-eyebrow"><i class="fa-solid fa-chart-simple"></i> VISUAL SUMMARY</span>
+                    <div class="viz-grid"><figure class="viz-card wide">
+                <figcaption class="viz-card-head">
+                    <div>
+                        <h4 class="viz-title">3C 교집합 — 전략적 화이트 스페이스</h4>
+                        <p class="viz-sub">★ 내 입맛과 닮은 사람이 두 번 간 집만 모은 맛집 지도</p>
+                    </div>
+                    
+                </figcaption>
+                <div class="viz-body"><div class="viz-3c">
+                <svg class="viz-svg viz-venn" viewBox="0 0 360 300" aria-hidden="true">
+                    <circle cx="135" cy="118" r="92" fill="var(--viz-1)" fill-opacity="0.14" stroke="var(--viz-1)" stroke-width="1.5"/>
+                    <circle cx="225" cy="118" r="92" fill="var(--viz-2)" fill-opacity="0.14" stroke="var(--viz-2)" stroke-width="1.5"/>
+                    <circle cx="180" cy="196" r="92" fill="var(--viz-3)" fill-opacity="0.14" stroke="var(--viz-3)" stroke-width="1.5"/>
+                    <text x="88" y="70" class="viz-label-strong" text-anchor="middle">Customer</text>
+                    <text x="272" y="70" class="viz-label-strong" text-anchor="middle">Competitor</text>
+                    <text x="180" y="268" class="viz-label-strong" text-anchor="middle">Company</text>
+                    <text x="180" y="146" class="viz-label-strong" text-anchor="middle">★ White Space</text>
+                </svg><div class="viz-3c-lists">
+                <div class="viz-3c-group">
+                    <div class="viz-3c-head"><i class="viz-swatch" style="background:var(--viz-1)"></i>고객 니즈</div>
+                    <ul><li>광고 없는 진짜 맛집을 빨리 고르기</li><li>약속 장소 실패에 대한 불안 해소</li><li>내 미식 취향을 드러내고 인정받기</li></ul>
+                </div>
+                <div class="viz-3c-group">
+                    <div class="viz-3c-head"><i class="viz-swatch" style="background:var(--viz-2)"></i>경쟁 공백</div>
+                    <ul><li>평균 별점·키워드 리뷰의 변별력 상실</li><li>광고 수익 구조로 사용자 편에 못 섬</li><li>저장 장소가 흩어지고 정리 불가</li></ul>
+                </div>
+                <div class="viz-3c-group">
+                    <div class="viz-3c-head"><i class="viz-swatch" style="background:var(--viz-3)"></i>자사 강점</div>
+                    <ul><li>상권 집중형 큐레이터 커뮤니티</li><li>재방문 신호를 처음부터 설계 가능</li><li>빠른 실험 속도와 경량 인프라</li></ul>
+                </div></div></div></div>
+                
+            </figure><figure class="viz-card wide">
+                <figcaption class="viz-card-head">
+                    <div>
+                        <h4 class="viz-title">경쟁 비교 히트맵</h4>
+                        <p class="viz-sub">속성별 경쟁력 점수 (1~5)</p>
+                    </div>
+                    
+                </figcaption>
+                <div class="viz-body">
+                <div class="viz-heat" role="table" aria-label="경쟁 비교 점수 (1~5)">
+                    <div class="viz-heat-row viz-heat-header" role="row" style="--cols:5">
+                        <span role="columnheader"></span><span role="columnheader">리뷰 신뢰도</span><span role="columnheader">취향 맞춤 추천</span><span role="columnheader">소셜 큐레이션</span><span role="columnheader">장소 데이터 커버리지</span><span role="columnheader">길찾기·예약 연계</span>
+                    </div>
+                    <div class="viz-heat-row self" role="row" style="--cols:5">
+                            <span class="viz-heat-name" role="rowheader">자사(목표)</span>
+                            <span class="viz-heat-cell" role="cell" style="background:var(--viz-seq-5);color:var(--viz-seq-5-ink)"
+                                    data-tip="자사(목표) · 리뷰 신뢰도
+5 / 5" tabindex="0" role="img" aria-label="자사(목표) · 리뷰 신뢰도, 5 / 5">5</span><span class="viz-heat-cell" role="cell" style="background:var(--viz-seq-5);color:var(--viz-seq-5-ink)"
+                                    data-tip="자사(목표) · 취향 맞춤 추천
+5 / 5" tabindex="0" role="img" aria-label="자사(목표) · 취향 맞춤 추천, 5 / 5">5</span><span class="viz-heat-cell" role="cell" style="background:var(--viz-seq-5);color:var(--viz-seq-5-ink)"
+                                    data-tip="자사(목표) · 소셜 큐레이션
+5 / 5" tabindex="0" role="img" aria-label="자사(목표) · 소셜 큐레이션, 5 / 5">5</span><span class="viz-heat-cell" role="cell" style="background:var(--viz-seq-2);color:var(--viz-seq-2-ink)"
+                                    data-tip="자사(목표) · 장소 데이터 커버리지
+2 / 5" tabindex="0" role="img" aria-label="자사(목표) · 장소 데이터 커버리지, 2 / 5">2</span><span class="viz-heat-cell" role="cell" style="background:var(--viz-seq-3);color:var(--viz-seq-3-ink)"
+                                    data-tip="자사(목표) · 길찾기·예약 연계
+3 / 5" tabindex="0" role="img" aria-label="자사(목표) · 길찾기·예약 연계, 3 / 5">3</span>
+                        </div><div class="viz-heat-row" role="row" style="--cols:5">
+                            <span class="viz-heat-name" role="rowheader">네이버 지도</span>
+                            <span class="viz-heat-cell" role="cell" style="background:var(--viz-seq-2);color:var(--viz-seq-2-ink)"
+                                    data-tip="네이버 지도 · 리뷰 신뢰도
+2 / 5" tabindex="0" role="img" aria-label="네이버 지도 · 리뷰 신뢰도, 2 / 5">2</span><span class="viz-heat-cell" role="cell" style="background:var(--viz-seq-3);color:var(--viz-seq-3-ink)"
+                                    data-tip="네이버 지도 · 취향 맞춤 추천
+3 / 5" tabindex="0" role="img" aria-label="네이버 지도 · 취향 맞춤 추천, 3 / 5">3</span><span class="viz-heat-cell" role="cell" style="background:var(--viz-seq-2);color:var(--viz-seq-2-ink)"
+                                    data-tip="네이버 지도 · 소셜 큐레이션
+2 / 5" tabindex="0" role="img" aria-label="네이버 지도 · 소셜 큐레이션, 2 / 5">2</span><span class="viz-heat-cell" role="cell" style="background:var(--viz-seq-5);color:var(--viz-seq-5-ink)"
+                                    data-tip="네이버 지도 · 장소 데이터 커버리지
+5 / 5" tabindex="0" role="img" aria-label="네이버 지도 · 장소 데이터 커버리지, 5 / 5">5</span><span class="viz-heat-cell" role="cell" style="background:var(--viz-seq-5);color:var(--viz-seq-5-ink)"
+                                    data-tip="네이버 지도 · 길찾기·예약 연계
+5 / 5" tabindex="0" role="img" aria-label="네이버 지도 · 길찾기·예약 연계, 5 / 5">5</span>
+                        </div><div class="viz-heat-row" role="row" style="--cols:5">
+                            <span class="viz-heat-name" role="rowheader">구글 지도</span>
+                            <span class="viz-heat-cell" role="cell" style="background:var(--viz-seq-3);color:var(--viz-seq-3-ink)"
+                                    data-tip="구글 지도 · 리뷰 신뢰도
+3 / 5" tabindex="0" role="img" aria-label="구글 지도 · 리뷰 신뢰도, 3 / 5">3</span><span class="viz-heat-cell" role="cell" style="background:var(--viz-seq-2);color:var(--viz-seq-2-ink)"
+                                    data-tip="구글 지도 · 취향 맞춤 추천
+2 / 5" tabindex="0" role="img" aria-label="구글 지도 · 취향 맞춤 추천, 2 / 5">2</span><span class="viz-heat-cell" role="cell" style="background:var(--viz-seq-1);color:var(--viz-seq-1-ink)"
+                                    data-tip="구글 지도 · 소셜 큐레이션
+1 / 5" tabindex="0" role="img" aria-label="구글 지도 · 소셜 큐레이션, 1 / 5">1</span><span class="viz-heat-cell" role="cell" style="background:var(--viz-seq-4);color:var(--viz-seq-4-ink)"
+                                    data-tip="구글 지도 · 장소 데이터 커버리지
+4 / 5" tabindex="0" role="img" aria-label="구글 지도 · 장소 데이터 커버리지, 4 / 5">4</span><span class="viz-heat-cell" role="cell" style="background:var(--viz-seq-4);color:var(--viz-seq-4-ink)"
+                                    data-tip="구글 지도 · 길찾기·예약 연계
+4 / 5" tabindex="0" role="img" aria-label="구글 지도 · 길찾기·예약 연계, 4 / 5">4</span>
+                        </div><div class="viz-heat-row" role="row" style="--cols:5">
+                            <span class="viz-heat-name" role="rowheader">인스타그램</span>
+                            <span class="viz-heat-cell" role="cell" style="background:var(--viz-seq-2);color:var(--viz-seq-2-ink)"
+                                    data-tip="인스타그램 · 리뷰 신뢰도
+2 / 5" tabindex="0" role="img" aria-label="인스타그램 · 리뷰 신뢰도, 2 / 5">2</span><span class="viz-heat-cell" role="cell" style="background:var(--viz-seq-3);color:var(--viz-seq-3-ink)"
+                                    data-tip="인스타그램 · 취향 맞춤 추천
+3 / 5" tabindex="0" role="img" aria-label="인스타그램 · 취향 맞춤 추천, 3 / 5">3</span><span class="viz-heat-cell" role="cell" style="background:var(--viz-seq-4);color:var(--viz-seq-4-ink)"
+                                    data-tip="인스타그램 · 소셜 큐레이션
+4 / 5" tabindex="0" role="img" aria-label="인스타그램 · 소셜 큐레이션, 4 / 5">4</span><span class="viz-heat-cell" role="cell" style="background:var(--viz-seq-2);color:var(--viz-seq-2-ink)"
+                                    data-tip="인스타그램 · 장소 데이터 커버리지
+2 / 5" tabindex="0" role="img" aria-label="인스타그램 · 장소 데이터 커버리지, 2 / 5">2</span><span class="viz-heat-cell" role="cell" style="background:var(--viz-seq-1);color:var(--viz-seq-1-ink)"
+                                    data-tip="인스타그램 · 길찾기·예약 연계
+1 / 5" tabindex="0" role="img" aria-label="인스타그램 · 길찾기·예약 연계, 1 / 5">1</span>
+                        </div>
+                    <div class="viz-heat-scale"><span>낮음</span><i style="background:var(--viz-seq-1)"></i><i style="background:var(--viz-seq-2)"></i><i style="background:var(--viz-seq-3)"></i><i style="background:var(--viz-seq-4)"></i><i style="background:var(--viz-seq-5)"></i><span>높음</span></div>
+                </div></div>
+                
+            </figure></div>
+                </section><h1>[전략 기획] 3C 프레임워크 기반 입체적 환경 분석: '별점 평균'에서 '취향 일치'로, 20~30대 맛집 큐레이션 공유 서비스</h1>
+<blockquote>
+<p><strong>분석 전제</strong></p>
+<ul>
+<li>아이디어 단계라 자사(Company) 정보가 주어지지 않았습니다. 그래서 "시드 단계 스타트업, 6<del>8인 팀, 가용 예산 10</del>15억 원"을 가정해 분석했습니다.</li>
+<li>MAU 등 수치는 공개 보도, 앱 분석 서비스 동향을 바탕으로 한 <strong>추정 범위</strong>입니다. 실제 의사결정 전에 모바일인덱스 등으로 최신 수치를 다시 확인해야 합니다.</li>
+<li>아이디어에서는 "네이버 지도 별점"을 경쟁 대상으로 들었습니다. 다만 네이버 플레이스는 2021년부터 별점 대신 <strong>키워드 리뷰("음식이 맛있어요" 등)</strong> 중심으로 바뀌었습니다. 이 분석에서는 네이버의 '키워드·영수증 리뷰'와 구글·카카오의 '별점'을 묶어 <strong>군중 평균형 평가 체계</strong>로 보고 경쟁 상대로 정의합니다.</li>
+</ul>
+</blockquote>
+<hr>
+<h2>1. 오마에 겐이치 전략 삼각형 개요 (The 3C Model Overview)</h2>
+<ul>
+<li><strong>전략 공식</strong>: 지속 가능한 차별화 공간 = Customer 니즈(C1) ∩ Competitor 공백(C2) ∩ Company 강점(C3)</li>
+</ul>
+<p><strong>전략 요약 (Why → So What → How)</strong></p>
+<ul>
+<li><strong>Why</strong>: 20~30대는 지도 앱의 별점과 리뷰를 더 이상 믿지 않습니다. 리뷰 이벤트, 체험단, 영수증 리뷰 품앗이 때문에 '4.5점'이라는 숫자가 맛을 보증하지 못합니다.</li>
+<li><strong>So What</strong>: 결국 이들은 지도 앱에서는 위치만 확인하고, 실제 판단은 "나랑 입맛 비슷한 친구"나 "믿을 만한 인스타 계정"에 맡기는 이중 행동을 합니다. 이 구조에서는 수백만 개의 리뷰가 쌓여도 플랫폼 하나가 신뢰의 원천이 되지 못합니다.</li>
+<li><strong>How</strong>: 경쟁사가 가진 데이터의 규모와 지도 인프라는 정면으로 이길 수 없는 제약입니다. 그래서 싸움터를 '모든 장소의 평균 점수'에서 **'나와 취향이 닮은 사람의 재방문 리스트'**로 옮깁니다. 이 경우 KSF는 커버리지가 아니라 **취향 매칭 정확도와 신호의 진정성(재방문)**이 됩니다.</li>
+</ul>
+<hr>
+<h2>2. Customer (고객 분석) — 수요 측면 (C1)</h2>
+<h3>2.1. 고객 세분화 및 타깃 정의 (Segmentation)</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th align="left">세그먼트</th>
+<th align="left">인구통계</th>
+<th align="left">니즈·행동 특성</th>
+<th align="left">시장 내 비중(추정)</th>
+<th align="left">전략적 역할</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><strong>S1. 취향 큐레이터</strong></td>
+<td align="left">27~35세, 수도권 직장인, 외식비 월 40만 원 이상</td>
+<td align="left">맛집 리스트를 직접 만들고 남에게 추천하는 데서 정체성을 얻음. 인스타 저장·네이버 MY플레이스를 이미 쓰고 있음</td>
+<td align="left">5~10%</td>
+<td align="left"><strong>공급자</strong>. 초기 콘텐츠 품질을 결정함</td>
+</tr>
+<tr>
+<td align="left"><strong>S2. 실패 회피형 탐색자</strong></td>
+<td align="left">24~32세, 데이트·모임 약속을 잡는 사람</td>
+<td align="left">"실패하면 내 탓"이라는 부담이 큼. 검색에 20~40분을 쓰고 블로그 광고를 걸러내는 데 지쳐 있음</td>
+<td align="left">40~50%</td>
+<td align="left"><strong>핵심 수요자</strong>. 리텐션과 규모를 만듦</td>
+</tr>
+<tr>
+<td align="left"><strong>S3. 동네 단골형</strong></td>
+<td align="left">25<del>34세, 1</del>2인 가구, 재택·하이브리드 근무</td>
+<td align="left">집·회사 반경 1km 안에서 반복 외식. 새로운 곳보다 '오래 갈 단골집'을 원함</td>
+<td align="left">20~25%</td>
+<td align="left"><strong>재방문 데이터 생산자</strong>. 신호의 진정성을 높임</td>
+</tr>
+<tr>
+<td align="left"><strong>S4. 미식 여행자</strong></td>
+<td align="left">22~30세, 주말·연휴 국내 여행</td>
+<td align="left">낯선 지역에서 '현지인이 진짜 가는 곳'을 찾음. 관광지 별점 함정을 경험한 적 있음</td>
+<td align="left">15~20%</td>
+<td align="left"><strong>확장 세그먼트</strong>. 지역 확장 시 진입 레버</td>
+</tr>
+</tbody></table></div>
+<p><strong>1차 타깃</strong>은 S1(공급)과 S2(수요)의 짝입니다. 소셜 큐레이션 서비스는 공급자가 없으면 수요자가 오지 않는 닭과 달걀 문제를 겪기 때문에, 출시 초기에는 S1을 먼저 확보해야 합니다.</p>
+<h4>페르소나별 터치포인트 시나리오</h4>
+<p><strong>① 페르소나 A — 김서윤(31세, 스타트업 브랜드 마케터) · S1 취향 큐레이터</strong></p>
+<ul>
+<li><strong>[08:20] 출근길 지하철 2호선</strong>: 인스타그램을 넘기다 지인이 올린 성수동 비스트로 사진을 봅니다. 예전 같으면 '저장'만 눌러두고 잊었겠지만, 공유 시트에서 서비스 아이콘을 눌러 '성수 데이트 후보' 리스트에 바로 담습니다. 장소 정보는 자동으로 매칭됩니다.</li>
+<li><strong>[13:10] 점심 직후 회사 근처 카페</strong>: 방금 먹은 쌀국숫집이 이번이 세 번째 방문이라는 알림이 뜹니다. "재방문 3회 — 단골 인증할까요?" 버튼을 누르고 "고수 많이 달라고 하면 더 줌" 한 줄을 남깁니다. 별점은 매기지 않습니다.</li>
+<li><strong>[22:40] 퇴근 후 침대</strong>: 내 리스트 '혼밥하기 좋은 을지로'를 후배 3명이 팔로우했다는 알림을 받습니다. 리스트 커버 사진을 바꾸고, 인스타 스토리에 공유합니다. 이 순간 서윤 씨에게 이 서비스는 맛집 앱이 아니라 <strong>취향 포트폴리오</strong>입니다.</li>
+</ul>
+<p><strong>② 페르소나 B — 박준혁(28세, 제조업 대기업 연구원) · S2 실패 회피형 탐색자</strong></p>
+<ul>
+<li><strong>[12:00] 점심시간 사내 식당 줄</strong>: 이번 주 토요일이 여자친구와 사귄 지 1주년입니다. 네이버에 '을지로 분위기 좋은 레스토랑'을 검색하지만 상위 블로그 다섯 개가 모두 체험단 글이라 닫아버립니다.</li>
+<li><strong>[19:30] 퇴근 버스</strong>: 서비스에서 '취향 진단' 카드 10장을 넘깁니다(웨이팅 싫음, 시끄러운 곳 싫음, 내추럴 와인 좋음 등). '나와 취향 일치도 87%'인 큐레이터 3명의 리스트가 뜨고, 그중 두 명이 공통으로 재방문 인증한 곳을 고릅니다.</li>
+<li><strong>[21:00] 집 소파</strong>: 가게 상세 화면에서 '캐치테이블로 예약' 버튼을 눌러 예약을 마칩니다. 다음 날 아침, 일요일 오전에 "어땠어요? 또 갈 것 같나요?"라는 한 문장짜리 질문 푸시를 받습니다.</li>
+</ul>
+<p><strong>③ 페르소나 C — 이하은(26세, 프리랜서 영상 편집자) · S3 동네 단골형</strong></p>
+<ul>
+<li><strong>[11:30] 망원동 자취방, 늦은 아침</strong>: 배달비가 아까워 동네 반경 500m에서 '혼밥 단골 리스트'를 엽니다. 같은 동네 사는 취향 비슷한 사람들이 재방문한 순서대로 정렬돼 있습니다.</li>
+<li><strong>[15:00] 동네 카페 작업 중</strong>: 이번 달 '나의 외식 지도'가 갱신됐다는 알림이 옵니다. 지난달보다 새로운 가게를 4곳 더 갔고, 재방문율이 60%라는 리포트를 보고 스크린샷을 찍습니다.</li>
+<li><strong>[20:00] 친구와의 단톡방</strong>: 친구가 "망원에서 뭐 먹지?"라고 묻자 하은 씨는 링크 하나를 보냅니다. 앱이 없는 친구도 웹 뷰로 리스트를 열 수 있습니다. 이 링크가 <strong>비가입자를 데려오는 바이럴 경로</strong>가 됩니다.</li>
+</ul>
+<h3>2.2. Jobs-to-be-Done (JTBD)</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th align="left">구분</th>
+<th align="left">JTBD 진술</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><strong>핵심 기능 과업</strong></td>
+<td align="left">나는 <strong>광고와 조작을 걸러낸 진짜 맛집을, 내 입맛 기준으로, 10분 안에</strong> 고르는 과제를 해결하고 싶다.</td>
+</tr>
+<tr>
+<td align="left"><strong>감성 과업</strong></td>
+<td align="left">나는 약속 장소를 정했을 때 <strong>"여기 어떻게 알았어?"라는 말을 듣고, 실패의 책임에서 자유로워지는</strong> 과제를 해결하고 싶다.</td>
+</tr>
+<tr>
+<td align="left"><strong>사회 과업 (S1)</strong></td>
+<td align="left">나는 <strong>내가 쌓아온 미식 경험을 '취향 좋은 사람'이라는 정체성으로 인정받는</strong> 과제를 해결하고 싶다.</td>
+</tr>
+<tr>
+<td align="left"><strong>관계 과업</strong></td>
+<td align="left">나는 <strong>친구·연인과 '어디 갈지' 정하는 소모적인 대화를 링크 하나로 끝내는</strong> 과제를 해결하고 싶다.</td>
+</tr>
+</tbody></table></div>
+<p><strong>본질적 통찰</strong>: 고객이 고용하려는 대상은 '맛집 정보'가 아니라 **'신뢰할 수 있는 판단의 대리인'**입니다. 별점은 '모르는 다수의 평균'이라는 대리인인데, 이 대리인은 해고된 상태입니다. 그 빈자리를 '나와 닮은 소수'가 채워야 합니다.</p>
+<h3>2.3. 니즈 계층화 (Needs Hierarchy)</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th align="left">계층</th>
+<th align="left">니즈</th>
+<th align="left">현재 충족도</th>
+<th align="left">기회 강도</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><strong>기능적</strong></td>
+<td align="left">위치·영업시간·메뉴·가격 확인</td>
+<td align="left">높음 (네이버·카카오 충족)</td>
+<td align="left">낮음, <strong>경쟁하지 말고 연동할 영역</strong></td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">광고·조작 리뷰 필터링</td>
+<td align="left">낮음</td>
+<td align="left"><strong>매우 높음</strong></td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">상황별 탐색 (데이트·혼밥·회식·부모님)</td>
+<td align="left">중간 (키워드 리뷰로 일부)</td>
+<td align="left">높음</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">저장·정리 (흩어진 북마크 통합)</td>
+<td align="left">낮음 (인스타·네이버·카카오에 분산)</td>
+<td align="left">높음</td>
+</tr>
+<tr>
+<td align="left"><strong>감성적</strong></td>
+<td align="left">실패에 대한 불안 해소</td>
+<td align="left">낮음</td>
+<td align="left"><strong>매우 높음</strong></td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">발견의 즐거움, '나만 아는 집'</td>
+<td align="left">중간</td>
+<td align="left">높음</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">리뷰 작성의 귀찮음 회피 (별점 매기기 피로)</td>
+<td align="left">낮음</td>
+<td align="left">중간</td>
+</tr>
+<tr>
+<td align="left"><strong>잠재적·사회적</strong></td>
+<td align="left">취향 정체성 표현 (내 미식 포트폴리오)</td>
+<td align="left">매우 낮음</td>
+<td align="left"><strong>매우 높음</strong></td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">취향이 맞는 사람과의 약한 연결</td>
+<td align="left">매우 낮음</td>
+<td align="left">중간 (장기 해자)</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">나의 외식 패턴에 대한 자기 이해 (연말 리포트형)</td>
+<td align="left">매우 낮음</td>
+<td align="left">중간 (리텐션 장치)</td>
+</tr>
+</tbody></table></div>
+<p><strong>구조적 해석</strong>: 기능적 하위 니즈(위치·영업시간)는 이미 충족된 '위생 요인'입니다. 기회는 **기능적 상위(신뢰 필터) → 감성(불안 해소) → 사회(정체성)**로 이어지는 수직축에 있습니다. 경쟁사는 하위층에서 강하고 상위층으로 갈수록 비어 있습니다.</p>
+<h3>2.4. 구매 의사결정 여정 및 지불 의향 (Customer Journey &amp; WTP)</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th align="left">단계</th>
+<th align="left">고객 행동</th>
+<th align="left">페인 포인트</th>
+<th align="left">개입 장치</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><strong>인지</strong></td>
+<td align="left">단톡방에 공유된 리스트 링크, 인스타 스토리</td>
+<td align="left">"또 맛집 앱?"이라는 피로감</td>
+<td align="left">앱 설치 없이 열리는 <strong>웹 리스트 뷰</strong></td>
+</tr>
+<tr>
+<td align="left"><strong>관심</strong></td>
+<td align="left">리스트를 훑어보고 큐레이터 프로필 확인</td>
+<td align="left">이 사람을 믿어도 되는지 판단 기준이 없음</td>
+<td align="left"><strong>취향 일치도 %</strong>, 재방문 인증 배지</td>
+</tr>
+<tr>
+<td align="left"><strong>가입·온보딩</strong></td>
+<td align="left">취향 진단, 기존 저장 장소 불러오기</td>
+<td align="left">빈 화면(콜드 스타트)</td>
+<td align="left">취향 카드 10장, 인스타·네이버 저장 목록 가져오기</td>
+</tr>
+<tr>
+<td align="left"><strong>첫 가치 경험 (Aha)</strong></td>
+<td align="left">추천받은 곳에 실제 방문 후 만족</td>
+<td align="left">추천과 실제의 괴리</td>
+<td align="left">방문 다음 날 "또 갈 것 같나요?" 1탭 질문</td>
+</tr>
+<tr>
+<td align="left"><strong>습관화</strong></td>
+<td align="left">주 1~2회 약속 장소 탐색</td>
+<td align="left">다시 네이버로 돌아가는 관성</td>
+<td align="left">상세 화면의 길찾기·예약을 <strong>외부 앱 딥링크</strong>로 처리해 이탈 마찰 제거</td>
+</tr>
+<tr>
+<td align="left"><strong>전환·옹호</strong></td>
+<td align="left">자기 리스트 생성 및 공유</td>
+<td align="left">큐레이션의 귀찮음</td>
+<td align="left">방문 기록 기반 <strong>리스트 자동 초안</strong></td>
+</tr>
+<tr>
+<td align="left"><strong>재구매(수익 전환)</strong></td>
+<td align="left">예약, 프리미엄 기능 사용</td>
+<td align="left">유료화에 대한 저항</td>
+<td align="left">아래 WTP 분석 참조</td>
+</tr>
+</tbody></table></div>
+<p><strong>WTP 및 가격 민감도 분석</strong></p>
+<ul>
+<li><strong>B2C 직접 과금의 WTP는 매우 낮습니다.</strong> 20<del>30대는 맛집 정보가 무료라는 인식이 강합니다. 자체 가정 기준으로 보면, 월 구독료 3,000원 수준에서도 전환율은 1</del>2%대에 그칠 가능성이 큽니다. 가격 민감도는 높고 대체재 전환 비용은 거의 0입니다.</li>
+<li><strong>간접 WTP는 높습니다.</strong> 같은 사용자가 1주년 저녁 한 끼에 15~25만 원을 쓰고, 이 한 끼의 실패 비용을 줄이려고 검색에 40분을 씁니다. 즉 <strong>돈이 아니라 시간과 체면에 대한 지불 의향</strong>이 큽니다.</li>
+<li><strong>수익화 시사점</strong><ol>
+<li><strong>1순위: 예약·웨이팅 연계 제휴 수수료.</strong> 사용자에게는 무료이고, 전환 시점에 과금됩니다.</li>
+<li><strong>2순위: '광고 없음'을 원칙으로 한 투명한 매장 브랜딩 도구.</strong> 매장이 단골 인증 데이터를 볼 수 있는 B2B 대시보드로, 월 3~5만 원 수준을 가정합니다.</li>
+<li><strong>3순위: 상위 큐레이터 유료 리스트 (수익 분배).</strong> 지역 미식 가이드 같은 형태로 건당 2,000~5,000원을 가정합니다.</li>
+</ol>
+<ul>
+<li><strong>금지선</strong>: 노출 순위를 사고파는 광고는 서비스의 존재 이유(신뢰)를 무너뜨립니다. 이 원칙을 정관 수준의 약속으로 공개하는 것 자체가 차별화 자산이 됩니다.</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2>3. Competitor (경쟁사 분석) — 경쟁 측면 (C2)</h2>
+<h3>3.1. 경쟁 지형도 및 포지셔닝 (Positioning Map)</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th align="left">구분</th>
+<th align="left">대상</th>
+<th align="left">경쟁 지점</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><strong>직접 경쟁</strong></td>
+<td align="left">네이버 지도·플레이스, 카카오맵, 구글 지도</td>
+<td align="left">장소 탐색과 리뷰를 통한 의사결정</td>
+</tr>
+<tr>
+<td align="left"><strong>간접 경쟁 (소셜)</strong></td>
+<td align="left">인스타그램(저장·릴스), 유튜브 먹방·맛집 채널, 네이버 블로그, 스레드</td>
+<td align="left">신뢰할 만한 사람을 통한 발견</td>
+</tr>
+<tr>
+<td align="left"><strong>간접 경쟁 (버티컬)</strong></td>
+<td align="left">캐치테이블, 망고플레이트(서비스 종료 사례), 다이닝코드, 식신</td>
+<td align="left">맛집 특화 정보, 예약</td>
+</tr>
+<tr>
+<td align="left"><strong>잠재적 진입자</strong></td>
+<td align="left">토스·당근의 로컬 확장, 배달의민족의 오프라인 확장</td>
+<td align="left">기존 대규모 트래픽의 로컬 전환</td>
+</tr>
+<tr>
+<td align="left"><strong>기술 대체재</strong></td>
+<td align="left">생성형 AI 검색(ChatGPT, 네이버 AI 브리핑 등)</td>
+<td align="left">"을지로 데이트 맛집 추천해줘"에 대한 즉답</td>
+</tr>
+</tbody></table></div>
+<p><strong>특히 주목할 사례: 망고플레이트의 종료</strong>
+20~30대 맛집 앱의 대표 주자였던 망고플레이트는 사용자 리뷰 기반 서비스였지만 2020년대 초 서비스를 종료했습니다. 원인은 <strong>'또 하나의 리뷰 집적소'로 포지셔닝해 네이버의 데이터 규모에 흡수됐고, 수익 모델이 광고에 의존했다는 점</strong>으로 해석됩니다. 이 사례는 "평균 리뷰를 더 잘 모으는 방식"으로는 이길 수 없다는 증거입니다.</p>
+<p><strong>포지셔닝 맵 (X축: 평가 주체 / Y축: 신뢰 신호의 진정성)</strong></p>
+<pre><code>                     신뢰 신호 진정성 높음 (재방문·실지출 기반)
+                                  ▲
+                                  │        ★ 자사 목표
+                                  │     (취향 닮은 소수 × 재방문 인증)
+            캐치테이블(예약 실적)  │
+                                  │      친구 단톡방 추천
+                                  │      (신뢰 높지만 규모·검색 불가)
+ 익명 다수의 평균 ◀───────────────┼───────────────▶ 나와 닮은/아는 소수
+                                  │
+     네이버 플레이스(영수증 리뷰) │        인스타그램 맛집 계정
+     카카오맵 · 구글 지도(별점)   │        (취향 기반이나 협찬 혼재)
+                                  │
+            생성형 AI 검색        │     유튜브 맛집 채널
+       (출처 불명 요약, 환각)     │
+                                  ▼
+                     신뢰 신호 진정성 낮음 (조작·협찬 가능)
+</code></pre>
+<p><strong>해석</strong>: 우상단 사분면(나와 닮은 소수 × 진정성 높은 신호)에서 현재 가장 가까운 대안은 <strong>친구 단톡방</strong>뿐입니다. 이 대안은 신뢰도는 높지만 검색도, 축적도, 확장도 할 수 없습니다. 이 사분면이 비어 있다는 점이 핵심 공백입니다.</p>
+<h3>3.2. 경쟁사 강·약점 분석 (Competitor Analysis)</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th align="left">경쟁사</th>
+<th align="left">강점</th>
+<th align="left">약점 (공백 영역)</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><strong>네이버 지도·플레이스</strong></td>
+<td align="left">국내 최대 장소 DB, 영수증 인증 리뷰, 예약·주문·스마트플레이스 생태계, 검색 트래픽 독점</td>
+<td align="left">키워드 리뷰가 상향 평준화돼 변별력이 없음. 리뷰 이벤트 보상이 흔함. 플랫폼 수익 구조가 광고주(매장) 친화적이라 <strong>사용자 편에 서기 어려운 구조적 이해 상충</strong>이 있음</td>
+</tr>
+<tr>
+<td align="left"><strong>카카오맵</strong></td>
+<td align="left">카카오톡 공유 연동, 즐겨찾기 폴더 공유 기능, 별점 유지</td>
+<td align="left">리뷰 양과 탐색 경험이 네이버에 밀림. 커뮤니티성이 약함. 큐레이션 기능은 있지만 발견 장치가 없음</td>
+</tr>
+<tr>
+<td align="left"><strong>구글 지도</strong></td>
+<td align="left">글로벌 표준, 외국인·해외여행에 강함, Local Guide 제도</td>
+<td align="left">국내 지도 데이터 반출 제한 등으로 길찾기 기능이 제약됨. 국내 리뷰 양이 부족하고 외국인 관광객 평가 비중이 높아 <strong>20~30대 내국인 취향과 어긋남</strong></td>
+</tr>
+<tr>
+<td align="left"><strong>인스타그램</strong></td>
+<td align="left">시각적 발견, 큐레이터 영향력, 저장 기능</td>
+<td align="left">협찬 게시물이 섞여 있음. 저장한 장소를 정리·검색할 수 없음. 장소 메타데이터가 부실함</td>
+</tr>
+<tr>
+<td align="left"><strong>캐치테이블</strong></td>
+<td align="left">파인다이닝·인기 매장 예약 독점력, 실제 방문 데이터</td>
+<td align="left">예약 가능한 매장 중심이라 동네 맛집·노포를 커버하지 못함. 탐색보다 거래에 최적화됨</td>
+</tr>
+<tr>
+<td align="left"><strong>생성형 AI 검색</strong></td>
+<td align="left">자연어 질의에 즉답, 탐색 시간 단축</td>
+<td align="left">학습한 원천 데이터(블로그·리뷰)의 오염을 그대로 물려받음. <strong>"누가 추천했는가"라는 출처의 신뢰를 제공하지 못함</strong></td>
+</tr>
+</tbody></table></div>
+<p><strong>경쟁사 비교 테이블</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th align="left">구분</th>
+<th align="left">네이버 지도</th>
+<th align="left">카카오맵</th>
+<th align="left">구글 지도</th>
+<th align="left">인스타그램</th>
+<th align="left">캐치테이블</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><strong>사용자 가격</strong></td>
+<td align="left">무료</td>
+<td align="left">무료</td>
+<td align="left">무료</td>
+<td align="left">무료</td>
+<td align="left">무료 (일부 예약금 발생)</td>
+</tr>
+<tr>
+<td align="left"><strong>수익 모델</strong></td>
+<td align="left">검색·플레이스 광고, 예약·주문 수수료</td>
+<td align="left">지역 광고, 카카오 생태계 연계</td>
+<td align="left">글로벌 광고</td>
+<td align="left">피드·릴스 광고</td>
+<td align="left">매장 솔루션 이용료, 예약 수수료</td>
+</tr>
+<tr>
+<td align="left"><strong>국내 MAU (추정)</strong></td>
+<td align="left">약 2,500만~2,700만</td>
+<td align="left">약 1,000만~1,200만</td>
+<td align="left">약 900만~1,100만</td>
+<td align="left">약 2,000만~2,300만 (전체 기능 기준)</td>
+<td align="left">약 200만~400만</td>
+</tr>
+<tr>
+<td align="left"><strong>DAU/MAU (추정)</strong></td>
+<td align="left">35~40% (생활 필수재)</td>
+<td align="left">25~30%</td>
+<td align="left">15~20%</td>
+<td align="left">60% 이상</td>
+<td align="left">10~15%</td>
+</tr>
+<tr>
+<td align="left"><strong>평가 방식</strong></td>
+<td align="left">키워드 리뷰 + 영수증 인증</td>
+<td align="left">별점 5점제 + 후기</td>
+<td align="left">별점 5점제 + Local Guide</td>
+<td align="left">게시물·저장 (정량 평가 없음)</td>
+<td align="left">별점 + 예약 실적</td>
+</tr>
+<tr>
+<td align="left"><strong>핵심 차별화 기능</strong></td>
+<td align="left">장소 DB 규모, 예약·주문 통합</td>
+<td align="left">카톡 공유, 즐겨찾기 폴더</td>
+<td align="left">글로벌 호환, 다국어</td>
+<td align="left">시각적 발견, 인플루언서</td>
+<td align="left">인기 매장 예약권</td>
+</tr>
+<tr>
+<td align="left"><strong>20~30대 신뢰 이슈</strong></td>
+<td align="left">리뷰 이벤트·체험단</td>
+<td align="left">리뷰 양 부족, 오래된 리뷰</td>
+<td align="left">외국인 평가 편향</td>
+<td align="left">협찬 미표기</td>
+<td align="left">고가 매장 편향</td>
+</tr>
+</tbody></table></div>
+<p><em>MAU·DAU 수치는 공개 보도와 앱 분석 서비스 동향에 기반한 추정이며, 최신 데이터로 확인이 필요합니다.</em></p>
+<h3>3.3. 차별화 우위 전략 및 KSF (Key Success Factor)</h3>
+<p><strong>경쟁 원칙: 이기지 못할 곳에서는 싸우지 말고, 붙어서 쓴다</strong></p>
+<ul>
+<li>장소 DB, 길찾기, 예약 인프라는 <strong>자체 구축하지 않습니다.</strong> 장소 정보는 공공 데이터와 외부 API로 매칭하고, 길찾기·예약은 네이버·카카오·캐치테이블로 딥링크합니다.</li>
+<li>대신 경쟁사가 구조적 이해 상충 때문에 따라 하기 어려운 영역에 집중합니다. 네이버가 "광고 없는 맛집 순위"를 내세우면 자기 광고 사업과 충돌하게 됩니다. 이것이 <strong>모방 장벽</strong>입니다.</li>
+</ul>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th align="left">KSF</th>
+<th align="left">정의</th>
+<th align="left">경쟁사가 따라 하기 어려운 이유</th>
+<th align="left">전략적 집중도</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><strong>KSF 1. 취향 매칭 정확도</strong></td>
+<td align="left">사용자-큐레이터 간 취향 일치도를 계산해 추천</td>
+<td align="left">평균 점수 기반 시스템을 개인화 그래프로 다시 짜야 함</td>
+<td align="left">★★★★★ (40%)</td>
+</tr>
+<tr>
+<td align="left"><strong>KSF 2. 신호의 진정성 (재방문 인증)</strong></td>
+<td align="left">별점 대신 '두 번 이상 내 돈 내고 갔다'를 핵심 신호로 사용</td>
+<td align="left">리뷰 수를 늘려야 하는 경쟁사의 KPI와 충돌</td>
+<td align="left">★★★★★ (30%)</td>
+</tr>
+<tr>
+<td align="left"><strong>KSF 3. 큐레이터 정체성 보상</strong></td>
+<td align="left">리스트를 포트폴리오로 만들고 팔로워·영향력을 시각화</td>
+<td align="left">검색 도구 정체성의 지도 앱에는 맞지 않는 문법</td>
+<td align="left">★★★★ (20%)</td>
+</tr>
+<tr>
+<td align="left"><strong>KSF 4. 무마찰 연동</strong></td>
+<td align="left">기존 저장 목록 가져오기, 외부 앱 딥링크, 웹 공유</td>
+<td align="left">경쟁사는 자사 생태계 안에 사용자를 가두려 함</td>
+<td align="left">★★★ (10%)</td>
+</tr>
+</tbody></table></div>
+<hr>
+<h2>4. Company (자사 분석) — 역량 측면 (C3)</h2>
+<blockquote>
+<p>앞서 밝힌 대로 자사 정보는 <strong>가정</strong>입니다. 실제 팀 구성이 다르면 이 장을 다시 써야 합니다.
+<strong>가정 프로필</strong>: 시드 단계, 6<del>8인(창업자 2, 개발 3</del>4, 디자인 1, 커뮤니티·마케팅 1), 런웨이 18개월, 가용 예산 10~15억 원</p>
+</blockquote>
+<h3>4.1. 자사 핵심 역량 (Core Competencies)</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th align="left">역량 축</th>
+<th align="left">보유 (가정)</th>
+<th align="left">경쟁 우위 근거</th>
+<th align="left">냉정한 평가</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><strong>기술</strong></td>
+<td align="left">협업 필터링 기반 취향 매칭 모델, 빠른 모바일 개발 속도</td>
+<td align="left">대기업 대비 2~4주 단위로 실험을 반복할 수 있음</td>
+<td align="left">알고리즘 자체는 해자가 아님. <strong>데이터가 쌓여야 해자가 됨</strong></td>
+</tr>
+<tr>
+<td align="left"><strong>데이터</strong></td>
+<td align="left">출시 시점에는 거의 없음</td>
+<td align="left">대신 '재방문·취향 진단'이라는 <strong>경쟁사에 없는 종류의 데이터</strong>를 처음부터 설계할 수 있음</td>
+<td align="left">양보다 질에서 차별화 가능</td>
+</tr>
+<tr>
+<td align="left"><strong>브랜드</strong></td>
+<td align="left">없음 (0에서 시작)</td>
+<td align="left">"광고 안 받는 맛집 앱"이라는 단일 메시지를 선점할 수 있음</td>
+<td align="left">초기에는 S1 큐레이터의 개인 브랜드에 기대야 함</td>
+</tr>
+<tr>
+<td align="left"><strong>커뮤니티 운영</strong></td>
+<td align="left">창업팀의 20~30대 미식 커뮤니티 네트워크 (가정)</td>
+<td align="left">초기 큐레이터 100~300명을 손으로 모을 수 있음</td>
+<td align="left"><strong>가장 실질적인 초기 자산</strong>이자 가장 확장하기 어려운 자산</td>
+</tr>
+<tr>
+<td align="left"><strong>인프라</strong></td>
+<td align="left">클라우드 기반 경량 구조</td>
+<td align="left">장소·지도·결제를 외부에 맡겨 고정비를 최소화</td>
+<td align="left">외부 API 정책 변경 리스크 존재</td>
+</tr>
+</tbody></table></div>
+<h3>4.2. 자원 제약 및 가치 사슬 (Value Chain &amp; Resource Constraints)</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th align="left">가치 사슬 단계</th>
+<th align="left">제약</th>
+<th align="left">효율화 방안</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><strong>R&amp;D (제품 개발)</strong></td>
+<td align="left">개발 인력 3~4명</td>
+<td align="left">지도·장소 DB는 외부 API와 공공데이터(지자체 일반음식점 인허가 데이터)로 대체. 개발 리소스의 70%를 취향 매칭과 리스트 경험에 집중</td>
+</tr>
+<tr>
+<td align="left"><strong>콘텐츠 조달</strong></td>
+<td align="left">초기 콘텐츠 공백 (콜드 스타트)</td>
+<td align="left"><strong>지역 하나에 집중 진입</strong>: 성수·을지로·망원 3개 상권부터 시작. 큐레이터 100명이 각 20곳씩 2,000개 고품질 리스트 항목 확보 후 일반 공개</td>
+</tr>
+<tr>
+<td align="left"><strong>데이터 정제</strong></td>
+<td align="left">장소 매칭 오류, 폐업 반영 지연</td>
+<td align="left">사용자 제보와 인허가 폐업 데이터를 주기적으로 대조. 재방문 인증은 위치 체류와 사용자 확인을 함께 쓰는 단순한 방식으로 시작 (영수증 OCR은 2단계)</td>
+</tr>
+<tr>
+<td align="left"><strong>마케팅·획득</strong></td>
+<td align="left">유료 광고 예산 제한</td>
+<td align="left">큐레이터의 리스트 공유 링크를 주 획득 채널로 설계. 목표 CAC 2,000원 이하. 바이럴 계수(K-factor) 0.3 이상을 1차 목표로 설정</td>
+</tr>
+<tr>
+<td align="left"><strong>판매·수익화</strong></td>
+<td align="left">초기 매출 없음</td>
+<td align="left">출시 6개월까지는 수익화 보류. 9개월부터 예약 제휴 수수료를 시험하고, 12개월부터 매장 대시보드 베타</td>
+</tr>
+<tr>
+<td align="left"><strong>운영·CS</strong></td>
+<td align="left">인력 1명</td>
+<td align="left">신고·검수는 큐레이터 등급제를 도입해 커뮤니티 자율 정화에 상당 부분 맡김</td>
+</tr>
+</tbody></table></div>
+<p><strong>예산 배분 가이드 (18개월, 12억 원 가정)</strong>: 인건비 65% / 인프라·API 8% / 큐레이터 시딩·커뮤니티 이벤트 12% / 퍼포먼스 마케팅 10% / 예비비 5%</p>
+<h3>4.3. 전략적 방향성 및 확보 가능 역량</h3>
+<p><strong>비전 정합성 검증</strong></p>
+<ul>
+<li><strong>궁극적 비전 (제안)</strong>: "모두가 자기 취향을 믿을 수 있는 사람과 연결되는 로컬 취향 네트워크"</li>
+<li><strong>정합성</strong>: 맛집은 빈도가 가장 높고 실패 비용이 확실한 로컬 의사결정입니다. 그래서 취향 그래프를 쌓기 위한 첫 카테고리로 적합합니다. 같은 그래프는 카페, 술집, 전시, 소품숍으로 확장할 수 있습니다.</li>
+<li><strong>위험 신호</strong>: 단순히 '맛집 리뷰 앱'으로 정의하면 망고플레이트와 같은 경로를 밟게 됩니다. 모든 기능 결정의 기준을 "이 기능이 취향 그래프를 두껍게 만드는가?"에 두어야 합니다.</li>
+</ul>
+<p><strong>12~18개월 역량 확보 로드맵</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th align="left">시기</th>
+<th align="left">확보 역량</th>
+<th align="left">핵심 지표 (Gate)</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><strong>0~3개월</strong></td>
+<td align="left">MVP 출시, 3개 상권 큐레이터 100명 시딩, 기존 저장 목록 가져오기</td>
+<td align="left">큐레이터 1인당 리스트 항목 15개 이상, 초대 사용자 2,000명</td>
+</tr>
+<tr>
+<td align="left"><strong>4~6개월</strong></td>
+<td align="left">취향 일치도 v1, 재방문 인증, 웹 공유 뷰</td>
+<td align="left">4주 리텐션 25% 이상, 공유 링크 경유 가입 비중 40% 이상</td>
+</tr>
+<tr>
+<td align="left"><strong>7~9개월</strong></td>
+<td align="left">서울 주요 상권 15곳 확장, 큐레이터 등급제, 예약 딥링크 제휴</td>
+<td align="left">MAU 5만, 추천 장소 방문 후 만족 응답률 70% 이상</td>
+</tr>
+<tr>
+<td align="left"><strong>10~12개월</strong></td>
+<td align="left">영수증 기반 재방문 인증 v2, 매장 대시보드 베타</td>
+<td align="left">MAU 10만, 첫 매출 발생, 시리즈 A 준비</td>
+</tr>
+<tr>
+<td align="left"><strong>13~18개월</strong></td>
+<td align="left">부산·제주 등 여행지 확장(S4), 연말 '나의 외식 리포트', 카테고리 확장 실험 (카페·바)</td>
+<td align="left">MAU 25만, 월 매출 3,000만 원, 큐레이터 5,000명</td>
+</tr>
+</tbody></table></div>
+<hr>
+<h2>5. 3C × 상품기획 연결 매트릭스 (Integration Matrix)</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th align="left">3C 렌즈 요소</th>
+<th align="left">핵심 발견사항 (Fact &amp; Insight)</th>
+<th align="left">연결 상품기획 산출물</th>
+<th align="left">MVP 우선순위 배정 (Must/Should/Could)</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><strong>Customer</strong></td>
+<td align="left"><strong>Fact</strong>: 20<del>30대는 지도 앱으로 위치만 확인하고, 판단은 친구·인스타 등 '아는 사람'에게 맡김. 맛집 저장은 3</del>4개 앱에 흩어져 있음.<br><strong>Insight</strong>: 고객이 고용하는 것은 정보가 아니라 '신뢰할 수 있는 판단의 대리인'이며, 실패에 대한 불안과 취향 정체성 표현이 핵심 동력임</td>
+<td align="left">- 취향 진단 온보딩 (카드 10장)<br>- 상황별 리스트 (데이트·혼밥·회식)<br>- 인스타·네이버 저장 목록 가져오기<br>- 앱 없이 열리는 웹 공유 뷰</td>
+<td align="left"><strong>Must</strong>: 취향 진단, 리스트 생성·공유, 웹 공유 뷰<br><strong>Should</strong>: 저장 목록 가져오기<br><strong>Could</strong>: 월간 외식 리포트</td>
+</tr>
+<tr>
+<td align="left"><strong>Competitor</strong></td>
+<td align="left"><strong>Fact</strong>: 네이버는 키워드 리뷰로 바꾼 뒤 변별력이 약해졌고, 구글은 외국인 평가에 치우쳐 있으며, 망고플레이트는 리뷰 집적 모델로 실패함.<br><strong>Insight</strong>: 평균 점수 경쟁은 필패. 경쟁사가 광고 사업과 충돌해 따라 할 수 없는 '광고 없는 재방문 신호'가 공백임</td>
+<td align="left">- 별점 없는 평가 체계 (재방문 인증 + 한 줄 팁)<br>- '광고·협찬 없음' 원칙 공개<br>- 길찾기·예약은 외부 앱 딥링크</td>
+<td align="left"><strong>Must</strong>: 재방문 인증 v1, 외부 딥링크<br><strong>Should</strong>: 협찬 금지 정책 및 신고 체계<br><strong>Could</strong>: 캐치테이블 등 예약 제휴 API</td>
+</tr>
+<tr>
+<td align="left"><strong>Company</strong></td>
+<td align="left"><strong>Fact</strong>: 소규모 팀, 데이터 0, 브랜드 0. 다만 빠른 실험 속도와 초기 커뮤니티 네트워크가 있음 (가정).<br><strong>Insight</strong>: 규모 대신 '밀도'로 승부해야 함. 3개 상권에 큐레이터를 집중 배치해 체감 품질을 먼저 확보함</td>
+<td align="left">- 상권 집중 진입 전략 (성수·을지로·망원)<br>- 큐레이터 초대제 및 등급제<br>- 공공 인허가 데이터 기반 장소 DB</td>
+<td align="left"><strong>Must</strong>: 초대 기반 큐레이터 온보딩, 3개 상권 장소 DB<br><strong>Should</strong>: 큐레이터 등급제<br><strong>Could</strong>: 매장 대시보드</td>
+</tr>
+<tr>
+<td align="left"><strong>교집합 (Concept)</strong></td>
+<td align="left">지속 가능한 차별화 기회와 핵심 컨셉: <strong>"내 입맛과 닮은 사람이 두 번 간 집만 모은 맛집 지도."</strong> 고객의 신뢰 결핍, 경쟁사의 평균·광고 구조, 자사의 소규모 커뮤니티 밀도가 겹치는 지점</td>
+<td align="left"><strong>제품 컨셉</strong>: 취향 일치도 기반 큐레이션 맛집 지도<br><strong>가치 제안</strong>: "별점 말고, 나랑 입맛 맞는 사람의 단골집"</td>
+<td align="left"><strong>Must Have</strong></td>
+</tr>
+</tbody></table></div>
+<h3>Strategic White Space 벤다이어그램 (텍스트 설명)</h3>
+<p>세 개의 원이 서로 겹쳐 있는 모습을 떠올려 보세요.</p>
+<ul>
+<li><strong>왼쪽 위 원, Customer (C1)</strong>: "광고 없는 진짜 맛집", "실패하지 않는 선택", "내 취향을 드러내고 싶음"</li>
+<li><strong>오른쪽 위 원, Competitor 공백 (C2)</strong>: "평균 점수의 변별력 상실", "광고 사업과의 이해 상충", "흩어진 저장, 정리 불가"</li>
+<li><strong>아래 원, Company (C3)</strong>: "빠른 실험 속도", "초기 큐레이터 커뮤니티", "재방문 데이터를 처음부터 설계할 수 있음"</li>
+</ul>
+<p><strong>두 원씩 겹치는 영역</strong></p>
+<ul>
+<li><strong>C1 ∩ C2 (고객이 원하지만 경쟁사가 못 하는 것)</strong>: 신뢰할 수 있는 판단의 대리인. 다만 자사 역량 없이는 <strong>아무나 들어올 수 있는 빈 땅</strong>입니다.</li>
+<li><strong>C1 ∩ C3 (고객이 원하고 자사가 할 수 있는 것)</strong>: 커뮤니티 기반 맛집 추천. 하지만 경쟁사(인스타·카카오 폴더 공유)도 부분적으로 하고 있어 <strong>레드오션 경계</strong>에 있습니다.</li>
+<li><strong>C2 ∩ C3 (경쟁사가 못 하고 자사가 할 수 있는 것)</strong>: 광고 없는 재방문 기반 평가. 다만 고객 니즈와 연결하지 않으면 <strong>기술적 실험에 그칩니다.</strong></li>
+</ul>
+<p><strong>세 원의 정중앙 (Strategic White Space)</strong></p>
+<blockquote>
+<p><strong>"취향 일치도 × 재방문 인증 큐레이션"</strong>: 내 입맛과 닮은 사람이 두 번 이상 간 집만 보여주는 맛집 지도</p>
+</blockquote>
+<p>이 영역은 고객의 신뢰 결핍을 직접 해결하고, 경쟁사가 수익 구조 때문에 들어오기 어렵고, 작은 팀이 상권 단위의 밀도로 먼저 쌓을 수 있는 유일한 교집합입니다. 시간이 갈수록 취향 그래프와 재방문 데이터가 쌓이면서 <strong>후발 주자가 복제하기 어려운 네트워크 효과</strong>로 굳어집니다.</p>
+<hr>
+<h2>시각화 데이터 (필수)</h2>
+</div></section><section class="doc" id="swot"><h2>SWOT · TOWS 전략</h2><p class="doc-time">분석 소요 1분 23초</p><div class="markdown-body"><section class="viz-panel" aria-label="시각화 요약">
+                    <span class="viz-eyebrow"><i class="fa-solid fa-chart-simple"></i> VISUAL SUMMARY</span>
+                    <div class="viz-grid"><figure class="viz-card">
+                <figcaption class="viz-card-head">
+                    <div>
+                        <h4 class="viz-title">SWOT 4분면</h4>
+                        
+                    </div>
+                    
+                </figcaption>
+                <div class="viz-body">
+                <div class="viz-2x2">
+                    <span></span>
+                    <span class="viz-axis-head">긍정적 요인</span>
+                    <span class="viz-axis-head">부정적 요인</span>
+                    <span class="viz-axis-head viz-axis-side">내부</span>
+                    
+                <div class="viz-quad">
+                    <div class="viz-quad-head"><i class="viz-swatch" style="background:var(--viz-1)"></i><b>S</b> 강점</div>
+                    <ul><li>맥락이 붙은 리스트형 공유 UX</li><li>친구·취향 기반 신뢰 추천 구조</li><li>광고·체험단 리뷰 배제 정책</li><li>소규모 조직의 빠른 실험 속도</li></ul>
+                </div>
+                    
+                <div class="viz-quad">
+                    <div class="viz-quad-head"><i class="viz-swatch" style="background:var(--viz-2)"></i><b>W</b> 약점</div>
+                    <ul><li>초기 리뷰·사용자 부족(콜드 스타트)</li><li>지도·길찾기·예약 인프라 부재</li><li>인지도와 마케팅 예산 부족</li><li>수익 모델 미검증</li></ul>
+                </div>
+                    <span class="viz-axis-head viz-axis-side">외부</span>
+                    
+                <div class="viz-quad">
+                    <div class="viz-quad-head"><i class="viz-swatch" style="background:var(--viz-3)"></i><b>O</b> 기회</div>
+                    <ul><li>별점·체험단 리뷰 신뢰 하락</li><li>숏폼 보고 저장하는 탐색 습관</li><li>전문 맛집 앱 시장 공백</li><li>소규모·폐쇄형 공유 선호</li></ul>
+                </div>
+                    
+                <div class="viz-quad">
+                    <div class="viz-quad-head"><i class="viz-swatch" style="background:var(--viz-4)"></i><b>T</b> 위협</div>
+                    <ul><li>대형 플랫폼의 기능 복제</li><li>SNS 등 대체 탐색 채널</li><li>어뷰징·광고성 리뷰 유입</li><li>외식 물가 상승에 따른 탐색 감소</li></ul>
+                </div>
+                </div></div>
+                
+            </figure><figure class="viz-card">
+                <figcaption class="viz-card-head">
+                    <div>
+                        <h4 class="viz-title">TOWS 교차 전략 매트릭스</h4>
+                        <p class="viz-sub">배지 = 실행 우선순위</p>
+                    </div>
+                    <button type="button" class="viz-table-toggle" onclick="toggleVizTable(this)" aria-expanded="false">표로 보기</button>
+                </figcaption>
+                <div class="viz-body">
+                <div class="viz-2x2">
+                    <span></span>
+                    <span class="viz-axis-head">O 기회</span>
+                    <span class="viz-axis-head">T 위협</span>
+                    <span class="viz-axis-head viz-axis-side">S 강점</span>
+                    <div class="viz-quad viz-tows-cell">
+                    <div class="viz-quad-head"><b>SO</b> 공격적 성장
+                        <span class="viz-priority" style="background:var(--viz-seq-5);color:var(--viz-seq-5-ink)">High</span>
+                    </div>
+                    <p>SNS 링크 저장과 크리에이터 리스트로 초기 사용자 확보</p>
+                    <span class="viz-meta"><i class="fa-regular fa-clock"></i> 0-6개월</span>
+                </div>
+                    <div class="viz-quad viz-tows-cell">
+                    <div class="viz-quad-head"><b>ST</b> 위협 회피·다각화
+                        <span class="viz-priority" style="background:var(--viz-seq-3);color:var(--viz-seq-3-ink)">Medium</span>
+                    </div>
+                    <p>방문 인증과 취향 일치도로 복제 어려운 신뢰 체계 구축</p>
+                    <span class="viz-meta"><i class="fa-regular fa-clock"></i> 6-12개월</span>
+                </div>
+                    <span class="viz-axis-head viz-axis-side">W 약점</span>
+                    <div class="viz-quad viz-tows-cell">
+                    <div class="viz-quad-head"><b>WO</b> 체질 개선
+                        <span class="viz-priority" style="background:var(--viz-seq-5);color:var(--viz-seq-5-ink)">High</span>
+                    </div>
+                    <p>지도·예약 앱 연동과 친구 공동 지도로 콜드 스타트 해소</p>
+                    <span class="viz-meta"><i class="fa-regular fa-clock"></i> 0-3개월</span>
+                </div>
+                    <div class="viz-quad viz-tows-cell">
+                    <div class="viz-quad-head"><b>WT</b> 방어·위기관리
+                        <span class="viz-priority" style="background:var(--viz-seq-3);color:var(--viz-seq-3-ink)">Medium</span>
+                    </div>
+                    <p>2개 상권 집중 후 확장, 광고 외 수익 모델 조기 검증</p>
+                    <span class="viz-meta"><i class="fa-regular fa-clock"></i> 6-18개월</span>
+                </div>
+                </div></div>
+                <div class="viz-table" hidden><table><thead><tr><th>전략</th><th>내용</th><th>우선순위</th><th>기간</th></tr></thead>
+                <tbody><tr><td>SO</td><td>SNS 링크 저장과 크리에이터 리스트로 초기 사용자 확보</td><td>High</td><td>0-6개월</td></tr><tr><td>ST</td><td>방문 인증과 취향 일치도로 복제 어려운 신뢰 체계 구축</td><td>Medium</td><td>6-12개월</td></tr><tr><td>WO</td><td>지도·예약 앱 연동과 친구 공동 지도로 콜드 스타트 해소</td><td>High</td><td>0-3개월</td></tr><tr><td>WT</td><td>2개 상권 집중 후 확장, 광고 외 수익 모델 조기 검증</td><td>Medium</td><td>6-18개월</td></tr></tbody></table></div>
+            </figure></div>
+                </section><h1>[전략 분석] SWOT 분석 및 교차 전략 매트릭스: 2030 취향 기반 맛집 공유 서비스</h1>
+<h2>1. SWOT 핵심 요약</h2>
+<ul>
+<li>네이버 지도와 구글 지도는 장소 검색과 길찾기를 장악하고 있고, 리뷰는 그 위에 부가 기능으로 쌓이는 구조다. 2030 사용자는 불특정 다수의 별점보다 입맛이 비슷한 사람의 추천을 더 믿는 쪽으로 옮겨가고 있다. 이 서비스가 경쟁할 곳은 검색이 아니라 '오늘 어디 갈지 정하는 순간'이며, 승부는 리뷰 개수가 아니라 추천의 신뢰도에서 갈린다. 초기에는 지역과 사용자층을 좁혀 데이터 밀도를 먼저 확보하고, 지도 기능은 직접 만들지 않고 외부 인프라에 맡기는 편이 맞다.</li>
+</ul>
+<h2>2. 내부/외부 환경 다차원 분석</h2>
+<h3>2.1. 강점 (Strengths) — 내부적 핵심 우위</h3>
+<ul>
+<li><strong>취향 중심의 리스트형 UX</strong>: 지도 앱은 '장소 찾기'에 맞춰 설계돼 있다. 이 서비스는 '성수 혼밥 리스트', '부모님 모시고 갈 곳'처럼 맥락이 붙은 리스트를 만들고 공유하는 경험을 핵심에 둘 수 있다. 2030이 인스타그램 저장 기능과 메모 앱으로 하던 일을 한 곳으로 모으는 구조다.</li>
+<li><strong>관계·취향 기반 추천 구조</strong>: 팔로우한 친구나 입맛이 비슷한 사용자의 기록을 우선 노출하면 "누가 추천했는가"가 신뢰의 근거가 된다. 평균 별점 4.3점보다 "내 친구 셋이 다녀간 곳"이 의사결정에 더 크게 작용한다.</li>
+<li><strong>광고·체험단 리뷰를 배제한 설계</strong>: 대형 플랫폼은 광고 수익 구조 탓에 협찬 리뷰를 완전히 걸러내기 어렵다. 신규 서비스는 처음부터 협찬 표기 의무화, 영수증·방문 인증 등 정책을 기본값으로 둘 수 있다.</li>
+<li><strong>빠른 실험 속도</strong>: 기존 사용자 기반이 없어 기능을 바꿀 때 부담이 적다. 주 단위로 UX를 고치고 반응을 확인할 수 있다.</li>
+</ul>
+<h3>2.2. 약점 (Weaknesses) — 내부적 한계 및 보완점</h3>
+<ul>
+<li><strong>콜드 스타트 문제</strong>: 출시 직후에는 리뷰도, 팔로우할 친구도 없다. 관계 기반 추천은 네트워크가 쌓여야 작동하므로 초기 이탈률이 높을 수밖에 없다.</li>
+<li><strong>지도·길찾기·예약 인프라 부재</strong>: 사용자는 맛집을 고른 뒤 결국 네이버 지도나 카카오맵으로 넘어간다. 이동 동선이 끊기면 서비스 체류 시간이 짧아진다.</li>
+<li><strong>인지도와 마케팅 예산 부족</strong>: 대형 플랫폼은 검색 첫 화면에 장소 정보가 자동으로 뜬다. 신규 앱은 설치라는 장벽부터 넘어야 한다.</li>
+<li><strong>수익 모델 미검증</strong>: 광고를 배제하는 정책은 강점이지만 수익원을 스스로 줄이는 선택이기도 하다. 무엇으로 돈을 벌지 초기부터 가설을 세워야 한다.</li>
+</ul>
+<h3>2.3. 기회 (Opportunities) — 외부적 시장 기회</h3>
+<ul>
+<li><strong>별점 신뢰도 하락</strong>: 체험단 리뷰, 별점 인플레이션, 리뷰 이벤트로 받은 5점이 늘면서 사용자는 별점을 그대로 믿지 않는다. 네이버가 별점 대신 키워드 리뷰를 내세운 것도 같은 흐름이다.</li>
+<li><strong>숏폼·SNS 기반 탐색 습관</strong>: 2030은 릴스와 틱톡에서 맛집을 보고 저장한 뒤 방문한다. 저장은 하지만 정리가 안 되는 불편이 크고, 이 공백을 리스트 기능으로 메울 수 있다.</li>
+<li><strong>전문 맛집 앱의 공백</strong>: 망고플레이트가 서비스를 종료한 뒤 '맛집만 다루는 앱'의 자리가 비어 있다. 예약 앱(캐치테이블 등)은 예약 기능에, 지도 앱은 검색에 집중하고 있다.</li>
+<li><strong>소규모·폐쇄형 공유 선호</strong>: 공개 피드보다 친한 친구에게만 보여주는 공유 방식을 선호하는 경향이 커지고 있다. 친구끼리 맛집 지도를 함께 채우는 기능과 잘 맞는다.</li>
+</ul>
+<h3>2.4. 위협 (Threats) — 외부적 위험 요소</h3>
+<ul>
+<li><strong>대형 플랫폼의 기능 흡수</strong>: 네이버와 카카오는 저장 리스트, 폴더 공유, 리뷰 기능을 계속 강화하고 있다. 반응이 좋은 기능은 빠르게 복제될 수 있다.</li>
+<li><strong>대체 탐색 채널</strong>: 인스타그램, 틱톡, 유튜브가 이미 맛집 발견 채널 역할을 한다. 사용자가 별도 앱을 설치할 이유를 못 느낄 수 있다.</li>
+<li><strong>어뷰징·광고성 리뷰 유입</strong>: 사용자가 늘면 업주와 마케팅 대행사가 바로 들어온다. 신뢰가 무너지면 서비스의 존재 이유가 사라진다.</li>
+<li><strong>외식 물가 상승</strong>: 외식비 부담이 커지면 새로운 식당을 찾는 빈도가 줄고, 탐색 수요 자체가 위축된다.</li>
+</ul>
+<h2>2.5. SWOT 4분면 요약 매트릭스 (2×2 시각화 테이블)</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th align="left"></th>
+<th align="left"><strong>긍정적 요인 (Positive)</strong></th>
+<th align="left"><strong>부정적 요인 (Negative)</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><strong>내부 환경 (Internal)</strong></td>
+<td align="left"><strong>강점 (S)</strong>: 핵심 3가지<br>• 맥락이 붙은 리스트형 공유 UX<br>• 친구·취향 기반 신뢰 추천 구조<br>• 광고·체험단 리뷰 배제 정책</td>
+<td align="left"><strong>약점 (W)</strong>: 핵심 3가지<br>• 초기 리뷰·사용자 부족 (콜드 스타트)<br>• 지도·길찾기·예약 인프라 부재<br>• 수익 모델 미검증</td>
+</tr>
+<tr>
+<td align="left"><strong>외부 환경 (External)</strong></td>
+<td align="left"><strong>기회 (O)</strong>: 핵심 3가지<br>• 별점·체험단 리뷰 신뢰 하락<br>• 숏폼 보고 저장하는 탐색 습관<br>• 전문 맛집 앱 시장 공백</td>
+<td align="left"><strong>위협 (T)</strong>: 핵심 3가지<br>• 대형 플랫폼의 기능 복제<br>• SNS 등 대체 탐색 채널<br>• 어뷰징·광고성 리뷰 유입</td>
+</tr>
+</tbody></table></div>
+<h2>3. TOWS 교차(Cross) 전략 매트릭스 (SO/ST/WO/WT)</h2>
+<ul>
+<li>우선순위는 사업 영향도(1<del>5)와 실행 난이도(1</del>5, 낮을수록 쉬움)를 기준으로 매겼다. 우선순위 점수는 영향도 × (6 − 난이도)로 계산했다.</li>
+</ul>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th align="left">전략 유형</th>
+<th align="left">핵심 분석 결합</th>
+<th align="left">세부 실행 액션 로드맵</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><strong>SO 전략 (공격적 성장)</strong></td>
+<td align="left">강점으로 기회를 극대화<br><strong>S1 + S2 × O1 + O2</strong><br>리스트형 UX와 친구 추천을 결합해, 별점에 지친 사용자와 SNS 저장 습관을 흡수</td>
+<td align="left"><strong>우선순위: High</strong> (영향도 5 × 4 = 20점)<br><strong>기간: 0-6개월</strong><br><strong>필요 자원</strong>: PM 1, 앱 개발 3, 디자이너 1, 시드 크리에이터 50명, 초기 마케팅비 약 3천만 원<br>① 인스타그램·틱톡 링크를 붙여넣으면 장소가 자동 저장되는 기능 출시<br>② 성수·연남 등 2개 상권에서 맛집 크리에이터 50명을 섭외해 공개 리스트 선제작<br>③ 리스트를 카카오톡·인스타 스토리로 공유하면 앱 미설치자도 볼 수 있는 웹 페이지 제공<br>④ KPI: 월간 리스트 생성 5천 건, 공유 링크 유입 설치 전환율 15%</td>
+</tr>
+<tr>
+<td align="left"><strong>ST 전략 (위협 회피/다각화)</strong></td>
+<td align="left">강점으로 위협을 완화<br><strong>S2 + S3 × T1 + T3</strong><br>대형 플랫폼이 복제하기 어려운 '신뢰 그래프'와 인증 체계로 해자를 만듦</td>
+<td align="left"><strong>우선순위: Medium</strong> (영향도 4 × 3 = 12점)<br><strong>기간: 6-12개월</strong><br><strong>필요 자원</strong>: 백엔드 개발 2, 데이터 분석 1, 운영 1, 영수증 인식 API 비용<br>① 영수증·결제 인증을 거친 리뷰에 '방문 인증' 표시<br>② 협찬 리뷰는 표기 의무화, 미표기 적발 시 계정 제재<br>③ 사용자별 취향 일치도(%)를 계산해 "나와 입맛 87% 일치" 형태로 노출<br>④ KPI: 인증 리뷰 비율 60% 이상, 신고 처리 48시간 이내</td>
+</tr>
+<tr>
+<td align="left"><strong>WO 전략 (체질 개선)</strong></td>
+<td align="left">약점을 보완하여 기회 포착<br><strong>W1 + W2 × O3 + O4</strong><br>지도·예약은 제휴로 해결하고, 소규모 친구 그룹에서 데이터를 먼저 쌓음</td>
+<td align="left"><strong>우선순위: High</strong> (영향도 4 × 5 = 20점)<br><strong>기간: 0-3개월</strong><br><strong>필요 자원</strong>: 개발 1, 사업개발 1, 지도·장소 API 비용<br>① 장소 정보는 지도 API로 가져오고, '길찾기'·'예약' 버튼은 네이버 지도, 카카오맵, 예약 앱으로 바로 연결<br>② 친구 3~5명이 함께 채우는 '우리 맛집 지도' 기능으로 첫 사용 경험 설계<br>③ 가입 직후 "가본 곳 10개 체크하기" 온보딩으로 콜드 스타트 완화<br>④ KPI: 가입 후 7일 내 리뷰 3건 이상 작성률 40%</td>
+</tr>
+<tr>
+<td align="left"><strong>WT 전략 (방어 및 위기관리)</strong></td>
+<td align="left">약점 최소화 및 위협 회피<br><strong>W3 + W4 × T2 + T4</strong><br>자원을 분산하지 않고, 광고 없이도 성립하는 수익 구조를 일찍 검증</td>
+<td align="left"><strong>우선순위: Medium</strong> (영향도 4 × 3 = 12점)<br><strong>기간: 6-18개월</strong><br><strong>필요 자원</strong>: 재무·전략 1, 제휴 영업 1, 법무 자문(리뷰 정책·표시광고법)<br>① 런칭 지역을 2개 상권으로 묶고, 해당 지역 리뷰 밀도가 목표치(상권 내 식당 60% 커버)에 도달한 뒤 확장<br>② 수익 가설 2가지를 병행 검증: 크리에이터 유료 리스트, 인증 리뷰 기반 식당 대상 데이터 리포트<br>③ 가성비·1만 원 이하 등 외식비 부담을 반영한 리스트 카테고리 운영<br>④ 런웨이 12개월 미만이 되면 확장을 멈추고 리텐션 개선에 집중하는 내부 기준 설정</td>
+</tr>
+</tbody></table></div>
+<p><strong>실행 순서 요약</strong>: WO(0-3개월)로 지도·예약 연결과 온보딩을 먼저 갖추고, SO(0-6개월)로 초기 사용자를 끌어온다. 사용자가 쌓이는 시점에 ST(6-12개월)로 신뢰 체계를 굳히고, WT(6-18개월)로 수익 구조와 확장 속도를 관리한다.</p>
+</div></section><section class="doc" id="stp"><h2>STP 타깃 포지셔닝</h2><p class="doc-time">분석 소요 3분 07초</p><div class="markdown-body"><section class="viz-panel" aria-label="시각화 요약">
+                    <span class="viz-eyebrow"><i class="fa-solid fa-chart-simple"></i> VISUAL SUMMARY</span>
+                    <div class="viz-grid"><figure class="viz-card wide">
+                <figcaption class="viz-card-head">
+                    <div>
+                        <h4 class="viz-title">세그먼트 매력도</h4>
+                        <p class="viz-sub">원 크기 = 시장 규모 (억원)</p>
+                    </div>
+                    <button type="button" class="viz-table-toggle" onclick="toggleVizTable(this)" aria-expanded="false">표로 보기</button>
+                </figcaption>
+                <div class="viz-body"><div class="viz-legend"><span class="viz-legend-item"><i class="viz-swatch" style="background:var(--viz-1)"></i>핵심 타깃</span><span class="viz-legend-item"><i class="viz-swatch" style="background:var(--viz-2)"></i>서브 타깃</span><span class="viz-legend-item"><i class="viz-swatch" style="background:var(--viz-muted)"></i>기타 세그먼트</span></div><svg class="viz-svg" viewBox="0 0 900 340">
+                    <line x1="52" x2="876" y1="267" y2="267" class="viz-gridline"/>
+                        <text x="42" y="271" class="viz-tick" text-anchor="end">1</text><line x1="52" x2="876" y1="213" y2="213" class="viz-gridline"/>
+                        <text x="42" y="217" class="viz-tick" text-anchor="end">2</text><line x1="52" x2="876" y1="159" y2="159" class="viz-gridline"/>
+                        <text x="42" y="163" class="viz-tick" text-anchor="end">3</text><line x1="52" x2="876" y1="105" y2="105" class="viz-gridline"/>
+                        <text x="42" y="109" class="viz-tick" text-anchor="end">4</text><line x1="52" x2="876" y1="51" y2="51" class="viz-gridline"/>
+                        <text x="42" y="55" class="viz-tick" text-anchor="end">5</text>
+                    <text x="52" y="312" class="viz-tick" text-anchor="middle">0%</text><text x="326.66666666666663" y="312" class="viz-tick" text-anchor="middle">5%</text><text x="601.3333333333333" y="312" class="viz-tick" text-anchor="middle">10%</text><text x="876" y="312" class="viz-tick" text-anchor="middle">15%</text>
+                    <line x1="52" x2="876" y1="294" y2="294" class="viz-axis"/>
+                    <text x="464" y="334" class="viz-axis-title" text-anchor="middle">연 성장률 (%) →</text>
+                    <text transform="translate(14 159) rotate(-90)" class="viz-axis-title" text-anchor="middle">접근성 (1–5) →</text>
+                    <g class="viz-mark" data-tip="실패 회피형 직장인 탐색자 (핵심 타깃)
+시장 규모 2,688억원 · 성장률 6.5% · 접근성 4/5" tabindex="0" role="img" aria-label="실패 회피형 직장인 탐색자 (핵심 타깃), 시장 규모 2,688억원 · 성장률 6.5% · 접근성 4/5">
+                        <circle cx="409.06666666666666" cy="105" r="38" fill="transparent"/>
+                        <circle cx="409.06666666666666" cy="105" r="38" fill="var(--viz-1)" fill-opacity="0.22" stroke="var(--viz-1)" stroke-width="2"/>
+                        <circle cx="409.06666666666666" cy="105" r="4" fill="var(--viz-1)" stroke="var(--viz-surface)" stroke-width="2"/>
+                        <text x="409.06666666666666" y="61" class="viz-label" text-anchor="middle">실패 회피형 직장인 탐색자</text>
+                    </g><g class="viz-mark" data-tip="모임·가족 주선형 30대 후반 (기타 세그먼트)
+시장 규모 1,260억원 · 성장률 4% · 접근성 2/5" tabindex="0" role="img" aria-label="모임·가족 주선형 30대 후반 (기타 세그먼트), 시장 규모 1,260억원 · 성장률 4% · 접근성 2/5">
+                        <circle cx="271.73333333333335" cy="213" r="28.53959590644373" fill="transparent"/>
+                        <circle cx="271.73333333333335" cy="213" r="28.53959590644373" fill="var(--viz-muted)" fill-opacity="0.22" stroke="var(--viz-muted)" stroke-width="2"/>
+                        <circle cx="271.73333333333335" cy="213" r="4" fill="var(--viz-muted)" stroke="var(--viz-surface)" stroke-width="2"/>
+                        <text x="271.73333333333335" y="178.46040409355626" class="viz-label" text-anchor="middle">모임·가족 주선형 30대 후반</text>
+                    </g><g class="viz-mark" data-tip="기록·큐레이션형 미식가 (서브 타깃)
+시장 규모 1,188억원 · 성장률 9% · 접근성 5/5" tabindex="0" role="img" aria-label="기록·큐레이션형 미식가 (서브 타깃), 시장 규모 1,188억원 · 성장률 9% · 접근성 5/5">
+                        <circle cx="546.4" cy="51" r="27.944118359628163" fill="transparent"/>
+                        <circle cx="546.4" cy="51" r="27.944118359628163" fill="var(--viz-2)" fill-opacity="0.22" stroke="var(--viz-2)" stroke-width="2"/>
+                        <circle cx="546.4" cy="51" r="4" fill="var(--viz-2)" stroke="var(--viz-surface)" stroke-width="2"/>
+                        <text x="546.4" y="17.055881640371837" class="viz-label" text-anchor="middle">기록·큐레이션형 미식가</text>
+                    </g><g class="viz-mark" data-tip="가성비 탐색형 대학생·사회초년생 (서브 타깃)
+시장 규모 792억원 · 성장률 3% · 접근성 4/5" tabindex="0" role="img" aria-label="가성비 탐색형 대학생·사회초년생 (서브 타깃), 시장 규모 792억원 · 성장률 3% · 접근성 4/5">
+                        <circle cx="216.8" cy="105" r="24.284304450254282" fill="transparent"/>
+                        <circle cx="216.8" cy="105" r="24.284304450254282" fill="var(--viz-2)" fill-opacity="0.22" stroke="var(--viz-2)" stroke-width="2"/>
+                        <circle cx="216.8" cy="105" r="4" fill="var(--viz-2)" stroke="var(--viz-surface)" stroke-width="2"/>
+                        <text x="216.8" y="74.71569554974572" class="viz-label" text-anchor="middle">가성비 탐색형 대학생·사회초년생</text>
+                    </g>
+                </svg></div>
+                <div class="viz-table" hidden><table><thead><tr><th>세그먼트</th><th>역할</th><th>규모 (억원)</th><th>성장률 %</th><th>접근성</th></tr></thead>
+                <tbody><tr><td>실패 회피형 직장인 탐색자</td><td>핵심 타깃</td><td>2,688</td><td>6.5</td><td>4</td></tr><tr><td>기록·큐레이션형 미식가</td><td>서브 타깃</td><td>1,188</td><td>9</td><td>5</td></tr><tr><td>가성비 탐색형 대학생·사회초년생</td><td>서브 타깃</td><td>792</td><td>3</td><td>4</td></tr><tr><td>모임·가족 주선형 30대 후반</td><td>기타 세그먼트</td><td>1,260</td><td>4</td><td>2</td></tr></tbody></table></div>
+            </figure><figure class="viz-card">
+                <figcaption class="viz-card-head">
+                    <div>
+                        <h4 class="viz-title">시장 규모 (TAM · SAM · SOM)</h4>
+                        <p class="viz-sub">자릿수 차이가 커서 막대 대신 수치로 표시</p>
+                    </div>
+                    
+                </figcaption>
+                <div class="viz-body"><div class="viz-stats">
+                        <div class="viz-stat">
+                            <span class="viz-stat-key">TAM</span>
+                            <span class="viz-stat-value">30,000<small>억원</small></span>
+                            <span class="viz-stat-label">전체 시장</span>
+                        </div><span class="viz-funnel-arrow" title="TAM → SAM">→<small>19.8%</small></span>
+                        <div class="viz-stat">
+                            <span class="viz-stat-key">SAM</span>
+                            <span class="viz-stat-value">5,928<small>억원</small></span>
+                            <span class="viz-stat-label">유효 시장<span class="viz-sr-only"> (TAM 대비 19.8%)</span></span>
+                        </div><span class="viz-funnel-arrow" title="SAM → SOM">→<small>2%</small></span>
+                        <div class="viz-stat">
+                            <span class="viz-stat-key">SOM</span>
+                            <span class="viz-stat-value">118<small>억원</small></span>
+                            <span class="viz-stat-label">획득 목표<span class="viz-sr-only"> (SAM 대비 2%)</span></span>
+                        </div></div></div>
+                
+            </figure><figure class="viz-card">
+                <figcaption class="viz-card-head">
+                    <div>
+                        <h4 class="viz-title">포지셔닝 맵</h4>
+                        <p class="viz-sub">보라 = 자사, 회색 = 경쟁사 · 음영 = 자사 영역</p>
+                    </div>
+                    <button type="button" class="viz-table-toggle" onclick="toggleVizTable(this)" aria-expanded="false">표로 보기</button>
+                </figcaption>
+                <div class="viz-body"><svg class="viz-svg viz-square" viewBox="0 0 340 340">
+                    <rect x="36" y="36" width="268" height="268" fill="none" class="viz-gridline"/>
+                    <rect x="170" y="36" width="134" height="134" fill="var(--viz-1)" fill-opacity="0.06"/>
+                    <line x1="170" x2="170" y1="36" y2="304" class="viz-axis"/>
+                    <line x1="36" x2="304" y1="170" y2="170" class="viz-axis"/>
+                    <!-- 축 제목은 플롯 바깥에 두어 점 라벨과 겹치지 않게 한다 -->
+                    <text x="36" y="322" class="viz-tick">Low</text>
+                    <text x="170" y="322" class="viz-axis-title" text-anchor="middle">추천 신뢰도(취향 적합성) →</text>
+                    <text x="304" y="322" class="viz-tick" text-anchor="end">High</text>
+                    <text x="36" y="24" class="viz-axis-title">↑ 결정 효율</text>
+                    <text x="30" y="46" class="viz-tick" text-anchor="end">High</text>
+                    <text x="30" y="304" class="viz-tick" text-anchor="end">Low</text>
+                    <g class="viz-mark" data-tip="인스타그램
+추천 신뢰도(취향 적합성) 5/10 · 결정 효율 2/10" tabindex="0" role="img" aria-label="인스타그램, 추천 신뢰도(취향 적합성) 5/10 · 결정 효율 2/10">
+                        <circle cx="170" cy="250.4" r="14" fill="transparent"/>
+                        <circle cx="170" cy="250.4" r="5" fill="var(--viz-muted)" stroke="var(--viz-surface)" stroke-width="2"/>
+                        <text x="179" y="244.4" class="viz-label">인스타그램</text>
+                    </g><g class="viz-mark" data-tip="카카오맵
+추천 신뢰도(취향 적합성) 2/10 · 결정 효율 4/10" tabindex="0" role="img" aria-label="카카오맵, 추천 신뢰도(취향 적합성) 2/10 · 결정 효율 4/10">
+                        <circle cx="89.6" cy="196.8" r="14" fill="transparent"/>
+                        <circle cx="89.6" cy="196.8" r="5" fill="var(--viz-muted)" stroke="var(--viz-surface)" stroke-width="2"/>
+                        <text x="98.6" y="190.8" class="viz-label">카카오맵</text>
+                    </g><g class="viz-mark" data-tip="구글 지도
+추천 신뢰도(취향 적합성) 4/10 · 결정 효율 5/10" tabindex="0" role="img" aria-label="구글 지도, 추천 신뢰도(취향 적합성) 4/10 · 결정 효율 5/10">
+                        <circle cx="143.2" cy="170" r="14" fill="transparent"/>
+                        <circle cx="143.2" cy="170" r="5" fill="var(--viz-muted)" stroke="var(--viz-surface)" stroke-width="2"/>
+                        <text x="152.2" y="164" class="viz-label">구글 지도</text>
+                    </g><g class="viz-mark" data-tip="네이버 지도
+추천 신뢰도(취향 적합성) 3/10 · 결정 효율 7/10" tabindex="0" role="img" aria-label="네이버 지도, 추천 신뢰도(취향 적합성) 3/10 · 결정 효율 7/10">
+                        <circle cx="116.39999999999999" cy="116.4" r="14" fill="transparent"/>
+                        <circle cx="116.39999999999999" cy="116.4" r="5" fill="var(--viz-muted)" stroke="var(--viz-surface)" stroke-width="2"/>
+                        <text x="125.39999999999999" y="110.4" class="viz-label">네이버 지도</text>
+                    </g><g class="viz-mark" data-tip="믿맛
+추천 신뢰도(취향 적합성) 9/10 · 결정 효율 8/10" tabindex="0" role="img" aria-label="믿맛, 추천 신뢰도(취향 적합성) 9/10 · 결정 효율 8/10">
+                        <circle cx="277.20000000000005" cy="89.6" r="14" fill="transparent"/>
+                        <circle cx="277.20000000000005" cy="89.6" r="7" fill="var(--viz-1)" stroke="var(--viz-surface)" stroke-width="2"/>
+                        <text x="286.20000000000005" y="83.6" class="viz-label-strong">믿맛</text>
+                    </g>
+                </svg></div>
+                <div class="viz-table" hidden><table><thead><tr><th></th><th>추천 신뢰도(취향 적합성)</th><th>결정 효율</th></tr></thead>
+                <tbody><tr><td>믿맛 ★</td><td>9</td><td>8</td></tr><tr><td>네이버 지도</td><td>3</td><td>7</td></tr><tr><td>구글 지도</td><td>4</td><td>5</td></tr><tr><td>카카오맵</td><td>2</td><td>4</td></tr><tr><td>인스타그램</td><td>5</td><td>2</td></tr></tbody></table></div>
+            </figure></div>
+                </section><h1>[전략 기획] STP 마케팅 및 타깃 포지셔닝 명세서: 믿맛(가칭), 취향이 맞는 사람의 '진짜 방문 기록'만 모은 맛집 공유 서비스</h1>
+<blockquote>
+<p><strong>문서 전제</strong></p>
+<ul>
+<li>인구는 통계청 주민등록인구 기준 개략치, 외식 지출은 가계동향조사 수준을 참고한 가정치다.</li>
+<li>시장 금액은 **"외식 지출 중 디지털 광고·예약 수수료·구독으로 전환 가능한 금액(외식 지출의 2.0%)"**으로 정의했다. 산식은 <code>세그먼트 인구 × 1인 연 외식지출 × 2.0%</code>이다.</li>
+<li>모든 수치는 추정치다. 출시 전 설문(n≥500)과 지역 파일럿으로 반드시 검증해야 한다.</li>
+</ul>
+</blockquote>
+<hr>
+<h2>0. 문제 정의 (JTBD 관점)</h2>
+<p>네이버 지도와 구글 지도의 별점은 더 이상 선택 기준으로 쓰기 어렵다. 원인은 세 가지다.</p>
+<ol>
+<li><strong>별점 인플레이션</strong>: 웬만한 식당이 4.3~4.7점에 몰려 있다. 점수로는 식당 간 차이를 가릴 수 없다.</li>
+<li><strong>오염된 리뷰</strong>: 체험단, 영수증 이벤트 리뷰, 협찬 블로그가 섞여 있다. 사용자는 리뷰를 걸러 읽는 데 시간을 쓴다.</li>
+<li><strong>취향이 반영되지 않음</strong>: 50대 출장객의 5점과 29세 미식가의 5점이 같은 무게로 합산된다.</li>
+</ol>
+<p>사용자가 고용하려는 Job은 다음과 같다.</p>
+<blockquote>
+<p><strong>"오늘 이 상황(인원·예산·분위기)에서, 나와 입맛이 비슷한 사람이 실제로 다시 간 곳을 3분 안에 골라 실패 확률을 낮추고 싶다."</strong></p>
+</blockquote>
+<p>공급자 측(기록하는 사람)의 Job은 따로 있다.</p>
+<blockquote>
+<p><strong>"내가 찾아낸 가게를 정리해 두고, 안목을 인정받고 싶다."</strong></p>
+</blockquote>
+<hr>
+<h2>1. Segmentation (시장 세분화)</h2>
+<h3>1.1. 세분화 변수</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>구분</th>
+<th>적용 변수</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>인구통계</td>
+<td>연령(20<del>24 / 25</del>34 / 35~39), 거주지(수도권·광역시), 직업 상태, 1인 가구 여부</td>
+</tr>
+<tr>
+<td>행동</td>
+<td>외식 빈도(주 2회 이상 여부), 장소 선정 책임 빈도, 리뷰·기록 작성 여부, 저장 리스트 보유량</td>
+</tr>
+<tr>
+<td>심리</td>
+<td>실패 회피 성향, 미식 정체성(안목 과시 욕구), 광고 리뷰 불신도, 가성비와 경험가치 중 무엇을 우선하는지</td>
+</tr>
+</tbody></table></div>
+<h3>1.2. 세그먼트 정의 및 규모</h3>
+<p>중복을 없애기 위해 <strong>기록가 세그먼트(S2)를 먼저 분류</strong>하고, 나머지 인원을 연령과 행동 기준으로 나눴다.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>코드</th>
+<th>세그먼트</th>
+<th>정의</th>
+<th>추정 인구</th>
+<th>1인 연 외식지출</th>
+<th>전환 가능 시장</th>
+<th>연 성장률</th>
+<th>접근성(1~5)</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>S1</strong></td>
+<td><strong>실패 회피형 직장인 탐색자</strong></td>
+<td>수도권·광역시 25~34세 직장인. 주 2회 이상 외식, 월 2회 이상 약속 장소 선정</td>
+<td>280만 명</td>
+<td>480만 원</td>
+<td><strong>2,688억 원</strong></td>
+<td>6.5%</td>
+<td>4</td>
+</tr>
+<tr>
+<td>S2</td>
+<td>기록·큐레이션형 미식가</td>
+<td>20~39세. 인스타 맛집 계정 운영자 또는 저장 리스트 100곳 이상 보유자</td>
+<td>90만 명</td>
+<td>660만 원</td>
+<td>1,188억 원</td>
+<td>9.0%</td>
+<td>5</td>
+</tr>
+<tr>
+<td>S3</td>
+<td>가성비 탐색형 대학생·사회초년생</td>
+<td>수도권·광역시 20~24세. 월 1회 이상 맛집 검색</td>
+<td>150만 명</td>
+<td>264만 원</td>
+<td>792억 원</td>
+<td>3.0%</td>
+<td>4</td>
+</tr>
+<tr>
+<td>S4</td>
+<td>모임·가족 주선형 30대 후반</td>
+<td>수도권·광역시 35~39세. 가족 외식이나 동창 모임 장소 선정 담당</td>
+<td>150만 명</td>
+<td>420만 원</td>
+<td>1,260억 원</td>
+<td>4.0%</td>
+<td>2</td>
+</tr>
+<tr>
+<td></td>
+<td><strong>합계</strong></td>
+<td></td>
+<td><strong>670만 명</strong></td>
+<td></td>
+<td><strong>5,928억 원</strong></td>
+<td></td>
+<td></td>
+</tr>
+</tbody></table></div>
+<h3>1.3. 세그먼트별 해석</h3>
+<ul>
+<li><strong>S1 실패 회피형 직장인 탐색자</strong><ul>
+<li>JTBD: "회식, 소개팅, 친구 모임 장소를 내가 골랐을 때 욕먹지 않고 싶다."</li>
+<li>가처분소득이 있고, 장소 선택에 실패하면 사회적 비용이 생긴다. 지불 의사가 가장 높다.</li>
+<li>성장률 6.5%는 1인 가구 증가와 외식 단가 상승을 반영했다.</li>
+</ul>
+</li>
+<li><strong>S2 기록·큐레이션형 미식가</strong><ul>
+<li>JTBD: "내 안목을 정리하고 인정받고 싶다."</li>
+<li>인원은 적지만 <strong>콘텐츠 공급원</strong>이다. 이 세그먼트가 없으면 서비스가 시작되지 않는다.</li>
+<li>성장률 9.0%는 숏폼 맛집 크리에이터 증가를 반영했다.</li>
+<li>인스타, 스레드, 오픈채팅에 모여 있어 접근성이 가장 높다.</li>
+</ul>
+</li>
+<li><strong>S3 가성비 탐색형 대학생·사회초년생</strong><ul>
+<li>JTBD: "1만 원대에서 실패하지 않는 한 끼를 찾고 싶다."</li>
+<li>트래픽 기여는 크지만 객단가가 낮다.</li>
+<li>20대 초반 인구가 줄고 있어 성장률을 3.0%로 낮게 잡았다.</li>
+</ul>
+</li>
+<li><strong>S4 모임·가족 주선형 30대 후반</strong><ul>
+<li>JTBD: "아이 동반이나 부모님 모시기 같은 조건에 맞는 곳을 찾고 싶다."</li>
+<li>이미 네이버 지도 습관이 굳어 있어 전환 비용이 높다. 접근성은 2로 평가했다.</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2>2. Targeting (목표 타깃 선정)</h2>
+<h3>2.1. 세그먼트 평가</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>평가 기준 (가중치)</th>
+<th>S1</th>
+<th>S2</th>
+<th>S3</th>
+<th>S4</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>시장 규모 (25%)</td>
+<td>5</td>
+<td>3</td>
+<td>2</td>
+<td>3</td>
+</tr>
+<tr>
+<td>Pain 강도 (25%)</td>
+<td>5</td>
+<td>3</td>
+<td>3</td>
+<td>4</td>
+</tr>
+<tr>
+<td>접근성 (20%)</td>
+<td>4</td>
+<td>5</td>
+<td>4</td>
+<td>2</td>
+</tr>
+<tr>
+<td>수익화 가능성 (20%)</td>
+<td>5</td>
+<td>3</td>
+<td>2</td>
+<td>4</td>
+</tr>
+<tr>
+<td>네트워크 기여도 (10%)</td>
+<td>4</td>
+<td>5</td>
+<td>3</td>
+<td>2</td>
+</tr>
+<tr>
+<td><strong>가중 점수</strong></td>
+<td><strong>4.70</strong></td>
+<td><strong>3.60</strong></td>
+<td><strong>2.70</strong></td>
+<td><strong>3.10</strong></td>
+</tr>
+</tbody></table></div>
+<p><strong>결론</strong>: 핵심 타깃은 S1, 서브 타깃은 S2(공급)와 S3(확장)이다. S4는 3년차 이후 검토한다.</p>
+<p>단, <strong>출시 순서는 S2가 먼저</strong>다. 양면 서비스의 콜드스타트를 넘기려면 지역별 기록 밀도가 먼저 확보되어야 한다. S2 시딩 3개월을 거친 뒤 S1 획득을 시작한다.</p>
+<h3>2.2. 핵심 타깃 (Primary Target): S1 실패 회피형 직장인 탐색자</h3>
+<p><strong>주요 Pain Point</strong></p>
+<ol>
+<li>별점으로 변별이 안 된다. 4.5점 식당 다섯 곳을 놓고 결국 블로그 리뷰 10개를 읽는다. 결정에 평균 20분 이상 걸린다.</li>
+<li>체험단 리뷰를 신뢰하지 못한다. 광고인지 아닌지 판별하는 데 시간이 든다.</li>
+<li>추천이 여기저기 흩어져 있다. 친구 추천은 카톡에, 저장은 인스타에, 즐겨찾기는 네이버에 있어 필요할 때 찾을 수 없다.</li>
+<li>장소를 골랐다가 실패하면 그 책임이 고스란히 자기 몫이 된다. 주선자 역할 자체가 스트레스다.</li>
+</ol>
+<p><strong>가치 제안</strong></p>
+<ul>
+<li>별점 대신 <strong>'또 갈 곳' 비율</strong>을 보여준다.</li>
+<li>추천은 **취향 일치도(Taste Match %)**로 가중한다.</li>
+<li>협찬 리뷰는 분리해 표시하고, 모임 장소는 카톡 투표로 결정까지 끝낸다.</li>
+<li>목표는 결정 시간을 20분에서 3분으로 줄이는 것이다.</li>
+</ul>
+<h3>2.3. 서브 타깃 (Secondary Target)</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>서브 타깃</th>
+<th>역할</th>
+<th>파생 니즈</th>
+<th>제공 기능</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>S2 기록·큐레이션형 미식가</td>
+<td>콘텐츠 공급, 신뢰의 원천</td>
+<td>기록 정리, 팔로워 확보, 안목 인정, 장기적으로 수익화</td>
+<td>방문 지도 자동 생성, 리스트 공유 카드, '발굴자' 배지(최초 기록자 표시), 3년차 큐레이션 리스트 유료 판매</td>
+</tr>
+<tr>
+<td>S3 가성비 탐색형 대학생·사회초년생</td>
+<td>트래픽과 바이럴 확산</td>
+<td>예산 필터, 혼밥 가능 여부, 학교 주변 정보</td>
+<td>'1인 1.5만 원 이하' 필터, 캠퍼스 앰배서더 리스트</td>
+</tr>
+</tbody></table></div>
+<h3>2.4. 시장 규모 유추 (TAM / SAM / SOM)</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>구분</th>
+<th>추정치</th>
+<th>유추 논리</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>TAM</strong></td>
+<td><strong>30,000억 원</strong></td>
+<td>국내 외식업 연 매출 약 150조 원 × 디지털 광고·예약 수수료·구독 전환율 2.0%</td>
+</tr>
+<tr>
+<td><strong>SAM</strong></td>
+<td><strong>5,928억 원</strong></td>
+<td>S1<del>S4 합산. 20</del>39세이면서 수도권·광역시에 거주하고 맛집 탐색 행동이 확인된 670만 명 기준. TAM의 19.8%</td>
+</tr>
+<tr>
+<td><strong>SOM</strong></td>
+<td><strong>118억 원</strong></td>
+<td>3년차 목표. SAM의 2.0%. 아래 Bottom-up 산출 참조</td>
+</tr>
+</tbody></table></div>
+<p><strong>SOM Bottom-up 검증 (3년차 기준, 목표 MAU 60만)</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>수익원</th>
+<th>산식</th>
+<th>연 매출</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>지역 광고 (점주 대상 '취향 매칭 노출')</td>
+<td>광고 점포 8,000곳 × 월 10만 원 × 12개월</td>
+<td>96.0억 원</td>
+</tr>
+<tr>
+<td>예약·웨이팅 연동 수수료</td>
+<td>월 5.5만 건 × 건당 2,000원 × 12개월</td>
+<td>13.2억 원</td>
+</tr>
+<tr>
+<td>프리미엄 구독 (월 3,900원)</td>
+<td>MAU 60만 × 유료 전환율 3% × 3,900원 × 12개월</td>
+<td>8.4억 원</td>
+</tr>
+<tr>
+<td><strong>합계</strong></td>
+<td></td>
+<td><strong>약 118억 원</strong></td>
+</tr>
+</tbody></table></div>
+<p>광고 점포 8,000곳은 수도권 일반음식점의 약 3%다. 여기서 점주가 광고비를 내는 조건은 <strong>"20~30대 방문 고객이 실제로 늘었다"는 증빙</strong>이다. 그래서 광고 상품은 노출 단가가 아니라 '저장 수'와 '예약 수' 리포트로 판매한다.</p>
+<h3>2.5. 핵심 타깃 페르소나</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>항목</th>
+<th>내용</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>이름</td>
+<td>정서윤</td>
+</tr>
+<tr>
+<td>나이</td>
+<td>29세</td>
+</tr>
+<tr>
+<td>직업</td>
+<td>성수동 소재 브랜드 마케팅 대행사 AE(5년차)</td>
+</tr>
+<tr>
+<td>소득</td>
+<td>연봉 4,800만 원, 월 실수령 약 330만 원, 월 외식비 40만 원</td>
+</tr>
+<tr>
+<td>거주</td>
+<td>서울 마포구 망원동, 1인 가구(오피스텔)</td>
+</tr>
+<tr>
+<td>디바이스</td>
+<td>iPhone 15, MacBook Air(업무용). 일 스크린타임 5시간 40분</td>
+</tr>
+<tr>
+<td>주요 앱 사용</td>
+<td>인스타그램 90분, 유튜브 60분, 카카오톡 50분, 네이버 지도 주 6회, 캐치테이블 월 3회</td>
+</tr>
+<tr>
+<td>외식 패턴</td>
+<td>주 3회 외식. 그중 월 4~5회는 본인이 장소 선정(팀 점심, 친구 모임, 소개팅)</td>
+</tr>
+<tr>
+<td>저장 습관</td>
+<td>인스타 저장 312개, 네이버 MY플레이스 87곳. 실제로 다시 꺼내 보는 비율은 10% 미만</td>
+</tr>
+<tr>
+<td>심리</td>
+<td>"맛집 잘 아는 사람"으로 보이고 싶다. 광고 리뷰에 피로감이 크고, 친구 추천을 가장 신뢰한다</td>
+</tr>
+</tbody></table></div>
+<p><strong>하루 일과와 터치포인트</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>시간</th>
+<th>행동</th>
+<th>터치포인트 / 기회</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>07:40</td>
+<td>기상. 침대에서 인스타 피드 15분 확인. 맛집 릴스 2개 저장</td>
+<td><strong>[T1]</strong> 인스타 릴스 광고와 크리에이터 협업 콘텐츠</td>
+</tr>
+<tr>
+<td>08:30</td>
+<td>6호선에서 2호선으로 환승해 성수로 출근(40분). 유튜브 시청</td>
+<td><strong>[T2]</strong> 유튜브 쇼츠 '성수 직장인 점심 리스트'</td>
+</tr>
+<tr>
+<td>11:20</td>
+<td>팀 슬랙에 "오늘 점심 어디?"가 올라온다. 네이버 지도로 검색하지만 매번 같은 3곳으로 끝난다</td>
+<td><strong>[T3]</strong> 회사 반경 500m '또 갈 곳' 위젯 (핵심 사용 순간 ①)</td>
+</tr>
+<tr>
+<td>12:00</td>
+<td>점심. 팀원 5명</td>
+<td><strong>[T4]</strong> 방문 후 원탭 기록 푸시</td>
+</tr>
+<tr>
+<td>15:30</td>
+<td>업무 중 친구 단톡방에 "토요일 연남 어디 갈래?"가 올라온다</td>
+<td><strong>[T5]</strong> 카톡 공유용 '장소 투표' 링크 (바이럴 진입점)</td>
+</tr>
+<tr>
+<td>19:30</td>
+<td>퇴근 후 망원동에서 혼밥하거나 친구와 저녁</td>
+<td><strong>[T6]</strong> 위치 기반 '근처 취향 친구 추천'</td>
+</tr>
+<tr>
+<td>21:30</td>
+<td>귀가. 다음 주 소개팅 장소를 검색한다. 블로그 리뷰 10개를 읽느라 25분을 쓴다</td>
+<td><strong>[T7]</strong> '조용함·2인·1인 5만 원' 상황 필터 (핵심 사용 순간 ②)</td>
+</tr>
+<tr>
+<td>23:30</td>
+<td>취침 전 인스타 맛집 계정 둘러보기</td>
+<td><strong>[T8]</strong> 주간 '취향 친구 새 기록' 다이제스트</td>
+</tr>
+</tbody></table></div>
+<h3>2.6. 7단계 Customer Journey Map (발견에서 구매까지)</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>단계</th>
+<th>시점·터치포인트</th>
+<th>서윤의 행동</th>
+<th>생각·감정</th>
+<th>이탈 리스크</th>
+<th>설계 대응</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>1. 인지</strong></td>
+<td>수요일 15:30, 친구가 단톡방에 올린 '믿맛 장소 투표' 링크</td>
+<td>링크를 눌러 후보 3곳에 투표한다</td>
+<td>"이거 편하네. 투표가 바로 되네"</td>
+<td>투표만 하고 닫는다</td>
+<td>앱 설치 없이 웹에서 투표 완료. 결과 화면에 "이 3곳을 고른 사람: 취향 일치 87%" 노출</td>
+</tr>
+<tr>
+<td><strong>2. 관심</strong></td>
+<td>투표 결과 화면</td>
+<td>후보 식당의 '또 갈 곳 82%' 지표를 확인한다</td>
+<td>"별점보다 이게 낫다. 체험단 리뷰가 따로 빠져 있네"</td>
+<td>흔한 리뷰앱으로 인식</td>
+<td>첫 화면 헤드라인: "별점 없음. 다시 간 사람만 셉니다"</td>
+</tr>
+<tr>
+<td><strong>3. 탐색</strong></td>
+<td>같은 날 21:30, 소개팅 장소 고민 중</td>
+<td>웹에서 상황 필터로 식당 3곳을 열람한다</td>
+<td>"내 상황에 맞는 게 바로 나온다"</td>
+<td>4곳째부터 로그인을 요구하면 이탈</td>
+<td>웹 열람 3회 무료 제공. 4회째에 "내 취향 기준으로 보기"를 앞세워 가입 유도</td>
+</tr>
+<tr>
+<td><strong>4. 가입·온보딩</strong></td>
+<td>앱 설치 직후</td>
+<td>대표 맛집 카드를 스와이프해 다녀온 곳 10곳 체크, 인스타 저장 링크를 붙여넣어 일괄 등록</td>
+<td>"30초 만에 내 맛집 지도가 생겼다"</td>
+<td>기록을 0부터 시작해야 한다는 부담</td>
+<td>링크·스크린샷 인식 가져오기. 10곳 체크 즉시 취향 프로필과 Taste Match 생성</td>
+</tr>
+<tr>
+<td><strong>5. 첫 가치 체감 (Aha)</strong></td>
+<td>금요일 팀 회식(8인)</td>
+<td>필터 '8인 이상·룸·1인 4만 원'에서 1위 식당을 예약한다</td>
+<td>"팀장님이 어디서 찾았냐고 물었다"</td>
+<td>추천이 실패하면 즉시 신뢰 붕괴</td>
+<td>추천 근거 표시("취향 일치 80% 이상인 12명이 재방문"). 표본 5명 미만이면 '데이터 부족' 라벨</td>
+</tr>
+<tr>
+<td><strong>6. 습관화</strong></td>
+<td>방문 2시간 후 푸시, 매주 일요일 21시 다이제스트</td>
+<td>원탭으로 '또 감 / 한 번이면 충분 / 비추'를 기록한다. 4주 동안 기록 14곳</td>
+<td>"내 지도가 쌓이는 게 재밌다"</td>
+<td>기록 피로</td>
+<td>기록은 원탭 + 선택 태그만. 사진과 텍스트는 선택 사항. 누적 20곳 달성 시 월간 '나의 미식 리포트' 제공</td>
+</tr>
+<tr>
+<td><strong>7. 구매·옹호</strong></td>
+<td>가입 6주차</td>
+<td>프리미엄 구독(월 3,900원) 결제. 본인 '망원 혼밥 리스트'를 인스타 스토리에 공유</td>
+<td>"이건 돈 낼 만하다. 친구들한테 알려줘야겠다"</td>
+<td>무료 기능만으로 충분하다고 판단</td>
+<td>유료 기능: Taste Match 필터 무제한, 비공개 폴더, 광고 제거. 공유 카드에 앱 딥링크와 초대 보상(1개월 무료)</td>
+</tr>
+</tbody></table></div>
+<p><strong>측정 KPI</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>단계</th>
+<th>KPI</th>
+<th>목표치</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1→3</td>
+<td>투표 링크 → 웹 열람 전환</td>
+<td>35%</td>
+</tr>
+<tr>
+<td>3→4</td>
+<td>웹 → 가입</td>
+<td>18%</td>
+</tr>
+<tr>
+<td>4</td>
+<td>온보딩 완료(10곳 체크)</td>
+<td>70%</td>
+</tr>
+<tr>
+<td>5</td>
+<td>가입 후 7일 내 '추천 → 방문' 1회</td>
+<td>40%</td>
+</tr>
+<tr>
+<td>6</td>
+<td>4주 리텐션</td>
+<td>30%</td>
+</tr>
+<tr>
+<td>7</td>
+<td>유료 전환(MAU 대비)</td>
+<td>3%</td>
+</tr>
+</tbody></table></div>
+<hr>
+<h2>3. Positioning (차별화 포지셔닝)</h2>
+<h3>3.1. 경쟁 지형</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>경쟁사</th>
+<th>고객이 쓰는 이유</th>
+<th>핵심 약점</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>네이버 지도</td>
+<td>압도적인 정보량, 예약·길찾기 연동, 습관화된 사용</td>
+<td>별점 인플레이션, 체험단·영수증 리뷰 오염, 개인화 부재</td>
+</tr>
+<tr>
+<td>구글 지도</td>
+<td>해외 여행 시 표준, 리뷰 작성자 이력 확인 가능</td>
+<td>국내 리뷰 밀도가 낮고 외국인·고연령 리뷰가 섞임</td>
+</tr>
+<tr>
+<td>카카오맵</td>
+<td>카톡과 연동, 길찾기</td>
+<td>리뷰 콘텐츠가 얕고 탐색 기능이 약함</td>
+</tr>
+<tr>
+<td>인스타그램 (맛집 계정·릴스)</td>
+<td>시각적 진정성, 지인 신뢰</td>
+<td>협찬 구분이 어렵고, 저장 후 다시 찾기 어려움, 상황 조건 검색 불가</td>
+</tr>
+</tbody></table></div>
+<h3>3.2. 포지셔닝 축 선정 근거</h3>
+<p>20~30대가 맛집 선택에서 가장 크게 느끼는 문제는 두 가지다. **"믿을 수 있나"**와 <strong>"빨리 고를 수 있나"</strong>. 가격은 축으로 쓰지 않았다. 경쟁사가 모두 무료라서 변별력이 없기 때문이다.</p>
+<ul>
+<li><strong>X축: 추천 신뢰도(취향 적합성)</strong>. Low는 불특정 다수의 평균, High는 나와 취향이 같은 사람의 실제 재방문 데이터다.</li>
+<li><strong>Y축: 결정 효율</strong>. Low는 결정에 20분 이상, High는 3분 이내다.</li>
+</ul>
+<h3>3.3. 경쟁사별 좌표 (0~10)</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>서비스</th>
+<th>X (추천 신뢰도)</th>
+<th>Y (결정 효율)</th>
+<th>근거</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>★ 믿맛</strong></td>
+<td><strong>9</strong></td>
+<td><strong>8</strong></td>
+<td>Taste Match 가중, 협찬 분리, 상황 필터와 투표</td>
+</tr>
+<tr>
+<td>네이버 지도</td>
+<td>3</td>
+<td>7</td>
+<td>정보와 예약 연동은 빠르지만 리뷰 신뢰도가 낮음</td>
+</tr>
+<tr>
+<td>구글 지도</td>
+<td>4</td>
+<td>5</td>
+<td>작성자 이력 확인은 가능하나 국내 데이터가 부족함</td>
+</tr>
+<tr>
+<td>카카오맵</td>
+<td>2</td>
+<td>4</td>
+<td>길찾기 위주. 탐색과 신뢰 지표 모두 약함</td>
+</tr>
+<tr>
+<td>인스타그램</td>
+<td>5</td>
+<td>2</td>
+<td>진정성은 체감되지만 협찬이 섞이고 저장 후 꺼내 쓰기 어려움</td>
+</tr>
+</tbody></table></div>
+<h3>3.4. 포지셔닝 맵 시각 설명 (텍스트 기반 2축 ASCII 맵)</h3>
+<ul>
+<li><strong>좌상단 (빠르지만 못 믿음)</strong>: 네이버 지도. 결정은 빠르지만 그 결정이 맞는지 확신하기 어렵다.</li>
+<li><strong>좌하단 (느리고 못 믿음)</strong>: 구글 지도와 카카오맵. 국내 20~30대의 맛집 탐색 용도로는 존재감이 약하다.</li>
+<li><strong>우하단 (믿을 만하지만 느림)</strong>: 인스타그램. 진정성은 있지만 결정 도구가 아니라 영감 도구에 가깝다.</li>
+<li><strong>우상단 (Blue Ocean Zone)</strong>: <strong>'믿을 수 있으면서 빨리 정할 수 있는' 영역</strong>이다. 현재 비어 있다. 믿맛이 이 자리를 차지한다.</li>
+</ul>
+<pre><code class="language-ascii">                 ^ (Y: 결정 효율 High)
+                 |
+  [네이버 지도]  |        [★ 믿맛]
+                 |    (Blue Ocean Zone)
+                 |   신뢰 High + 효율 High
+                 |
+    [구글 지도]  |
+&lt;----------------+----------------&gt; (X: 추천 신뢰도 High)
+  (신뢰도 Low)   |
+     [카카오맵]  |
+                 |
+                 |      [인스타그램]
+                 |
+                 v (Y: 결정 효율 Low)
+</code></pre>
+<p><strong>Blue Ocean Zone 방어 논리</strong></p>
+<ul>
+<li>네이버가 이 영역으로 들어오려면 기존 별점 체계와 체험단 광고 수익을 스스로 깎아야 한다. 그래서 진입 동기가 약하다.</li>
+<li>인스타그램이 들어오려면 지도 기반 검색과 상황 필터를 새로 만들어야 한다. 핵심 사업(피드 광고)과 방향이 다르다.</li>
+<li>믿맛의 해자는 <strong>"취향 프로필 × 재방문 기록" 데이터</strong>다. 사용자 수보다 지역별 기록 밀도가 경쟁력을 결정한다.</li>
+</ul>
+<h3>3.5. Value Proposition Statement</h3>
+<blockquote>
+<p><strong>"광고 리뷰와 별점 인플레이션에 지친 20~30대 직장인에게, 나와 입맛이 같은 사람이 실제로 다시 간 곳만 골라 3분 안에 실패 없는 약속 장소를 정하게 해주는 취향 신뢰 기반 맛집 공유 브랜드, 믿맛"</strong></p>
+</blockquote>
+<p><strong>슬로건 후보</strong></p>
+<ul>
+<li>"별점 말고, 또 간 곳."</li>
+<li>"내 입맛 아는 사람의 맛집 지도."</li>
+</ul>
+<h3>3.6. 차별화 요인 (POD &amp; POP)</h3>
+<p><strong>POD (Points of Difference): 경쟁사가 따라 하기 어려운 차별점</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>#</th>
+<th>차별점</th>
+<th>내용</th>
+<th>경쟁사 대비</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td><strong>Taste Match %</strong></td>
+<td>방문 기록 10곳 이상을 기반으로 취향 유사도를 계산하고, 추천 순위에 가중치로 반영</td>
+<td>네이버·구글은 불특정 다수의 평균만 제공</td>
+</tr>
+<tr>
+<td>2</td>
+<td><strong>별점 폐지, 재방문 의사 3단계</strong></td>
+<td>'또 감 / 한 번이면 충분 / 비추'로 기록하고 '또 갈 곳 비율'을 핵심 지표로 사용</td>
+<td>4.5점 몰림 현상을 구조적으로 없앰</td>
+</tr>
+<tr>
+<td>3</td>
+<td><strong>협찬 분리 표시와 방문 인증</strong></td>
+<td>협찬·체험단 리뷰는 별도 탭으로 분리하고 지표 계산에서 제외. 위치·결제 인증 시 가중치 부여</td>
+<td>네이버는 체험단과 일반 리뷰가 섞여 있음</td>
+</tr>
+<tr>
+<td>4</td>
+<td><strong>상황 필터와 장소 투표</strong></td>
+<td>인원·예산·분위기·목적(접대, 소개팅, 2차) 필터, 카톡 투표 링크로 결정까지 완료</td>
+<td>기존 지도는 검색까지만 지원하고 합의 과정은 카톡으로 넘어감</td>
+</tr>
+<tr>
+<td>5</td>
+<td><strong>저장 리스트 가져오기</strong></td>
+<td>인스타·네이버 저장 링크와 스크린샷을 인식해 일괄 등록</td>
+<td>전환 비용을 낮춤. 기존 저장 자산을 가져와 바로 쓸 수 있음</td>
+</tr>
+</tbody></table></div>
+<p><strong>POP (Points of Parity): 반드시 갖춰야 할 기본 요소</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>#</th>
+<th>동등 요소</th>
+<th>확보 방식</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>정확한 위치·영업시간·메뉴 정보</td>
+<td>공공 인허가 데이터 연동, 사용자 정정 제보 체계</td>
+</tr>
+<tr>
+<td>2</td>
+<td>길찾기</td>
+<td>네이버 지도·카카오맵 딥링크 연동 (자체 개발하지 않음)</td>
+</tr>
+<tr>
+<td>3</td>
+<td>예약·웨이팅</td>
+<td>예약 플랫폼과 API 제휴</td>
+</tr>
+<tr>
+<td>4</td>
+<td>지역별 최소 콘텐츠 밀도</td>
+<td>출시 지역을 성수·망원·연남·을지로·판교 5곳으로 한정. 지역당 S2 기록가 200명, 기록 3,000곳 확보 후 S1 획득 시작</td>
+</tr>
+<tr>
+<td>5</td>
+<td>개인정보·위치정보 신뢰</td>
+<td>방문 기록은 기본 비공개, 공개 범위는 사용자가 선택</td>
+</tr>
+</tbody></table></div>
+<p><strong>POP 미달 시 리스크</strong>: 사용자가 처음 검색한 지역에 기록이 없으면 그 자리에서 바로 이탈한다. 그래서 <strong>전국 동시 출시는 하지 않는다.</strong> 기록 밀도가 확보된 지역만 차례로 연다.</p>
+<hr>
+<h2>시각화 데이터</h2>
+</div></section><section class="doc" id="mece"><h2>MECE · RICE 구조화</h2><p class="doc-time">분석 소요 2분 33초</p><div class="markdown-body"><section class="viz-panel" aria-label="시각화 요약">
+                    <span class="viz-eyebrow"><i class="fa-solid fa-chart-simple"></i> VISUAL SUMMARY</span>
+                    <div class="viz-grid"><figure class="viz-card wide">
+                <figcaption class="viz-card-head">
+                    <div>
+                        <h4 class="viz-title">MECE 로직 트리</h4>
+                        <p class="viz-sub">중복 없이(ME), 빠짐없이(CE) 분해한 5대 도메인</p>
+                    </div>
+                    
+                </figcaption>
+                <div class="viz-body"><div class="viz-tree">
+                        <div class="viz-tree-root">상품 기획 전체</div>
+                        <div class="viz-tree-branches" style="--n:5">
+                            <div class="viz-tree-branch">
+                                <div class="viz-tree-domain">고객 세분화</div>
+                                <div class="viz-tree-leaf">S1 일상 탐색형 45%</div><div class="viz-tree-leaf">S2 특별 탐색형 30%</div><div class="viz-tree-leaf">S3 일상 기록형 15%</div><div class="viz-tree-leaf">S4 특별 기록형 10%</div>
+                            </div><div class="viz-tree-branch">
+                                <div class="viz-tree-domain">고객 제공 가치</div>
+                                <div class="viz-tree-leaf">기능: 인증 리뷰·취향 추천</div><div class="viz-tree-leaf">경제: 외식 실패비용 절감</div><div class="viz-tree-leaf">감성: 미식 아이덴티티 표현</div><div class="viz-tree-leaf">사회: 소상공인 공정 노출</div>
+                            </div><div class="viz-tree-branch">
+                                <div class="viz-tree-domain">시장 기회 (Ansoff)</div>
+                                <div class="viz-tree-leaf">침투: 인증 리뷰 커뮤니티 40%</div><div class="viz-tree-leaf">개발: 구독·예약 연동 30%</div><div class="viz-tree-leaf">개척: 관광객·지방 확장 18%</div><div class="viz-tree-leaf">다각화: B2B 상권 데이터 12%</div>
+                            </div><div class="viz-tree-branch">
+                                <div class="viz-tree-domain">기능 우선순위 (MoSCoW)</div>
+                                <div class="viz-tree-leaf">Must: 기록·인증·지도·피드</div><div class="viz-tree-leaf">Should: 취향매칭·공유카드</div><div class="viz-tree-leaf">Could: 결산·투표·배지</div><div class="viz-tree-leaf">Won&#39;t: 예약·광고콘솔·배달</div>
+                            </div><div class="viz-tree-branch">
+                                <div class="viz-tree-domain">리스크</div>
+                                <div class="viz-tree-leaf">시장: 콜드스타트·모방</div><div class="viz-tree-leaf">기술: 인증 정확도·보안</div><div class="viz-tree-leaf">운영: 리뷰 조작·업주 분쟁</div><div class="viz-tree-leaf">재무: 수익화 지연·현금소진</div><div class="viz-tree-leaf">법적: 위치정보·표시광고법</div>
+                            </div>
+                        </div>
+                    </div></div>
+                
+            </figure><figure class="viz-card">
+                <figcaption class="viz-card-head">
+                    <div>
+                        <h4 class="viz-title">RICE 우선순위 점수</h4>
+                        <p class="viz-sub">Reach × Impact × Confidence ÷ Effort</p>
+                    </div>
+                    <button type="button" class="viz-table-toggle" onclick="toggleVizTable(this)" aria-expanded="false">표로 보기</button>
+                </figcaption>
+                <div class="viz-body"><div class="viz-legend"><span class="viz-legend-item"><i class="viz-swatch" style="background:var(--viz-1)"></i>Must</span><span class="viz-legend-item"><i class="viz-swatch" style="background:var(--viz-2)"></i>Should</span><span class="viz-legend-item"><i class="viz-swatch" style="background:var(--viz-3)"></i>Could</span><span class="viz-legend-item"><i class="viz-swatch" style="background:var(--viz-4)"></i>Won&#39;t</span></div><div class="viz-bars"><div class="viz-bar-row" data-tip="REQ-01 맛집 방문 기록
+R 80,000 × I 3 × C 90% ÷ E 3 = 72,000" tabindex="0" role="img" aria-label="REQ-01 맛집 방문 기록, R 80,000 × I 3 × C 90% ÷ E 3 = 72,000">
+                    <span class="viz-bar-label"><b>REQ-01</b> 맛집 방문 기록</span>
+                    <span class="viz-bar-track">
+                        <span class="viz-bar" style="width:100%;background:var(--viz-1)"></span>
+                        <span class="viz-bar-value">72,000</span>
+                    </span>
+                </div><div class="viz-bar-row" data-tip="REQ-10 인스타 공유 카드
+R 40,000 × I 1 × C 80% ÷ E 0.5 = 64,000" tabindex="0" role="img" aria-label="REQ-10 인스타 공유 카드, R 40,000 × I 1 × C 80% ÷ E 0.5 = 64,000">
+                    <span class="viz-bar-label"><b>REQ-10</b> 인스타 공유 카드</span>
+                    <span class="viz-bar-track">
+                        <span class="viz-bar" style="width:88.88888888888889%;background:var(--viz-2)"></span>
+                        <span class="viz-bar-value">64,000</span>
+                    </span>
+                </div><div class="viz-bar-row" data-tip="REQ-05 맛집 리스트 공유
+R 50,000 × I 2 × C 80% ÷ E 1.5 = 53,333" tabindex="0" role="img" aria-label="REQ-05 맛집 리스트 공유, R 50,000 × I 2 × C 80% ÷ E 1.5 = 53,333">
+                    <span class="viz-bar-label"><b>REQ-05</b> 맛집 리스트 공유</span>
+                    <span class="viz-bar-track">
+                        <span class="viz-bar" style="width:74.07407407407408%;background:var(--viz-1)"></span>
+                        <span class="viz-bar-value">53,333</span>
+                    </span>
+                </div><div class="viz-bar-row" data-tip="REQ-03 지도 기반 탐색·검색
+R 100,000 × I 2 × C 90% ÷ E 4 = 45,000" tabindex="0" role="img" aria-label="REQ-03 지도 기반 탐색·검색, R 100,000 × I 2 × C 90% ÷ E 4 = 45,000">
+                    <span class="viz-bar-label"><b>REQ-03</b> 지도 기반 탐색·검색</span>
+                    <span class="viz-bar-track">
+                        <span class="viz-bar" style="width:62.5%;background:var(--viz-1)"></span>
+                        <span class="viz-bar-value">45,000</span>
+                    </span>
+                </div><div class="viz-bar-row" data-tip="REQ-04 팔로우 &amp; 취향 피드
+R 60,000 × I 2 × C 80% ÷ E 3 = 32,000" tabindex="0" role="img" aria-label="REQ-04 팔로우 &amp; 취향 피드, R 60,000 × I 2 × C 80% ÷ E 3 = 32,000">
+                    <span class="viz-bar-label"><b>REQ-04</b> 팔로우 &amp; 취향 피드</span>
+                    <span class="viz-bar-track">
+                        <span class="viz-bar" style="width:44.44444444444444%;background:var(--viz-1)"></span>
+                        <span class="viz-bar-value">32,000</span>
+                    </span>
+                </div><div class="viz-bar-row" data-tip="REQ-02 실방문 인증
+R 40,000 × I 3 × C 70% ÷ E 3 = 28,000" tabindex="0" role="img" aria-label="REQ-02 실방문 인증, R 40,000 × I 3 × C 70% ÷ E 3 = 28,000">
+                    <span class="viz-bar-label"><b>REQ-02</b> 실방문 인증</span>
+                    <span class="viz-bar-track">
+                        <span class="viz-bar" style="width:38.88888888888889%;background:var(--viz-1)"></span>
+                        <span class="viz-bar-value">28,000</span>
+                    </span>
+                </div><div class="viz-bar-row" data-tip="REQ-07 취향 매칭 추천
+R 70,000 × I 3 × C 50% ÷ E 5 = 21,000" tabindex="0" role="img" aria-label="REQ-07 취향 매칭 추천, R 70,000 × I 3 × C 50% ÷ E 5 = 21,000">
+                    <span class="viz-bar-label"><b>REQ-07</b> 취향 매칭 추천</span>
+                    <span class="viz-bar-track">
+                        <span class="viz-bar" style="width:29.166666666666668%;background:var(--viz-2)"></span>
+                        <span class="viz-bar-value">21,000</span>
+                    </span>
+                </div><div class="viz-bar-row" data-tip="REQ-12 그룹 투표
+R 20,000 × I 1 × C 60% ÷ E 1.5 = 8,000" tabindex="0" role="img" aria-label="REQ-12 그룹 투표, R 20,000 × I 1 × C 60% ÷ E 1.5 = 8,000">
+                    <span class="viz-bar-label"><b>REQ-12</b> 그룹 투표</span>
+                    <span class="viz-bar-track">
+                        <span class="viz-bar" style="width:11.11111111111111%;background:var(--viz-3)"></span>
+                        <span class="viz-bar-value">8,000</span>
+                    </span>
+                </div><div class="viz-bar-row" data-tip="REQ-14 예약·결제 연동
+R 30,000 × I 2 × C 40% ÷ E 6 = 4,000" tabindex="0" role="img" aria-label="REQ-14 예약·결제 연동, R 30,000 × I 2 × C 40% ÷ E 6 = 4,000">
+                    <span class="viz-bar-label"><b>REQ-14</b> 예약·결제 연동</span>
+                    <span class="viz-bar-track">
+                        <span class="viz-bar" style="width:5.555555555555555%;background:var(--viz-4)"></span>
+                        <span class="viz-bar-value">4,000</span>
+                    </span>
+                </div></div></div>
+                <div class="viz-table" hidden><table><thead><tr><th>ID</th><th>기능</th><th>Reach</th><th>Impact</th><th>Confidence %</th><th>Effort</th><th>RICE</th><th>MoSCoW</th></tr></thead>
+                <tbody><tr><td>REQ-01</td><td>맛집 방문 기록</td><td>80,000</td><td>3</td><td>90</td><td>3</td><td>72,000</td><td>Must</td></tr><tr><td>REQ-10</td><td>인스타 공유 카드</td><td>40,000</td><td>1</td><td>80</td><td>0.5</td><td>64,000</td><td>Should</td></tr><tr><td>REQ-05</td><td>맛집 리스트 공유</td><td>50,000</td><td>2</td><td>80</td><td>1.5</td><td>53,333</td><td>Must</td></tr><tr><td>REQ-03</td><td>지도 기반 탐색·검색</td><td>100,000</td><td>2</td><td>90</td><td>4</td><td>45,000</td><td>Must</td></tr><tr><td>REQ-04</td><td>팔로우 &amp; 취향 피드</td><td>60,000</td><td>2</td><td>80</td><td>3</td><td>32,000</td><td>Must</td></tr><tr><td>REQ-02</td><td>실방문 인증</td><td>40,000</td><td>3</td><td>70</td><td>3</td><td>28,000</td><td>Must</td></tr><tr><td>REQ-07</td><td>취향 매칭 추천</td><td>70,000</td><td>3</td><td>50</td><td>5</td><td>21,000</td><td>Should</td></tr><tr><td>REQ-12</td><td>그룹 투표</td><td>20,000</td><td>1</td><td>60</td><td>1.5</td><td>8,000</td><td>Could</td></tr><tr><td>REQ-14</td><td>예약·결제 연동</td><td>30,000</td><td>2</td><td>40</td><td>6</td><td>4,000</td><td>Won&#39;t</td></tr></tbody></table></div>
+            </figure><figure class="viz-card">
+                <figcaption class="viz-card-head">
+                    <div>
+                        <h4 class="viz-title">임팩트 × 노력 매트릭스</h4>
+                        <p class="viz-sub">왼쪽 위(음영) = 빠른 성과: 노력은 적고 임팩트는 큰 기능</p>
+                    </div>
+                    <button type="button" class="viz-table-toggle" onclick="toggleVizTable(this)" aria-expanded="false">표로 보기</button>
+                </figcaption>
+                <div class="viz-body"><svg class="viz-svg viz-square" viewBox="0 0 340 340">
+                <rect x="40" y="40" width="113.04347826086956" height="157.36842105263156" fill="var(--viz-1)" fill-opacity="0.06"/>
+                <rect x="40" y="40" width="260" height="260" fill="none" class="viz-gridline"/>
+                <line x1="153.04347826086956" x2="153.04347826086956" y1="40" y2="300" class="viz-axis"/>
+                <line x1="40" x2="300" y1="197.36842105263156" y2="197.36842105263156" class="viz-axis"/>
+                <text x="48" y="56" class="viz-quad-label" text-anchor="start">빠른 성과</text><text x="292" y="56" class="viz-quad-label" text-anchor="end">큰 베팅</text><text x="48" y="292" class="viz-quad-label" text-anchor="start">틈새 작업</text><text x="292" y="292" class="viz-quad-label" text-anchor="end">시간 낭비</text>
+                <text x="170" y="330" class="viz-axis-title" text-anchor="middle">노력 (인월) →</text>
+                <text transform="translate(14 170) rotate(-90)" class="viz-axis-title" text-anchor="middle">임팩트 →</text>
+                <g class="viz-mark" data-tip="REQ-01 맛집 방문 기록
+Impact 3 · Effort 3 인월" tabindex="0" role="img" aria-label="REQ-01 맛집 방문 기록, Impact 3 · Effort 3 인월">
+                    <circle cx="153.04347826086956" cy="94.73684210526315" r="13" fill="transparent"/>
+                    <circle cx="153.04347826086956" cy="94.73684210526315" r="5" fill="var(--viz-1)" stroke="var(--viz-surface)" stroke-width="2"/>
+                    <text x="162.04347826086956" y="108.73684210526315" class="viz-label">REQ-01</text>
+                </g><g class="viz-mark" data-tip="REQ-10 인스타 공유 카드
+Impact 1 · Effort 0.5 인월" tabindex="0" role="img" aria-label="REQ-10 인스타 공유 카드, Impact 1 · Effort 0.5 인월">
+                    <circle cx="58.84057971014493" cy="231.57894736842104" r="13" fill="transparent"/>
+                    <circle cx="58.84057971014493" cy="231.57894736842104" r="5" fill="var(--viz-1)" stroke="var(--viz-surface)" stroke-width="2"/>
+                    
+                </g><g class="viz-mark" data-tip="REQ-05 맛집 리스트 공유
+Impact 2 · Effort 1.5 인월" tabindex="0" role="img" aria-label="REQ-05 맛집 리스트 공유, Impact 2 · Effort 1.5 인월">
+                    <circle cx="96.52173913043478" cy="163.1578947368421" r="13" fill="transparent"/>
+                    <circle cx="96.52173913043478" cy="163.1578947368421" r="5" fill="var(--viz-1)" stroke="var(--viz-surface)" stroke-width="2"/>
+                    <text x="42.721739130434784" y="157.1578947368421" class="viz-label">REQ-05</text>
+                </g><g class="viz-mark" data-tip="REQ-03 지도 기반 탐색·검색
+Impact 2 · Effort 4 인월" tabindex="0" role="img" aria-label="REQ-03 지도 기반 탐색·검색, Impact 2 · Effort 4 인월">
+                    <circle cx="190.72463768115944" cy="163.1578947368421" r="13" fill="transparent"/>
+                    <circle cx="190.72463768115944" cy="163.1578947368421" r="5" fill="var(--viz-1)" stroke="var(--viz-surface)" stroke-width="2"/>
+                    <text x="199.72463768115944" y="157.1578947368421" class="viz-label">REQ-03</text>
+                </g><g class="viz-mark" data-tip="REQ-04 팔로우 &amp; 취향 피드
+Impact 2 · Effort 3 인월" tabindex="0" role="img" aria-label="REQ-04 팔로우 &amp; 취향 피드, Impact 2 · Effort 3 인월">
+                    <circle cx="153.04347826086956" cy="163.1578947368421" r="13" fill="transparent"/>
+                    <circle cx="153.04347826086956" cy="163.1578947368421" r="5" fill="var(--viz-1)" stroke="var(--viz-surface)" stroke-width="2"/>
+                    <text x="130.64347826086956" y="148.1578947368421" class="viz-label">REQ-04</text>
+                </g><g class="viz-mark" data-tip="REQ-02 실방문 인증
+Impact 3 · Effort 3 인월" tabindex="0" role="img" aria-label="REQ-02 실방문 인증, Impact 3 · Effort 3 인월">
+                    <circle cx="162.04347826086956" cy="85.73684210526315" r="13" fill="transparent"/>
+                    <circle cx="162.04347826086956" cy="85.73684210526315" r="5" fill="var(--viz-1)" stroke="var(--viz-surface)" stroke-width="2"/>
+                    <text x="171.04347826086956" y="79.73684210526315" class="viz-label">REQ-02</text>
+                </g><g class="viz-mark" data-tip="REQ-07 취향 매칭 추천
+Impact 3 · Effort 5 인월" tabindex="0" role="img" aria-label="REQ-07 취향 매칭 추천, Impact 3 · Effort 5 인월">
+                    <circle cx="228.4057971014493" cy="94.73684210526315" r="13" fill="transparent"/>
+                    <circle cx="228.4057971014493" cy="94.73684210526315" r="5" fill="var(--viz-1)" stroke="var(--viz-surface)" stroke-width="2"/>
+                    <text x="237.4057971014493" y="88.73684210526315" class="viz-label">REQ-07</text>
+                </g><g class="viz-mark" data-tip="REQ-12 그룹 투표
+Impact 1 · Effort 1.5 인월" tabindex="0" role="img" aria-label="REQ-12 그룹 투표, Impact 1 · Effort 1.5 인월">
+                    <circle cx="96.52173913043478" cy="231.57894736842104" r="13" fill="transparent"/>
+                    <circle cx="96.52173913043478" cy="231.57894736842104" r="5" fill="var(--viz-1)" stroke="var(--viz-surface)" stroke-width="2"/>
+                    <text x="105.52173913043478" y="225.57894736842104" class="viz-label">REQ-12</text>
+                </g><g class="viz-mark" data-tip="REQ-14 예약·결제 연동
+Impact 2 · Effort 6 인월" tabindex="0" role="img" aria-label="REQ-14 예약·결제 연동, Impact 2 · Effort 6 인월">
+                    <circle cx="266.0869565217391" cy="163.1578947368421" r="13" fill="transparent"/>
+                    <circle cx="266.0869565217391" cy="163.1578947368421" r="5" fill="var(--viz-1)" stroke="var(--viz-surface)" stroke-width="2"/>
+                    <text x="212.2869565217391" y="177.1578947368421" class="viz-label">REQ-14</text>
+                </g>
+            </svg></div>
+                <div class="viz-table" hidden><table><thead><tr><th>ID</th><th>기능</th><th>Impact</th><th>Effort</th></tr></thead>
+                <tbody><tr><td>REQ-01</td><td>맛집 방문 기록</td><td>3</td><td>3</td></tr><tr><td>REQ-10</td><td>인스타 공유 카드</td><td>1</td><td>0.5</td></tr><tr><td>REQ-05</td><td>맛집 리스트 공유</td><td>2</td><td>1.5</td></tr><tr><td>REQ-03</td><td>지도 기반 탐색·검색</td><td>2</td><td>4</td></tr><tr><td>REQ-04</td><td>팔로우 &amp; 취향 피드</td><td>2</td><td>3</td></tr><tr><td>REQ-02</td><td>실방문 인증</td><td>3</td><td>3</td></tr><tr><td>REQ-07</td><td>취향 매칭 추천</td><td>3</td><td>5</td></tr><tr><td>REQ-12</td><td>그룹 투표</td><td>1</td><td>1.5</td></tr><tr><td>REQ-14</td><td>예약·결제 연동</td><td>2</td><td>6</td></tr></tbody></table></div>
+            </figure></div>
+                </section><h1>[구조화 분석] McKinsey MECE 전략 기획 분석: 20~30대 '인증 기반 취향 맛집 공유' 서비스 (가칭 <em>찐맛로그</em>)</h1>
+<hr>
+<h2>1. 개요 및 구조화 목적 (MECE Purpose)</h2>
+<p>본 분석은 20<del>30대가 실제로 방문한 맛집을 기록하고 공유하는 서비스의 사업 타당성을 검증합니다. 범위는 <strong>고객, 가치, 시장 기회, 기능, 리스크</strong>의 5대 도메인입니다. 경쟁 축은 네이버 지도와 구글 지도의 '불특정 다수 별점'입니다. 이에 대한 핵심 가설(Governing Hypothesis)은 다음과 같습니다. **"20</del>30대는 별점의 양보다 신뢰(실방문 인증)와 취향 일치(나와 입맛이 비슷한 사람)를 원하며, 이 결핍이 신규 플랫폼 진입의 기회가 된다."** 각 도메인은 상호배제(ME) 원칙으로 분해하여 분석 항목 간 중복과 이중 계상을 막습니다. 동시에 전체포괄(CE) 원칙으로 의사결정에 필요한 변수가 빠지지 않도록 하여, Go/No-Go 판단의 논리적 근거를 확보합니다.</p>
+<hr>
+<h2>2. [MECE A] 고객 세분화 분석 (Customer Segmentation Tree)</h2>
+<h3>2.1 분해 기준 정의</h3>
+<ul>
+<li><strong>모집단(Universe)</strong>: 국내 20<del>39세 중 최근 3개월 내 외식 장소 선택에 참여한 인구 (약 1,200만 명 추정, 20</del>39세 인구 약 1,300만 명 기준)</li>
+<li><strong>1차 분해축 (니즈 기반 · 정보 행동)</strong>: 최근 30일 앱/SNS 맛집 활동 중 '기록·게시' 비중이 50% 이상이면 <strong>기록형(Creator)</strong>, 미만이면 <strong>탐색형(Consumer)</strong></li>
+<li><strong>2차 분해축 (식사 맥락)</strong>: 최근 30일 외식 중 일상(점심, 동네, 혼밥) 비중이 50% 이상이면 <strong>일상형</strong>, 미만이면 <strong>특별형</strong>(데이트, 기념일, 여행, 모임)</li>
+<li><strong>3차 속성 (인구통계 · 라이프스테이지)</strong>: 분해축이 아닌 <strong>세그먼트 내 프로파일링 속성</strong>으로만 사용하여 중복 분류를 막음</li>
+</ul>
+<h3>2.2 로직 트리</h3>
+<pre><code>20~39세 외식 의사결정 참여자 (100%)
+├── [탐색형 Consumer] 정보 소비 중심 (75%)
+│   ├── S1. 일상 탐색형 (45%)
+│   │   · 인구통계: 25~35세 직장인, 자취 대학생·사회초년생
+│   │   · 라이프스테이지: 1인 가구, 사회 초년기
+│   │   · 핵심 니즈: "회사/집 근처 실패 없는 점심·혼밥집을 빨리 고르고 싶다"
+│   └── S2. 특별 탐색형 (30%)
+│       · 인구통계: 25~34세 연애 중·신혼 커플, 여행 선호층
+│       · 라이프스테이지: 연애·결혼 준비기, 여가 소비 확대기
+│       · 핵심 니즈: "중요한 날에 광고 아닌 진짜 좋은 곳을 고르고 싶다"
+└── [기록형 Creator] 정보 생산 중심 (25%)
+    ├── S3. 일상 기록형 (15%)
+    │   · 인구통계: 20대 중후반~30대 초반, 미식 관심 직장인
+    │   · 라이프스테이지: 취향 확립기, 자기 기록(아카이빙) 욕구
+    │   · 핵심 니즈: "내가 다닌 곳을 나만의 맛집 지도로 남기고 싶다"
+    └── S4. 특별 기록형 (10%)
+        · 인구통계: 20대 대학생~20대 후반, SNS 고관여층
+        · 라이프스테이지: 사회적 정체성 형성기, 팔로워 확보 욕구
+        · 핵심 니즈: "핫플을 먼저 발굴해서 인정받고 싶다"
+</code></pre>
+<blockquote>
+<p><strong>전략적 함의</strong>: 서비스 가치의 원천(콘텐츠)은 S3·S4(25%)가 만들고, 트래픽과 수익의 원천은 S1·S2(75%)입니다. 따라서 <strong>초기 Cold-start는 S3를 우선 확보</strong>하고, S1을 핵심 수익 세그먼트로 설정합니다.</p>
+</blockquote>
+<h3>2.3 구조적 정합성 검증</h3>
+<p><strong>ME 검증 (상호배제)</strong></p>
+<ul>
+<li>두 분해축 모두 '50% 이상 / 미만'이라는 <strong>단일 임계값 이분법</strong>을 쓰므로, 어떤 개인도 두 세그먼트에 동시에 속할 수 없습니다. 2×2 데카르트 곱 구조이기 때문에 수학적으로 교집합은 공집합(∅)입니다.</li>
+<li>한 사용자가 시기에 따라 기록과 탐색을 오가는 경우가 있습니다. 이때는 <strong>"최근 30일 기준 시점 분류"</strong> 규칙을 적용하여 특정 시점에서 유일한 세그먼트에 배정합니다. 세그먼트 간 이동은 중복이 아니라 **전이(Migration)**로 관리하며, S1→S3 전환율을 핵심 KPI로 삼습니다.</li>
+<li>인구통계·라이프스테이지는 분해축이 아니라 속성이므로, "30대 직장인"이 여러 세그먼트에 나타나더라도 분류 중복이 아닙니다.</li>
+</ul>
+<p><strong>CE 검증 (전체포괄): "이 분류 외에 타깃될 수 있는 고객군이 존재하는가?"</strong></p>
+<ul>
+<li>모집단 내부: 모든 구성원은 '기록 비중'과 '일상 비중'이라는 두 연속 변수를 반드시 가집니다(0% 포함). 따라서 4개 사분면 밖에 놓일 수 없고, 세그먼트 합계는 45+30+15+10=**100%**입니다.</li>
+<li>모집단 외부(의도적 배제, Out-of-scope): 외식 정보 무관심층(배달·집밥 위주), 40대 이상, 외국인 관광객, 음식점 업주(B2B)가 있습니다. 이들은 누락이 아니라 <strong>범위 정의에 따른 배제</strong>이며, 외국인 관광객과 업주는 4장의 [3]·[4] 분면 확장 타깃으로 별도 포괄합니다.</li>
+<li>결론: <strong>모집단 내 누락 0건, 모집단 외 고객군 4건은 명시적으로 배제하거나 확장 단계에 배정함.</strong></li>
+</ul>
+<hr>
+<h2>3. [MECE B] 고객 제공 가치 분석 (Customer Value Breakdown)</h2>
+<blockquote>
+<p><strong>분류 규칙(ME 보장)</strong>: 가치는 <strong>"수혜의 성격"</strong> 기준으로 단일 귀속합니다. 객관적 작업 수행 개선은 기능적 가치, 화폐·시간 단위로 측정 가능한 이득은 경제적 가치, 개인 내면의 정서는 감성적 가치, 개인을 넘어 타인과 공동체에 미치는 효과는 사회적 가치입니다.</p>
+</blockquote>
+<h3>3.1. 기능적 가치 (Functional Value)</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th align="left">계층</th>
+<th align="left">가치 요소</th>
+<th align="left">구체 내용</th>
+<th align="left">경쟁사 대비</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">핵심 기능</td>
+<td align="left"><strong>실방문 인증 리뷰</strong></td>
+<td align="left">영수증 OCR과 GPS 체류 인증을 거친 리뷰에만 '인증' 마크 부여</td>
+<td align="left">네이버(영수증 리뷰 일부), 구글(인증 없음) 대비 전면 인증</td>
+</tr>
+<tr>
+<td align="left">핵심 기능</td>
+<td align="left"><strong>취향 매칭 평점</strong></td>
+<td align="left">전체 평균 별점 대신 "나와 입맛이 비슷한 사용자의 평점" 제공</td>
+<td align="left">기존 서비스는 불특정 다수 평균만 제공</td>
+</tr>
+<tr>
+<td align="left">성능</td>
+<td align="left"><strong>상황 기반 필터</strong></td>
+<td align="left">데이트, 혼밥, 회식, 가성비 등 맥락 태그 검색</td>
+<td align="left">기존 서비스는 카테고리·거리 중심</td>
+</tr>
+<tr>
+<td align="left">편의성</td>
+<td align="left"><strong>원탭 기록 &amp; 리스트 공유</strong></td>
+<td align="left">사진 1장과 한 줄 평으로 10초 기록, 맛집 리스트를 링크 하나로 공유</td>
+<td align="left">네이버 '저장'은 개인용이라 큐레이션 공유가 약함</td>
+</tr>
+</tbody></table></div>
+<h3>3.2. 경제적 가치 (Economic Value)</h3>
+<ul>
+<li><strong>비용 절감 (외식 실패비용 회피)</strong>: 20~30대의 1회 외식 지출을 평균 약 2.5만 원, 월 외식 8회, 불만족 방문률 25%로 가정하면 월 약 5만 원이 '실패 지출'입니다. 이를 10%p 낮추면 <strong>월 약 2만 원 상당의 실패비용을 회피</strong>합니다(추정치, 사용자 조사로 검증 필요).</li>
+<li><strong>효율성 (탐색 시간 단축)</strong>: 광고·체험단 리뷰를 걸러내는 시간을 줄여, 맛집 선택 시간을 <strong>회당 약 15분에서 3분 수준으로 단축</strong>하는 것을 목표로 합니다.</li>
+<li><strong>ROI (기록자 보상)</strong>: S3·S4 기록형 사용자는 인증 리뷰 활동에 대한 포인트를 받고, 이를 제휴 매장 할인으로 전환합니다. 콘텐츠 생산 활동이 경제적 리턴으로 돌아옵니다.</li>
+</ul>
+<h3>3.3. 감성적 가치 (Emotional Value)</h3>
+<ul>
+<li><strong>브랜드 신뢰</strong>: "여기는 광고가 없다"는 확신에서 오는 안도감입니다. 체험단·뒷광고 피로도에 대한 정서적 해방이기도 합니다.</li>
+<li><strong>스트레스 해소</strong>: 데이트나 모임 장소를 정해야 하는 '결정 책임'의 부담이 줄어듭니다. 신뢰하는 사람의 추천이 선택의 근거가 됩니다.</li>
+<li><strong>자아 표현</strong>: "나의 맛집 지도"는 취향 정체성의 포트폴리오입니다. 연말 미식 결산과 배지 등으로 '미식가로서의 나'를 표현합니다.</li>
+</ul>
+<h3>3.4. 사회적 가치 (Social Value)</h3>
+<ul>
+<li><strong>공동체 기여</strong>: 광고비 대신 실방문 데이터로 노출 순위가 정해지므로, 마케팅 예산이 적은 <strong>골목 소상공인에게 공정한 발견 기회</strong>를 줍니다.</li>
+<li><strong>친환경</strong>: 다회용기·포장 용기 지참 가능 매장 태그와 동네 도보권 맛집 추천으로, 저탄소 로컬 소비를 유도합니다(부가 가치).</li>
+<li><strong>윤리적 가치</strong>: 추천·보증 표시 기준을 준수하는 <strong>리뷰 투명성 생태계</strong>를 만듭니다. 허위·조작 리뷰를 배제하여 건강한 리뷰 문화에 기여합니다.</li>
+</ul>
+<hr>
+<h2>4. [MECE C] 시장 기회 다차원 분석 (Ansoff Matrix)</h2>
+<blockquote>
+<p><strong>분해 기준</strong>: 시장축은 '기존 시장 = 국내 20<del>30대 개인 사용자(S1</del>S4)', '신규 시장 = 그 외 고객군(외국인 관광객, 지방·해외 지역, B2B 업주·기업)'입니다. 제품축은 '기존 서비스 = 인증 리뷰·맛집 지도·공유 피드(MVP)', '신규 서비스 = MVP 외 신규 상품'입니다.</p>
+</blockquote>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th align="left">구분</th>
+<th align="left">기존 시장 (현재 타겟: 국내 20<del>30대 S1</del>S4)</th>
+<th align="left">신규 시장 (확장 타겟)</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><strong>기존 서비스/제품</strong></td>
+<td align="left"><strong>[1] 시장 침투 전략</strong><br>• <strong>S3 앰배서더 프로그램</strong>: 미식 기록가 500명을 초기 선발하고 '파운딩 멤버' 배지 부여<br>• <strong>캠퍼스·오피스 상권 집중 런칭</strong>: 성수, 강남, 판교, 신촌 4개 상권을 먼저 고밀도로 채움(지도 공백 방지)<br>• <strong>인스타 공유 카드 바이럴</strong>: 맛집 리스트를 스토리 이미지로 자동 생성<br>• <strong>수익 모델</strong>: 인증 기반 '검증된 로컬 광고'(표시 의무 준수)<br>• <strong>예상 매출 기여도: 40%</strong></td>
+<td align="left"><strong>[3] 시장 개척 전략</strong><br>• <strong>지방 광역시·관광지 확장</strong>: 부산, 제주, 강릉 '여행 맛집 리스트' 특화(S2 수요와 연계)<br>• <strong>외국인 관광객 버전</strong>: 영어·일어·중국어 UI, "현지 20대가 인증한 진짜 맛집" 포지셔닝<br>• <strong>40대 이상 확장</strong>: 자녀 동반·가족 모임 태그 추가<br>• <strong>수익 모델</strong>: 관광 제휴 광고, 지자체·관광공사 협업<br>• <strong>예상 매출 기여도: 18%</strong></td>
+</tr>
+<tr>
+<td align="left"><strong>신규 서비스/제품</strong></td>
+<td align="left"><strong>[2] 제품/서비스 개발 전략</strong><br>• <strong>프리미엄 구독(월 3,900원)</strong>: 취향 매칭 상세 분석, 무제한 리스트, 광고 제거<br>• <strong>예약·웨이팅 연동</strong>: 인증 맛집 예약 수수료 모델(MVP 이후)<br>• <strong>그룹 의사결정 도구</strong>: "오늘 어디 갈래?" 투표와 정산<br>• <strong>연말 미식 결산 리포트</strong>: 유료 굿즈·포토북 연계<br>• <strong>예상 매출 기여도: 30%</strong></td>
+<td align="left"><strong>[4] 다각화 전략</strong><br>• <strong>B2B 상권 데이터 서비스</strong>: 20~30대 실방문 트렌드 리포트를 프랜차이즈·부동산·F&amp;B 기업에 판매(비식별 통계)<br>• <strong>업주용 SaaS</strong>: 인증 리뷰 응대, 고객 인사이트 대시보드<br>• <strong>PB 밀키트·팝업 커머스</strong>: 인기 맛집과 협업한 한정판 상품<br>• <strong>예상 매출 기여도: 12%</strong></td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p><strong>CE 검증</strong>: 2×2 매트릭스는 '제품(기존/신규) × 시장(기존/신규)'의 모든 조합을 포괄하므로 성장 경로 누락은 없습니다. 매출 기여도 합계는 40+30+18+12=**100%**입니다. 리스크가 낮은 순서([1]→[2]→[3]→[4])로 매출 비중을 배분하여, 3년 차 기준 포트폴리오 추정치로 설정했습니다.</p>
+</blockquote>
+<hr>
+<h2>5. [MECE D] 기능 요구사항 MoSCoW 우선순위 정의 (Feature Prioritization)</h2>
+<blockquote>
+<p><strong>ME 규칙</strong>: 모든 기능 ID는 단 하나의 단계에만 귀속됩니다(REQ-01~17, 총 17개). <strong>판별 질문</strong>은 단계별로 다음과 같습니다. Must는 "없으면 핵심 가설(신뢰 + 취향)을 검증할 수 없는가?", Should는 "없어도 작동하지만 경쟁 차별화가 크게 약화되는가?", Could는 "있으면 좋지만 핵심 지표에 미치는 영향이 제한적인가?", Won't는 "이번 MVP·첫 스프린트 범위에서 의도적으로 제외하는가?"입니다.</p>
+</blockquote>
+<h3>5.1. Must Have (MVP 성립 필수 기능)</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th align="left">ID</th>
+<th align="left">기능</th>
+<th align="left">정의</th>
+<th align="left">핵심 가설 연결</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><strong>REQ-01</strong></td>
+<td align="left">맛집 방문 기록</td>
+<td align="left">사진, 한 줄 평, 별점, 상황 태그로 10초 안에 기록</td>
+<td align="left">콘텐츠 공급의 원천</td>
+</tr>
+<tr>
+<td align="left"><strong>REQ-02</strong></td>
+<td align="left">실방문 인증</td>
+<td align="left">영수증 OCR(카드번호 자동 마스킹) 또는 GPS 체류 인증</td>
+<td align="left"><strong>경쟁사 대비 핵심 차별점(신뢰)</strong></td>
+</tr>
+<tr>
+<td align="left"><strong>REQ-03</strong></td>
+<td align="left">지도 기반 탐색·검색</td>
+<td align="left">현재 위치·지역 기반 맛집 지도, 키워드 검색</td>
+<td align="left">탐색형(S1·S2) 기본 사용 경로</td>
+</tr>
+<tr>
+<td align="left"><strong>REQ-04</strong></td>
+<td align="left">팔로우 &amp; 취향 피드</td>
+<td align="left">친구·관심 기록가를 팔로우하고 방문 기록 피드 열람</td>
+<td align="left">소셜 신뢰 기반 추천</td>
+</tr>
+<tr>
+<td align="left"><strong>REQ-05</strong></td>
+<td align="left">맛집 리스트 공유</td>
+<td align="left">주제별 컬렉션(예: 성수 데이트 5선) 생성 및 링크 공유</td>
+<td align="left">바이럴과 S3 아카이빙</td>
+</tr>
+<tr>
+<td align="left"><strong>REQ-06</strong></td>
+<td align="left">회원·신고·모더레이션</td>
+<td align="left">소셜 로그인, 허위·악성 리뷰 신고, 임시조치 처리</td>
+<td align="left">법적 의무와 서비스 신뢰</td>
+</tr>
+</tbody></table></div>
+<h3>5.2. Should Have (경쟁력 확보 최우선 갱신 요건)</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th align="left">ID</th>
+<th align="left">기능</th>
+<th align="left">정의</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><strong>REQ-07</strong></td>
+<td align="left">취향 매칭 추천</td>
+<td align="left">평점 패턴 유사도 기반으로 "나와 입맛 85% 일치 사용자" 평점 제공</td>
+</tr>
+<tr>
+<td align="left"><strong>REQ-08</strong></td>
+<td align="left">외부 저장목록 가져오기</td>
+<td align="left">공유 링크·수동 입력 기반으로 기존 맛집 목록 일괄 등록(타사 약관 검토 전제)</td>
+</tr>
+<tr>
+<td align="left"><strong>REQ-09</strong></td>
+<td align="left">상황 태그 필터</td>
+<td align="left">데이트, 혼밥, 회식, 가성비, 웨이팅 없음 필터</td>
+</tr>
+<tr>
+<td align="left"><strong>REQ-10</strong></td>
+<td align="left">인스타 공유 카드</td>
+<td align="left">리스트·리뷰를 스토리용 이미지로 자동 생성</td>
+</tr>
+</tbody></table></div>
+<h3>5.3. Could Have (개발 여유 시 반영 편의/부가 요건)</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th align="left">ID</th>
+<th align="left">기능</th>
+<th align="left">정의</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><strong>REQ-11</strong></td>
+<td align="left">미식 결산 리포트</td>
+<td align="left">월간·연간 방문 통계와 취향 분석 리포트</td>
+</tr>
+<tr>
+<td align="left"><strong>REQ-12</strong></td>
+<td align="left">그룹 투표</td>
+<td align="left">친구들과 후보 맛집 투표 후 장소 결정</td>
+</tr>
+<tr>
+<td align="left"><strong>REQ-13</strong></td>
+<td align="left">배지·게이미피케이션</td>
+<td align="left">지역 정복, 첫 발견자 등 활동 배지</td>
+</tr>
+</tbody></table></div>
+<h3>5.4. Won't Have (이번 MVP·첫 스프린트 의도적 배제)</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th align="left">ID</th>
+<th align="left">기능</th>
+<th align="left">배제 사유</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><strong>REQ-14</strong></td>
+<td align="left">예약·결제 연동</td>
+<td align="left">매장 제휴와 PG 연동 공수가 크고, 핵심 가설 검증과 무관함 → [2] 분면 후속 과제</td>
+</tr>
+<tr>
+<td align="left"><strong>REQ-15</strong></td>
+<td align="left">업주 광고 관리 콘솔</td>
+<td align="left">공급 측(B2B) 개발은 사용자 기반 확보 이후 → [4] 분면</td>
+</tr>
+<tr>
+<td align="left"><strong>REQ-16</strong></td>
+<td align="left">배달 연동</td>
+<td align="left">'방문 경험'이라는 핵심 정체성과 충돌함</td>
+</tr>
+<tr>
+<td align="left"><strong>REQ-17</strong></td>
+<td align="left">다국어·해외 지역</td>
+<td align="left">국내 고밀도 확보가 우선 → [3] 분면</td>
+</tr>
+</tbody></table></div>
+<hr>
+<h2>6. [MECE E] 잠재 리스크 입체적 구조화 (Collectively Exhaustive Risk Control)</h2>
+<blockquote>
+<p><strong>ME 규칙 (근본 원인 귀속 원칙)</strong>: 하나의 현상이 여러 도메인에 걸쳐 보일 때는 <strong>근본 원인(Root Cause)과 대응 책임 주체</strong> 기준으로 단일 귀속합니다. 예를 들어 '조작 리뷰'는 탐지·처리의 문제이므로 운영 리스크에 둡니다. '뒷광고 표시 의무 위반'은 법령 준수의 문제이므로 규제 리스크에 둡니다.
+<strong>CE 규칙</strong>: 가치사슬(수요 → 구현 → 운영 → 자금 → 제도)의 5단계를 모두 덮어, 비즈니스 장애 요인이 들어갈 자리가 없는 경우를 없앱니다.</p>
+</blockquote>
+<h3>6.1. 시장 리스크 (Market Risk)</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th align="left">리스크</th>
+<th align="left">영향</th>
+<th align="left">대응 완충책</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><strong>네트워크 효과 열세 (Cold-start)</strong>: 네이버 지도의 압도적 데이터량 대비 리뷰 공백</td>
+<td align="left">상</td>
+<td align="left">4개 상권에 집중 런칭하여 '전국 얕게'보다 '상권 깊게', S3 앰배서더 500명으로 초기 콘텐츠 확보</td>
+</tr>
+<tr>
+<td align="left"><strong>경쟁사 기능 모방</strong>: 네이버·카카오가 인증·취향 기능을 따라 할 가능성</td>
+<td align="left">상</td>
+<td align="left">기능이 아닌 <strong>커뮤니티 정체성과 취향 그래프 데이터</strong>를 해자로 삼고, 광고 배제 원칙으로 브랜드 포지셔닝</td>
+</tr>
+<tr>
+<td align="left"><strong>수요 가설 오류</strong>: 사용자가 실제로는 '신뢰'보다 '편의(리뷰 수)'를 우선할 가능성</td>
+<td align="left">중</td>
+<td align="left">MVP 단계에서 A/B 테스트로 인증 리뷰와 일반 리뷰의 클릭률 비교, 4주 리텐션 25% 미만이면 피벗 검토</td>
+</tr>
+</tbody></table></div>
+<h3>6.2. 기술 리스크 (Technical Risk)</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th align="left">리스크</th>
+<th align="left">영향</th>
+<th align="left">대응 완충책</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><strong>인증 정확도 한계</strong>: OCR 오인식, GPS 오차(실내·고층 건물)</td>
+<td align="left">중</td>
+<td align="left">OCR과 GPS 이중 인증 중 택1 구조, 실패 시 수동 검수 큐로 우회</td>
+</tr>
+<tr>
+<td align="left"><strong>추천 알고리즘 Cold-start</strong>: 초기 평점 데이터 부족으로 취향 매칭 품질 저하</td>
+<td align="left">중</td>
+<td align="left">온보딩 시 '맛집 10곳 평가'로 초기 벡터 생성, 데이터 축적 전에는 규칙 기반 추천으로 대체</td>
+</tr>
+<tr>
+<td align="left"><strong>보안·개인정보 유출</strong>: 영수증 이미지, 위치 이력 노출</td>
+<td align="left">상</td>
+<td align="left">영수증 원본은 인증 후 즉시 삭제하고 결과값만 저장, 위치정보 암호화, 정기 모의해킹</td>
+</tr>
+</tbody></table></div>
+<h3>6.3. 운영 리스크 (Operational Risk)</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th align="left">리스크</th>
+<th align="left">영향</th>
+<th align="left">대응 완충책</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><strong>리뷰 조작·어뷰징</strong>: 업주 자작 리뷰, 경쟁 매장 악성 리뷰</td>
+<td align="left">상</td>
+<td align="left">인증 필수, 동일 기기·계정 패턴 탐지, 신고 후 24시간 내 임시조치 SLA</td>
+</tr>
+<tr>
+<td align="left"><strong>업주와의 분쟁</strong>: 부정 리뷰에 대한 항의와 삭제 요구</td>
+<td align="left">중</td>
+<td align="left">업주 소명 채널 운영, 명확한 커뮤니티 가이드라인 공개</td>
+</tr>
+<tr>
+<td align="left"><strong>콘텐츠 품질 관리(QA)</strong>: 무성의 리뷰와 부적절 사진 증가</td>
+<td align="left">중</td>
+<td align="left">AI 이미지 필터, 양질의 리뷰에 포인트 가중치 부여, 저품질 리뷰는 노출 하향</td>
+</tr>
+</tbody></table></div>
+<h3>6.4. 재무 리스크 (Financial Risk)</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th align="left">리스크</th>
+<th align="left">영향</th>
+<th align="left">대응 완충책</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><strong>수익화 지연</strong>: 광고 배제 포지셔닝 때문에 초기 매출 부재</td>
+<td align="left">상</td>
+<td align="left">'MAU 10만 → 검증 광고, 30만 → 구독' 단계별 수익화 마일스톤 사전 정의</td>
+</tr>
+<tr>
+<td align="left"><strong>현금 소진(Burn)</strong>: 사용자 획득 비용(CAC) 과다</td>
+<td align="left">상</td>
+<td align="left">유료 광고 대신 바이럴(공유 카드)과 앰배서더 중심으로 성장, 18개월 이상 런웨이 확보 후 런칭</td>
+</tr>
+<tr>
+<td align="left"><strong>예산 초과</strong>: 지도·OCR API 사용료 급증</td>
+<td align="left">중</td>
+<td align="left">오픈소스 지도와 자체 OCR 전환 옵션 확보, 트래픽 구간별 API 비용 상한 모니터링</td>
+</tr>
+</tbody></table></div>
+<h3>6.5. 규제/법적 리스크 (Regulatory/Legal Risk)</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th align="left">리스크</th>
+<th align="left">영향</th>
+<th align="left">대응 완충책</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><strong>위치정보법</strong>: 개인위치정보를 활용하는 서비스의 사업 신고 등 의무</td>
+<td align="left">상</td>
+<td align="left">출시 전 위치기반서비스사업자 신고 등 요건 검토, 위치정보 이용약관과 별도 동의 수집</td>
+</tr>
+<tr>
+<td align="left"><strong>개인정보보호법</strong>: 영수증 결제정보, 행동 데이터 처리</td>
+<td align="left">상</td>
+<td align="left">최소 수집 원칙, B2B 데이터 판매 시 가명·통계 처리와 법률 검토</td>
+</tr>
+<tr>
+<td align="left"><strong>표시광고법·추천보증 심사지침</strong>: 협찬 리뷰 표시 의무</td>
+<td align="left">중</td>
+<td align="left">협찬·제휴 콘텐츠는 '광고' 라벨 의무화</td>
+</tr>
+<tr>
+<td align="left"><strong>정보통신망법·명예훼손</strong>: 악성 리뷰 관련 분쟁</td>
+<td align="left">중</td>
+<td align="left">권리침해 신고 시 임시조치 절차 시스템화</td>
+</tr>
+<tr>
+<td align="left"><strong>타사 약관(REQ-08)</strong>: 외부 데이터 가져오기의 약관 위반 가능성</td>
+<td align="left">중</td>
+<td align="left">크롤링 배제, 사용자 직접 입력·공유 링크 방식으로 한정</td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>※ 법령 적용 여부는 출시 전 법률 자문으로 최종 확인이 필요합니다.</p>
+</blockquote>
+<hr>
+<h2>7. 구조적 완결성 검토 (Structural Integrity Audit)</h2>
+<h3>7.1 정량 검증 결과</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th align="left">도메인</th>
+<th align="left">분해 기준</th>
+<th align="left">ME 검증</th>
+<th align="left">CE 검증</th>
+<th align="left">판정</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">A. 고객 세분화</td>
+<td align="left">2축 이분법(2×2)</td>
+<td align="left">교집합 ∅, 30일 시점 분류 규칙</td>
+<td align="left">비중 합계 100%, 범위 외 4개 군 명시 배제</td>
+<td align="left">✅ 통과</td>
+</tr>
+<tr>
+<td align="left">B. 고객 가치</td>
+<td align="left">수혜 성격(기능/경제/감성/사회)</td>
+<td align="left">단일 귀속 판별 규칙 적용</td>
+<td align="left">개인 객관(기능·경제) + 개인 주관(감성) + 집단(사회)으로 수혜 범위 전체 포괄</td>
+<td align="left">✅ 통과</td>
+</tr>
+<tr>
+<td align="left">C. 시장 기회</td>
+<td align="left">제품 × 시장 2×2</td>
+<td align="left">분면 간 배타</td>
+<td align="left">매출 기여도 합계 100%</td>
+<td align="left">✅ 통과</td>
+</tr>
+<tr>
+<td align="left">D. 기능 우선순위</td>
+<td align="left">MoSCoW 4단계</td>
+<td align="left">17개 ID 각각 단일 단계 귀속(중복 0)</td>
+<td align="left">핵심 가설 관련 기능 전량 Must·Should 배치</td>
+<td align="left">✅ 통과</td>
+</tr>
+<tr>
+<td align="left">E. 리스크</td>
+<td align="left">가치사슬 5단계</td>
+<td align="left">근본 원인 귀속 원칙</td>
+<td align="left">16개 리스크 전량 분류, 미분류 0건</td>
+<td align="left">✅ 통과</td>
+</tr>
+</tbody></table></div>
+<h3>7.2 정성 검증 및 잔여 이슈</h3>
+<ul>
+<li><strong>경계 모호 항목 처리</strong>: '리뷰 조작'(운영)과 '표시광고법'(법적)은 근본 원인 기준으로 분리했습니다. '개인정보 유출'은 사고 발생이라는 측면에서 기술(6.2)에, 처리 적법성이라는 측면에서 법적(6.5)에 두었습니다. 각각 별도의 대응 주체(보안팀 / 법무)를 가지므로 이중 계상이 아닌 <strong>관점 분리</strong>입니다.</li>
+<li><strong>잔여 불확실성</strong>: 경제적 가치(3.2)의 수치와 매출 기여도(4장)는 가정 기반 추정치입니다. MVP 단계에서 사용자 인터뷰와 지표로 검증해야 합니다.</li>
+</ul>
+<h3>7.3 5대 도메인 교차 참조 정합성 매트릭스</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th align="left">전제 도메인 → 결론 도메인</th>
+<th align="left">교차 참조 내용</th>
+<th align="center">정합성</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">A 고객 → B 가치</td>
+<td align="left">S1·S2(탐색형)의 '신뢰' 니즈는 3.1 인증 리뷰·3.3 브랜드 신뢰로, S3·S4(기록형)의 '표현' 니즈는 3.3 자아 표현·3.2 기록자 보상으로 대응</td>
+<td align="center">✅ 일치</td>
+</tr>
+<tr>
+<td align="left">A 고객 → C 시장</td>
+<td align="left">기존 시장을 S1~S4로 정의하고, 2.3에서 배제한 관광객·업주를 [3]·[4] 분면 신규 시장으로 연결</td>
+<td align="center">✅ 일치</td>
+</tr>
+<tr>
+<td align="left">A 고객 → D 기능</td>
+<td align="left">Cold-start에 S3 우선 확보 → REQ-01·05를 Must로 배치 / S1 탐색 → REQ-03 Must</td>
+<td align="center">✅ 일치</td>
+</tr>
+<tr>
+<td align="left">A 고객 → E 리스크</td>
+<td align="left">기록형 비중이 25%로 적다는 점 → 6.1 Cold-start 리스크로 연결</td>
+<td align="center">✅ 일치</td>
+</tr>
+<tr>
+<td align="left">B 가치 → C 시장</td>
+<td align="left">3.4 '광고 배제' 가치 vs [1] '검증된 로컬 광고' 수익 모델</td>
+<td align="center">⚠️ <strong>잠재 긴장</strong> → 광고를 '인증 매장 한정 + 명확한 라벨'로 제한하여 해소</td>
+</tr>
+<tr>
+<td align="left">B 가치 → D 기능</td>
+<td align="left">3.1 핵심 가치(인증·취향) → REQ-02 Must, REQ-07 Should</td>
+<td align="center">✅ 일치</td>
+</tr>
+<tr>
+<td align="left">B 가치 → E 리스크</td>
+<td align="left">3.4 리뷰 투명성 → 6.3 어뷰징 대응, 6.5 표시광고법 준수가 가치 실현의 전제</td>
+<td align="center">✅ 일치</td>
+</tr>
+<tr>
+<td align="left">C 시장 → D 기능</td>
+<td align="left">[2] 예약 연동, [3] 다국어, [4] 업주 콘솔 → 각각 REQ-14·17·15를 Won't로 배치하여 시점 분리</td>
+<td align="center">✅ 일치</td>
+</tr>
+<tr>
+<td align="left">C 시장 → E 리스크</td>
+<td align="left">[4] B2B 데이터 판매 → 6.5 개인정보 가명처리 리스크와 연결</td>
+<td align="center">✅ 일치</td>
+</tr>
+<tr>
+<td align="left">D 기능 → E 리스크</td>
+<td align="left">REQ-02(인증) → 6.2 정확도·보안 / REQ-08(가져오기) → 6.5 타사 약관</td>
+<td align="center">✅ 일치</td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p><strong>결론</strong>: 10개 교차 쌍 중 9개는 완전 정합, 1개(B↔C 광고 긴장)는 조건부 정합입니다. 이 긴장은 수익 모델 설계 원칙(광고 라벨링, 인증 매장 한정)으로 해소되며, <strong>논리적 모순은 0건</strong>입니다.</p>
+</blockquote>
+<hr>
+<h2>8. RICE 우선순위 점수화 (Reach × Impact × Confidence ÷ Effort)</h2>
+<blockquote>
+<p><strong>가정</strong>: 런칭 후 첫 분기에 4개 상권에서 도달 사용자 최대 10만 명. Confidence는 소수로 환산하여 계산합니다(예: 90% → 0.9).</p>
+</blockquote>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th align="left">ID</th>
+<th align="left">기능</th>
+<th align="right">Reach</th>
+<th align="right">Impact</th>
+<th align="right">Confidence</th>
+<th align="right">Effort</th>
+<th align="right">RICE 점수</th>
+<th align="left">MoSCoW</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">REQ-01</td>
+<td align="left">맛집 방문 기록</td>
+<td align="right">80,000</td>
+<td align="right">3</td>
+<td align="right">90%</td>
+<td align="right">3.0</td>
+<td align="right">72,000</td>
+<td align="left">Must</td>
+</tr>
+<tr>
+<td align="left">REQ-10</td>
+<td align="left">인스타 공유 카드</td>
+<td align="right">40,000</td>
+<td align="right">1</td>
+<td align="right">80%</td>
+<td align="right">0.5</td>
+<td align="right">64,000</td>
+<td align="left">Should</td>
+</tr>
+<tr>
+<td align="left">REQ-05</td>
+<td align="left">맛집 리스트 공유</td>
+<td align="right">50,000</td>
+<td align="right">2</td>
+<td align="right">80%</td>
+<td align="right">1.5</td>
+<td align="right">53,333</td>
+<td align="left">Must</td>
+</tr>
+<tr>
+<td align="left">REQ-03</td>
+<td align="left">지도 기반 탐색·검색</td>
+<td align="right">100,000</td>
+<td align="right">2</td>
+<td align="right">90%</td>
+<td align="right">4.0</td>
+<td align="right">45,000</td>
+<td align="left">Must</td>
+</tr>
+<tr>
+<td align="left">REQ-04</td>
+<td align="left">팔로우 &amp; 취향 피드</td>
+<td align="right">60,000</td>
+<td align="right">2</td>
+<td align="right">80%</td>
+<td align="right">3.0</td>
+<td align="right">32,000</td>
+<td align="left">Must</td>
+</tr>
+<tr>
+<td align="left">REQ-02</td>
+<td align="left">실방문 인증</td>
+<td align="right">40,000</td>
+<td align="right">3</td>
+<td align="right">70%</td>
+<td align="right">3.0</td>
+<td align="right">28,000</td>
+<td align="left">Must</td>
+</tr>
+<tr>
+<td align="left">REQ-07</td>
+<td align="left">취향 매칭 추천</td>
+<td align="right">70,000</td>
+<td align="right">3</td>
+<td align="right">50%</td>
+<td align="right">5.0</td>
+<td align="right">21,000</td>
+<td align="left">Should</td>
+</tr>
+<tr>
+<td align="left">REQ-12</td>
+<td align="left">그룹 투표</td>
+<td align="right">20,000</td>
+<td align="right">1</td>
+<td align="right">60%</td>
+<td align="right">1.5</td>
+<td align="right">8,000</td>
+<td align="left">Could</td>
+</tr>
+<tr>
+<td align="left">REQ-14</td>
+<td align="left">예약·결제 연동</td>
+<td align="right">30,000</td>
+<td align="right">2</td>
+<td align="right">40%</td>
+<td align="right">6.0</td>
+<td align="right">4,000</td>
+<td align="left">Won't</td>
+</tr>
+</tbody></table></div>
+<p><strong>MoSCoW와 RICE 순위 불일치 분석</strong></p>
+<ul>
+<li><strong>REQ-10 (Should인데 2위)</strong>: 공수가 0.5인월로 매우 작은 바이럴 Quick-win이라 점수가 높습니다. 제품 성립에 필수는 아니므로 Should를 유지하되, <strong>첫 스프린트에 앞당겨 배치할 것을 권고</strong>합니다.</li>
+<li><strong>REQ-02 (Must인데 6위)</strong>: RICE는 개별 기능의 단기 도달만 측정하므로, '신뢰'라는 <strong>경쟁사 대비 유일한 차별 해자</strong>의 전략적 가치를 과소평가합니다. 이 기능이 없으면 네이버 지도와 구별되지 않으므로 Must를 유지합니다.</li>
+<li><strong>REQ-07 (Should, 7위)</strong>: Impact는 최대지만, 초기 데이터 부족으로 Confidence가 50%에 그칩니다. 데이터가 축적되는 2분기 이후 재평가 대상입니다.</li>
+</ul>
+<hr>
+<h2>시각화 데이터</h2>
+</div></section><section class="doc" id="prd"><h2>PRD 요구사항 명세</h2><p class="doc-time">분석 소요 10분 01초</p><div class="markdown-body"><h1>[PRD] 상세 제품 요구사항 명세서: 2030대_사용자가_자신이_</h1>
+<h2>1. 문서 개요</h2>
+<ul>
+<li><strong>프로젝트명</strong>: 2030대_사용자가_자신이_</li>
+<li><strong>목적</strong>: 20~30대 사용자가 자신이 다닌 맛집을 공유하는 서비스를 만들고자 한다. 네이버 지도, 구글 지도 별점이 경쟁사다. 아이디어의 구체적 요구사항 및 예외 정책 명세화.</li>
+</ul>
+<h2>2. 핵심 KPI</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th align="left">지표명</th>
+<th align="left">목표치</th>
+<th align="left">측정 방법</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><strong>Task Completion Rate</strong></td>
+<td align="left">95% 이상</td>
+<td align="left">세션 로그 분석</td>
+</tr>
+</tbody></table></div>
+<h2>3. 상세 기능 요구사항 (MoSCoW)</h2>
+<ul>
+<li><strong>[REQ-01]</strong> 핵심 워크플로우 렌더링 엔진 (Must)</li>
+<li><strong>[REQ-02]</strong> 사용자 대시보드 및 결과 내보내기 (Should)</li>
+<li><strong>[REQ-03]</strong> 예외 상황 시 자동 가드 및 사용자 안내 (Must)</li>
+</ul>
+</div></section><section class="doc" id="wireframe"><h2>와이어프레임 3안</h2><p class="doc-time">분석 소요 2분 31초</p><div class="markdown-body"><h1>맛집 공유 서비스: 메인 화면 와이어프레임 3종 (Type A / B / C)</h1>
+<h2>0. 설계 전제</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th align="left">항목</th>
+<th align="left">정의</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><strong>대상 화면</strong></td>
+<td align="left">메인(홈) 화면. 앱 진입 후 첫 화면이자 공유 플로우의 시작점</td>
+</tr>
+<tr>
+<td align="left"><strong>화면 목적</strong></td>
+<td align="left">① 신뢰할 수 있는 맛집을 빠르게 찾는다. ② 내가 다녀온 맛집을 쉽게 공유한다.</td>
+</tr>
+<tr>
+<td align="left"><strong>공통 CTA</strong></td>
+<td align="left"><code>[ + 맛집 공유하기 ]</code>. 3개 시안 모두 하단 고정 위치에 동일한 문구와 형태로 노출</td>
+</tr>
+<tr>
+<td align="left"><strong>공통 하단 탭</strong></td>
+<td align="left">홈 · 탐색 · 기록 · 저장 · MY</td>
+</tr>
+<tr>
+<td align="left"><strong>경쟁 차별점</strong></td>
+<td align="left">네이버·구글 지도의 불특정 다수 별점 대신 <strong>2030 지인과 취향 기반의 신뢰</strong>를 제공</td>
+</tr>
+<tr>
+<td align="left"><strong>REQ 매핑</strong></td>
+<td align="left">REQ-01: 탐색·공유 워크플로우 / REQ-02: 대시보드·내보내기 / REQ-03: 예외 가드</td>
+</tr>
+<tr>
+<td align="left"><strong>KPI 연결</strong></td>
+<td align="left">Task Completion Rate 95%. CTA에서 공유 완료까지의 이탈을 최소화하는 구조로 설계</td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>표기 규칙: 한글은 2칸 폭(고정폭 폰트) 기준으로 정렬했습니다. <code>(P)</code>는 지도 핀, <code>(*)</code>는 내 위치, <code>(O)</code>는 프로필 아바타입니다.</p>
+</blockquote>
+<hr>
+<h2>Type A: 피드 중심형 (Social Feed)</h2>
+<p><strong>콘셉트</strong>: "친구가 다녀온 곳"을 인스타그램식 카드 피드로 보여 줍니다. 신뢰와 발견을 우선합니다.</p>
+<pre><code>┌──────────────────────────────────────┐
+│ [≡] 맛집로그            [Q] [!] (MY) │
+├──────────────────────────────────────┤
+│ (전체)(친구)(근처)(#데이트)(#혼밥)   │
+├──────────────────────────────────────┤
+│ ┌──────────────────────────────────┐ │
+│ │ (O) 지민 · 성수동 · 2시간 전     │ │
+│ │ ┌──────────────────────────────┐ │ │
+│ │ │        [ 대표 사진 ]         │ │ │
+│ │ └──────────────────────────────┘ │ │
+│ │ 성수 OO파스타   ★4.6  #데이트    │ │
+│ │ "창가 자리 강추, 웨이팅 20분"    │ │
+│ │ [♡ 128]  [저장]  [공유]  [길찾기]│ │
+│ └──────────────────────────────────┘ │
+│ ┌──────────────────────────────────┐ │
+│ │ (O) 서윤 · 을지로 · 어제         │ │
+├──────────────────────────────────────┤
+│         [ + 맛집 공유하기 ]          │
+├──────────────────────────────────────┤
+│ 홈     탐색     기록     저장    MY  │
+└──────────────────────────────────────┘
+</code></pre>
+<p><strong>화면 요소별 우선순위</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th align="center">순위</th>
+<th align="left">요소</th>
+<th align="left">근거</th>
+<th align="center">REQ</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center"><strong>P0</strong></td>
+<td align="left">공통 CTA <code>맛집 공유하기</code></td>
+<td align="left">핵심 전환 행동이며 KPI 측정의 시작점</td>
+<td align="center">01</td>
+</tr>
+<tr>
+<td align="center"><strong>P0</strong></td>
+<td align="left">피드 카드 (작성자, 사진, 한 줄 후기)</td>
+<td align="left">"누가 추천했나"가 경쟁사와 다른 신뢰 요소</td>
+<td align="center">01</td>
+</tr>
+<tr>
+<td align="center"><strong>P1</strong></td>
+<td align="left">카드 액션 (저장 / 공유 / 길찾기)</td>
+<td align="left">발견한 뒤 바로 행동으로 이어지게 함</td>
+<td align="center">01</td>
+</tr>
+<tr>
+<td align="center"><strong>P1</strong></td>
+<td align="left">필터 칩 (친구 / 근처 / 상황 태그)</td>
+<td align="left">피드가 과해지지 않도록 개인화</td>
+<td align="center">01</td>
+</tr>
+<tr>
+<td align="center"><strong>P2</strong></td>
+<td align="left">상단 검색 / 알림</td>
+<td align="left">보조 탐색 경로</td>
+<td align="center">01</td>
+</tr>
+<tr>
+<td align="center"><strong>P2</strong></td>
+<td align="left">좋아요 수</td>
+<td align="left">사회적 증거이지만 의사결정에는 보조적</td>
+<td align="center">-</td>
+</tr>
+</tbody></table></div>
+<ul>
+<li><strong>장점</strong>: 공유 동기(보여 주기)가 강하고 체류 시간이 깁니다.</li>
+<li><strong>리스크</strong>: 위치 기반 탐색이 약합니다. 콘텐츠가 적은 초기에는 피드가 빈약해집니다(Cold start).</li>
+</ul>
+<hr>
+<h2>Type B: 지도 중심형 (Map-first)</h2>
+<p><strong>콘셉트</strong>: 경쟁사의 익숙한 지도 멘탈모델을 유지하고, 지도 위에 <strong>친구 추천 레이어</strong>를 얹습니다.</p>
+<pre><code>┌──────────────────────────────────────┐
+│ [ Q  성수동 맛집 검색         ] (MY) │
+│ (지금 영업)(★4.5+)(친구 추천)(가격)  │
+├──────────────────────────────────────┤
+│         [ 이 지역 재검색 ]           │
+│    (P)          [12]                 │
+│         ------+--------------        │
+│  [3]          |      (P)    (P)      │
+│               |   (*) 내 위치        │
+│     (P)       |            [5]       │
+├──────────────────────────────────────┤
+│                 ───                  │
+│ 반경 500m 맛집 24곳         [목록 ▲] │
+│ [사진]  성수 OO파스타      ★4.6      │
+│         친구 3명 저장 · 도보 4분     │
+│         [저장]  [공유]  [길찾기]     │
+├──────────────────────────────────────┤
+│         [ + 맛집 공유하기 ]          │
+├──────────────────────────────────────┤
+│ 홈     탐색     기록     저장    MY  │
+└──────────────────────────────────────┘
+</code></pre>
+<p><strong>화면 요소별 우선순위</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th align="center">순위</th>
+<th align="left">요소</th>
+<th align="left">근거</th>
+<th align="center">REQ</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center"><strong>P0</strong></td>
+<td align="left">공통 CTA <code>맛집 공유하기</code></td>
+<td align="left">현재 위치를 기반으로 맛집을 자동 추천해 입력 단계를 줄임</td>
+<td align="center">01</td>
+</tr>
+<tr>
+<td align="center"><strong>P0</strong></td>
+<td align="left">지도 + 핀 / 클러스터 <code>[12]</code></td>
+<td align="left">내 주변이라는 맥락에서 즉시 탐색</td>
+<td align="center">01</td>
+</tr>
+<tr>
+<td align="center"><strong>P0</strong></td>
+<td align="left">검색바</td>
+<td align="left">지도형 서비스의 1순위 진입 경로</td>
+<td align="center">01</td>
+</tr>
+<tr>
+<td align="center"><strong>P1</strong></td>
+<td align="left">바텀시트 요약 카드 ("친구 3명 저장")</td>
+<td align="left">지도 위에서도 소셜 신뢰 신호를 보여 주는 차별점</td>
+<td align="center">01</td>
+</tr>
+<tr>
+<td align="center"><strong>P1</strong></td>
+<td align="left">필터 칩 (영업중 / 친구추천)</td>
+<td align="left">결과 범위를 빠르게 좁힘</td>
+<td align="center">01</td>
+</tr>
+<tr>
+<td align="center"><strong>P2</strong></td>
+<td align="left">이 지역 재검색 / 목록 펼치기</td>
+<td align="left">지도를 이동한 뒤의 보조 행동</td>
+<td align="center">01</td>
+</tr>
+</tbody></table></div>
+<ul>
+<li><strong>장점</strong>: 학습 비용이 거의 없습니다. 외식 직전의 "지금 어디 가지?" 상황에 가장 강합니다.</li>
+<li><strong>리스크</strong>: 경쟁사와 화면이 비슷해 차별성이 약하게 보입니다. 위치 권한을 거부하면 핵심 기능이 저하됩니다(REQ-03 가드 필수).</li>
+</ul>
+<hr>
+<h2>Type C: 아카이브·대시보드형 (My Collection)</h2>
+<p><strong>콘셉트</strong>: "나만의 맛집 도감"을 만드는 기록 중심 구조입니다. 기록이 쌓이면 자연스럽게 공유로 이어지고, REQ-02를 정면으로 충족합니다.</p>
+<pre><code>┌──────────────────────────────────────┐
+│ [≡] 맛집로그            [Q] [!] (MY) │
+├──────────────────────────────────────┤
+│ 지민님의 맛집 기록                   │
+│ ┌──────────┬──────────┬──────────┐   │
+│ │  방문 47 │  공유 23 │ 저장 112 │   │
+│ └──────────┴──────────┴──────────┘   │
+│ 내 컬렉션             [+ 새로만들기] │
+│ ┌──────────────┐ ┌──────────────┐ ┌──│
+│ │ [사진]       │ │ [사진]       │ │  │
+│ │  성수 데이트 │ │ 혼밥 리스트  │ │  │
+│ │ 12곳 · 공개  │ │ 8곳 · 비공개 │ │  │
+│ └──────────────┘ └──────────────┘ └──│
+├──────────────────────────────────────┤
+│ 최근 방문 타임라인      [내보내기 ▾] │
+│ 11.05  성수 OO파스타   ★5  [공유됨]  │
+│ 11.02  을지로 XX노포   ★4  [공유하기]│
+│ 10.28  연남 OO카레     ★3  [임시저장]│
+├──────────────────────────────────────┤
+│         [ + 맛집 공유하기 ]          │
+├──────────────────────────────────────┤
+│ 홈     탐색     기록     저장    MY  │
+└──────────────────────────────────────┘
+</code></pre>
+<p><strong>화면 요소별 우선순위</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th align="center">순위</th>
+<th align="left">요소</th>
+<th align="left">근거</th>
+<th align="center">REQ</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center"><strong>P0</strong></td>
+<td align="left">공통 CTA <code>맛집 공유하기</code></td>
+<td align="left">기록에서 공유로 넘어가는 메인 전환</td>
+<td align="center">01</td>
+</tr>
+<tr>
+<td align="center"><strong>P0</strong></td>
+<td align="left">최근 방문 타임라인 + 행별 상태 (<code>공유하기</code>/<code>임시저장</code>)</td>
+<td align="left">미완료 공유를 다시 이어 가게 해 Task Completion을 직접 높임</td>
+<td align="center">01·03</td>
+</tr>
+<tr>
+<td align="center"><strong>P1</strong></td>
+<td align="left">내 컬렉션 (공개/비공개)</td>
+<td align="left">"성수 데이트 코스"처럼 리스트 단위 공유는 2030의 공유 문법에 맞음</td>
+<td align="center">01·02</td>
+</tr>
+<tr>
+<td align="center"><strong>P1</strong></td>
+<td align="left">내보내기 (이미지 카드 / 링크 / CSV)</td>
+<td align="left">인스타 스토리·카톡으로 외부 확산</td>
+<td align="center">02</td>
+</tr>
+<tr>
+<td align="center"><strong>P2</strong></td>
+<td align="left">활동 통계 (방문 / 공유 / 저장)</td>
+<td align="left">기록 동기 부여(게이미피케이션)</td>
+<td align="center">02</td>
+</tr>
+<tr>
+<td align="center"><strong>P2</strong></td>
+<td align="left">상단 검색 / 알림</td>
+<td align="left">보조 경로</td>
+<td align="center">-</td>
+</tr>
+</tbody></table></div>
+<ul>
+<li><strong>장점</strong>: 경쟁사에 없는 "개인 아카이브" 포지션을 가집니다. 리텐션이 높고 REQ-02 커버리지가 가장 높습니다.</li>
+<li><strong>리스크</strong>: 신규 사용자에게는 데이터가 없어 화면이 비어 보입니다. 별도의 온보딩 Empty State가 필요합니다.</li>
+</ul>
+<hr>
+<h2>공통 컴포넌트: 예외 가드 (REQ-03)</h2>
+<p>3개 시안 모두 <code>맛집 공유하기</code> 플로우에서 동일하게 적용합니다.</p>
+<pre><code>┌──────────────────────────────────────┐
+│  ! 이미 등록된 맛집이에요            │
+│  성수 OO파스타 (내 기록 11.05)       │
+│  [기존 기록에 추가]   [새로 작성]    │
+└──────────────────────────────────────┘
+</code></pre>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th align="left">예외 상황</th>
+<th align="left">자동 가드</th>
+<th align="left">사용자 안내</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">위치 권한 거부</td>
+<td align="left">기본 지역(최근 검색지)으로 대체</td>
+<td align="left">"위치를 켜면 주변 맛집을 보여드려요" 배너 + 설정 이동</td>
+</tr>
+<tr>
+<td align="left">중복 맛집 등록</td>
+<td align="left">동일 장소 ID를 감지하면 저장 차단</td>
+<td align="left">위 모달 노출, 기존 기록에 병합할지 선택</td>
+</tr>
+<tr>
+<td align="left">필수값 누락 (장소 / 별점)</td>
+<td align="left">제출 버튼 비활성화</td>
+<td align="left">누락된 필드를 인라인으로 하이라이트</td>
+</tr>
+<tr>
+<td align="left">작성 중 이탈 / 네트워크 끊김</td>
+<td align="left">자동 임시저장</td>
+<td align="left">다음 진입 시 "작성 중인 기록이 있어요" 이어쓰기</td>
+</tr>
+<tr>
+<td align="left">폐업 / 정보 불일치</td>
+<td align="left">신고 3건 이상이면 "확인 필요" 라벨</td>
+<td align="left">카드에 상태 배지 표시</td>
+</tr>
+<tr>
+<td align="left">데이터 없음 (Cold start)</td>
+<td align="left">인기 / 근처 큐레이션으로 대체</td>
+<td align="left">Empty State + CTA 강조</td>
+</tr>
+</tbody></table></div>
+<hr>
+<h2>시안 비교 및 권고</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th align="left">평가 축</th>
+<th align="center">Type A 피드</th>
+<th align="center">Type B 지도</th>
+<th align="center">Type C 아카이브</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">경쟁사 대비 차별성</td>
+<td align="center">◎</td>
+<td align="center">△</td>
+<td align="center">◎</td>
+</tr>
+<tr>
+<td align="left">즉시 탐색성 (지금 어디 가지?)</td>
+<td align="center">○</td>
+<td align="center">◎</td>
+<td align="center">△</td>
+</tr>
+<tr>
+<td align="left">공유 전환 (KPI 기여)</td>
+<td align="center">○</td>
+<td align="center">○</td>
+<td align="center">◎</td>
+</tr>
+<tr>
+<td align="left">REQ-02 대시보드·내보내기</td>
+<td align="center">△</td>
+<td align="center">△</td>
+<td align="center">◎</td>
+</tr>
+<tr>
+<td align="left">Cold start 내성</td>
+<td align="center">△</td>
+<td align="center">◎</td>
+<td align="center">△</td>
+</tr>
+<tr>
+<td align="left">학습 비용</td>
+<td align="center">낮음</td>
+<td align="center">매우 낮음</td>
+<td align="center">중간</td>
+</tr>
+</tbody></table></div>
+<p><strong>권고안: Type B를 홈 탭으로, Type C를 "기록" 탭으로 하는 하이브리드</strong></p>
+<ul>
+<li>홈에서는 지도로 익숙하게 진입시키고, 바텀시트의 "친구 N명 저장" 신호로 차별성을 보여 줍니다.</li>
+<li>기록 탭(Type C)의 <code>[공유하기]</code>, <code>[임시저장]</code> 상태값으로 미완료 공유를 회수해 Task Completion 95%를 공략합니다.</li>
+<li>Type A의 피드는 MVP 이후 콘텐츠가 충분히 쌓이면 "탐색" 탭에 도입하는 것을 권장합니다.</li>
+</ul>
+<p>필요하시면 다음 단계로 <code>맛집 공유하기</code> CTA 이후의 공유 플로우(장소 검색, 사진·별점, 태그, 완료) 와이어프레임을 이어서 작성하겠습니다.</p>
+</div></section><section class="doc" id="audit"><h2>QA 정합성 감사</h2><p class="doc-time">분석 소요 2분 33초</p><div class="markdown-body"><h1>QA Audit Report: 다시감 기획 패키지 삼각 정합성 감사</h1>
+<blockquote>
+<p><strong>감사 판정 안내</strong>: 요청 템플릿에는 최종 판정이 <code>[PASS] 100% 삼각 정합성 검증 완료</code>로 미리 적혀 있었습니다. 실제 검증 결과 이 판정은 성립하지 않아 <strong>FAIL로 정정</strong>했습니다. 근거는 아래 각 절에 정리했습니다.</p>
+</blockquote>
+<hr>
+<h2>1. 정합성 검수 개요 (QA Audit Summary)</h2>
+<ul>
+<li><strong>최종 판정: [FAIL] 삼각 정합성 미달 (가중 종합 매칭률 약 25%, 통과 기준 90%)</strong></li>
+</ul>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th align="left">항목</th>
+<th align="left">결과</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">감사 대상</td>
+<td align="left">1-Pager(다시감) / PRD(2030대_사용자가_자신이_) / 메인 와이어프레임 Type A·B·C</td>
+</tr>
+<tr>
+<td align="left">핵심 결론</td>
+<td align="left">1-Pager는 완성도가 높습니다. <strong>PRD는 범용 템플릿 수준이어서 추적의 중간 고리가 끊어져 있습니다.</strong> 와이어프레임은 PRD만 보고 설계되어 1-Pager의 핵심 개념(별점 제거, 재방문 신호)과 정면으로 충돌합니다.</td>
+</tr>
+<tr>
+<td align="left">Critical 결함</td>
+<td align="left">6건 (별점 노출 및 필수값, 중복 방문 차단, CTA 개념 불일치, PRD 요건 공백, KPI 단절, 서비스명 불일치)</td>
+</tr>
+<tr>
+<td align="left">체인 상태</td>
+<td align="left">1-Pager → PRD <strong>단절</strong> / PRD → 와이어프레임 <strong>명목상 연결</strong> / 1-Pager → 와이어프레임 <strong>개념 역행</strong></td>
+</tr>
+</tbody></table></div>
+<p><strong>한 문장 진단</strong>: 와이어프레임은 "별점과 리뷰를 친구 기반으로 공유하는 서비스"를 그렸습니다. 1-Pager가 정의한 것은 "별점 없이 재방문 기록만 공유하는 서비스"입니다. 서로 다른 제품을 그린 것입니다.</p>
+<hr>
+<h2>2. 정량적 일치성 매칭률 검증 결과 (4축 평가 테이블)</h2>
+<p><strong>산정 규칙</strong>: ✅ 일치 = 1.0 / ⚠️ 부분 = 0.5 / ❌ 누락·모순 = 0</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th align="left">축</th>
+<th align="left">평가 대상 (분모)</th>
+<th align="left">산정</th>
+<th align="center">매칭률</th>
+<th align="center">가중치</th>
+<th align="center">판정</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><strong>① 1-Pager → PRD 요건 커버리지</strong></td>
+<td align="left">1-Pager Must-have 5개 (체크인, 재방문 집계, 웹 공유 링크, 친구 연결, 지역별 친구 재방문 목록)</td>
+<td align="left">웹 공유 링크만 REQ-02 "내보내기"로 해석 가능(0.5). 나머지 4개는 REQ 없음</td>
+<td align="center"><strong>10%</strong></td>
+<td align="center">30%</td>
+<td align="center">❌</td>
+</tr>
+<tr>
+<td align="left"><strong>② PRD → 와이어프레임 구현률</strong></td>
+<td align="left">PRD REQ 3개</td>
+<td align="left">REQ-01·02·03 모두 화면에 매핑됨 (3/3)</td>
+<td align="center"><strong>100% (명목)</strong></td>
+<td align="center">15%</td>
+<td align="center">⚠️</td>
+</tr>
+<tr>
+<td align="left"><strong>③ 1-Pager → 와이어프레임 직접 정합</strong></td>
+<td align="left">Must-have 5개</td>
+<td align="left">웹 링크 0.5, 지역별 친구 목록 0.5, 나머지 0</td>
+<td align="center"><strong>20%</strong></td>
+<td align="center">35%</td>
+<td align="center">❌</td>
+</tr>
+<tr>
+<td align="left"><strong>④ KPI 정렬도</strong></td>
+<td align="left">1-Pager KPI 6개 (Primary 3, Secondary 3)</td>
+<td align="left">PRD 반영 0/6. 와이어프레임 계측 설계 0/6</td>
+<td align="center"><strong>0%</strong></td>
+<td align="center">20%</td>
+<td align="center">❌</td>
+</tr>
+<tr>
+<td align="left"><strong>가중 종합</strong></td>
+<td align="left"></td>
+<td align="left">3.0 + 15.0 + 7.0 + 0</td>
+<td align="center"><strong>25%</strong></td>
+<td align="center"></td>
+<td align="center"><strong>FAIL</strong></td>
+</tr>
+</tbody></table></div>
+<p><strong>보조 지표: 가지치기(Pruning) 원칙 준수율</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th align="left">1-Pager 제거 항목</th>
+<th align="left">와이어프레임 상태</th>
+<th align="center">점수</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">별점, 점수</td>
+<td align="left">전 시안에 ★ 노출, ★4.5+ 필터, 별점 필수 입력</td>
+<td align="center">❌ 0</td>
+</tr>
+<tr>
+<td align="left">팔로워 수 공개, 인플루언서 랭킹</td>
+<td align="left">♡128 좋아요 수, "인기" 큐레이션, 활동 통계</td>
+<td align="center">⚠️ 0.5</td>
+</tr>
+<tr>
+<td align="left">AI 맞춤 추천</td>
+<td align="left">Type B CTA 근거가 "위치 기반 자동 추천"</td>
+<td align="center">⚠️ 0.5</td>
+</tr>
+<tr>
+<td align="left">예약, 쿠폰, 결제</td>
+<td align="left">없음</td>
+<td align="center">✅ 1</td>
+</tr>
+<tr>
+<td align="left">사진 필터, 긴 리뷰 에디터</td>
+<td align="left">후속 플로우를 "사진·별점·태그" 입력으로 예고</td>
+<td align="center">⚠️ 0.5</td>
+</tr>
+<tr>
+<td align="left"><strong>준수율</strong></td>
+<td align="left"></td>
+<td align="center"><strong>50%</strong></td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p><strong>②축 해석 주의</strong>: 100%는 착시입니다. REQ-01("핵심 워크플로우 렌더링 엔진")이 무엇이든 담을 수 있는 포괄 항목이라, 와이어프레임 요소 17개 중 13개가 REQ-01로 매핑되었습니다. 인수 기준(Acceptance Criteria)이 없는 REQ는 구현 여부를 검증할 수 없습니다. 실질 검증 가능률은 0%에 가깝습니다.</p>
+</blockquote>
+<hr>
+<h2>3. 추적 가능성 매트릭스 (Traceability Matrix)</h2>
+<h3>3-1. Must-have 및 핵심 개념</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th align="center">#</th>
+<th align="left">비즈니스 목표 (1-Pager)</th>
+<th align="left">PRD REQ-ID</th>
+<th align="left">와이어프레임 화면/CTA</th>
+<th align="left">매칭 상태</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">T-01</td>
+<td align="left"><strong>재방문 = 신뢰 신호</strong>. 2회 이상 방문한 곳만 '내 맛집'으로 승격 (§1, §3)</td>
+<td align="left">없음</td>
+<td align="left">어떤 화면에도 방문 횟수가 표시되지 않음. 오히려 중복 등록을 <strong>차단</strong>함 (예외 가드)</td>
+<td align="left">❌ 누락 + 모순</td>
+</tr>
+<tr>
+<td align="center">T-02</td>
+<td align="left"><strong>방문 체크인</strong> (영수증 또는 위치, 한 번에 끝) (§4 Must)</td>
+<td align="left">없음</td>
+<td align="left">공통 CTA가 <code>[ + 맛집 공유하기 ]</code>로 되어 있고, 리뷰 작성형 플로우를 예고함</td>
+<td align="left">❌ 누락</td>
+</tr>
+<tr>
+<td align="center">T-03</td>
+<td align="left"><strong>재방문 자동 집계</strong> (§4 Must)</td>
+<td align="left">없음</td>
+<td align="left">없음. Type C 타임라인은 방문을 1회씩 나열할 뿐 장소별 누적이 없음</td>
+<td align="left">❌ 누락</td>
+</tr>
+<tr>
+<td align="center">T-04</td>
+<td align="left"><strong>웹 공유 링크</strong> (앱 없이 열람) (§4 Must)</td>
+<td align="left">REQ-02 (내보내기, 해석상)</td>
+<td align="left">Type C <code>[내보내기 ▾]</code> 안의 "링크". 앱 없이 열리는지, 비회원 화면이 있는지는 정의되지 않음</td>
+<td align="left">⚠️ 부분</td>
+</tr>
+<tr>
+<td align="center">T-05</td>
+<td align="left"><strong>친구 연결</strong> (맞팔) (§4 Must, KPI 1인당 친구 6명)</td>
+<td align="left">없음</td>
+<td align="left">친구 필터 칩만 있음. 친구 찾기·초대·맞팔 플로우는 없음</td>
+<td align="left">❌ 누락</td>
+</tr>
+<tr>
+<td align="center">T-06</td>
+<td align="left"><strong>지역별 친구 재방문 목록</strong> (§4 Must, 시나리오의 '성수' 탭)</td>
+<td align="left">REQ-01 (포괄)</td>
+<td align="left">Type B 친구 추천 레이어와 바텀시트의 "친구 3명 <strong>저장</strong>". 기준이 반경 500m이고 신호가 '저장'이라서 '지역'과 '재방문' 두 조건 모두 어긋남</td>
+<td align="left">⚠️ 부분</td>
+</tr>
+<tr>
+<td align="center">T-07</td>
+<td align="left"><strong>별점 제거</strong> (§6 가지치기)</td>
+<td align="left">없음. PRD §1은 오히려 "별점이 경쟁사"라며 별점을 비교 기준으로 둠</td>
+<td align="left">Type A ★4.6 / Type B ★4.6, <code>(★4.5+)</code> 필터 / Type C ★5·★4·★3 / 예외 가드 "필수값: 별점"</td>
+<td align="left">❌ <strong>정면 모순</strong></td>
+</tr>
+<tr>
+<td align="center">T-08</td>
+<td align="left"><strong>기록 부담 최소화</strong>: "쓰지 않아도 기록된다" (§4)</td>
+<td align="left">없음</td>
+<td align="left">별점 필수, 사진·별점·태그 입력 플로우 예고, "필수값 누락 시 제출 비활성화"</td>
+<td align="left">❌ 모순</td>
+</tr>
+<tr>
+<td align="center">T-09</td>
+<td align="left"><strong>10초 안에 후보 3곳으로 축소</strong> (§3 Benefit)</td>
+<td align="left">없음</td>
+<td align="left">정렬·필터 기준이 재방문이 아님. Type B는 "24곳"을 노출해 오히려 후보를 늘림</td>
+<td align="left">❌ 누락</td>
+</tr>
+</tbody></table></div>
+<h3>3-2. 정책, 리스크 대응, 로드맵</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th align="center">#</th>
+<th align="left">비즈니스 목표 (1-Pager)</th>
+<th align="left">PRD REQ-ID</th>
+<th align="left">와이어프레임 화면/CTA</th>
+<th align="left">매칭 상태</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">T-10</td>
+<td align="left">팔로워 수와 랭킹 배제, 과시 방지 (§6)</td>
+<td align="left">없음</td>
+<td align="left">Type A ♡128, Cold start "인기 큐레이션", Type C 활동 통계 게이미피케이션</td>
+<td align="left">⚠️ 모순</td>
+</tr>
+<tr>
+<td align="center">T-11</td>
+<td align="left">목록 <strong>기본 비공개</strong>, 공개 범위는 사용자 선택 (§7 P2)</td>
+<td align="left">없음</td>
+<td align="left">Type C 컬렉션별 공개/비공개 표시. 기본값은 정의되지 않음</td>
+<td align="left">⚠️ 부분</td>
+</tr>
+<tr>
+<td align="center">T-12</td>
+<td align="left">위치는 <strong>체크인 순간에만</strong> 사용, 영수증 인증을 대안으로 (§7)</td>
+<td align="left">REQ-03 (포괄)</td>
+<td align="left">위치 권한 거부 가드는 있음. 영수증 대안은 없음. Type B는 상시 위치를 쓰는 지도 홈</td>
+<td align="left">⚠️ 부분</td>
+</tr>
+<tr>
+<td align="center">T-13</td>
+<td align="left">콜드 스타트: <strong>지도 앱 저장 목록 가져오기</strong>, 초기 50명 시딩 (§7 P1)</td>
+<td align="left">없음</td>
+<td align="left">Empty State "인기/근처 큐레이션"이 가져오기 기능을 대체하고 있고, 이는 T-10과도 충돌함</td>
+<td align="left">❌ 누락</td>
+</tr>
+<tr>
+<td align="center">T-14</td>
+<td align="left"><strong>보완재</strong> 포지션 (길찾기·영업시간은 외부에 위임) (§3)</td>
+<td align="left">모순 (PRD는 "경쟁사"로 정의)</td>
+<td align="left"><code>[길찾기]</code>는 외부 딥링크라면 적합함. <code>(지금 영업)</code>, <code>(가격)</code> 필터는 대체재 영역</td>
+<td align="left">⚠️ 부분</td>
+</tr>
+<tr>
+<td align="center">T-15</td>
+<td align="left">MVP는 <strong>성수·연남·을지로 3개 상권</strong>에 한정 (§7 P1)</td>
+<td align="left">없음</td>
+<td align="left">지역 선택 칩이나 상권 진입 UI가 없음</td>
+<td align="left">❌ 누락</td>
+</tr>
+<tr>
+<td align="center">T-16</td>
+<td align="left">진정성: 영수증·위치 인증, 사업주 보상 금지, 비정상 체크인 탐지 (§6, §7)</td>
+<td align="left">없음</td>
+<td align="left">인증 UI와 신고·제재 UI가 없음 (폐업 신고만 있음)</td>
+<td align="left">❌ 누락</td>
+</tr>
+<tr>
+<td align="center">T-17</td>
+<td align="left">취향 겹침 지표 (Nice, Phase 2)</td>
+<td align="left">없음</td>
+<td align="left">없음</td>
+<td align="left">➖ MVP 범위 밖 (정상). PRD에 Could로 등재 필요</td>
+</tr>
+<tr>
+<td align="center">T-18</td>
+<td align="left">상황 태그 (Nice, Phase 2)</td>
+<td align="left">없음</td>
+<td align="left">Type A <code>#데이트</code>, <code>#혼밥</code></td>
+<td align="left">⚠️ PRD 근거 없이 선반영됨</td>
+</tr>
+</tbody></table></div>
+<h3>3-3. KPI 추적</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th align="center">#</th>
+<th align="left">1-Pager KPI</th>
+<th align="left">PRD</th>
+<th align="left">와이어프레임 계측 지점</th>
+<th align="left">매칭 상태</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">K-01</td>
+<td align="left">재방문 기록률 15% → 35%</td>
+<td align="left">없음</td>
+<td align="left">재방문 데이터 구조 자체가 없음</td>
+<td align="left">❌</td>
+</tr>
+<tr>
+<td align="center">K-02</td>
+<td align="left">추천 경유 방문 전환율 8% → 20%</td>
+<td align="left">없음</td>
+<td align="left"><code>[저장]</code> 이벤트는 있으나 저장→체크인 매칭이 정의되지 않음</td>
+<td align="left">❌</td>
+</tr>
+<tr>
+<td align="center">K-03</td>
+<td align="left">4주 리텐션 18% → 30%</td>
+<td align="left">없음</td>
+<td align="left">미정의</td>
+<td align="left">❌</td>
+</tr>
+<tr>
+<td align="center">K-04</td>
+<td align="left">1인당 연결 친구 2명 → 6명</td>
+<td align="left">없음</td>
+<td align="left">친구 연결 플로우 없음</td>
+<td align="left">❌</td>
+</tr>
+<tr>
+<td align="center">K-05</td>
+<td align="left">외부 링크 비회원 가입 전환 3% → 10%</td>
+<td align="left">없음</td>
+<td align="left">비회원 랜딩과 가입 CTA 없음</td>
+<td align="left">❌</td>
+</tr>
+<tr>
+<td align="center">K-06</td>
+<td align="left">결정 소요 시간 90초 이내</td>
+<td align="left">없음</td>
+<td align="left">시작 이벤트("지역 목록 열기")가 없음</td>
+<td align="left">❌</td>
+</tr>
+<tr>
+<td align="center">K-X</td>
+<td align="left">(출처 불명) <strong>Task Completion Rate 95%</strong></td>
+<td align="left">PRD 유일 KPI</td>
+<td align="left">와이어프레임 전체가 이 지표에 맞춰 설계됨</td>
+<td align="left">❌ 과잉. 1-Pager에 근거 없음</td>
+</tr>
+</tbody></table></div>
+<hr>
+<h2>4. Gap Analysis (누락·모순·과잉 분석)</h2>
+<h3>4-1. 누락 요건 (Missing)</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th align="center">ID</th>
+<th align="left">누락 항목</th>
+<th align="left">1-Pager 근거</th>
+<th align="left">누락 위치</th>
+<th align="center">영향도</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">M-01</td>
+<td align="left">방문 체크인 (영수증 OCR / 위치 1회 인증)</td>
+<td align="left">§4 Must</td>
+<td align="left">PRD, WF</td>
+<td align="center">Critical</td>
+</tr>
+<tr>
+<td align="center">M-02</td>
+<td align="left">재방문 자동 집계와 2회 이상 '내 맛집' 승격 로직</td>
+<td align="left">§1, §4 Must</td>
+<td align="left">PRD, WF</td>
+<td align="center">Critical</td>
+</tr>
+<tr>
+<td align="center">M-03</td>
+<td align="left">장소별 방문 횟수와 최근 방문일 표시 ("3번 갔다, 마지막 10.12")</td>
+<td align="left">§6 핍진성</td>
+<td align="left">WF 전 시안</td>
+<td align="center">Critical</td>
+</tr>
+<tr>
+<td align="center">M-04</td>
+<td align="left">친구 연결 (검색·초대·맞팔)</td>
+<td align="left">§4 Must, K-04</td>
+<td align="left">PRD, WF</td>
+<td align="center">Critical</td>
+</tr>
+<tr>
+<td align="center">M-05</td>
+<td align="left">앱 없이 열리는 웹 링크와 비회원 랜딩 화면</td>
+<td align="left">§4 Must, K-05</td>
+<td align="left">PRD(구체화 안 됨), WF</td>
+<td align="center">Major</td>
+</tr>
+<tr>
+<td align="center">M-06</td>
+<td align="left">지역(상권) 단위 탐색 진입점</td>
+<td align="left">§4, §7 P1</td>
+<td align="left">PRD, WF</td>
+<td align="center">Major</td>
+</tr>
+<tr>
+<td align="center">M-07</td>
+<td align="left">지도 앱 저장 목록 가져오기 (콜드 스타트)</td>
+<td align="left">§7 P1</td>
+<td align="left">PRD, WF</td>
+<td align="center">Major</td>
+</tr>
+<tr>
+<td align="center">M-08</td>
+<td align="left">개인정보 정책: 기본 비공개, 이동 경로 비저장, 영수증 대안</td>
+<td align="left">§7 P2</td>
+<td align="left">PRD, WF</td>
+<td align="center">Major</td>
+</tr>
+<tr>
+<td align="center">M-09</td>
+<td align="left">KPI 6종과 계측 이벤트 정의</td>
+<td align="left">§5</td>
+<td align="left">PRD, WF</td>
+<td align="center">Critical</td>
+</tr>
+<tr>
+<td align="center">M-10</td>
+<td align="left">Won't-have 목록 (가지치기 결과)</td>
+<td align="left">§6</td>
+<td align="left">PRD</td>
+<td align="center">Major</td>
+</tr>
+<tr>
+<td align="center">M-11</td>
+<td align="left">각 REQ의 인수 기준과 예외 정책 상세</td>
+<td align="left">PRD §1이 스스로 "예외 정책 명세화"를 목적으로 명시</td>
+<td align="left">PRD</td>
+<td align="center">Critical</td>
+</tr>
+</tbody></table></div>
+<h3>4-2. 모순 요건 (Conflict)</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th align="center">ID</th>
+<th align="left">충돌 내용</th>
+<th align="left">문서 A</th>
+<th align="left">문서 B</th>
+<th align="center">심각도</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">C-01</td>
+<td align="left"><strong>별점</strong></td>
+<td align="left">1-Pager: 제거 대상이자 차별화의 핵심</td>
+<td align="left">WF: 전 시안 노출, 필터, <strong>필수 입력값</strong></td>
+<td align="center">Critical</td>
+</tr>
+<tr>
+<td align="center">C-02</td>
+<td align="left"><strong>동일 장소 재등록</strong></td>
+<td align="left">1-Pager: 같은 곳에 다시 간 기록이 <strong>서비스의 존재 이유</strong></td>
+<td align="left">WF 예외 가드: "동일 장소 ID 감지 시 저장 차단". <code>[새로 작성]</code>을 고르면 기록이 둘로 쪼개져 집계까지 망가짐</td>
+<td align="center"><strong>Critical (개념 역전)</strong></td>
+</tr>
+<tr>
+<td align="center">C-03</td>
+<td align="left"><strong>핵심 행동의 정의</strong></td>
+<td align="left">1-Pager: 체크인(기록). 공유는 그 결과로 일어남</td>
+<td align="left">WF: <code>맛집 공유하기</code>(리뷰 작성)가 P0 CTA</td>
+<td align="center">Critical</td>
+</tr>
+<tr>
+<td align="center">C-04</td>
+<td align="left"><strong>경쟁 구도</strong></td>
+<td align="left">1-Pager: 네이버·구글 지도의 <strong>보완재</strong></td>
+<td align="left">PRD: 네이버·구글 별점을 <strong>경쟁사</strong>로 정의</td>
+<td align="center">Critical</td>
+</tr>
+<tr>
+<td align="center">C-05</td>
+<td align="left"><strong>서비스명</strong></td>
+<td align="left">1-Pager: <strong>다시감</strong></td>
+<td align="left">WF: <strong>맛집로그</strong> / PRD: 잘린 가칭 "2030대_사용자가_자신이_"</td>
+<td align="center">Critical</td>
+</tr>
+<tr>
+<td align="center">C-06</td>
+<td align="left"><strong>KPI 체계</strong></td>
+<td align="left">1-Pager: 재방문 기록률 등 6종</td>
+<td align="left">PRD·WF: Task Completion 95% 단일 지표</td>
+<td align="center">Critical</td>
+</tr>
+<tr>
+<td align="center">C-07</td>
+<td align="left"><strong>신뢰 신호의 단위</strong></td>
+<td align="left">1-Pager: 친구의 <strong>재방문</strong></td>
+<td align="left">WF Type B: 친구 N명 <strong>저장</strong>. 저장은 방문하지 않아도 가능한 의도 신호에 불과함</td>
+<td align="center">Major</td>
+</tr>
+<tr>
+<td align="center">C-08</td>
+<td align="left"><strong>포지셔닝</strong></td>
+<td align="left">1-Pager: 새로움(개념 전환)</td>
+<td align="left">WF 권고안: 경쟁사 지도 멘탈모델을 유지하는 Type B를 홈으로 채택. WF 스스로 차별성을 △로 평가함</td>
+<td align="center">Major</td>
+</tr>
+<tr>
+<td align="center">C-09</td>
+<td align="left"><strong>과시 배제</strong></td>
+<td align="left">1-Pager: 팔로워·랭킹 제거</td>
+<td align="left">WF: ♡128, 인기 큐레이션, 활동 통계</td>
+<td align="center">Major</td>
+</tr>
+<tr>
+<td align="center">C-10</td>
+<td align="left"><strong>위치 사용 범위</strong></td>
+<td align="left">1-Pager: 체크인 순간에만 사용</td>
+<td align="left">WF Type B: 상시 위치를 쓰는 지도 홈</td>
+<td align="center">Major</td>
+</tr>
+<tr>
+<td align="center">C-11</td>
+<td align="left"><strong>자동 추천</strong></td>
+<td align="left">1-Pager: AI 추천 제거, "친구가 갔다"가 설명력이 더 큼</td>
+<td align="left">WF Type B CTA 근거: "현재 위치 기반 자동 추천"</td>
+<td align="center">Minor</td>
+</tr>
+<tr>
+<td align="center">C-12</td>
+<td align="left">1-Pager 내부: 결정 시간</td>
+<td align="left">§3 "10초" / §8 "1분 이내" / §5 KPI "90초"</td>
+<td align="left">같은 문서 안</td>
+<td align="center">Minor</td>
+</tr>
+<tr>
+<td align="center">C-13</td>
+<td align="left">1-Pager 내부: 베타 규모</td>
+<td align="left">§5·§6 "n=200" / §7 "베타 500명"</td>
+<td align="left">같은 문서 안</td>
+<td align="center">Minor</td>
+</tr>
+</tbody></table></div>
+<h3>4-3. 과잉 요건 (Excess)</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th align="center">ID</th>
+<th align="left">항목</th>
+<th align="left">위치</th>
+<th align="left">판단 근거</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">E-01</td>
+<td align="left">REQ-01 "핵심 워크플로우 <strong>렌더링 엔진</strong>"</td>
+<td align="left">PRD</td>
+<td align="left">사용자 요구가 아니라 기술 구현 용어입니다. 비즈니스 목표로 역추적할 수 없습니다.</td>
+</tr>
+<tr>
+<td align="center">E-02</td>
+<td align="left">REQ-02 "대시보드" 및 <strong>CSV 내보내기</strong></td>
+<td align="left">PRD, WF Type C</td>
+<td align="left">1-Pager에 대시보드 개념이 없습니다. CSV는 2030 일반 사용자의 공유 문법과 맞지 않습니다. 남길 것은 웹 링크 하나입니다.</td>
+</tr>
+<tr>
+<td align="center">E-03</td>
+<td align="left">Task Completion Rate 95%</td>
+<td align="left">PRD, WF</td>
+<td align="left">근거가 없는 지표입니다. "공유 완료"를 극대화하면 1-Pager가 경계한 리뷰 작성 유도로 이어집니다.</td>
+</tr>
+<tr>
+<td align="center">E-04</td>
+<td align="left">활동 통계 (방문 47 / 공유 23 / 저장 112)</td>
+<td align="left">WF Type C</td>
+<td align="left">게이미피케이션은 기록을 과시로 바꾸는 장치이고, §6 가지치기 정신과 충돌합니다.</td>
+</tr>
+<tr>
+<td align="center">E-05</td>
+<td align="left"><code>(지금 영업)</code>, <code>(가격)</code> 필터</td>
+<td align="left">WF Type B</td>
+<td align="left">외부 지도 앱에 위임하기로 한 영역입니다(보완재).</td>
+</tr>
+<tr>
+<td align="center">E-06</td>
+<td align="left"><code>[ 이 지역 재검색 ]</code>, 반경 기반 결과</td>
+<td align="left">WF Type B</td>
+<td align="left">경쟁사 UI를 복제한 것으로, 의사결정 기준("재방문 신호를 선명하게 하는가")을 통과하지 못합니다.</td>
+</tr>
+<tr>
+<td align="center">E-07</td>
+<td align="left">1-Pager 결언 말미 "음, 말 되네."</td>
+<td align="left">1-Pager §8</td>
+<td align="left">작성 메모가 남은 것으로 보입니다. 공식 문서에서 삭제해야 합니다.</td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p><strong>유지 권장 (과잉 아님)</strong>: Type C의 <strong>컬렉션</strong> 기능은 1-Pager Why 5("'찐맛집', '부모님 모시고' 폴더를 직접 만드는 사용자")에 근거가 있습니다. PRD에 Should로 등재해 추적 고리를 만들어 주십시오.</p>
+</blockquote>
+<hr>
+<h2>5. 최종 권고사항 및 우선 조치 항목</h2>
+<h3>🔴 Critical: 즉시 조치 (다음 설계 단계 착수 전 필수)</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th align="center">#</th>
+<th align="left">조치</th>
+<th align="left">대상</th>
+<th align="left">해소 Gap</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">CR-1</td>
+<td align="left"><strong>PRD를 전면 재작성합니다.</strong> 1-Pager Must-have를 1:1로 REQ화하고 인수 기준, Won't 목록, KPI 6종을 넣습니다 (아래 초안 참고).</td>
+<td align="left">PRD</td>
+<td align="left">M-01<del>11, E-01</del>03</td>
+</tr>
+<tr>
+<td align="center">CR-2</td>
+<td align="left"><strong>별점을 전 화면에서 제거합니다.</strong> 카드의 ★는 "N회 방문 · 최근 MM.DD"로, <code>★4.5+</code> 필터는 <code>(친구 2회+)</code>로, 필수값 "별점"은 삭제합니다.</td>
+<td align="left">WF 전 시안, 예외 가드</td>
+<td align="left">C-01, T-07</td>
+</tr>
+<tr>
+<td align="center">CR-3</td>
+<td align="left"><strong>중복 등록 가드를 재정의합니다.</strong> 동일 장소 감지 시 차단하지 않고 "<strong>2번째 방문이에요! 내 맛집에 올라갔어요</strong>"로 방문 횟수를 증가시킵니다. <code>[새로 작성]</code> 옵션은 삭제합니다.</td>
+<td align="left">WF 예외 가드</td>
+<td align="left">C-02, T-01</td>
+</tr>
+<tr>
+<td align="center">CR-4</td>
+<td align="left"><strong>공통 CTA를 교체합니다.</strong> <code>[ + 맛집 공유하기 ]</code> 대신 <code>[ 📷 다녀왔어요 ]</code>(영수증 촬영 / 현재 위치 체크인 2택)로 바꿉니다. 공유는 기록 이후의 2차 행동으로 둡니다.</td>
+<td align="left">WF 전 시안</td>
+<td align="left">C-03, T-02, T-08</td>
+</tr>
+<tr>
+<td align="center">CR-5</td>
+<td align="left"><strong>KPI를 동기화합니다.</strong> Task Completion 95%를 폐기하고 1-Pager KPI 6종과 계측 이벤트(체크인, 저장, 지역 목록 열기, 지도 앱 이동, 링크 유입, 가입)를 정의합니다.</td>
+<td align="left">PRD, WF</td>
+<td align="left">C-06, K-01~06</td>
+</tr>
+<tr>
+<td align="center">CR-6</td>
+<td align="left"><strong>서비스명과 포지셔닝을 통일합니다.</strong> "다시감"으로 확정하고, PRD의 "경쟁사" 표현을 "보완재"로 바로잡습니다.</td>
+<td align="left">PRD, WF</td>
+<td align="left">C-04, C-05</td>
+</tr>
+</tbody></table></div>
+<p><strong>CR-1 PRD 재작성 초안 (REQ-ID 재정의)</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th align="left">REQ-ID</th>
+<th align="left">요건</th>
+<th align="center">MoSCoW</th>
+<th align="left">인수 기준 (예시)</th>
+<th align="left">1-Pager 근거</th>
+<th align="left">연결 KPI</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">REQ-01</td>
+<td align="left">방문 체크인 (영수증 OCR 또는 위치 1회 인증)</td>
+<td align="center">Must</td>
+<td align="left">텍스트 입력 0회, 3탭 이내 완료</td>
+<td align="left">§4 Must</td>
+<td align="left">K-01</td>
+</tr>
+<tr>
+<td align="left">REQ-02</td>
+<td align="left">재방문 자동 집계, 2회 이상 '내 맛집' 승격</td>
+<td align="center">Must</td>
+<td align="left">동일 장소 재체크인 시 카운트 +1, 최근 방문일 갱신</td>
+<td align="left">§1, §4</td>
+<td align="left">K-01</td>
+</tr>
+<tr>
+<td align="left">REQ-03</td>
+<td align="left">친구 연결 (연락처·링크 초대, 맞팔)</td>
+<td align="center">Must</td>
+<td align="left">초대 링크로 가입하면 자동 맞팔 제안</td>
+<td align="left">§4 Must</td>
+<td align="left">K-04</td>
+</tr>
+<tr>
+<td align="left">REQ-04</td>
+<td align="left">지역별 친구 재방문 목록 (MVP: 성수·연남·을지로)</td>
+<td align="center">Must</td>
+<td align="left">재방문 횟수 순 정렬, 기본 노출 5곳 이하</td>
+<td align="left">§4, §7</td>
+<td align="left">K-06</td>
+</tr>
+<tr>
+<td align="left">REQ-05</td>
+<td align="left">앱 없이 열리는 '내 맛집 지도' 웹 링크와 비회원 랜딩</td>
+<td align="center">Must</td>
+<td align="left">비로그인 열람 가능, UTM 부착, 가입 CTA 노출</td>
+<td align="left">§4 Must</td>
+<td align="left">K-05</td>
+</tr>
+<tr>
+<td align="left">REQ-06</td>
+<td align="left">개인정보: 목록 기본 비공개, 위치 경로 비저장, 영수증 대안</td>
+<td align="center">Must</td>
+<td align="left">위치 권한 없이도 체크인 가능</td>
+<td align="left">§7</td>
+<td align="left">K-03</td>
+</tr>
+<tr>
+<td align="left">REQ-07</td>
+<td align="left">저장과 외부 지도 앱 바로가기 (딥링크)</td>
+<td align="center">Should</td>
+<td align="left">저장→30일 내 체크인 매칭 로그</td>
+<td align="left">§4 Nice, §5</td>
+<td align="left">K-02, K-06</td>
+</tr>
+<tr>
+<td align="left">REQ-08</td>
+<td align="left">지도 앱 저장 목록 가져오기</td>
+<td align="center">Should</td>
+<td align="left">가져온 장소는 '방문 0회' 상태로 표시</td>
+<td align="left">§7 콜드 스타트</td>
+<td align="left">K-03</td>
+</tr>
+<tr>
+<td align="left">REQ-09</td>
+<td align="left">컬렉션(폴더)과 한 줄 메모 (선택 입력)</td>
+<td align="center">Should / Could</td>
+<td align="left">메모 미입력으로도 기록 완료</td>
+<td align="left">Why 5, §4 Nice</td>
+<td align="left">K-03</td>
+</tr>
+<tr>
+<td align="left">REQ-10</td>
+<td align="left">예외 가드 (권한 거부, 중복=재방문, 네트워크 단절, 비정상 체크인)</td>
+<td align="center">Must</td>
+<td align="left">아래 MJ-6 참조</td>
+<td align="left">§6, §7</td>
+<td align="left">전체</td>
+</tr>
+<tr>
+<td align="left">REQ-11</td>
+<td align="left">취향 겹침 지표, 상황 태그</td>
+<td align="center">Could (Phase 2)</td>
+<td align="left">-</td>
+<td align="left">§4 Nice, §7 P2</td>
+<td align="left">K-02</td>
+</tr>
+<tr>
+<td align="left">WON'T</td>
+<td align="left">별점, 팔로워·좋아요 수, 랭킹, AI 추천, 예약·결제, 긴 리뷰 에디터</td>
+<td align="center">Won't</td>
+<td align="left">-</td>
+<td align="left">§6 가지치기</td>
+<td align="left">-</td>
+</tr>
+</tbody></table></div>
+<h3>🟠 Major: 개선 권고 (MVP 설계 확정 전)</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th align="center">#</th>
+<th align="left">조치</th>
+<th align="left">해소 Gap</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">MJ-1</td>
+<td align="left"><strong>홈 권고안을 재검토합니다.</strong> Type B를 그대로 쓰지 말고 홈을 **"지역 칩(성수·연남·을지로) + 친구 재방문 리스트"**로 구성합니다. 지도는 리스트를 보조하는 토글로 강등합니다. 상시 위치 의존도 함께 제거합니다.</td>
+<td align="left">C-08, C-10, M-06, T-15</td>
+</tr>
+<tr>
+<td align="center">MJ-2</td>
+<td align="left">바텀시트의 신호를 "친구 3명 저장"에서 **"민수 4회 · 지은 3회 다시 감"**으로 교체합니다.</td>
+<td align="left">C-07, T-06</td>
+</tr>
+<tr>
+<td align="center">MJ-3</td>
+<td align="left"><strong>친구 연결 플로우</strong>(초대 링크, 연락처, 맞팔 요청함)와 <strong>비회원 웹 랜딩</strong> 와이어프레임을 추가합니다.</td>
+<td align="left">M-04, M-05</td>
+</tr>
+<tr>
+<td align="center">MJ-4</td>
+<td align="left">♡ 좋아요 수, 활동 통계, "인기" 큐레이션을 제거합니다. Cold start는 <strong>지도 앱 가져오기 + 시딩 사용자 목록</strong>으로 대체합니다.</td>
+<td align="left">C-09, E-04, M-07</td>
+</tr>
+<tr>
+<td align="center">MJ-5</td>
+<td align="left">Type C를 '기록' 탭으로 유지하되, 타임라인을 <strong>장소별 누적 뷰</strong>("성수 OO국수 · 4회 · 최근 11.05")로 바꾸고 CSV 내보내기는 삭제합니다.</td>
+<td align="left">M-03, E-02</td>
+</tr>
+<tr>
+<td align="center">MJ-6</td>
+<td align="left">예외 가드 표를 보강합니다. ① 위치 거부 시 영수증 인증으로 유도, ② 비정상 체크인(동일 기기·동일 장소 단시간 반복) 시 카운트 보류, ③ 공개 범위 기본값을 비공개로 명시합니다.</td>
+<td align="left">M-08, T-12, T-16</td>
+</tr>
+<tr>
+<td align="center">MJ-7</td>
+<td align="left"><code>(지금 영업)</code>, <code>(가격)</code> 필터와 <code>이 지역 재검색</code>을 제거하고 외부 지도 딥링크로 위임합니다.</td>
+<td align="left">E-05, E-06, T-14</td>
+</tr>
+</tbody></table></div>
+<h3>🟡 Minor: 참고 사항</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th align="center">#</th>
+<th align="left">조치</th>
+<th align="left">해소 Gap</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">MN-1</td>
+<td align="left">1-Pager 결정 시간 표현을 통일합니다. "10초"는 후보 축소, "90초"는 결정 완료 KPI로 정의를 나누어 명시합니다.</td>
+<td align="left">C-12</td>
+</tr>
+<tr>
+<td align="center">MN-2</td>
+<td align="left">베타 규모를 정리합니다. 검증 실험 n=200은 베타 500명의 부분 집합임을 명시합니다.</td>
+<td align="left">C-13</td>
+</tr>
+<tr>
+<td align="center">MN-3</td>
+<td align="left">1-Pager 결언 말미의 "음, 말 되네."를 삭제합니다.</td>
+<td align="left">E-07</td>
+</tr>
+<tr>
+<td align="center">MN-4</td>
+<td align="left">Type A의 상황 태그(<code>#데이트</code>, <code>#혼밥</code>)는 Phase 2로 이관하거나 PRD에 Could로 등재해 추적 근거를 만듭니다.</td>
+<td align="left">T-18</td>
+</tr>
+<tr>
+<td align="center">MN-5</td>
+<td align="left">Type B CTA 근거의 "자동 추천" 표현을 "근처 장소 자동 입력(검색 단축)"으로 바꿔 AI 추천 배제 원칙과 구분합니다.</td>
+<td align="left">C-11</td>
+</tr>
+<tr>
+<td align="center">MN-6</td>
+<td align="left">와이어프레임의 REQ 매핑 열은 재작성된 REQ-ID 기준으로 다시 매핑합니다. 한 요소가 포괄 REQ 하나에 몰리지 않도록 1요소 1REQ 원칙을 권장합니다.</td>
+<td align="left">②축 착시</td>
+</tr>
+</tbody></table></div>
+<hr>
+<h3>재감사 통과 기준 (Exit Criteria)</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th align="left">조건</th>
+<th align="left">목표</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">① 1-Pager → PRD 커버리지 (Must-have 5개)</td>
+<td align="left">100%</td>
+</tr>
+<tr>
+<td align="left">③ 1-Pager → WF 직접 정합</td>
+<td align="left">90% 이상</td>
+</tr>
+<tr>
+<td align="left">④ KPI 정렬도 (6종 계측 이벤트 정의)</td>
+<td align="left">100%</td>
+</tr>
+<tr>
+<td align="left">가지치기 원칙 준수율</td>
+<td align="left">100% (별점 0건)</td>
+</tr>
+<tr>
+<td align="left">Critical 잔존</td>
+<td align="left">0건</td>
+</tr>
+</tbody></table></div>
+<p>CR-1~6이 반영된 PRD v2와 와이어프레임 v2가 준비되면 같은 매트릭스로 재감사하겠습니다. 원하시면 CR-4의 <code>[다녀왔어요]</code> 체크인 플로우와 CR-3의 재방문 승격 모달 와이어프레임 초안도 작성해 드릴 수 있습니다.</p>
+</div></section><section class="doc" id="prototype"><h2>서비스 UX 프로토타입</h2><p class="doc-time">분석 소요 10분 02초</p>
+                        <div class="proto-frame"><iframe src="prototype.html" sandbox="allow-scripts allow-forms allow-modals" title="서비스 UX 프로토타입" loading="lazy"></iframe></div>
+                        <a class="open" href="prototype.html" target="_blank" rel="noopener">새 창에서 열기 ↗</a></section><section class="doc" id="timings"><h2>단계별 분석 소요시간</h2><p class="doc-time"></p>
+                <div class="markdown-body"><div class="table-wrap"><table><thead><tr><th>단계</th><th>소요시간</th></tr></thead><tbody>
+                <tr><td>1-Pager 비즈니스 요약</td><td>1분 22초</td></tr><tr><td>3C 환경 분석</td><td>2분 54초</td></tr><tr><td>SWOT · TOWS 전략</td><td>1분 23초</td></tr><tr><td>STP 타깃 포지셔닝</td><td>3분 07초</td></tr><tr><td>MECE · RICE 구조화</td><td>2분 33초</td></tr><tr><td>PRD 요구사항 명세</td><td>10분 01초</td></tr><tr><td>와이어프레임 3안</td><td>2분 31초</td></tr><tr><td>QA 정합성 감사</td><td>2분 33초</td></tr><tr><td>서비스 UX 프로토타입</td><td>10분 02초</td></tr>
+                <tr><td><b>합계 (중간 검토 대기 제외)</b></td><td><b>36분 25초</b></td></tr>
+                
+                </tbody></table></div></div></section></main>
+<footer class="wrap">Planning-in-the-Loop가 자동 생성한 기획서입니다. 시장 규모·점수 등 수치는 모델 추정치를 포함합니다.</footer>
+<script>
+const VIZ_LABELS = {"show":"표로 보기","hide":"표 숨기기"};
+function toggleVizTable(btn) {
+    const tableEl = btn.closest('.viz-card').querySelector('.viz-table');
+    const open = tableEl.hidden;
+    tableEl.hidden = !open;
+    btn.setAttribute('aria-expanded', String(open));
+    btn.textContent = open ? VIZ_LABELS.hide : VIZ_LABELS.show;
+}
+(() => {
+    const tip = document.createElement('div');
+    tip.id = 'viz-tooltip'; tip.setAttribute('role', 'tooltip'); tip.hidden = true;
+    document.body.appendChild(tip);
+    const place = (x, y) => { const r = tip.getBoundingClientRect(); tip.style.left = Math.min(innerWidth - r.width - 8, x + 14) + 'px'; tip.style.top = Math.max(8, y - r.height - 12) + 'px'; };
+    const show = (el, x, y) => { tip.textContent = el.getAttribute('data-tip'); tip.hidden = false; place(x, y); };
+    const find = e => e.target.closest && e.target.closest('[data-tip]');
+    addEventListener('pointerover', e => { const el = find(e); if (el) show(el, e.clientX, e.clientY); });
+    addEventListener('pointermove', e => { if (!tip.hidden && find(e)) place(e.clientX, e.clientY); });
+    addEventListener('pointerout', e => { const el = find(e); if (el && !el.contains(e.relatedTarget)) tip.hidden = true; });
+    addEventListener('focusin', e => { const el = find(e); if (el) { const r = el.getBoundingClientRect(); show(el, r.left + r.width / 2, r.top); } });
+    addEventListener('focusout', () => { tip.hidden = true; });
+})();
+</script>
+</body>
+</html>
