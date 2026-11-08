@@ -1,0 +1,906 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>App Future Radar · 서비스 UX 프로토타입</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+:root{
+  --ink:#0f1b2d;--ink-2:#334155;--muted:#526075;--bg:#f3f5f8;--surface:#fff;--line:#d9e0e8;--line-2:#eef2f6;
+  --brand:#0b6b68;--brand-d:#08524f;--brand-w:#e2f1f0;--accent:#b45309;--accent-w:#fdf3e4;
+  --danger:#b42318;--danger-w:#fdecea;--ok:#067647;--ok-w:#e6f5ec;
+  --t-dec:#b42318;--t-dec-w:#fdecea;--t-dis:#4338ca;--t-dis-w:#eceefe;--t-inf:#475467;--t-inf-w:#edf0f4;--t-str:#067647;--t-str-w:#e6f5ec;
+  --r:12px;--r-s:8px;--sh:0 1px 2px rgba(15,27,45,.06),0 4px 16px rgba(15,27,45,.06);
+  --fs-xs:.75rem;--fs-s:.875rem;--fs-m:1rem;--fs-l:1.25rem;--fs-xl:1.6rem;--fs-2xl:2rem;
+  --hdr:60px;--bnav:64px;--disc:40px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:"IBM Plex Sans KR",system-ui,sans-serif;font-size:var(--fs-m);line-height:1.55;color:var(--ink);background:var(--bg);padding-bottom:calc(var(--bnav) + var(--disc))}
+h1,h2,h3,h4{margin:0;line-height:1.3}
+p{margin:0}
+a{color:var(--brand)}
+button,input,select,textarea{font:inherit;color:inherit}
+.mono{font-family:"IBM Plex Mono",monospace}
+:focus-visible{outline:3px solid #f59e0b;outline-offset:2px;border-radius:6px}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.skip{position:absolute;left:8px;top:-60px;background:var(--ink);color:#fff;padding:10px 14px;border-radius:8px;z-index:100}
+.skip:focus{top:8px}
+
+/* header */
+.hdr{position:sticky;top:0;z-index:40;height:var(--hdr);background:var(--ink);color:#fff;display:flex;align-items:center;gap:12px;padding:0 16px}
+.logo{display:flex;align-items:center;gap:10px;color:#fff;text-decoration:none;font-weight:700;letter-spacing:-.01em;min-height:44px}
+.logo small{display:block;font-weight:400;font-size:var(--fs-xs);color:#a9b8cc}
+.topnav{display:none;gap:4px;margin-left:16px}
+.topnav a{color:#cdd8e6;text-decoration:none;padding:10px 14px;border-radius:8px;font-size:var(--fs-s);min-height:44px;display:flex;align-items:center;gap:8px}
+.topnav a:hover{background:#1c2c44;color:#fff}
+.topnav a[aria-current="page"]{background:#1f3a52;color:#fff;box-shadow:inset 0 -3px 0 #5eead4}
+.hdr-r{margin-left:auto;display:flex;align-items:center;gap:8px}
+.role{display:flex;align-items:center;gap:6px;font-size:var(--fs-xs);color:#a9b8cc}
+.role select{background:#1c2c44;color:#fff;border:1px solid #33475f;border-radius:8px;min-height:40px;padding:0 8px;font-size:var(--fs-s)}
+.req-tg{background:transparent;border:1px solid #33475f;color:#cdd8e6;border-radius:8px;min-height:40px;padding:0 10px;font-size:var(--fs-xs);cursor:pointer;display:none}
+.req-tg[aria-pressed="true"]{background:#5eead4;color:var(--ink);border-color:#5eead4}
+
+/* bottom nav */
+.bnav{position:fixed;left:0;right:0;bottom:0;height:var(--bnav);background:var(--surface);border-top:1px solid var(--line);display:flex;z-index:40}
+.bnav a{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;text-decoration:none;color:var(--muted);font-size:var(--fs-xs);min-height:44px}
+.bnav a i{font-size:1.1rem}
+.bnav a[aria-current="page"]{color:var(--brand);font-weight:600}
+.disc{position:fixed;left:0;right:0;bottom:var(--bnav);min-height:var(--disc);background:#fffaf0;border-top:1px solid #f1dfbf;color:#6b4a12;font-size:var(--fs-xs);display:flex;align-items:center;gap:8px;padding:6px 16px;z-index:39}
+
+main{max-width:1320px;margin:0 auto;padding:16px}
+section[data-screen]{animation:fade .2s ease}
+@keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+
+/* common */
+.crumb{font-size:var(--fs-s);color:var(--muted);margin-bottom:6px}
+.crumb a{color:var(--muted)}
+.page-h{display:flex;flex-wrap:wrap;align-items:flex-start;gap:12px;justify-content:space-between;margin-bottom:16px}
+.page-h h1{font-size:var(--fs-xl);letter-spacing:-.02em}
+.sub{color:var(--muted);font-size:var(--fs-s);margin-top:4px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--sh);padding:16px}
+.card h2{font-size:var(--fs-l);margin-bottom:12px}
+.card h3{font-size:var(--fs-m);margin-bottom:8px}
+.grid{display:grid;gap:16px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:0 16px;border-radius:10px;border:1px solid transparent;font-weight:600;font-size:var(--fs-s);cursor:pointer;text-decoration:none;white-space:nowrap}
+.btn-p{background:var(--brand);color:#fff}
+.btn-p:hover{background:var(--brand-d)}
+.btn-s{background:var(--surface);color:var(--ink);border-color:var(--line)}
+.btn-s:hover{border-color:var(--brand);color:var(--brand)}
+.btn-g{background:transparent;color:var(--brand);padding:0 10px}
+.btn-d{background:var(--surface);color:var(--danger);border-color:#f3c2bd}
+.btn[disabled],.btn[aria-disabled="true"]{opacity:.5;cursor:not-allowed}
+.btn .spin{width:16px;height:16px;border:2px solid currentColor;border-right-color:transparent;border-radius:50%;animation:sp .7s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+.chip{display:inline-flex;align-items:center;gap:4px;font-size:var(--fs-xs);font-weight:600;padding:2px 8px;border-radius:999px;border:1px solid var(--line);background:var(--line-2);color:var(--ink-2);white-space:nowrap}
+.req{display:inline-flex;font-family:"IBM Plex Mono",monospace;font-size:.68rem;font-weight:500;color:#7c3aed;background:#f3edff;border:1px dashed #c4b5fd;border-radius:4px;padding:0 5px;margin-left:6px;vertical-align:middle;white-space:nowrap}
+body:not(.show-req) .req{display:none}
+.st{display:inline-flex;align-items:center;gap:6px;font-size:var(--fs-xs);font-weight:600;padding:4px 10px;border-radius:999px}
+.st::before{content:"";width:8px;height:8px;border-radius:50%;background:currentColor}
+.st-pub{background:var(--ok-w);color:var(--ok)}
+.st-run{background:var(--accent-w);color:var(--accent)}
+.st-ver{background:var(--t-dis-w);color:var(--t-dis)}
+.st-in{background:var(--line-2);color:var(--ink-2)}
+.tb{display:inline-flex;align-items:center;gap:4px;font-size:var(--fs-xs);font-weight:700;padding:3px 8px;border-radius:6px;white-space:nowrap}
+.tb-dec{background:var(--t-dec-w);color:var(--t-dec)}
+.tb-dis{background:var(--t-dis-w);color:var(--t-dis)}
+.tb-inf{background:var(--t-inf-w);color:var(--t-inf)}
+.tb-str{background:var(--t-str-w);color:var(--t-str)}
+.tag{font-size:.7rem;font-weight:700;padding:1px 6px;border-radius:4px;border:1px solid}
+.tag-edge{color:var(--accent);border-color:#f0c48a;background:var(--accent-w)}
+.tag-fix{color:var(--t-inf);border-color:#c5cdd8;background:var(--t-inf-w)}
+.muted{color:var(--muted)}
+.small{font-size:var(--fs-s)}
+.xs{font-size:var(--fs-xs)}
+.row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.sp{flex:1}
+hr.sep{border:0;border-top:1px solid var(--line-2);margin:14px 0}
+
+/* forms */
+.field{display:flex;flex-direction:column;gap:6px;margin-bottom:14px}
+.field label,.field legend{font-weight:600;font-size:var(--fs-s)}
+.field .hint{font-size:var(--fs-xs);color:var(--muted)}
+.inp,select.inp,textarea.inp{width:100%;min-height:44px;border:1px solid #b9c4d1;border-radius:10px;padding:10px 12px;background:#fff}
+textarea.inp{min-height:110px;resize:vertical}
+.inp:focus{border-color:var(--brand);outline:3px solid #99e0d9;outline-offset:0}
+.field.err .inp{border-color:var(--danger);background:#fffafa}
+.ferr{display:none;color:var(--danger);font-size:var(--fs-xs);font-weight:600}
+.field.err .ferr{display:flex;gap:6px;align-items:center}
+fieldset{border:0;padding:0;margin:0}
+.opts{display:flex;flex-wrap:wrap;gap:8px}
+.opt{display:flex;align-items:center;gap:8px;min-height:44px;padding:0 12px;border:1px solid var(--line);border-radius:10px;cursor:pointer;background:#fff;font-size:var(--fs-s)}
+.opt:has(input:checked){border-color:var(--brand);background:var(--brand-w)}
+.opt input{width:18px;height:18px;accent-color:var(--brand)}
+.alert{display:flex;gap:10px;padding:12px 14px;border-radius:10px;font-size:var(--fs-s);margin-bottom:14px}
+.alert-e{background:var(--danger-w);color:#7a1810;border:1px solid #f3c2bd}
+.alert-i{background:var(--brand-w);color:#064e4b;border:1px solid #b6dfdb}
+.alert-w{background:var(--accent-w);color:#6b3a06;border:1px solid #f0c48a}
+
+/* home */
+.hero{background:linear-gradient(135deg,#0f1b2d,#123a48 60%,#0b6b68);color:#fff;border-radius:16px;padding:22px;display:grid;gap:16px;position:relative;overflow:hidden}
+.hero h1{font-size:var(--fs-xl);letter-spacing:-.02em}
+.hero p{color:#cfe1ea;font-size:var(--fs-s)}
+.hero .thesis{font-size:var(--fs-s);background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:10px;padding:10px 12px}
+.hero .btn-s{background:transparent;color:#fff;border-color:rgba(255,255,255,.4)}
+.hero-ring{position:absolute;right:-60px;top:-60px;width:240px;height:240px;border-radius:50%;border:1px solid rgba(94,234,212,.25);box-shadow:0 0 0 40px rgba(94,234,212,.05),0 0 0 80px rgba(94,234,212,.03);pointer-events:none}
+.kpis{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.kpi{background:rgba(255,255,255,.08);border-radius:10px;padding:10px 12px}
+.kpi b{display:block;font-size:var(--fs-l)}
+.kpi span{font-size:var(--fs-xs);color:#cfe1ea}
+.proj{display:flex;flex-direction:column;gap:10px}
+.pj{display:grid;grid-template-columns:1fr auto;gap:6px 12px;align-items:center;padding:14px;border:1px solid var(--line);border-radius:10px;background:#fff;text-align:left;cursor:pointer;width:100%;min-height:44px}
+.pj:hover{border-color:var(--brand)}
+.pj b{font-size:var(--fs-m)}
+.pj .meta{grid-column:1/-1;font-size:var(--fs-xs);color:var(--muted);display:flex;gap:12px;flex-wrap:wrap}
+.bar{height:6px;background:var(--line-2);border-radius:99px;overflow:hidden;grid-column:1/-1}
+.bar i{display:block;height:100%;background:var(--accent)}
+.sig{display:flex;gap:12px;padding:12px 0;border-bottom:1px solid var(--line-2)}
+.sig:last-child{border-bottom:0}
+.sig .ic{flex:none;width:36px;height:36px;border-radius:10px;display:grid;place-items:center;background:var(--brand-w);color:var(--brand)}
+.sig.hi .ic{background:var(--danger-w);color:var(--danger)}
+.sig b{font-size:var(--fs-s)}
+.sig p{font-size:var(--fs-xs);color:var(--muted)}
+.empty{text-align:center;padding:28px 16px;color:var(--muted)}
+.empty i{font-size:1.8rem;color:#9aa8b8;margin-bottom:8px;display:block}
+.empty b{display:block;color:var(--ink);margin-bottom:4px}
+
+/* matrix */
+.ledger{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:var(--fs-xs);color:var(--muted)}
+.ledger .mono{color:var(--ink-2)}
+.summary{position:sticky;top:var(--hdr);z-index:20;background:var(--bg);padding:8px 0 10px;margin:0 -2px 8px}
+.sum-in{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.sum{background:#fff;border:1px solid var(--line);border-radius:10px;padding:8px 12px;display:flex;align-items:center;gap:10px}
+.sum .ico{font-size:1rem;width:28px;height:28px;border-radius:8px;display:grid;place-items:center;font-weight:700}
+.sum b{font-size:var(--fs-l)}
+.sum span{font-size:var(--fs-xs);color:var(--muted);display:block;line-height:1.2}
+.filters{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:12px}
+.filters select{min-height:44px;border:1px solid var(--line);border-radius:10px;padding:0 10px;background:#fff;font-size:var(--fs-s)}
+.mx-wrap{display:grid;gap:16px}
+.map-box{position:relative;padding:4px 0 26px 26px}
+.map{position:relative;aspect-ratio:1/1;max-width:560px;width:100%;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:#fff}
+.q{position:relative;padding:8px 10px;font-size:var(--fs-xs);font-weight:700}
+.q-str{background:#f3fbf6;color:var(--t-str);border-right:1px dashed #c7d2de;border-bottom:1px dashed #c7d2de}
+.q-dis{background:#f5f6ff;color:var(--t-dis);border-bottom:1px dashed #c7d2de;text-align:right}
+.q-inf{background:#f6f7f9;color:var(--t-inf);border-right:1px dashed #c7d2de;display:flex;align-items:flex-end}
+.q-dec{background:#fff6f5;color:var(--t-dec);display:flex;align-items:flex-end;justify-content:flex-end}
+.q small{font-weight:500;color:var(--muted);margin-left:4px}
+.ax-y{position:absolute;left:0;top:50%;transform:rotate(-90deg) translateX(50%);transform-origin:left top;font-size:var(--fs-xs);color:var(--muted);white-space:nowrap}
+.ax-x{position:absolute;bottom:2px;left:50%;transform:translateX(-50%);font-size:var(--fs-xs);color:var(--muted);white-space:nowrap}
+.dot{position:absolute;width:28px;height:28px;border-radius:50%;border:2px solid #fff;transform:translate(-50%,50%);color:#fff;font-size:.72rem;font-weight:700;display:grid;place-items:center;cursor:pointer;box-shadow:0 1px 3px rgba(0,0,0,.25);transition:transform .15s,opacity .15s;padding:0}
+.dot::before{content:"";position:absolute;inset:-8px}
+.dot:hover{transform:translate(-50%,50%) scale(1.15);z-index:3}
+.dot.dim{opacity:.18}
+.dot.sel{outline:3px solid #f59e0b;outline-offset:2px;z-index:4;transform:translate(-50%,50%) scale(1.2)}
+.dot.edge{border-style:dashed;border-color:#f59e0b}
+.d-dec{background:var(--t-dec)}.d-dis{background:var(--t-dis)}.d-inf{background:var(--t-inf)}.d-str{background:var(--t-str)}
+.thr{position:absolute;font-size:.65rem;color:var(--muted)}
+.panel{position:relative}
+.panel h2{display:flex;align-items:center;gap:8px}
+.score{display:grid;grid-template-columns:auto 1fr auto;gap:8px;align-items:center;font-size:var(--fs-s);margin:6px 0}
+.meter{height:8px;background:var(--line-2);border-radius:99px;position:relative;overflow:hidden}
+.meter i{position:absolute;inset:0 auto 0 0;background:var(--brand);border-radius:99px}
+.meter::after{content:"";position:absolute;left:50%;top:-2px;bottom:-2px;border-left:1px dashed #94a3b8}
+.subq{display:none;background:var(--line-2);border-radius:8px;padding:8px 12px;margin:8px 0;font-size:var(--fs-xs)}
+.subq.open{display:block}
+.subq div{display:flex;justify-content:space-between;padding:3px 0}
+.prior{font-size:var(--fs-xs);background:#f8fafc;border:1px dashed #b9c4d1;border-radius:8px;padding:8px 10px;margin:10px 0;color:var(--ink-2)}
+.acts{display:flex;flex-direction:column;gap:8px;margin-top:12px}
+.acts .btn{width:100%}
+.flist{list-style:none;margin:0;padding:0}
+.fr{display:grid;grid-template-columns:28px 1fr auto;gap:4px 10px;align-items:center;padding:10px 8px;border-bottom:1px solid var(--line-2);cursor:pointer;border-radius:8px}
+.fr:hover{background:#f8fafc}
+.fr.sel{background:#fff8e6;box-shadow:inset 3px 0 0 #f59e0b}
+.fr .n{width:24px;height:24px;border-radius:50%;color:#fff;font-size:.7rem;font-weight:700;display:grid;place-items:center}
+.fr .nm{font-weight:600;font-size:var(--fs-s)}
+.fr .ds{font-size:var(--fs-xs);color:var(--muted);grid-column:2/3}
+.fr .rt{grid-row:1/3;grid-column:3;display:flex;flex-direction:column;align-items:flex-end;gap:4px}
+.ctab{display:flex;flex-wrap:wrap;gap:8px}
+.guard{display:none}
+.is-forbidden .guard{display:block}
+.is-forbidden .gc{display:none}
+.e403{max-width:560px;margin:40px auto;text-align:center}
+.e403 .code{font-family:"IBM Plex Mono",monospace;font-size:3rem;font-weight:500;color:var(--danger)}
+
+/* feature / evidence */
+.ev{border:1px solid var(--line);border-radius:10px;padding:12px;margin-bottom:10px;background:#fff}
+.ev-h{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:4px}
+.ev p{font-size:var(--fs-s)}
+.ev .meta{font-size:var(--fs-xs);color:var(--muted);margin-top:6px;display:flex;gap:10px;flex-wrap:wrap}
+.ok{color:var(--ok)}.warn{color:var(--accent)}
+.tl{list-style:none;margin:0;padding:0 0 0 14px;border-left:2px solid var(--line)}
+.tl li{position:relative;padding:0 0 12px 10px;font-size:var(--fs-s)}
+.tl li::before{content:"";position:absolute;left:-21px;top:6px;width:12px;height:12px;border-radius:50%;background:#fff;border:2px solid var(--brand)}
+.tl li small{display:block;color:var(--muted);font-size:var(--fs-xs)}
+
+/* spec */
+.stabs{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px}
+.stab{flex:none;text-align:left;border:1px solid var(--line);background:#fff;border-radius:10px;padding:10px 12px;min-height:44px;cursor:pointer;min-width:170px}
+.stab[aria-selected="true"]{border-color:var(--brand);box-shadow:inset 0 -3px 0 var(--brand);background:var(--brand-w)}
+.stab b{display:block;font-size:var(--fs-s)}
+.stab span{font-size:var(--fs-xs);color:var(--muted)}
+.code{background:#0f1b2d;color:#d4f5ef;border-radius:10px;padding:12px;font-family:"IBM Plex Mono",monospace;font-size:.78rem;overflow:auto;white-space:pre;max-height:320px}
+
+/* report */
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:12px 0}
+.step{text-align:center;font-size:var(--fs-xs);color:var(--muted)}
+.step i{display:block;height:6px;border-radius:99px;background:var(--line-2);margin-bottom:6px}
+.step.done i{background:var(--brand)}
+.step.now i{background:linear-gradient(90deg,var(--brand),#5eead4,var(--brand));background-size:200% 100%;animation:sh 1s linear infinite}
+.step.done,.step.now{color:var(--ink);font-weight:600}
+@keyframes sh{to{background-position:-200% 0}}
+.alloc{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.al{border-radius:10px;padding:12px}
+.al b{font-size:var(--fs-l);display:block}
+.al span{font-size:var(--fs-xs)}
+table.tbl{width:100%;border-collapse:collapse;font-size:var(--fs-s)}
+.tbl th,.tbl td{text-align:left;padding:10px 8px;border-bottom:1px solid var(--line-2)}
+.tbl th{font-size:var(--fs-xs);color:var(--muted);font-weight:600}
+
+/* index */
+.idx{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.ix{border:1px solid var(--line);border-radius:10px;padding:12px;background:#fff}
+.ix b{font-size:var(--fs-xl);display:block;letter-spacing:-.02em}
+.ix .d{font-size:var(--fs-xs);font-weight:600}
+.dn{color:var(--danger)}.up{color:var(--ok)}
+.sc{margin:10px 0}
+.sc .row{justify-content:space-between;font-size:var(--fs-s)}
+.sc .meter::after{display:none}
+.switch{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:48px;border-bottom:1px solid var(--line-2);font-size:var(--fs-s)}
+.switch:last-child{border-bottom:0}
+.tgl{appearance:none;width:46px;height:26px;border-radius:99px;background:#c3cdd9;position:relative;cursor:pointer;flex:none;transition:background .15s}
+.tgl::after{content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:left .15s}
+.tgl:checked{background:var(--brand)}
+.tgl:checked::after{left:23px}
+
+/* toast */
+.toasts{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(var(--bnav) + var(--disc) + 12px);display:flex;flex-direction:column;gap:8px;z-index:60;width:min(92vw,420px)}
+.toast{background:var(--ink);color:#fff;border-radius:10px;padding:12px 14px;font-size:var(--fs-s);display:flex;gap:10px;align-items:flex-start;box-shadow:0 8px 24px rgba(0,0,0,.2);animation:fade .2s}
+.toast i{color:#5eead4;margin-top:3px}
+.toast.err i{color:#fca5a5}
+
+@media (min-width:768px){
+  body{padding-bottom:var(--disc)}
+  .bnav{display:none}
+  .disc{bottom:0}
+  .toasts{bottom:calc(var(--disc) + 16px)}
+  .topnav{display:flex}
+  .req-tg{display:inline-flex;align-items:center}
+  main{padding:24px}
+  .hero{grid-template-columns:1.4fr 1fr;padding:28px}
+  .kpis{grid-template-columns:repeat(2,1fr)}
+  .home-g{grid-template-columns:1.3fr 1fr}
+  .sum-in{grid-template-columns:repeat(4,1fr)}
+  .mx-wrap{grid-template-columns:1.25fr 1fr}
+  .two{grid-template-columns:1fr 1fr}
+  .feat-g{grid-template-columns:1.2fr 1fr}
+  .spec-g{grid-template-columns:1.2fr 1fr}
+  .idx{grid-template-columns:repeat(3,1fr)}
+  .alloc{grid-template-columns:repeat(4,1fr)}
+  .acts{flex-direction:row;flex-wrap:wrap}
+  .acts .btn{width:auto;flex:1}
+}
+@media (min-width:1200px){
+  .mx-wrap{grid-template-columns:minmax(0,1fr) 380px}
+  .mx-main{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:16px}
+  .acts{flex-direction:column}
+  .acts .btn{width:100%}
+  .rep-g{grid-template-columns:420px 1fr}
+  .idx-g{grid-template-columns:1.4fr 1fr}
+  .feat-g{grid-template-columns:1.3fr 1fr 1fr}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body class="show-req">
+<a href="#main" class="skip">본문으로 건너뛰기</a>
+
+<header class="hdr">
+  <a href="#home" class="logo" aria-label="App Future Radar 홈">
+    <svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="14" fill="none" stroke="#5eead4" stroke-width="1.5" opacity=".5"/><circle cx="16" cy="16" r="9" fill="none" stroke="#5eead4" stroke-width="1.5" opacity=".75"/><path d="M16 16 L16 2 A14 14 0 0 1 29 11 Z" fill="#5eead4" opacity=".45"/><rect x="13" y="13" width="6" height="6" rx="1.5" fill="#fff"/></svg>
+    <span>App Future Radar<small>기능 단위 앱 존속 진단</small></span>
+  </a>
+  <nav class="topnav" aria-label="주 메뉴">
+    <a href="#home" data-nav="home"><i class="fa-solid fa-house" aria-hidden="true"></i>홈</a>
+    <a href="#matrix" data-nav="matrix" data-guard><i class="fa-solid fa-table-cells-large" aria-hidden="true"></i>진단</a>
+    <a href="#index" data-nav="index"><i class="fa-solid fa-chart-line" aria-hidden="true"></i>지수·신호</a>
+    <a href="#report" data-nav="report" data-guard><i class="fa-solid fa-file-lines" aria-hidden="true"></i>리포트</a>
+    <a href="#intake" data-nav="intake" data-guard><i class="fa-solid fa-plus" aria-hidden="true"></i>새 진단</a>
+  </nav>
+  <div class="hdr-r">
+    <button class="req-tg" id="reqTg" aria-pressed="true" type="button" title="REQ 요구사항 매핑 주석 표시">REQ 주석</button>
+    <label class="role"><span class="sr-only">데모 역할 전환</span><i class="fa-solid fa-user-shield" aria-hidden="true"></i>
+      <select id="roleSel" aria-label="데모 역할 전환">
+        <option value="admin">김PO · Tenant Admin</option>
+        <option value="member">박PO · Member</option>
+        <option value="viewer">최심사역 · Viewer(A3)</option>
+      </select>
+    </label>
+  </div>
+</header>
+
+<main id="main" tabindex="-1">
+
+<!-- 1. HOME -->
+<section data-screen="home" data-title="홈 대시보드">
+  <div class="hero">
+    <div class="hero-ring"></div>
+    <div style="position:relative">
+      <p class="xs" style="color:#5eead4;font-weight:600;margin-bottom:6px" id="heroEyebrow">2026.11.07 (토) · 리오테이블 주식회사</p>
+      <h1 id="heroTitle">김PO님, 예약앱 Q4 진단이 납품되었습니다</h1>
+      <p style="margin-top:8px">기능 18개를 4유형으로 판정했습니다. 판정표에서 근거를 확인하고 다음 분기 투자 배분을 결정하세요.</p>
+      <p class="thesis" style="margin-top:12px"><i class="fa-solid fa-quote-left" aria-hidden="true"></i> 앱은 사라지지 않는다. <b>앱의 화면이 사라진다.</b> 신뢰·권한·결제의 그릇은 남고, 방문지로서의 화면은 줄어듭니다.</p>
+      <div class="row" style="margin-top:16px" id="heroActs">
+        <a href="#matrix" class="btn btn-p" style="background:#5eead4;color:#0f1b2d">판정표 열기 <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+        <a href="#intake" class="btn btn-s">새 진단 요청</a>
+      </div>
+    </div>
+    <div class="kpis" style="position:relative" aria-label="진단 요약">
+      <div class="kpi"><b>▼ 5</b><span>줄일 화면 (소멸형)</span></div>
+      <div class="kpi"><b>◇ 6</b><span>위임할 기능 (해체형)</span></div>
+      <div class="kpi"><b>▲ 4</b><span>깊게 만들 화면 (강화형)</span></div>
+      <div class="kpi"><b>■ 3</b><span>인프라 고정</span></div>
+    </div>
+  </div>
+
+  <div class="grid home-g" style="margin-top:16px">
+    <div class="card">
+      <div class="row" style="margin-bottom:12px"><h2 style="margin:0">진단 프로젝트</h2><span class="req">REQ-15</span><span class="sp"></span><a href="#intake" class="btn btn-g" data-guard-hide>+ 새 진단</a></div>
+      <div class="proj" id="projList"></div>
+    </div>
+    <div class="card">
+      <div class="row" style="margin-bottom:4px"><h2 style="margin:0">플랫폼 정책 신호</h2><span class="req">REQ-08 Alert</span></div>
+      <p class="xs muted" style="margin-bottom:6px">OS·AI 플랫폼 정책 변화 중 내 카테고리에 영향이 있는 항목</p>
+      <div id="sigList"></div>
+      <a href="#index" class="btn btn-s" style="width:100%;margin-top:8px">지수·신호 전체 보기</a>
+    </div>
+  </div>
+</section>
+
+<!-- 2. INTAKE -->
+<section data-screen="intake" data-title="새 진단 요청 · 집계 지표 연결" hidden>
+  <div class="guard"><div class="e403 card"><div class="code">403</div><h2>접근 권한이 없습니다</h2><p class="muted small" style="margin:8px 0 16px">Viewer(A3) 계정은 진단 메뉴를 사용할 수 없습니다. 지수·신호 리포트만 열람할 수 있어요.<span class="req">REQ-20 AC-2</span></p><a href="#index" class="btn btn-p">지수·신호로 이동</a></div></div>
+  <div class="gc">
+  <div class="crumb"><a href="#home">홈</a> › 새 진단 요청</div>
+  <div class="page-h"><div><h1>새 진단 요청</h1><p class="sub">목표 소요 기간 2주 · 집계 지표만 수신합니다 (개인 단위 데이터는 받지 않음)</p></div></div>
+  <div class="grid two">
+    <form class="card" id="intakeForm" novalidate>
+      <div id="intakeAlert"></div>
+      <div class="field" data-f="app"><label for="iApp">앱 / 프로젝트 이름 *</label><input class="inp" id="iApp" maxlength="40" placeholder="예) 커머스앱 27Q1 진단"><span class="ferr"><i class="fa-solid fa-circle-exclamation" aria-hidden="true"></i><span></span></span></div>
+      <div class="field" data-f="cat"><label for="iCat">카테고리 *</label>
+        <select class="inp" id="iCat"><option value="">선택하세요</option><option>예약</option><option>커머스</option><option>콘텐츠</option><option>금융</option><option>모빌리티</option></select>
+        <span class="ferr"><i class="fa-solid fa-circle-exclamation" aria-hidden="true"></i><span></span></span></div>
+      <div class="grid two" style="gap:12px">
+        <div class="field" data-f="cnt"><label for="iCnt">핵심 기능 수 *</label><input class="inp" id="iCnt" type="number" inputmode="numeric" min="5" max="40" placeholder="5~40"><span class="hint">Job 단위 기준</span><span class="ferr"><i class="fa-solid fa-circle-exclamation" aria-hidden="true"></i><span></span></span></div>
+        <div class="field" data-f="due"><label for="iDue">희망 납품일 *</label><input class="inp" id="iDue" type="date"><span class="hint">요청일로부터 최소 14일</span><span class="ferr"><i class="fa-solid fa-circle-exclamation" aria-hidden="true"></i><span></span></span></div>
+      </div>
+      <div class="field" data-f="csv"><label for="iCsv">기능별 진입 경로 집계 지표 (CSV) * <span class="req">REQ-16 · D-3</span></label>
+        <textarea class="inp mono" id="iCsv" spellcheck="false" placeholder="feature,entry_source,sessions_agg&#10;예약 생성,external_agent,4120"></textarea>
+        <span class="hint">필수 컬럼: feature, entry_source, sessions_agg · 행당 세션 50 이상 · user_id/device_id/email/phone 등 개인 식별 컬럼 불가</span>
+        <span class="ferr"><i class="fa-solid fa-circle-exclamation" aria-hidden="true"></i><span></span></span>
+        <div class="row"><button type="button" class="btn btn-s" id="fillOk"><i class="fa-solid fa-wand-magic-sparkles" aria-hidden="true"></i>샘플 집계 채우기</button><button type="button" class="btn btn-g" id="fillBad">오류 예시 채우기</button></div>
+      </div>
+      <div class="field"><label class="opt" style="border:0;padding:0"><input type="checkbox" id="iAgree"> 계측은 자사 분석 환경에서 수행했으며, 집계 결과만 업로드함을 확인합니다 *</label><span class="ferr" id="agreeErr"><i class="fa-solid fa-circle-exclamation" aria-hidden="true"></i><span></span></span></div>
+      <div class="row"><button type="submit" class="btn btn-p" id="intakeSubmit">진단 요청 제출</button><a href="#home" class="btn btn-s">취소</a></div>
+    </form>
+    <aside class="card">
+      <h2>진단은 이렇게 진행됩니다</h2>
+      <ol class="tl">
+        <li><b>접수 · 집계 지표 검증</b><small>D+0 · 개인 식별 컬럼, 최소 집계 단위 자동 점검</small></li>
+        <li><b>분석가 2인 독립 판정</b><small>D+3~9 · 판정 일치도 Cohen's κ ≥ 0.6 목표</small></li>
+        <li><b>판정표 납품 (Published)</b><small>D+14 · 2×2 판정표 + 근거 원장 해시 기록</small><span class="req">REQ-19</span></li>
+        <li><b>6개월 중간 검증 → 12개월 본 검증</b><small>틀린 판정 포함 적중률 공개</small><span class="req">D-6</span></li>
+      </ol>
+      <div class="alert alert-i" style="margin:8px 0 0"><i class="fa-solid fa-shield-halved" aria-hidden="true"></i><div>플랫폼은 집계 지표만 수신합니다. 개별 사용자 트래킹은 제공하지 않습니다. <span class="req">REQ-12 Won't</span></div></div>
+    </aside>
+  </div>
+  </div>
+</section>
+
+<!-- 3. MATRIX -->
+<section data-screen="matrix" data-title="2×2 판정표" hidden>
+  <div class="guard"><div class="e403 card"><div class="code">403</div><h2>판정표 접근 권한이 없습니다</h2><p class="muted small" style="margin:8px 0 16px">Viewer(A3) 계정에는 고객사 진단 결과가 노출되지 않습니다. 카테고리 존속지수는 열람할 수 있습니다.<span class="req">REQ-20 AC-2</span></p><a href="#index" class="btn btn-p">지수·신호로 이동</a></div></div>
+  <div class="gc">
+  <div class="crumb"><a href="#home">진단</a> › 예약앱 Q4 › 2×2 판정표</div>
+  <div class="page-h">
+    <div>
+      <div class="row"><h1>예약앱 Q4 판정표</h1><span class="st st-pub">납품 완료 (Published)</span><span class="req">REQ-15</span></div>
+      <div class="ledger" style="margin-top:6px"><span>v1</span><span>원장 해시 <span class="mono">a3f9…c21</span></span><span>루브릭 v1.0</span><span>6개월 중간 검증 <b>27.05.12</b></span><span>12개월 본 검증 27.11.12</span><span class="req">REQ-19</span></div>
+    </div>
+    <div class="ctab">
+      <a href="#spec" class="btn btn-s" id="ctaSpec"><i class="fa-solid fa-code-branch" aria-hidden="true"></i>위임 상위 3개 호출 명세<span class="req">REQ-17</span></a>
+      <a href="#report" class="btn btn-p"><i class="fa-solid fa-file-export" aria-hidden="true"></i>맞춤 리포트 생성 ▶<span class="req" style="color:#fff;background:transparent;border-color:#fff">REQ-04</span></a>
+    </div>
+  </div>
+
+  <div class="summary" aria-label="고정 요약">
+    <div class="sum-in">
+      <div class="sum"><span class="ico tb-dec">▼</span><div><span>줄일 화면</span><b id="sDec">5</b></div></div>
+      <div class="sum"><span class="ico tb-dis">◇</span><div><span>위임할 기능</span><b id="sDis">6</b></div></div>
+      <div class="sum"><span class="ico tb-str">▲</span><div><span>깊게 만들 화면</span><b id="sStr">4</b></div></div>
+      <div class="sum"><span class="ico tb-inf">■</span><div><span>인프라 고정</span><b id="sInf">3</b></div></div>
+    </div>
+  </div>
+
+  <div class="filters" role="group" aria-label="판정 필터">
+    <label class="sr-only" for="fType">유형</label>
+    <select id="fType"><option value="all">유형 전체</option><option value="dec">▼ 소멸형</option><option value="dis">◇ 해체형</option><option value="str">▲ 강화형</option><option value="inf">■ 인프라형</option></select>
+    <label class="opt"><input type="checkbox" id="fEdge"> 경계만</label>
+    <label class="opt"><input type="checkbox" id="fFix"> 인프라 고정</label>
+    <span class="xs muted" id="fCount" aria-live="polite"></span>
+  </div>
+
+  <div class="mx-wrap">
+    <div class="mx-main">
+      <div class="card">
+        <div class="row" style="margin-bottom:8px"><h2 style="margin:0">포트폴리오 맵</h2><span class="xs muted">점선 = [경계] · 기준선 3.0</span></div>
+        <div class="map-box">
+          <div class="ax-y">화면 가치 S ↑</div>
+          <div class="map" id="map" role="group" aria-label="위임 가능성 D(가로)와 화면 가치 S(세로) 2×2 맵">
+            <div class="q q-str">▲ 강화형<small>· 심화</small></div>
+            <div class="q q-dis">◇ 해체형<small>· 위임</small></div>
+            <div class="q q-inf">■ 인프라형<small>· 유지</small></div>
+            <div class="q q-dec">▼ 소멸형<small>· 축소</small></div>
+          </div>
+          <div class="ax-x">위임 가능성 D →</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="row" style="margin-bottom:4px"><h2 style="margin:0">기능 목록</h2><span class="sp"></span><span class="xs muted">D · S (1~5)</span></div>
+        <ul class="flist" id="fList" aria-label="기능 판정 목록"></ul>
+        <div class="empty" id="fEmpty" hidden><i class="fa-regular fa-folder-open" aria-hidden="true"></i><b>조건에 맞는 기능이 없습니다</b><p class="small">인프라 고정 기능에는 [경계] 태그가 붙지 않습니다. 필터를 조정해 보세요.</p><button class="btn btn-s" style="margin-top:12px" id="fReset">필터 초기화</button></div>
+      </div>
+    </div>
+    <aside class="card panel" id="selPanel" aria-live="polite"></aside>
+  </div>
+  </div>
+</section>
+
+<!-- 4. FEATURE / EVIDENCE -->
+<section data-screen="feature" data-title="기능 상세 · 근거 추적" hidden>
+  <div class="guard"><div class="e403 card"><div class="code">403</div><h2>접근 권한이 없습니다</h2><p class="muted small" style="margin:8px 0 16px">Viewer(A3) 계정은 기능 단위 근거에 접근할 수 없습니다.<span class="req">REQ-20 AC-2</span></p><a href="#index" class="btn btn-p">지수·신호로 이동</a></div></div>
+  <div class="gc">
+  <div class="crumb"><a href="#home">진단</a> › <a href="#matrix">예약앱 Q4 판정표</a> › <span id="ftCrumb">기능 상세</span></div>
+  <div class="page-h" id="ftHead"></div>
+  <div class="grid feat-g">
+    <div class="card">
+      <div class="row" style="margin-bottom:8px"><h2 style="margin:0">근거 추적 (Evidence Trace)</h2><span class="req">REQ-05 · 7.1-①</span></div>
+      <p class="xs muted" style="margin-bottom:12px">모든 판정은 출처와 수집 시점, 원장 해시로 추적됩니다.</p>
+      <div id="evList"></div>
+    </div>
+    <div class="card">
+      <h2>점수 구성</h2>
+      <div id="ftScores"></div>
+      <div class="prior" id="ftPrior"></div>
+      <hr class="sep">
+      <h3>판정 이력 <span class="req">REQ-19</span></h3>
+      <ul class="tl" id="ftHist"></ul>
+    </div>
+    <div class="card" id="objCard">
+      <div class="row" style="margin-bottom:8px"><h2 style="margin:0">이의 제기</h2><span class="req">EX-08</span></div>
+      <div id="objBody"></div>
+    </div>
+  </div>
+  </div>
+</section>
+
+<!-- 5. SPEC -->
+<section data-screen="spec" data-title="호출 명세 편집기" hidden>
+  <div class="guard"><div class="e403 card"><div class="code">403</div><h2>접근 권한이 없습니다</h2><p class="muted small" style="margin:8px 0 16px">Viewer(A3) 계정은 호출 명세 편집기를 사용할 수 없습니다.<span class="req">REQ-20 AC-2</span></p><a href="#index" class="btn btn-p">지수·신호로 이동</a></div></div>
+  <div class="gc">
+  <div class="crumb"><a href="#home">진단</a> › <a href="#matrix">예약앱 Q4 판정표</a> › 호출 명세</div>
+  <div class="page-h"><div><div class="row"><h1>위임 기능 호출 명세</h1><span class="req">REQ-17 AC-1</span></div><p class="sub">해체형 중 D 상위 3개를 자동 추천했습니다(인프라형 제외). 명세 템플릿과 검토까지 제공하며, 코드 구현은 범위 밖입니다. <span class="req">D-4</span></p></div></div>
+  <div class="stabs" role="tablist" aria-label="명세 대상 기능" id="specTabs"></div>
+  <div class="grid spec-g" style="margin-top:12px">
+    <form class="card" id="specForm" novalidate></form>
+    <aside class="card">
+      <div class="row" style="margin-bottom:8px"><h2 style="margin:0">명세 미리보기</h2><span class="sp"></span><span class="chip" id="specStatus">초안</span></div>
+      <p class="xs muted" style="margin-bottom:8px">에이전트(시스템 AI 비서·대화형 AI)가 앱 화면을 열지 않고 호출하는 단위입니다.</p>
+      <div class="code" id="specPreview" aria-label="명세 미리보기"></div>
+      <div class="alert alert-w" style="margin:12px 0 0"><i class="fa-solid fa-lock" aria-hidden="true"></i><div>로그인·결제수단·권한은 앱이 계속 보유합니다. 명세는 <b>앱의 신뢰 계약을 빌려 쓰는</b> 구조로 작성하세요.</div></div>
+    </aside>
+  </div>
+  </div>
+</section>
+
+<!-- 6. REPORT -->
+<section data-screen="report" data-title="맞춤 리포트 생성" hidden>
+  <div class="guard"><div class="e403 card"><div class="code">403</div><h2>접근 권한이 없습니다</h2><p class="muted small" style="margin:8px 0 16px">Viewer(A3) 계정은 고객사 맞춤 리포트를 생성할 수 없습니다. 분기 시장 신호 리포트는 지수·신호에서 열람하세요.</p><a href="#index" class="btn btn-p">지수·신호로 이동</a></div></div>
+  <div class="gc">
+  <div class="crumb"><a href="#home">진단</a> › <a href="#matrix">예약앱 Q4 판정표</a> › 맞춤 리포트</div>
+  <div class="page-h"><div><div class="row"><h1>맞춤 리포트 생성</h1><span class="req">REQ-04 AC-1</span></div><p class="sub">판정 결과를 다음 분기 투자 배분안으로 정리해 CPO 보고로 넘깁니다.</p></div></div>
+  <div class="grid rep-g">
+    <form class="card" id="repForm" novalidate>
+      <fieldset class="field" data-f="aud"><legend>보고 대상 *</legend>
+        <div class="opts">
+          <label class="opt"><input type="radio" name="aud" value="CPO 3분 판독" checked> CPO 3분 판독</label>
+          <label class="opt"><input type="radio" name="aud" value="PO 실무 상세"> PO 실무 상세</label>
+          <label class="opt"><input type="radio" name="aud" value="경영회의"> 경영회의</label>
+        </div></fieldset>
+      <fieldset class="field" data-f="sec"><legend>포함 섹션 * (1개 이상)</legend>
+        <div class="opts">
+          <label class="opt"><input type="checkbox" name="sec" value="투자 배분안" checked> 투자 배분안</label>
+          <label class="opt"><input type="checkbox" name="sec" value="2×2 판정표" checked> 2×2 판정표</label>
+          <label class="opt"><input type="checkbox" name="sec" value="근거 원장"> 근거 원장</label>
+          <label class="opt"><input type="checkbox" name="sec" value="호출 명세 요약"> 호출 명세 요약</label>
+          <label class="opt"><input type="checkbox" name="sec" value="장기 참고치"> 2030 장기 참고치</label>
+        </div>
+        <span class="ferr"><i class="fa-solid fa-circle-exclamation" aria-hidden="true"></i><span>포함할 섹션을 1개 이상 선택하세요.</span></span></fieldset>
+      <div class="field"><label for="repFmt">형식</label><select class="inp" id="repFmt"><option>PDF (A4 가로)</option><option>슬라이드 (16:9)</option></select></div>
+      <button class="btn btn-p" type="submit" id="repBtn" style="width:100%">맞춤 리포트 생성 ▶</button>
+      <div id="repProg" hidden>
+        <div class="steps" aria-hidden="true" id="repSteps"></div>
+        <p class="small" id="repMsg" role="status" aria-live="polite"></p>
+      </div>
+    </form>
+    <div class="grid" style="align-content:start">
+      <div class="card" id="repPreview">
+        <div class="empty"><i class="fa-regular fa-file-lines" aria-hidden="true"></i><b>아직 생성된 리포트가 없습니다</b><p class="small">왼쪽에서 보고 대상을 고르고 리포트를 생성하세요. 분석가 QA를 거쳐 Ready 상태가 됩니다.</p></div>
+      </div>
+      <div class="card">
+        <h2>생성 이력</h2>
+        <div id="repHist"></div>
+      </div>
+    </div>
+  </div>
+  </div>
+</section>
+
+<!-- 7. INDEX -->
+<section data-screen="index" data-title="존속지수 · 시장 신호" hidden>
+  <div class="crumb"><a href="#home">홈</a> › 지수·신호</div>
+  <div class="page-h"><div><div class="row"><h1>App Survival Index · 26Q4</h1><span class="req">REQ-02 · REQ-03</span></div><p class="sub">카테고리별 존속지수(0~100) · 분기 갱신 · 다음 발행 27.02.15</p></div></div>
+  <div class="grid idx-g">
+    <div class="grid" style="align-content:start">
+      <div class="card">
+        <h2>카테고리 존속지수</h2>
+        <div class="idx" id="idxList"></div>
+        <p class="xs muted" style="margin-top:10px">지수 = 화면 방문 의존도와 위임 전환 속도를 합성한 12개월 선행 지표. 숫자가 낮을수록 화면 축소 압력이 큽니다.</p>
+      </div>
+      <div class="card">
+        <div class="row" style="margin-bottom:6px"><h2 style="margin:0">2030 시나리오</h2><span class="chip" style="background:var(--accent-w);color:var(--accent);border-color:#f0c48a">장기 참고치 · Long-range Prior</span><span class="req">D-2</span></div>
+        <p class="xs muted">검증할 수 없는 예측이므로 적중률 KPI에 사용하지 않습니다.</p>
+        <div class="sc"><div class="row"><span><b>S1</b> 앱 그릇 유지 · 화면 축소</span><b>52%</b></div><div class="meter"><i style="width:52%;background:var(--t-dis)"></i></div></div>
+        <div class="sc"><div class="row"><span><b>S2</b> 앱 중심 현행 유지</span><b>31%</b></div><div class="meter"><i style="width:31%;background:var(--t-str)"></i></div></div>
+        <div class="sc"><div class="row"><span><b>S3</b> 에이전트 단일 진입점 · 앱 해체</span><b>17%</b></div><div class="meter"><i style="width:17%;background:var(--t-dec)"></i></div></div>
+      </div>
+      <div class="card">
+        <div class="row" style="margin-bottom:6px"><h2 style="margin:0">예측 적중률 공개</h2><span class="req">P1 · 신뢰 목표</span></div>
+        <div class="empty" style="padding:16px"><i class="fa-solid fa-hourglass-half" aria-hidden="true"></i><b>아직 검증 시점이 오지 않았습니다</b><p class="small">첫 6개월 중간 검증은 27.05, 12개월 본 검증은 27.11~28.02에 공개합니다. 틀린 판정도 유형별로 함께 공개합니다.</p></div>
+      </div>
+    </div>
+    <div class="grid" style="align-content:start">
+      <div class="card">
+        <h2>최근 정책 신호</h2>
+        <div id="sigList2"></div>
+      </div>
+      <div class="card">
+        <div class="row" style="margin-bottom:6px"><h2 style="margin:0">알림 설정</h2><span class="req">REQ-08</span></div>
+        <div class="switch"><span>OS 정책 변화 (App Intents·App Actions)</span><input type="checkbox" class="tgl" checked data-al="OS 정책 변화" aria-label="OS 정책 변화 알림"></div>
+        <div class="switch"><span>AI 플랫폼 앱 실행 정책</span><input type="checkbox" class="tgl" checked data-al="AI 플랫폼 정책" aria-label="AI 플랫폼 정책 알림"></div>
+        <div class="switch"><span>내 카테고리 지수 ±5 이상 변동</span><input type="checkbox" class="tgl" data-al="지수 변동" aria-label="지수 변동 알림"></div>
+        <div class="switch"><span>판정 재검토 필요(근거 소스 변경)</span><input type="checkbox" class="tgl" checked data-al="근거 소스 변경" aria-label="근거 소스 변경 알림"></div>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+
+<div class="disc" role="note"><i class="fa-solid fa-circle-info" aria-hidden="true"></i><span>판정·지수는 의사결정 참고용 인텔리전스이며 투자 권유(종목 매수·매도 추천)가 아닙니다. 2030 시나리오는 검증되지 않은 장기 참고치입니다.</span></div>
+
+<nav class="bnav" aria-label="하단 메뉴">
+  <a href="#home" data-nav="home"><i class="fa-solid fa-house" aria-hidden="true"></i>홈</a>
+  <a href="#matrix" data-nav="matrix" data-guard><i class="fa-solid fa-table-cells-large" aria-hidden="true"></i>진단</a>
+  <a href="#report" data-nav="report" data-guard><i class="fa-solid fa-file-lines" aria-hidden="true"></i>리포트</a>
+  <a href="#index" data-nav="index"><i class="fa-solid fa-chart-line" aria-hidden="true"></i>지수</a>
+  <a href="#intake" data-nav="intake" data-guard><i class="fa-solid fa-plus" aria-hidden="true"></i>새 진단</a>
+</nav>
+
+<div class="toasts" id="toasts" role="status" aria-live="polite"></div>
+
+<script>
+(function(){
+const T={dec:{i:'▼',l:'소멸형',r:'축소'},dis:{i:'◇',l:'해체형',r:'위임'},inf:{i:'■',l:'인프라형',r:'유지'},str:{i:'▲',l:'강화형',r:'심화'}};
+const F=[
+ ['f1','빈자리 조회','dis',4.4,3.6,0,0,81],['f2','예약 생성','dis',4.2,3.4,0,0,72],['f3','예약 변경','dis',3.1,3.2,1,0,58],
+ ['f4','대기 등록','dis',4.0,3.5,0,0,69],['f5','리마인더 설정','dis',3.8,3.1,0,0,64],['f6','쿠폰 적용','dis',3.6,3.3,0,0,55],
+ ['f7','사진 리뷰 탐색','str',1.8,4.6,0,0,22],['f8','매장 비교','str',2.5,4.0,0,0,35],['f9','메뉴 큐레이션','str',2.0,4.35,0,0,28],['f10','단골 혜택','str',2.7,3.8,0,0,41],
+ ['f11','로그인·본인인증','inf',1.5,1.9,0,1,30],['f12','결제수단 관리','inf',1.9,2.25,0,1,26],['f13','알림 권한·동의','inf',2.25,1.65,0,1,33],
+ ['f14','예약 내역 조회','dec',4.5,1.85,0,0,84],['f15','영수증 다운로드','dec',4.1,1.5,0,0,77],['f16','매장 전화 연결','dec',3.85,2.05,0,0,70],
+ ['f17','영업시간 확인','dec',4.6,1.35,0,0,88],['f18','공지사항','dec',3.25,2.9,1,0,49]
+].map((a,i)=>({id:a[0],no:i+1,name:a[1],type:a[2],D:a[3],S:a[4],edge:!!a[5],fixed:!!a[6],prior:a[7]}));
+const byId=id=>F.find(f=>f.id===id);
+const SIGS=[
+ {hi:1,ic:'fa-brands fa-apple',t:'App Intents 예약·식음 도메인 확장 (베타)',d:'26.11.04 · 예약 카테고리 영향 높음 · 해체형 6개 기능 재검토 권장'},
+ {hi:0,ic:'fa-solid fa-robot',t:'대화형 AI 앱 실행 SDK 결제 위임 정책 갱신',d:'26.10.28 · 결제 단계는 앱 내 확인 필수 유지 → 인프라형 고정 근거 강화'},
+ {hi:0,ic:'fa-brands fa-android',t:'Gemini 확장 3rd-party 액션 카테고리 추가',d:'26.10.15 · 커머스·모빌리티 영향 중간'},
+ {hi:1,ic:'fa-solid fa-scale-balanced',t:'개인정보 처리방침 표준 개정안 입법예고',d:'26.10.02 · 에이전트 호출 시 동의 고지 범위 확대 가능성'}
+];
+const state={role:'admin',sel:'f2',ft:{type:'all',edge:false,fix:false},sub:false,
+ projects:[
+  {id:'p1',name:'예약앱 Q4 진단',cat:'예약',st:'pub',label:'납품 완료',meta:['기능 18개','납품 26.10.30','중간 검증 27.05.12']},
+  {id:'p2',name:'커머스 장바구니 리뉴얼',cat:'커머스',st:'run',label:'진단 중',prog:62,meta:['기능 24개','분석가 독립 판정 2/2','납품 예정 26.11.18']},
+  {id:'p3',name:'콘텐츠앱 Q2 진단',cat:'콘텐츠',st:'ver',label:'검증 중 (Verifying)',meta:['기능 15개','6개월 중간 검증 진행','결과 공개 26.12.10']}
+ ],
+ specOrder:['f1','f2','f4'],specActive:'f1',specs:{},objections:[],reports:[],busy:false};
+const SPEC_DEF={
+ f1:{intent:'check_availability',utter:'이번 주 금요일 저녁 7시 강남역 근처 4명 자리 있어?',params:'store_id (필수)\ndate (필수)\nparty_size (필수)\ntime_range (선택)',scope:'read',confirm:false,fallback:'riotable://store/{store_id}/slots'},
+ f2:{intent:'create_reservation',utter:'거기 7시로 4명 예약해 줘',params:'store_id (필수)\nslot_id (필수)\nparty_size (필수)\nrequest_note (선택)',scope:'write',confirm:false,fallback:'riotable://reserve/{store_id}'},
+ f4:{intent:'join_waitlist',utter:'자리 나면 알려 줘, 대기 걸어 둬',params:'store_id (필수)\ndate (필수)\nparty_size (필수)',scope:'write',confirm:true,fallback:'riotable://waitlist/{store_id}'}
+};
+function specOf(id){
+ if(!state.specs[id]){const d=SPEC_DEF[id]||{intent:'',utter:'',params:'',scope:'',confirm:false,fallback:''};state.specs[id]=Object.assign({status:'초안'},JSON.parse(JSON.stringify(d)));}
+ return state.specs[id];
+}
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function toast(msg,err){const el=document.createElement('div');el.className='toast'+(err?' err':'');el.innerHTML='<i class="fa-solid '+(err?'fa-circle-exclamation':'fa-circle-check')+'" aria-hidden="true"></i><span>'+msg+'</span>';$('#toasts').appendChild(el);setTimeout(()=>el.remove(),3600);}
+function loading(btn,on,label){if(on){btn.dataset.l=btn.innerHTML;btn.disabled=true;btn.innerHTML='<span class="spin" aria-hidden="true"></span>'+(label||'처리 중…');}else{btn.disabled=false;btn.innerHTML=btn.dataset.l;}}
+const tb=t=>'<span class="tb tb-'+t+'">'+T[t].i+' '+T[t].l+'</span>';
+const tags=f=>(f.edge?' <span class="tag tag-edge">[경계]</span>':'')+(f.fixed?' <span class="tag tag-fix">[고정]</span>':'');
+
+/* ---------- ROUTER ---------- */
+const screens=$$('section[data-screen]').map(s=>s.dataset.screen);
+const GUARDED=['intake','matrix','feature','spec','report'];
+function route(){
+ let id=location.hash.slice(1);
+ if(!screens.includes(id))id=screens[0];
+ $$('section[data-screen]').forEach(s=>{const on=s.dataset.screen===id;s.hidden=!on;s.classList.toggle('is-forbidden',on&&state.role==='viewer'&&GUARDED.includes(id));});
+ const navKey=({feature:'matrix',spec:'matrix'})[id]||id;
+ $$('[data-nav]').forEach(a=>a.dataset.nav===navKey?a.setAttribute('aria-current','page'):a.removeAttribute('aria-current'));
+ const sec=$('section[data-screen="'+id+'"]');
+ document.title=sec.dataset.title+' · App Future Radar';
+ ({home:renderHome,matrix:renderMatrix,feature:renderFeature,spec:renderSpec,report:renderRepHist,index:renderIndex})[id]?.();
+ window.scrollTo(0,0);
+ const h=sec.querySelector(sec.classList.contains('is-forbidden')?'.guard h2':'h1');
+ if(h){h.setAttribute('tabindex','-1');h.focus({preventScroll:true});}
+}
+window.addEventListener('hashchange',route);
+
+/* ---------- ROLE ---------- */
+$('#roleSel').addEventListener('change',e=>{
+ state.role=e.target.value;
+ $$('[data-guard]').forEach(a=>a.hidden=state.role==='viewer');
+ $$('[data-guard-hide]').forEach(a=>a.hidden=state.role==='viewer');
+ toast(({admin:'Tenant Admin (김PO) 역할로 전환했습니다',member:'Member (박PO) 역할 — 이의 제기 불가',viewer:'Viewer(A3) 역할 — 진단 메뉴 비노출, URL 접근 시 403'})[state.role]);
+ route();
+});
+$('#reqTg').addEventListener('click',e=>{const on=document.body.classList.toggle('show-req');e.currentTarget.setAttribute('aria-pressed',on);});
+
+/* ---------- HOME ---------- */
+function sigHtml(list){return list.map(s=>'<div class="sig'+(s.hi?' hi':'')+'"><div class="ic"><i class="'+s.ic+'" aria-hidden="true"></i></div><div><b>'+esc(s.t)+'</b><p>'+esc(s.d)+'</p></div></div>').join('');}
+function renderHome(){
+ const v=state.role==='viewer';
+ $('#heroTitle').textContent=v?'최심사역님, 26Q4 존속지수가 발행되었습니다':(state.role==='member'?'박PO님':'김PO님')+', 예약앱 Q4 진단이 납품되었습니다';
+ $('#heroActs').innerHTML=v?'<a href="#index" class="btn btn-p" style="background:#5eead4;color:#0f1b2d">지수·신호 보기 <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>':'<a href="#matrix" class="btn btn-p" style="background:#5eead4;color:#0f1b2d">판정표 열기 <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a><a href="#intake" class="btn btn-s">새 진단 요청</a>';
+ const pl=$('#projList');
+ if(v){pl.innerHTML='<div class="empty"><i class="fa-solid fa-eye-slash" aria-hidden="true"></i><b>열람 가능한 진단 프로젝트가 없습니다</b><p class="small">Viewer(A3)는 고객사 진단 결과 대신 카테고리 지수 층만 이용합니다.</p></div>';}
+ else pl.innerHTML=state.projects.map(p=>'<button class="pj" data-p="'+p.id+'"><b>'+esc(p.name)+' <span class="chip">'+esc(p.cat)+'</span></b><span class="st st-'+p.st+'">'+esc(p.label)+'</span>'+(p.prog!=null?'<span class="bar" aria-label="진행률 '+p.prog+'%"><i style="width:'+p.prog+'%"></i></span>':'')+'<span class="meta">'+p.meta.map(m=>'<span>'+esc(m)+'</span>').join('')+'</span></button>').join('');
+ $('#sigList').innerHTML=sigHtml(SIGS.slice(0,3));
+}
+$('#projList').addEventListener('click',e=>{
+ const b=e.target.closest('.pj');if(!b)return;const p=state.projects.find(x=>x.id===b.dataset.p);
+ if(p.st==='pub')location.hash='#matrix';
+ else if(p.st==='ver')toast('검증 중인 프로젝트입니다. 판정표는 같은 화면에서 열리며, 데모에서는 예약앱 Q4로 이동합니다.'),location.hash='#matrix';
+ else toast(p.st==='in'?'접수 완료 — 집계 지표 검증 후 분석가가 배정됩니다':'진단 진행 중 — 판정표는 납품(Published) 후 열립니다');
+});
+
+/* ---------- INTAKE ---------- */
+const OK_CSV='feature,entry_source,sessions_agg\n장바구니 담기,in_app,182400\n장바구니 담기,external_agent,9120\n주문 조회,in_app,64300\n주문 조회,notification,22100\n주문 조회,external_agent,15800\n상품 비교,in_app,77800';
+const BAD_CSV='feature,entry_source,sessions_agg,user_id\n장바구니 담기,in_app,182400,u_10293\n주문 조회,external_agent,32,u_88120';
+$('#fillOk').onclick=()=>{$('#iCsv').value=OK_CSV;clearErr($('[data-f="csv"]'));};
+$('#fillBad').onclick=()=>{$('#iCsv').value=BAD_CSV;};
+function setErr(f,msg){f.classList.add('err');f.querySelector('.ferr span').textContent=msg;const i=f.querySelector('.inp');if(i){i.setAttribute('aria-invalid','true');}}
+function clearErr(f){f.classList.remove('err');const i=f.querySelector('.inp');if(i)i.removeAttribute('aria-invalid');}
+$('#iDue').min=(()=>{const d=new Date(2026,10,21);return d.toISOString().slice(0,10)})();
+$('#intakeForm').addEventListener('input',e=>{const f=e.target.closest('.field');if(f)clearErr(f);});
+$('#intakeForm').addEventListener('submit',e=>{
+ e.preventDefault();
+ const fs=n=>$('#intakeForm [data-f="'+n+'"]');let bad=[];$('#intakeAlert').innerHTML='';
+ ['app','cat','cnt','due','csv'].forEach(n=>clearErr(fs(n)));$('#agreeErr').style.display='none';
+ const app=$('#iApp').value.trim();if(app.length<2){setErr(fs('app'),'2자 이상 입력하세요.');bad.push('iApp');}
+ if(!$('#iCat').value){setErr(fs('cat'),'카테고리를 선택하세요.');bad.push('iCat');}
+ const c=+$('#iCnt').value;if(!c||c<5||c>40){setErr(fs('cnt'),'핵심 기능 수는 5~40 사이로 입력하세요.');bad.push('iCnt');}
+ const due=$('#iDue').value;if(!due){setErr(fs('due'),'희망 납품일을 선택하세요.');bad.push('iDue');}else if(due<'2026-11-21'){setErr(fs('due'),'진단 목표 기간(2주)을 고려해 26.11.21 이후로 선택하세요.');bad.push('iDue');}
+ const csv=$('#iCsv').value.trim();let csvErr='',pii=null;
+ if(!csv)csvErr='집계 지표 CSV를 붙여 넣으세요.';
+ else{const lines=csv.split(/\n/).map(l=>l.trim()).filter(Boolean);const h=lines[0].split(',').map(x=>x.trim().toLowerCase());
+  const PII=['user_id','device_id','email','phone','ad_id','adid','idfa','name'];pii=h.filter(x=>PII.includes(x));
+  const need=['feature','entry_source','sessions_agg'].filter(x=>!h.includes(x));
+  if(pii.length)csvErr='개인 식별 컬럼('+pii.join(', ')+')이 포함되어 있어 업로드할 수 없습니다.';
+  else if(need.length)csvErr='필수 컬럼 누락: '+need.join(', ');
+  else if(lines.length<2)csvErr='데이터 행이 없습니다.';
+  else{const si=h.indexOf('sessions_agg');const small=lines.slice(1).filter(l=>{const v=+l.split(',')[si];return isNaN(v)||v<50;});if(small.length)csvErr='최소 집계 단위(세션 50) 미만이거나 숫자가 아닌 행이 '+small.length+'개 있습니다.';}
+ }
+ if(csvErr){setErr(fs('csv'),csvErr);bad.push('iCsv');}
+ if(!$('#iAgree').checked){$('#agreeErr').style.display='flex';$('#agreeErr span').textContent='집계 지표 확인에 동의해야 제출할 수 있습니다.';bad.push('iAgree');}
+ if(pii&&pii.length)$('#intakeAlert').innerHTML='<div class="alert alert-e" role="alert"><i class="fa-solid fa-user-lock" aria-hidden="true"></i><div><b>개인 단위 데이터가 감지되었습니다.</b> App Future Radar는 집계 지표만 수신합니다. 자사 분석 환경에서 기능×진입 경로 단위로 집계한 뒤 다시 업로드하세요. <span class="req">REQ-16 · D-3</span></div></div>';
+ if(bad.length){document.getElementById(bad[0]).focus();toast('입력값을 확인하세요 ('+bad.length+'개 항목)',true);return;}
+ const btn=$('#intakeSubmit');loading(btn,true,'집계 지표 검증 중…');
+ setTimeout(()=>{loading(btn,false);
+  state.projects.unshift({id:'p'+Date.now(),name:app,cat:$('#iCat').value,st:'in',label:'접수 (Intake)',meta:['기능 '+c+'개','지표 '+(csv.split('\n').length-1)+'행 검증 통과','납품 희망 '+due.slice(2).replace(/-/g,'.')]});
+  $('#intakeForm').reset();toast('진단 요청이 접수되었습니다. 영업일 1일 내 담당 분석가가 배정됩니다.');location.hash='#home';
+ },1300);
+});
+
+/* ---------- MATRIX ---------- */
+const filtered=()=>F.filter(f=>(state.ft.type==='all'||f.type===state.ft.type)&&(!state.ft.edge||f.edge)&&(!state.ft.fix||f.fixed));
+function renderMatrix(){
+ const map=$('#map');map.querySelectorAll('.dot').forEach(d=>d.remove());
+ const fl=filtered(),ids=new Set(fl.map(f=>f.id));
+ F.forEach(f=>{const b=document.createElement('button');b.type='button';b.className='dot d-'+f.type+(ids.has(f.id)?'':' dim')+(f.id===state.sel?' sel':'')+(f.edge?' edge':'');
+  b.style.left=((f.D-1)/4*100)+'%';b.style.bottom=((f.S-1)/4*100)+'%';b.textContent=f.no;b.dataset.id=f.id;b.title=f.name;
+  b.setAttribute('aria-label',f.no+'. '+f.name+', '+T[f.type].l+', D '+f.D.toFixed(1)+', S '+f.S.toFixed(1)+(f.edge?', 경계':'')+(f.fixed?', 고정':''));
+  if(f.id===state.sel)b.setAttribute('aria-pressed','true');if(!ids.has(f.id))b.tabIndex=-1;map.appendChild(b);});
+ $('#fCount').textContent=fl.length+' / 18개 표시';
+ $('#fList').innerHTML=fl.map(f=>'<li class="fr'+(f.id===state.sel?' sel':'')+'" data-id="'+f.id+'" tabindex="0" role="button" aria-label="'+f.name+' 선택"><span class="n d-'+f.type+'">'+f.no+'</span><span class="nm">'+esc(f.name)+tags(f)+'</span><span class="ds">D '+f.D.toFixed(1)+' · S '+f.S.toFixed(1)+' · 권고: '+T[f.type].r+'</span><span class="rt">'+tb(f.type)+'</span></li>').join('');
+ $('#fEmpty').hidden=fl.length>0;$('#fList').hidden=!fl.length;
+ renderPanel();
+}
+function sub(f){const c=v=>Math.max(1,Math.min(5,v)).toFixed(1);return{D:[['D1 외부 호출 적합성',c(f.D+.3)],['D2 입력 구조화 정도',c(f.D-.2)],['D3 권한·결제 의존도(역)',c(f.D-.1)]],S:[['S1 시각 비교 필요성',c(f.S+.2)],['S2 탐색 체류 가치',c(f.S-.3)],['S3 브랜드 경험 기여',c(f.S+.1)]]};}
+function scoreRow(k,v){return '<div class="score"><span>'+k+'</span><span class="meter"><i style="width:'+((v-1)/4*100)+'%"></i></span><b class="mono">'+v.toFixed(1)+'</b></div>';}
+function renderPanel(){
+ const f=byId(state.sel),s=sub(f),admin=state.role==='admin';
+ $('#selPanel').innerHTML='<p class="xs muted" style="margin-bottom:4px">선택한 기능 #'+f.no+'</p><h2>'+esc(f.name)+'</h2><div class="row" style="margin-bottom:10px">'+tb(f.type)+'<span class="small">→ 권고: <b>'+T[f.type].r+'</b></span>'+tags(f)+'</div>'
+ +scoreRow('위임 가능성 D',f.D)+scoreRow('화면 가치 S',f.S)
+ +'<button type="button" class="btn btn-g" id="subTg" aria-expanded="'+state.sub+'" style="padding:0"><i class="fa-solid fa-chevron-'+(state.sub?'up':'down')+'" aria-hidden="true"></i>하위 문항 '+(state.sub?'접기':'펼치기')+'</button>'
+ +'<div class="subq'+(state.sub?' open':'')+'">'+s.D.concat(s.S).map(x=>'<div><span>'+x[0]+'</span><b class="mono">'+x[1]+'</b></div>').join('')+'</div>'
+ +(f.edge?'<div class="alert alert-w" style="margin:8px 0"><i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i><div>기준선(3.0)과 0.3 이내라 <b>[경계]</b>로 표시했습니다. 중간 검증에서 우선 재판정합니다.</div></div>':'')
+ +(f.fixed?'<div class="alert alert-i" style="margin:8px 0"><i class="fa-solid fa-lock" aria-hidden="true"></i><div>로그인·결제·권한 등 신뢰 계약 기능은 <b>[고정]</b>입니다. 호출 명세 대상에서 제외됩니다.<span class="req">4.1.1</span></div></div>':'')
+ +'<p class="small">근거 '+(f.edge?2:3)+'건 · <span class="'+(f.id==='f3'?'warn':'ok')+'"><i class="fa-solid '+(f.id==='f3'?'fa-triangle-exclamation':'fa-circle-check')+'" aria-hidden="true"></i> '+(f.id==='f3'?'소스 변경 감지':'소스 정상')+'</span></p>'
+ +'<div class="prior">사전값(참고): 에이전트 준비도 <b>'+f.prior+'</b> — 판정 계산에 반영하지 않습니다.<span class="req">REQ-06 AC-3</span></div>'
+ +'<div class="acts"><a class="btn btn-p" href="#feature" id="goEv"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>근거 보기 →</a>'
+ +(f.type!=='inf'?'<button type="button" class="btn btn-s" id="startSpec"><i class="fa-solid fa-code-branch" aria-hidden="true"></i>호출 명세 시작<span class="req">REQ-15 AC-3</span></button>':'')
+ +'<button type="button" class="btn btn-s" id="goObj" '+(admin?'':'aria-disabled="true"')+'><i class="fa-regular fa-flag" aria-hidden="true"></i>이의 제기</button>'
+ +(admin?'':'<p class="xs muted">이의 제기는 Tenant Admin만 할 수 있습니다.</p>')+'</div>';
+}
+$('#map').addEventListener('click',e=>{const d=e.target.closest('.dot');if(!d)return;state.sel=d.dataset.id;renderMatrix();$('.dot.sel').focus();});
+$('#fList').addEventListener('click',e=>{const r=e.target.closest('.fr');if(!r)return;state.sel=r.dataset.id;renderMatrix();if(innerWidth<768)$('#selPanel').scrollIntoView({behavior:'smooth'});});
+$('#fList').addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&e.target.classList.contains('fr')){e.preventDefault();e.target.click();}});
+$('#selPanel').addEventListener('click',e=>{
+ if(e.target.closest('#subTg')){state.sub=!state.sub;renderPanel();$('#subTg').focus();}
+ if(e.target.closest('#startSpec'))startSpec(state.sel);
+ if(e.target.closest('#goObj')){if(state.role!=='admin'){toast('이의 제기는 Tenant Admin 권한이 필요합니다',true);return;}location.hash='#feature';setTimeout(()=>{const t=$('#objReason');t&&t.focus();},60);}
+});
+function startSpec(id){if(!state.specOrder.includes(id))state.specOrder.push(id);state.specActive=id;location.hash='#spec';}
+$('#fType').onchange=e=>{state.ft.type=e.target.value;renderMatrix();};
+$('#fEdge').onchange=e=>{state.ft.edge=e.target.checked;renderMatrix();};
+$('#fFix').onchange=e=>{state.ft.fix=e.target.checked;renderMatrix();};
+$('#fReset').onclick=()=>{state.ft={type:'all',edge:false,fix:false};$('#fType').value='all';$('#fEdge').checked=false;$('#fFix').checked=false;renderMatrix();$('#fType').focus();};
+
+/* ---------- FEATURE ---------- */
+function evidence(f){
+ const base={dis:[['플랫폼 정책','App Intents 예약 도메인 공개 사양에 "'+f.name+'" 유사 액션이 정의되어 있음','developer.apple.com · 25.06 / 26.11 갱신'],['고객사 집계 지표','최근 90일 해당 기능 세션 중 외부(알림·위젯·에이전트) 진입 비중 '+Math.round(f.D*9)+'%','고객사 분석 환경 집계 · 26.10.20'],['경쟁 동향','국내 예약 앱 상위 5개 중 3개가 대화형 AI 앱 실행 연동 발표','공개 보도자료 3건 · 26.09']],
+  dec:[['고객사 집계 지표','최근 90일 화면 평균 체류 '+Math.round(40/f.D)+'초, 재방문 의도 낮음','고객사 분석 환경 집계 · 26.10.20'],['플랫폼 정책','OS 알림·위젯에서 동일 정보 노출 가능(실시간 활동 API)','OS 공개 문서 · 26.06'],['사용자 리서치','인터뷰 12명 중 9명 "앱 열지 않고 확인하고 싶다"','파일럿 리서치 · 26.10']],
+  str:[['고객사 집계 지표','탐색 세션당 평균 스크롤 깊이 상위 10%, 전환 기여 '+Math.round(f.S*6)+'%','고객사 분석 환경 집계 · 26.10.20'],['사용자 리서치','비교·탐색 과업은 시각 정보 없이 결정 불가 응답 다수','파일럿 리서치 · 26.10'],['시장 사례','화면 없는 AI 기기의 탐색 과업 실패 사례','공개 리뷰 분석 · 24~25']],
+  inf:[['플랫폼 정책','대화형 AI 앱 실행 시에도 결제·본인인증은 앱 내 확인 필수','AI 플랫폼 개발자 정책 · 26.10.28'],['법·규제','전자금융거래 인증 요건상 위임 불가 영역','관련 법령 검토 · Legal'],['고객사 집계 지표','에이전트 호출 경로에서 해당 기능 호출 의존도 100%','고객사 분석 환경 집계 · 26.10.20']]}[f.type];
+ return base.slice(0,f.edge?2:3).map((b,i)=>({k:b[0],t:b[1],src:b[2],h:['a3f9','7c1e','e04b'][i]+'…'+(f.no*37%1000).toString(16),st:(f.id==='f3'&&i===0)?'warn':'ok'}));
+}
+function renderFeature(){
+ const f=byId(state.sel);
+ $('#ftCrumb').textContent=f.name;
+ $('#ftHead').innerHTML='<div><div class="row"><h1>'+esc(f.name)+'</h1>'+tb(f.type)+tags(f)+'</div><p class="sub">권고: <b>'+T[f.type].r+'</b> · D '+f.D.toFixed(1)+' · S '+f.S.toFixed(1)+' · 판정 v1 (원장 해시 <span class="mono">a3f9…c21</span>)</p></div><div class="row"><a class="btn btn-s" href="#matrix"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i>판정표</a>'+(f.type!=='inf'?'<button class="btn btn-p" type="button" id="ftSpec"><i class="fa-solid fa-code-branch" aria-hidden="true"></i>호출 명세 시작</button>':'')+'</div>';
+ $('#evList').innerHTML=evidence(f).map(e=>'<article class="ev"><div class="ev-h"><span class="chip">'+e.k+'</span><span class="xs '+(e.st==='ok'?'ok':'warn')+'"><i class="fa-solid '+(e.st==='ok'?'fa-circle-check':'fa-triangle-exclamation')+'" aria-hidden="true"></i> '+(e.st==='ok'?'소스 정상':'소스 변경 감지 — 재검토 대기')+'</span></div><p>'+esc(e.t)+'</p><div class="meta"><span><i class="fa-solid fa-link" aria-hidden="true"></i> '+esc(e.src)+'</span><span class="mono">#'+e.h+'</span></div></article>').join('');
+ const s=sub(f);
+ $('#ftScores').innerHTML=scoreRow('위임 가능성 D',f.D)+s.D.map(x=>'<div class="score xs" style="padding-left:12px"><span class="muted">'+x[0]+'</span><span></span><span class="mono">'+x[1]+'</span></div>').join('')+scoreRow('화면 가치 S',f.S)+s.S.map(x=>'<div class="score xs" style="padding-left:12px"><span class="muted">'+x[0]+'</span><span></span><span class="mono">'+x[1]+'</span></div>').join('');
+ $('#ftPrior').innerHTML='사전값(참고): 에이전트 준비도 <b>'+f.prior+'</b> — 판정 계산 미반영<span class="req">REQ-06 AC-3</span>';
+ const objs=state.objections.filter(o=>o.fid===f.id);
+ $('#ftHist').innerHTML=objs.map(o=>'<li><b>이의 제기 접수 '+o.no+'</b> — '+esc(o.reason)+'<small>'+o.at+' · 회신 기한 '+o.due+' (5영업일)</small></li>').reverse().join('')+'<li><b>v1 납품 (Published)</b><small>26.10.30 · 분석가 2인 합의 · κ 0.71</small></li><li><b>독립 판정 완료</b><small>26.10.24 · 분석가 A/B</small></li>';
+ renderObj(f);
+}
+function renderObj(f){
+ const b=$('#objBody');
+ if(state.role!=='admin'){b.innerHTML='<div class="empty" style="padding:16px"><i class="fa-solid fa-user-lock" aria-hidden="true"></i><b>Tenant Admin만 이의 제기할 수 있습니다</b><p class="small">판정에 의견이 있다면 소속 테넌트 관리자(김PO)에게 요청하세요.</p></div>';return;}
+ b.innerHTML='<p class="xs muted" style="margin-bottom:12px">접수 후 <b>5영업일</b> 안에 분석가가 회신합니다. 재판정 시 원장에 새 버전이 기록됩니다.</p><form id="objForm" novalidate>'
+ +'<div class="field" data-f="reason"><label for="objReason">사유 *</label><select class="inp" id="objReason"><option value="">선택하세요</option><option>근거 누락</option><option>고객사 데이터 해석 오류</option><option>축(D/S) 해석 이견</option><option>최근 정책 변화 미반영</option></select><span class="ferr"><i class="fa-solid fa-circle-exclamation" aria-hidden="true"></i><span></span></span></div>'
+ +'<fieldset class="field"><legend>대상</legend><div class="opts"><label class="opt"><input type="radio" name="objAxis" value="D" checked> D 점수</label><label class="opt"><input type="radio" name="objAxis" value="S"> S 점수</label><label class="opt"><input type="radio" name="objAxis" value="유형"> 유형 전체</label></div></fieldset>'
+ +'<div class="field" data-f="body"><label for="objText">근거 설명 * <span class="xs muted" id="objCnt">0/30자 이상</span></label><textarea class="inp" id="objText" placeholder="예) 예약 생성은 노쇼 방지 보증금 결제가 필수라 D3(권한·결제 의존도)가 과대평가되었습니다."></textarea><span class="ferr"><i class="fa-solid fa-circle-exclamation" aria-hidden="true"></i><span></span></span></div>'
+ +'<div class="field" data-f="url"><label for="objUrl">참고 링크 (선택)</label><input class="inp" id="objUrl" type="url" placeholder="https://"><span class="ferr"><i class="fa-solid fa-circle-exclamation" aria-hidden="true"></i><span></span></span></div>'
+ +'<button class="btn btn-p" type="submit" id="objBtn" style="width:100%">이의 제기 제출</button></form>';
+ $('#objText').addEventListener('input',e=>{$('#objCnt').textContent=e.target.value.trim().length+'/30자 이상';});
+ $('#objForm').addEventListener('input',e=>{const fl=e.target.closest('.field');if(fl)clearErr(fl);});
+ $('#objForm').addEventListener('submit',e=>{
+  e.preventDefault();const q=n=>$('#objForm [data-f="'+n+'"]');let first=null;['reason','body','url'].forEach(n=>clearErr(q(n)));
+  if(!$('#objReason').value){setErr(q('reason'),'사유를 선택하세요.');first=first||'objReason';}
+  if($('#objText').value.trim().length<30){setErr(q('body'),'근거를 30자 이상 구체적으로 작성하세요.');first=first||'objText';}
+  const u=$('#objUrl').value.trim();if(u&&!/^https?:\/\/\S+\.\S+/.test(u)){setErr(q('url'),'http(s)://로 시작하는 올바른 주소를 입력하세요.');first=first||'objUrl';}
+  if(first){document.getElementById(first).focus();return;}
+  const btn=$('#objBtn');loading(btn,true,'접수 중…');
+  setTimeout(()=>{const no='#OBJ-'+(1042+state.objections.length);state.objections.push({fid:f.id,no,reason:$('#objReason').value+' · '+document.querySelector('[name=objAxis]:checked').value,at:'26.11.07',due:'26.11.14'});
+   toast('이의 제기 '+no+' 접수 완료 · 26.11.14까지 회신 예정');renderFeature();},1100);
+ });
+}
+$('#ftHead').addEventListener('click',e=>{if(e.target.closest('#ftSpec'))startSpec(state.sel);});
+
+/* ---------- SPEC ---------- */
+function renderSpec(){
+ if(!state.specOrder.includes(state.specActive))state.specActive=state.specOrder[0];
+ $('#specTabs').innerHTML=state.specOrder.map((id,i)=>{const f=byId(id),sp=specOf(id);return '<button class="stab" role="tab" type="button" data-id="'+id+'" aria-selected="'+(id===state.specActive)+'"><b>'+(i<3?'추천 '+(i+1)+' · ':'추가 · ')+esc(f.name)+'</b><span>'+T[f.type].i+' '+T[f.type].l+' · D '+f.D.toFixed(1)+' · '+sp.status+'</span></button>';}).join('');
+ const id=state.specActive,sp=specOf(id),f=byId(id);
+ $('#specForm').innerHTML='<div class="row" style="margin-bottom:12px"><h2 style="margin:0">'+esc(f.name)+'</h2>'+tb(f.type)+'</div>'
+ +'<div class="field" data-f="intent"><label for="spIntent">호출 이름 (intent) *</label><input class="inp mono" id="spIntent" value="'+esc(sp.intent)+'" placeholder="snake_case 예) check_availability"><span class="hint">영문 소문자·숫자·밑줄, 3~40자</span><span class="ferr"><i class="fa-solid fa-circle-exclamation" aria-hidden="true"></i><span></span></span></div>'
+ +'<div class="field" data-f="utter"><label for="spUtter">대표 사용자 발화 *</label><input class="inp" id="spUtter" value="'+esc(sp.utter)+'"><span class="ferr"><i class="fa-solid fa-circle-exclamation" aria-hidden="true"></i><span></span></span></div>'
+ +'<div class="field" data-f="params"><label for="spParams">입력 파라미터 * (한 줄에 하나)</label><textarea class="inp mono" id="spParams" style="min-height:96px">'+esc(sp.params)+'</textarea><span class="ferr"><i class="fa-solid fa-circle-exclamation" aria-hidden="true"></i><span></span></span></div>'
+ +'<div class="field" data-f="scope"><label for="spScope">권한 범위 *</label><select class="inp" id="spScope"><option value="">선택하세요</option><option value="read"'+(sp.scope==='read'?' selected':'')+'>읽기 전용</option><option value="write"'+(sp.scope==='write'?' selected':'')+'>쓰기 (되돌릴 수 있음)</option><option value="pay"'+(sp.scope==='pay'?' selected':'')+'>쓰기 (결제·취소 수반)</option></select><span class="ferr"><i class="fa-solid fa-circle-exclamation" aria-hidden="true"></i><span></span></span></div>'
+ +'<div class="field" data-f="confirm"><label class="opt"><input type="checkbox" id="spConfirm"'+(sp.confirm?' checked':'')+'> 실행 전 사용자 확인 단계 포함</label><span class="hint">쓰기 권한은 확인 단계가 필수입니다.</span><span class="ferr"><i class="fa-solid fa-circle-exclamation" aria-hidden="true"></i><span></span></span></div>'
+ +'<div class="field" data-f="fb"><label for="spFb">실패·추가 입력 시 앱 복귀 경로 *</label><input class="inp mono" id="spFb" value="'+esc(sp.fallback)+'" placeholder="riotable://..."><span class="ferr"><i class="fa-solid fa-circle-exclamation" aria-hidden="true"></i><span></span></span></div>'
+ +'<div class="row"><button type="button" class="btn btn-s" id="spSave">임시 저장</button><button type="submit" class="btn btn-p" id="spSubmit"'+(sp.status==='검토 대기'?' disabled':'')+'>'+(sp.status==='검토 대기'?'검토 요청됨':'분석가 검토 요청')+'</button>'+(state.specOrder.indexOf(id)>2?'<button type="button" class="btn btn-g" id="spRemove">목록에서 제거</button>':'')+'</div>';
+ $('#specStatus').textContent=sp.status;
+ $('#specStatus').style.cssText=sp.status==='검토 대기'?'background:var(--ok-w);color:var(--ok);border-color:#a6dcbc':'';
+ preview();
+}
+function readSpec(){const sp=specOf(state.specActive);sp.intent=$('#spIntent').value.trim();sp.utter=$('#spUtter').value.trim();sp.params=$('#spParams').value.trim();sp.scope=$('#spScope').value;sp.confirm=$('#spConfirm').checked;sp.fallback=$('#spFb').value.trim();return sp;}
+function preview(){const sp=readSpec(),f=byId(state.specActive);
+ const params=sp.params.split('\n').filter(Boolean).map(p=>{const m=p.match(/^([\w]+)\s*(\((필수|선택)\))?/);return m?'    "'+m[1]+'": { "required": '+(m[3]!=='선택')+' }':null;}).filter(Boolean);
+ $('#specPreview').textContent='{\n  "intent": "'+(sp.intent||'?')+'",\n  "feature": "'+f.name+'",\n  "utterance": "'+sp.utter+'",\n  "parameters": {\n'+params.join(',\n')+'\n  },\n  "scope": "'+(sp.scope||'?')+'",\n  "user_confirmation": '+sp.confirm+',\n  "auth": "app_session",\n  "fallback": "'+sp.fallback+'"\n}';}
+$('#specTabs').addEventListener('click',e=>{const t=e.target.closest('.stab');if(!t)return;readSpec();state.specActive=t.dataset.id;renderSpec();$('.stab[aria-selected="true"]').focus();});
+$('#specTabs').addEventListener('keydown',e=>{if(!['ArrowLeft','ArrowRight'].includes(e.key))return;const i=state.specOrder.indexOf(state.specActive),n=(i+(e.key==='ArrowRight'?1:-1)+state.specOrder.length)%state.specOrder.length;readSpec();state.specActive=state.specOrder[n];renderSpec();$('.stab[aria-selected="true"]').focus();});
+$('#specForm').addEventListener('input',e=>{const fl=e.target.closest('.field');if(fl)clearErr(fl);preview();});
+$('#specForm').addEventListener('change',()=>preview());
+$('#specForm').addEventListener('click',e=>{
+ if(e.target.closest('#spSave')){readSpec();toast('「'+byId(state.specActive).name+'」 명세를 임시 저장했습니다');}
+ if(e.target.closest('#spRemove')){const id=state.specActive;state.specOrder=state.specOrder.filter(x=>x!==id);state.specActive=state.specOrder[0];renderSpec();toast('명세 대상에서 제거했습니다');}
+});
+$('#specForm').addEventListener('submit',e=>{
+ e.preventDefault();const sp=readSpec(),q=n=>$('#specForm [data-f="'+n+'"]');let first=null;
+ ['intent','utter','params','scope','confirm','fb'].forEach(n=>clearErr(q(n)));
+ if(!/^[a-z][a-z0-9_]{2,39}$/.test(sp.intent)){setErr(q('intent'),'snake_case 형식(영문 소문자로 시작, 3~40자)으로 입력하세요.');first=first||'spIntent';}
+ if(sp.utter.length<5){setErr(q('utter'),'대표 발화를 5자 이상 입력하세요.');first=first||'spUtter';}
+ if(!sp.params){setErr(q('params'),'파라미터를 1개 이상 입력하세요.');first=first||'spParams';}
+ if(!sp.scope){setErr(q('scope'),'권한 범위를 선택하세요.');first=first||'spScope';}
+ if(sp.scope&&sp.scope!=='read'&&!sp.confirm){setErr(q('confirm'),'쓰기 권한 호출은 사용자 확인 단계를 반드시 포함해야 합니다.');first=first||'spConfirm';}
+ if(!/^[a-z]+:\/\/\S+/.test(sp.fallback)){setErr(q('fb'),'scheme://path 형식의 복귀 경로를 입력하세요.');first=first||'spFb';}
+ if(first){document.getElementById(first).focus();toast('명세에 보완이 필요한 항목이 있습니다',true);return;}
+ const btn=$('#spSubmit');loading(btn,true,'검토 요청 중…');
+ setTimeout(()=>{sp.status='검토 대기';renderSpec();toast('검토 요청 완료 · 담당 분석가가 3영업일 안에 코멘트합니다');},1100);
+});
+
+/* ---------- REPORT ---------- */
+const STEPS=['Queued','Generating','QA Pending','Ready'],STEP_KO=['대기열 등록','리포트 생성 중','분석가 QA 대기','완료'];
+function drawSteps(n){$('#repSteps').innerHTML=STEPS.map((s,i)=>'<div class="step'+(i<n?' done':i===n?' now':'')+'"><i></i>'+s+'</div>').join('');}
+$('#repForm').addEventListener('change',()=>clearErr($('#repForm [data-f="sec"]')));
+$('#repForm').addEventListener('submit',e=>{
+ e.preventDefault();if(state.busy)return;
+ const secs=$$('#repForm [name=sec]:checked').map(x=>x.value);
+ if(!secs.length){setErr($('#repForm [data-f="sec"]'),'');$('#repForm [data-f="sec"] .ferr span').textContent='포함할 섹션을 1개 이상 선택하세요.';$('#repForm [name=sec]').focus();return;}
+ const aud=$('#repForm [name=aud]:checked').value,fmt=$('#repFmt').value;
+ state.busy=true;const btn=$('#repBtn');loading(btn,true,'생성 중…');$('#repProg').hidden=false;
+ let i=0;const tick=()=>{drawSteps(i);$('#repMsg').textContent=STEPS[i]+' · '+STEP_KO[i]+(i===2?' — 판정 원장과 숫자 대조 중':'');
+  if(i<3){i++;setTimeout(tick,[700,1500,1300][i-1]);}else{drawSteps(4);loading(btn,false);state.busy=false;
+   const r={no:'RPT-26Q4-'+String(state.reports.length+1).padStart(2,'0'),aud,fmt,secs,at:'26.11.07 '+(10+state.reports.length)+':'+(12+state.reports.length*7)};
+   state.reports.unshift(r);renderRepPreview(r);renderRepHist();toast('리포트 '+r.no+' 준비 완료 (Ready)');}};
+ tick();
+});
+function renderRepPreview(r){
+ $('#repPreview').innerHTML='<div class="row" style="margin-bottom:6px"><h2 style="margin:0">'+esc(r.aud)+' 요약</h2><span class="st st-pub">Ready</span><span class="sp"></span><span class="xs muted mono">'+r.no+'</span></div><p class="small muted" style="margin-bottom:12px">예약앱 Q4 · 기능 18개 · 원장 해시 a3f9…c21 기준 · '+esc(r.fmt)+'</p>'
+ +'<h3>27Q1 투자 배분 제안</h3><div class="alloc"><div class="al tb-dec"><b>▼ 축소 5</b><span>화면 개편 제외 · 디자인 리소스 −30% 재배치</span></div><div class="al tb-dis"><b>◇ 위임 6</b><span>빈자리 조회·예약 생성·대기 등록 명세 우선</span></div><div class="al tb-str"><b>▲ 심화 4</b><span>사진 리뷰·매장 비교 화면에 재배치 리소스 집중</span></div><div class="al tb-inf"><b>■ 유지 3</b><span>로그인·결제·권한 안정성 유지 (투자 동결 아님)</span></div></div>'
+ +'<hr class="sep"><p class="small"><b>CPO 한 줄 결론:</b> "화면을 줄이고, 호출로 열고, 남는 화면은 깊게." 경계 2건(예약 변경·공지사항)은 27.05 중간 검증에서 재판정합니다.</p><p class="xs muted" style="margin-top:6px">포함 섹션: '+r.secs.map(esc).join(' · ')+'</p>'
+ +'<div class="row" style="margin-top:12px"><button class="btn btn-p" type="button" data-dl="'+r.no+'"><i class="fa-solid fa-download" aria-hidden="true"></i>다운로드</button><button class="btn btn-s" type="button" data-share="'+r.no+'"><i class="fa-solid fa-user-check" aria-hidden="true"></i>CPO에게 승인 요청</button></div>';
+}
+function renderRepHist(){
+ const h=$('#repHist');
+ if(!state.reports.length){h.innerHTML='<div class="empty" style="padding:16px"><i class="fa-regular fa-clock" aria-hidden="true"></i><b>생성 이력이 없습니다</b><p class="small">첫 리포트를 만들면 여기에 쌓입니다.</p></div>';return;}
+ h.innerHTML='<table class="tbl"><thead><tr><th scope="col">번호</th><th scope="col">대상</th><th scope="col">생성</th><th scope="col">상태</th></tr></thead><tbody>'+state.reports.map(r=>'<tr><td class="mono">'+r.no+'</td><td>'+esc(r.aud)+'</td><td>'+r.at+'</td><td><span class="st st-'+(r.sent?'ver':'pub')+'">'+(r.sent?'승인 대기':'Ready')+'</span></td></tr>').join('')+'</tbody></table>';
+}
+$('#repPreview').addEventListener('click',e=>{
+ const d=e.target.closest('[data-dl]'),s=e.target.closest('[data-share]');
+ if(d)toast(d.dataset.dl+' 파일을 준비했습니다 (데모: 실제 다운로드 없음)');
+ if(s){const r=state.reports.find(x=>x.no===s.dataset.share);if(r.sent){toast('이미 승인 요청을 보냈습니다');return;}loading(s,true,'요청 중…');setTimeout(()=>{r.sent=true;loading(s,false);s.innerHTML='<i class="fa-solid fa-check" aria-hidden="true"></i>승인 요청됨';s.disabled=true;renderRepHist();toast('이CPO님께 승인 요청을 보냈습니다');},900);}
+});
+
+/* ---------- INDEX ---------- */
+function renderIndex(){
+ const IX=[['금융',79,+1],['콘텐츠',71,-2],['예약',62,-6],['커머스',58,-3],['모빌리티',54,-5],['로컬 생활',49,-7]];
+ $('#idxList').innerHTML=IX.map(x=>'<div class="ix"><span class="small muted">'+x[0]+'</span><b>'+x[1]+'</b><span class="d '+(x[2]<0?'dn':'up')+'">'+(x[2]<0?'▼ ':'▲ ')+Math.abs(x[2])+' vs 26Q3</span><div class="meter" style="margin-top:6px"><i style="width:'+x[1]+'%"></i></div></div>').join('');
+ $('#sigList2').innerHTML=sigHtml(SIGS);
+}
+$$('.tgl').forEach(t=>t.addEventListener('change',()=>toast(t.dataset.al+' 알림을 '+(t.checked?'켰습니다':'껐습니다'))));
+
+route();
+})();
+</script>
+</body>
+</html>
