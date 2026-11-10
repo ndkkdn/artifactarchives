@@ -106,7 +106,7 @@
   .stage[hidden], .index[hidden] { display: none; }
   .lede { padding: 18px max(20px, env(safe-area-inset-left, 0px)) 0; max-width: 1680px; width: 100%; margin: 0 auto; text-align: center; }
   /* highlighter-style service title: each wrapped line gets its own block */
-  .lede h1 { margin: 0; font-family: Inter, sans-serif; font-size: clamp(40px, 5.4vw, 80px); font-weight: 700; letter-spacing: -.045em; line-height: 1.16; }
+  .lede h1 { margin: 0; font-family: Inter, sans-serif; font-size: clamp(32px, min(5.4vw, 7.4vh), 80px); font-weight: 700; letter-spacing: -.045em; line-height: 1.16; }
   .lede h1 span { background: var(--hl); color: var(--hl-text); padding: 0 .2em; -webkit-box-decoration-break: clone; box-decoration-break: clone; }
   .lede p { margin: 14px 0 0; font-size: 15px; font-weight: 500; letter-spacing: -.01em; }
   .lede p span { background: var(--sub-bg); color: var(--text); padding: 3px 9px; -webkit-box-decoration-break: clone; box-decoration-break: clone; line-height: 1.9; }
@@ -242,6 +242,14 @@
   .row-actions { position: absolute; right: 0; top: 50%; transform: translateY(-50%); gap: 6px; }
   body.admin .rows a { padding-right: 140px; }
   body.admin .caption { min-height: 168px; }
+  /* short laptop screens: tighten the chrome around the covers */
+  @media (max-height: 800px) and (min-width: 621px) {
+    .lede { padding-top: 10px; }
+    .lede p { margin-top: 8px; font-size: 14px; }
+    .caption { min-height: 112px; padding: 8px 20px 10px; margin-bottom: 10px; gap: 5px; }
+    .caption h2 { font-size: 20px; }
+    .strip { padding-top: 12px; padding-bottom: 14px; }
+  }
   @media (max-width: 620px) { body.admin .actions > a.round { display: none; } body.admin .rows a { padding-right: 0; padding-bottom: 52px; } body.admin .row-actions { top: auto; bottom: 14px; transform: none; } }
   .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 
@@ -420,11 +428,13 @@
     for (let n = 0; n < cards.length; n++) {
       const d = n - pos, a = Math.abs(d), s = Math.sign(d);
       const near = Math.min(a, 1), far = Math.max(a - 1, 0);
-      const x = s * (near * W * .64 + far * W * .2);
+      // the front cover is full size; side covers shrink a little so the selected one stands out
+      const x = s * (near * W * .6 + far * W * .17);
       const z = -near * W * .42 - far * W * .1;
       const ry = -Math.max(-1, Math.min(1, d)) * 58;
+      const sc = 1 - near * .16;
       const c = cards[n];
-      c.style.transform = `translate3d(${x.toFixed(1)}px,0,${z.toFixed(1)}px) rotateY(${ry.toFixed(2)}deg)`;
+      c.style.transform = `translate3d(${x.toFixed(1)}px,0,${z.toFixed(1)}px) rotateY(${ry.toFixed(2)}deg) scale(${sc.toFixed(3)})`;
       c.style.zIndex = 100 - Math.round(a * 10);
       c.style.opacity = a > 5.5 ? Math.max(0, 6.5 - a) : 1;
       c.style.visibility = a > 6.5 ? 'hidden' : 'visible';
@@ -565,7 +575,7 @@
     $('vStage').setAttribute('aria-pressed', v === 'stage'); $('vIndex').setAttribute('aria-pressed', v === 'index');
     document.body.classList.toggle('stage-mode', v === 'stage');
     peek.classList.remove('show');
-    if (v === 'stage') { shown = -1; layout(); } else { scrollTo(0, 0); if (focusSearch) q.focus(); }
+    if (v === 'stage') { shown = -1; fitCovers(); layout(); } else { scrollTo(0, 0); if (focusSearch) q.focus(); }
     try { localStorage.setItem('archive-view', v); } catch (_) {}
   }
   $('vStage').onclick = () => setView('stage');
@@ -582,7 +592,15 @@
     else if (e.key === 'End') { e.preventDefault(); go(list.length - 1); }
     else if (e.key === 'Enter' && !e.target.closest('a,button')) { const s = sleevesEl.children[Math.round(pos)]; if (s) location.href = s.href; }
   });
-  addEventListener('resize', () => view === 'stage' && layout());
+  // fit the front cover to the space between the title and the caption
+  function fitCovers() {
+    const w = scene.clientWidth, h = scene.clientHeight;
+    if (!w || !h) return;
+    const narrow = w < 620;
+    const cw = Math.max(220, Math.min(940, w * (narrow ? .86 : .62), h * .9 * 16 / 9));
+    $('stage').style.setProperty('--cw', Math.round(cw) + 'px');
+  }
+  addEventListener('resize', () => { if (view === 'stage') { fitCovers(); layout(); } });
 
   /* ── theme ─────────────────────────────── */
   const root = document.documentElement;
@@ -607,7 +625,8 @@
   $('adminBtn').onclick = loadAdmin;
 
   /* ── boot ──────────────────────────────── */
-  renderTabs(); buildStage(); renderIndex();
+  fitCovers(); renderTabs(); buildStage(); renderIndex();
+  if (document.fonts) document.fonts.ready.then(() => { fitCovers(); layout(); });
   try { if (/[?&#]admin\b/.test(location.search + location.hash) || localStorage.getItem('archive-gh-token') || sessionStorage.getItem('archive-gh-token')) loadAdmin(); } catch (_) {}
   try { if (localStorage.getItem('archive-view') === 'index') setView('index'); } catch (_) {}
 
