@@ -4,10 +4,20 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Artifact Archives</title>
+<link rel="icon" href="favicon.ico" sizes="16x16 32x32 48x48">
+<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#d8ddf0" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#14152a" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Archives">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="description" content="직접 만든 HTML 아티팩트 — 발표 슬라이드, 인터랙티브 설명서, 도감, 기획서를 모아둔 아카이브">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root {
     --bg: #ececea;
@@ -69,9 +79,10 @@
     padding: env(safe-area-inset-top, 0px) max(20px, env(safe-area-inset-right, 0px)) 0 max(20px, env(safe-area-inset-left, 0px));
   }
   .bar-in { height: 56px; display: flex; align-items: center; gap: 28px; max-width: 1680px; margin: 0 auto; }
-  .brand { display: flex; align-items: center; gap: 8px; font-weight: 600; text-decoration: none; white-space: nowrap; }
-  .brand i { width: 14px; height: 14px; border-radius: 50%; background: var(--text); display: block; position: relative; }
-  .brand i::after { content: ""; position: absolute; inset: 4px; border-radius: 50%; background: var(--bg); }
+  .brand { display: flex; align-items: center; text-decoration: none; flex: none; border-radius: 10px; }
+  .brand img { display: block; height: 40px; width: auto; border-radius: 10px; }
+  .brand .logo-mark { display: none; height: 36px; border-radius: 9px; }
+  .install-btn[hidden] { display: none; }
   .tabs { display: flex; gap: 20px; flex: 1; min-width: 0; }
   .tab {
     appearance: none; background: none; border: 0; padding: 6px 0; cursor: pointer; color: var(--text-60);
@@ -266,7 +277,10 @@
   }
   @media (max-width: 620px) {
     .bar { padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
-    .brand .txt { display: none; }
+    .brand .logo-full { display: none; }
+    .brand .logo-mark { display: block; }
+    .install-btn .lbl { display: none; }
+    .install-btn { padding: 0 11px; }
     .seg button { padding: 0 10px; }
     .stage { --cw: min(84vw, calc((100dvh - 500px) * 1.7778)); }
     .lede { padding: 14px 16px 0; }
@@ -307,13 +321,16 @@
 
 <header class="bar">
   <div class="bar-in">
-    <a class="brand" href="./"><i></i><span class="txt">Artifact Archives</span></a>
+    <a class="brand" href="./" aria-label="Artifact Archives 홈"><img class="logo-full" src="icons/logo.png" alt="Artifact Archives" width="165" height="44"><img class="logo-mark" src="icons/icon-192.png" alt="" width="36" height="36"></a>
     <div class="tabs" id="tabs" role="group" aria-label="종류 필터"></div>
     <div class="actions">
       <div class="seg" role="group" aria-label="보기 방식">
         <button type="button" id="vStage" aria-pressed="true">커버</button>
         <button type="button" id="vIndex" aria-pressed="false">목록</button>
       </div>
+      <button class="pill edit-entry install-btn" id="installBtn" type="button" hidden title="홈 화면이나 데스크톱에 앱으로 설치">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M8 2v8M4.5 6.5L8 10l3.5-3.5M3 13h10"/></svg><span class="lbl">설치</span>
+      </button>
       <button class="pill edit-entry" id="adminBtn" type="button" title="아티팩트 추가·수정·삭제">
         <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M10.5 2.5l3 3L5 14H2v-3z"/><path d="M9 4l3 3"/></svg>편집
       </button>
@@ -623,6 +640,20 @@
   }
   $('adminLink').onclick = e => { e.preventDefault(); loadAdmin(); };
   $('adminBtn').onclick = loadAdmin;
+
+  /* ── PWA: offline cache + install button ─ */
+  if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) {
+    addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
+  }
+  let installEvt = null;
+  addEventListener('beforeinstallprompt', e => { e.preventDefault(); installEvt = e; $('installBtn').hidden = false; });
+  addEventListener('appinstalled', () => { installEvt = null; $('installBtn').hidden = true; });
+  $('installBtn').onclick = async () => {
+    if (!installEvt) return;
+    installEvt.prompt();
+    try { await installEvt.userChoice; } catch (_) {}
+    installEvt = null; $('installBtn').hidden = true;
+  };
 
   /* ── boot ──────────────────────────────── */
   fitCovers(); renderTabs(); buildStage(); renderIndex();

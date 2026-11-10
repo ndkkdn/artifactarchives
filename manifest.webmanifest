@@ -1,0 +1,17 @@
+{
+  "name": "Artifact Archives",
+  "short_name": "Archives",
+  "description": "공부하고 정리한 슬라이드·설명서·도감·기획서를 모아둔 아카이브",
+  "lang": "ko",
+  "id": "./",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#d8ddf0",
+  "theme_color": "#14253b",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icons/maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
