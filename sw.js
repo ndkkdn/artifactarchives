@@ -5,11 +5,11 @@
  * - GitHub API calls (admin mode) are never intercepted.
  * Bump VERSION when the shell file list changes.
  */
-const VERSION = 'v4';
+const VERSION = 'v5';
 const CACHE = `archives-${VERSION}`;
 const SHELL = [
   './', 'index.html', 'items.js', 'bg.js', 'admin.js', 'manifest.webmanifest', 'favicon.ico',
-  'icons/logo.png', 'icons/icon-192.png', 'icons/icon-512.png', 'icons/apple-touch-icon.png',
+  'icons/logo.svg', 'icons/icon-192.png', 'icons/icon-512.png', 'icons/apple-touch-icon.png',
 ];
 const FONT_HOSTS = ['fonts.googleapis.com', 'fonts.gstatic.com', 'cdn.jsdelivr.net'];
 
