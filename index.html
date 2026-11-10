@@ -34,6 +34,7 @@
     --dim: 236, 236, 234;
     --sky: #d8ddf0; --sky-rgb: 216, 221, 240; --panel: rgba(216, 221, 240, .78);
     --hl: #f0542a; --hl-text: #fff; --sub-bg: rgba(190, 197, 228, .92);
+    --logo-ink: #14253B; --logo-box: #14253B; --logo-lid-back: #203A57;
     color-scheme: light;
   }
   @media (prefers-color-scheme: dark) {
@@ -42,7 +43,7 @@
       --text-60: rgba(241, 240, 236, .6); --text-40: rgba(241, 240, 236, .4); --line: rgba(241, 240, 236, .12);
       --btn: rgba(255, 255, 255, .08); --btn-hover: rgba(255, 255, 255, .18); --accent: #ff7a45;
       --floor: rgba(0, 0, 0, .6); --dim: 16, 16, 18; color-scheme: dark;
-      --sky: #14152a; --sky-rgb: 20, 21, 42; --panel: rgba(20, 21, 42, .74); --hl: #e0491f; --hl-text: #fff; --sub-bg: rgba(40, 43, 76, .92);
+      --sky: #14152a; --sky-rgb: 20, 21, 42; --panel: rgba(20, 21, 42, .74); --hl: #e0491f; --hl-text: #fff; --sub-bg: rgba(40, 43, 76, .92); --logo-ink: #F3EFE4; --logo-box: #2E5079; --logo-lid-back: #22405F;
     }
   }
   :root[data-theme="dark"] {
@@ -50,7 +51,7 @@
     --text-60: rgba(241, 240, 236, .6); --text-40: rgba(241, 240, 236, .4); --line: rgba(241, 240, 236, .12);
     --btn: rgba(255, 255, 255, .08); --btn-hover: rgba(255, 255, 255, .18); --accent: #ff7a45;
     --floor: rgba(0, 0, 0, .6); --dim: 16, 16, 18; color-scheme: dark;
-      --sky: #14152a; --sky-rgb: 20, 21, 42; --panel: rgba(20, 21, 42, .74); --hl: #e0491f; --hl-text: #fff; --sub-bg: rgba(40, 43, 76, .92);
+      --sky: #14152a; --sky-rgb: 20, 21, 42; --panel: rgba(20, 21, 42, .74); --hl: #e0491f; --hl-text: #fff; --sub-bg: rgba(40, 43, 76, .92); --logo-ink: #F3EFE4; --logo-box: #2E5079; --logo-lid-back: #22405F;
   }
 
   * { box-sizing: border-box; }
@@ -80,8 +81,8 @@
   }
   .bar-in { height: 56px; display: flex; align-items: center; gap: 28px; max-width: 1680px; margin: 0 auto; }
   .brand { display: flex; align-items: center; text-decoration: none; flex: none; border-radius: 10px; }
-  .brand img { display: block; height: 50px; width: auto; border-radius: 9px; }
-  .brand .logo-mark { display: none; height: 36px; border-radius: 9px; }
+  .brand svg { display: block; height: 46px; width: auto; overflow: visible; }
+  .brand .logo-mark { display: none; height: 36px; }
   .install-btn[hidden] { display: none; }
   .tabs { display: flex; gap: 20px; flex: 1; min-width: 0; }
   .tab {
@@ -324,7 +325,34 @@
 
 <header class="bar">
   <div class="bar-in">
-    <a class="brand" href="./" aria-label="Artifact Archives 홈"><img class="logo-full" src="icons/logo.svg" alt="Artifact Archives" width="102" height="50"><img class="logo-mark" src="icons/icon-192.png" alt="" width="36" height="36"></a>
+    <a class="brand" href="./" aria-label="Artifact Archives 홈">
+        <!-- icons/logo.svg without its card background, cropped to the artwork; colours follow the theme -->
+        <svg class="logo-full" viewBox="58 60 562 203" aria-hidden="true">
+          <g transform="translate(72 64)">
+            <rect x="0" y="36" width="176" height="148" rx="18" fill="var(--logo-box)"/>
+            <path d="M-8 48 20 2h136l28 46Z" fill="var(--logo-lid-back)"/>
+            <path d="M20 2h136l28 46H-8Z" fill="#D5A844"/>
+            <rect x="38" y="86" width="100" height="54" rx="7" fill="#F7F4EC"/>
+            <path d="M54 104h68M54 121h45" stroke="#14253B" stroke-width="8" stroke-linecap="round"/>
+            <rect x="72" y="148" width="32" height="12" rx="6" fill="#D5A844"/>
+          </g>
+          <g fill="var(--logo-ink)">
+            <text x="292" y="148" font-family="Georgia, 'Times New Roman', serif" font-size="86" font-weight="700" letter-spacing="-3">Artifact</text>
+            <text x="296" y="226" font-family="Arial, Helvetica, sans-serif" font-size="43" font-weight="700" letter-spacing="12">ARCHIVES</text>
+          </g>
+          <path d="M298 253h310" stroke="#D5A844" stroke-width="8" stroke-linecap="round"/>
+        </svg>
+        <svg class="logo-mark" viewBox="58 58 204 196" aria-hidden="true">
+          <g transform="translate(72 64)">
+            <rect x="0" y="36" width="176" height="148" rx="18" fill="var(--logo-box)"/>
+            <path d="M-8 48 20 2h136l28 46Z" fill="var(--logo-lid-back)"/>
+            <path d="M20 2h136l28 46H-8Z" fill="#D5A844"/>
+            <rect x="38" y="86" width="100" height="54" rx="7" fill="#F7F4EC"/>
+            <path d="M54 104h68M54 121h45" stroke="#14253B" stroke-width="8" stroke-linecap="round"/>
+            <rect x="72" y="148" width="32" height="12" rx="6" fill="#D5A844"/>
+          </g>
+        </svg>
+      </a>
     <div class="tabs" id="tabs" role="group" aria-label="종류 필터"></div>
     <div class="actions">
       <button class="pill edit-entry install-btn" id="installBtn" type="button" hidden title="홈 화면이나 데스크톱에 앱으로 설치">
