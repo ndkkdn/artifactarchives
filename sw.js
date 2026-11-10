@@ -5,7 +5,7 @@
  * - GitHub API calls (admin mode) are never intercepted.
  * Bump VERSION when the shell file list changes.
  */
-const VERSION = 'v7';
+const VERSION = 'v8';
 const CACHE = `archives-${VERSION}`;
 const SHELL = [
   './', 'index.html', 'items.js', 'bg.js', 'admin.js', 'submit.js', 'dialog.css', 'manifest.webmanifest', 'favicon.ico',

@@ -66,7 +66,23 @@
   body.stage-mode { overflow: hidden; overscroll-behavior: none; background: var(--sky); }
   .bg-layer { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; display: none; }
   body.stage-mode .bg-layer { display: block; }
-  #bg-cloud { image-rendering: pixelated; image-rendering: crisp-edges; }
+  #bg-cloud, #bg-sea { image-rendering: pixelated; image-rendering: crisp-edges; }
+  /* the sea is drawn one pixel per cell; this mask turns every cell into a round dot */
+  #bg-sea {
+    -webkit-mask-image: radial-gradient(circle at center, #000 0 44%, transparent 50%); mask-image: radial-gradient(circle at center, #000 0 44%, transparent 50%);
+    -webkit-mask-size: var(--cell, 6px) var(--cell, 6px); mask-size: var(--cell, 6px) var(--cell, 6px);
+  }
+  /* the top bar sits on the sky, so its text follows how bright the sky is right now (bg.js sets the class) */
+  body.stage-mode.sky-dark .bar, body.stage-mode.sky-dark .counter, body.stage-mode.sky-dark .nav-arrows {
+    --text: #f4f3ee; --text-60: rgba(244, 243, 238, .74); --text-40: rgba(244, 243, 238, .5); --line: rgba(255, 255, 255, .2);
+    --btn: rgba(255, 255, 255, .12); --btn-hover: rgba(255, 255, 255, .24); --bg: #14152a;
+    --logo-ink: #F3EFE4; --logo-box: #2E5079; --logo-lid-back: #22405F; color: var(--text);
+  }
+  body.stage-mode.sky-light .bar, body.stage-mode.sky-light .counter, body.stage-mode.sky-light .nav-arrows {
+    --text: #111014; --text-60: rgba(17, 16, 20, .64); --text-40: rgba(17, 16, 20, .44); --line: rgba(17, 16, 20, .12);
+    --btn: rgba(255, 255, 255, .6); --btn-hover: rgba(255, 255, 255, .9); --bg: #ececea;
+    --logo-ink: #14253B; --logo-box: #14253B; --logo-lid-back: #203A57; color: var(--text);
+  }
   main { position: relative; z-index: 1; }
   body.stage-mode .stage { --dim: var(--sky-rgb); }
   button { font: inherit; color: inherit; letter-spacing: inherit; }
@@ -181,8 +197,8 @@
 
   .strip-wrap { margin: 0 max(16px, env(safe-area-inset-left, 0px)) max(12px, env(safe-area-inset-bottom, 0px)); position: relative; background: var(--panel); border-radius: 14px; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); overflow: hidden; }
   .strip-wrap::before, .strip-wrap::after { content: ""; position: absolute; top: 0; bottom: 0; width: 40px; z-index: 1; pointer-events: none; }
-  .strip-wrap::before { left: 0; background: linear-gradient(90deg, rgba(var(--sky-rgb), .9), transparent); }
-  .strip-wrap::after { right: 0; background: linear-gradient(-90deg, rgba(var(--sky-rgb), .9), transparent); }
+  .strip-wrap::before { left: 0; background: linear-gradient(90deg, var(--panel), transparent); }
+  .strip-wrap::after { right: 0; background: linear-gradient(-90deg, var(--panel), transparent); }
   .strip { display: flex; gap: 10px; overflow-x: auto; scrollbar-width: none; padding: 18px 40px 22px; scroll-behavior: smooth; }
   .strip::-webkit-scrollbar { display: none; }
   .chip {
@@ -320,6 +336,7 @@
 </head>
 <body class="stage-mode">
 <canvas class="bg-layer" id="bg-land" aria-hidden="true"></canvas>
+<canvas class="bg-layer" id="bg-sea" aria-hidden="true"></canvas>
 <canvas class="bg-layer" id="bg-cloud" aria-hidden="true"></canvas>
 <div class="loader" id="loader" aria-hidden="true"><div><i id="loadbar"></i></div></div>
 
