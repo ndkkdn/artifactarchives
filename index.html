@@ -78,6 +78,10 @@
     --btn: rgba(255, 255, 255, .12); --btn-hover: rgba(255, 255, 255, .24); --bg: #14152a;
     --logo-ink: #F3EFE4; --logo-box: #2E5079; --logo-lid-back: #22405F; color: var(--text);
   }
+  /* the subtitle strip follows the sky too */
+  body.stage-mode.sky-dark .lede p span { background: rgba(14, 16, 42, .72); color: #f4f3ee; }
+  body.stage-mode.sky-light .lede p span { background: rgba(255, 255, 255, .7); color: #111014; }
+  .lede p span { transition: background-color 1.2s, color 1.2s; }
   body.stage-mode.sky-light .bar, body.stage-mode.sky-light .counter, body.stage-mode.sky-light .nav-arrows {
     --text: #111014; --text-60: rgba(17, 16, 20, .64); --text-40: rgba(17, 16, 20, .44); --line: rgba(17, 16, 20, .12);
     --btn: rgba(255, 255, 255, .6); --btn-hover: rgba(255, 255, 255, .9); --bg: #ececea;
@@ -139,7 +143,7 @@
   .lede { padding: 18px max(20px, env(safe-area-inset-left, 0px)) 0; max-width: 1680px; width: 100%; margin: 0 auto; text-align: center; }
   /* highlighter-style service title: each wrapped line gets its own block */
   .lede h1 { margin: 0; font-family: Inter, sans-serif; font-size: clamp(32px, min(5.4vw, 7.4vh), 80px); font-weight: 700; letter-spacing: -.045em; line-height: 1.16; }
-  .lede h1 span { background: var(--hl); color: var(--hl-text); padding: 0 .2em; -webkit-box-decoration-break: clone; box-decoration-break: clone; }
+  .lede h1 span { background: var(--hl); color: var(--hl-text); transition: background-color 1.2s, color 1.2s; padding: 0 .2em; -webkit-box-decoration-break: clone; box-decoration-break: clone; }
   .lede p { margin: 14px 0 0; font-size: 15px; font-weight: 500; letter-spacing: -.01em; }
   .lede p span { background: var(--sub-bg); color: var(--text); padding: 3px 9px; -webkit-box-decoration-break: clone; box-decoration-break: clone; line-height: 1.9; }
 
@@ -344,8 +348,8 @@
   <div class="bar-in">
     <a class="brand" href="./" aria-label="Artifact Archives 홈">
         <!-- icons/logo.svg without its card background, cropped to the artwork; colours follow the theme -->
-        <svg class="logo-full" viewBox="58 60 562 203" aria-hidden="true">
-          <g transform="translate(72 64)">
+        <svg class="logo-full" viewBox="100 60 520 203" aria-hidden="true">
+          <g transform="translate(112.5 90.5) scale(.78)">
             <rect x="0" y="36" width="176" height="148" rx="18" fill="var(--logo-box)"/>
             <path d="M-8 48 20 2h136l28 46Z" fill="var(--logo-lid-back)"/>
             <path d="M20 2h136l28 46H-8Z" fill="#D5A844"/>

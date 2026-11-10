@@ -9,7 +9,8 @@
  *   #bg-land   sky gradient, texture, stars, sun/moon — redrawn about once a minute
  *   #bg-sea    the sea, one canvas pixel per cell, masked into a dot grid by CSS; animated
  *   #bg-cloud  pixel clouds that drift and stream away from the mouse; animated
- * The body gets .sky-light / .sky-dark so the top bar can keep its text readable.
+ * The body gets .sky-light / .sky-dark so the top bar can keep its text readable, and --hl / --hl-text
+ * on :root so the title highlight changes colour with the sky.
  * Animation pauses when the cover view is hidden, the tab is in the background, or the viewer prefers
  * reduced motion (a still frame is drawn instead).
  */
@@ -28,11 +29,11 @@
   /* ── palettes at key times of day (hour → colours), blended in between ── */
   const hex = h => [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16));
   const P = (o) => Object.fromEntries(Object.entries(o).map(([k, v]) => [k, typeof v === 'string' ? hex(v) : v]));
-  const NIGHT = P({ skyTop: '#0b1030', skyBot: '#232b5a', glow: '#3a4580', seaDeep: '#060a20', seaMid: '#111943', seaLight: '#2a3878', foam: '#8a9ad2', glint: '#f4f1de', cloud: '#3c4474', cloud2: '#2e355f', cloudEdge: '#242a52', stars: 1 });
-  const DAWN = P({ skyTop: '#46559a', skyBot: '#f6bca4', glow: '#ffb38a', seaDeep: '#1d2a5c', seaMid: '#3f5092', seaLight: '#c48ca2', foam: '#ffdcc6', glint: '#ffe6b0', cloud: '#ffdccc', cloud2: '#f2b6aa', cloudEdge: '#f6d2cc', stars: .15 });
-  const DAY = P({ skyTop: '#8cb6f0', skyBot: '#dbe7f8', glow: '#ffffff', seaDeep: '#0d397a', seaMid: '#1e62c2', seaLight: '#58a6ee', foam: '#e6f5ff', glint: '#ffffff', cloud: '#fdfdfa', cloud2: '#e8eef8', cloudEdge: '#dce7f8', stars: 0 });
-  const SUNSET = P({ skyTop: '#3b4088', skyBot: '#ff8d50', glow: '#ff6a3d', seaDeep: '#1b1d4f', seaMid: '#58306e', seaLight: '#e0673f', foam: '#ffc27c', glint: '#ffe08a', cloud: '#ffb07c', cloud2: '#e07c70', cloudEdge: '#c47494', stars: 0 });
-  const DUSK = P({ skyTop: '#1a1e50', skyBot: '#7a508e', glow: '#b05a7a', seaDeep: '#0c1034', seaMid: '#252963', seaLight: '#6a4a8a', foam: '#c4a0d0', glint: '#e8c0d8', cloud: '#94709e', cloud2: '#6e5482', cloudEdge: '#52406e', stars: .55 });
+  const NIGHT = P({ hl: '#f2c94c', skyTop: '#0b1030', skyBot: '#232b5a', glow: '#3a4580', seaDeep: '#060a20', seaMid: '#111943', seaLight: '#2a3878', foam: '#8a9ad2', glint: '#f4f1de', cloud: '#3c4474', cloud2: '#2e355f', cloudEdge: '#242a52', stars: 1 });
+  const DAWN = P({ hl: '#d9486a', skyTop: '#46559a', skyBot: '#f6bca4', glow: '#ffb38a', seaDeep: '#1d2a5c', seaMid: '#3f5092', seaLight: '#c48ca2', foam: '#ffdcc6', glint: '#ffe6b0', cloud: '#ffdccc', cloud2: '#f2b6aa', cloudEdge: '#f6d2cc', stars: .15 });
+  const DAY = P({ hl: '#f0542a', skyTop: '#8cb6f0', skyBot: '#dbe7f8', glow: '#ffffff', seaDeep: '#0d397a', seaMid: '#1e62c2', seaLight: '#58a6ee', foam: '#e6f5ff', glint: '#ffffff', cloud: '#fdfdfa', cloud2: '#e8eef8', cloudEdge: '#dce7f8', stars: 0 });
+  const SUNSET = P({ hl: '#c9302c', skyTop: '#3b4088', skyBot: '#ff8d50', glow: '#ff6a3d', seaDeep: '#1b1d4f', seaMid: '#58306e', seaLight: '#e0673f', foam: '#ffc27c', glint: '#ffe08a', cloud: '#ffb07c', cloud2: '#e07c70', cloudEdge: '#c47494', stars: 0 });
+  const DUSK = P({ hl: '#7d3fa6', skyTop: '#1a1e50', skyBot: '#7a508e', glow: '#b05a7a', seaDeep: '#0c1034', seaMid: '#252963', seaLight: '#6a4a8a', foam: '#c4a0d0', glint: '#e8c0d8', cloud: '#94709e', cloud2: '#6e5482', cloudEdge: '#52406e', stars: .55 });
   const KEYS = [[0, NIGHT], [4.6, NIGHT], [6, DAWN], [8, DAY], [16.2, DAY], [18, SUNSET], [19.4, DUSK], [20.8, NIGHT], [24, NIGHT]];
   const SUNRISE = 6, SUNSET_H = 19;
 
@@ -42,7 +43,7 @@
     const t = h1 === h0 ? 0 : (h - h0) / (h1 - h0), s = t * t * (3 - 2 * t);
     const out = {};
     for (const key in a) out[key] = Array.isArray(a[key]) ? a[key].map((v, i) => v + (b[key][i] - v) * s) : a[key] + (b[key] - a[key]) * s;
-    if (isDark()) for (const key in out) if (Array.isArray(out[key])) out[key] = out[key].map((v, i) => v * .55 + [14, 16, 40][i] * .3);
+    if (isDark()) for (const key in out) if (Array.isArray(out[key]) && key !== 'hl') out[key] = out[key].map((v, i) => v * .55 + [14, 16, 40][i] * .3);
     return out;
   }
   const css = c => `rgb(${c[0] | 0},${c[1] | 0},${c[2] | 0})`;
@@ -97,6 +98,9 @@
     const sky = mix(pal.skyTop, pal.skyBot, .7);
     root.style.setProperty('--sky', css(sky));
     root.style.setProperty('--sky-rgb', sky.map(v => v | 0).join(', '));
+    // title highlight follows the sky; ink is whichever of white / deep navy reads better on it
+    root.style.setProperty('--hl', css(pal.hl));
+    root.style.setProperty('--hl-text', lum(pal.hl) > .55 ? '#14152a' : '#ffffff');
     body.classList.toggle('sky-dark', lum(mix(pal.skyTop, pal.skyBot, .25)) < .42);
     body.classList.toggle('sky-light', lum(mix(pal.skyTop, pal.skyBot, .25)) >= .42);
 
