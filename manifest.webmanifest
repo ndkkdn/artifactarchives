@@ -1,7 +1,7 @@
 {
   "name": "Artifact Archives",
   "short_name": "Archives",
-  "description": "공부하고 정리한 슬라이드·설명서·도감·기획서를 모아둔 아카이브",
+  "description": "공부하고 정리한 슬라이드·설명서·도감을 모아둔 아카이브",
   "lang": "ko",
   "id": "./",
   "start_url": "./",

@@ -14,7 +14,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Archives">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="description" content="직접 만든 HTML 아티팩트 — 발표 슬라이드, 인터랙티브 설명서, 도감, 기획서를 모아둔 아카이브">
+<meta name="description" content="직접 만든 HTML 아티팩트 — 발표 슬라이드, 인터랙티브 설명서, 도감을 모아둔 아카이브">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -80,7 +80,7 @@
   }
   .bar-in { height: 56px; display: flex; align-items: center; gap: 28px; max-width: 1680px; margin: 0 auto; }
   .brand { display: flex; align-items: center; text-decoration: none; flex: none; border-radius: 10px; }
-  .brand img { display: block; height: 40px; width: auto; border-radius: 10px; }
+  .brand img { display: block; height: 44px; width: auto; border-radius: 10px; }
   .brand .logo-mark { display: none; height: 36px; border-radius: 9px; }
   .install-btn[hidden] { display: none; }
   .tabs { display: flex; gap: 20px; flex: 1; min-width: 0; }
@@ -321,7 +321,7 @@
 
 <header class="bar">
   <div class="bar-in">
-    <a class="brand" href="./" aria-label="Artifact Archives 홈"><img class="logo-full" src="icons/logo.png" alt="Artifact Archives" width="165" height="44"><img class="logo-mark" src="icons/icon-192.png" alt="" width="36" height="36"></a>
+    <a class="brand" href="./" aria-label="Artifact Archives 홈"><img class="logo-full" src="icons/logo.png" alt="Artifact Archives" width="147" height="44"><img class="logo-mark" src="icons/icon-192.png" alt="" width="36" height="36"></a>
     <div class="tabs" id="tabs" role="group" aria-label="종류 필터"></div>
     <div class="actions">
       <div class="seg" role="group" aria-label="보기 방식">
@@ -346,7 +346,7 @@
 
 <main>
   <section class="stage" id="stage" aria-label="아티팩트 커버 보기">
-    <header class="lede"><h1 lang="en"><span>Everything I learn,<br>one page at a time.</span></h1><p><span>공부하고 정리한 슬라이드·설명서·도감·기획서.</span></p></header>
+    <header class="lede"><h1 lang="en"><span>Everything I learn,<br>one page at a time.</span></h1><p><span>공부하고 정리한 슬라이드·설명서·도감.</span></p></header>
     <div class="scene" id="scene" aria-roledescription="carousel">
       <div id="sleeves"></div>
       <div class="nav-arrows">
