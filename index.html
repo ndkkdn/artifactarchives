@@ -91,16 +91,19 @@
   .stage {
     position: relative; height: 100vh; height: 100dvh; display: grid; grid-template-columns: minmax(0, 1fr); grid-template-rows: auto minmax(0, 1fr) auto auto;
     padding-top: calc(56px + env(safe-area-inset-top, 0px));
-    --cw: min(600px, 60vw, calc((100dvh - 360px) * 1.7778));
+    --cw: min(600px, 60vw, calc((100dvh - 420px) * 1.7778));
     --ch: calc(var(--cw) * .5625);
   }
   .stage[hidden], .index[hidden] { display: none; }
-  .lede { padding: 14px max(20px, env(safe-area-inset-left, 0px)) 0; max-width: 1680px; width: 100%; margin: 0 auto; color: var(--text-60); line-height: 1.35; }
-  .lede b { color: var(--text); font-weight: 500; }
+  .lede { padding: 18px max(20px, env(safe-area-inset-left, 0px)) 0; max-width: 1680px; width: 100%; margin: 0 auto; text-align: center; }
+  .lede h1 { margin: 0; font-size: clamp(28px, 3.4vw, 46px); font-weight: 600; letter-spacing: -.045em; line-height: 1.08; color: var(--text); }
+  .lede p { margin: 10px 0 0; font-size: 14px; color: var(--text-60); letter-spacing: -.01em; }
 
   .scene { position: relative; perspective: 1700px; perspective-origin: 50% 45%; touch-action: pan-y; cursor: grab; user-select: none; -webkit-user-select: none; overflow: hidden; }
   .scene.dragging { cursor: grabbing; }
-  #sleeves { position: absolute; inset: 0; transform-style: preserve-3d; }
+  /* the wrapper sits at z=0 in front of the receding side covers, so let clicks pass through it */
+  #sleeves { position: absolute; inset: 0; transform-style: preserve-3d; pointer-events: none; }
+  #sleeves .sleeve { pointer-events: auto; }
   .halo {
     position: absolute; left: 50%; top: 50%; width: calc(var(--cw) * 1.9); height: calc(var(--ch) * 1.9);
     transform: translate(-50%, -50%); border-radius: 50%; pointer-events: none;
@@ -142,7 +145,7 @@
   }
   .caption .kicker { display: flex; gap: 10px; align-items: center; color: var(--text-60); font-size: 12px; }
   .caption .kicker .new { color: var(--accent); font-weight: 600; }
-  .caption h1 { margin: 0; font-size: 22px; font-weight: 600; letter-spacing: -.025em; line-height: 1.25; }
+  .caption h2 { margin: 0; font-size: 22px; font-weight: 600; letter-spacing: -.025em; line-height: 1.25; }
   .caption p {
     margin: 0; color: var(--text-60); line-height: 1.5; font-size: 14px;
     display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
@@ -235,7 +238,7 @@
     .bar-in { gap: 16px; }
     .tabs { position: fixed; top: calc(56px + env(safe-area-inset-top, 0px)); left: 0; right: 0; padding: 0 max(16px, env(safe-area-inset-left, 0px)); overflow-x: auto; scrollbar-width: none; gap: 18px; }
     .tabs::-webkit-scrollbar { display: none; }
-    .stage { padding-top: calc(92px + env(safe-area-inset-top, 0px)); --cw: min(560px, 74vw, calc((100dvh - 400px) * 1.7778)); }
+    .stage { padding-top: calc(92px + env(safe-area-inset-top, 0px)); --cw: min(560px, 74vw, calc((100dvh - 460px) * 1.7778)); }
     .counter { top: calc(92px + env(safe-area-inset-top, 0px) + 14px); }
     .index { padding-top: calc(92px + env(safe-area-inset-top, 0px) + 32px); }
     .rows a { grid-template-columns: 36px minmax(0, 1fr) 84px; }
@@ -245,11 +248,14 @@
     .bar { padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
     .brand .txt { display: none; }
     .seg button { padding: 0 10px; }
-    .stage { --cw: min(84vw, calc((100dvh - 380px) * 1.7778)); }
-    .lede { padding-left: 16px; padding-right: 76px; font-size: 13px; }
+    .stage { --cw: min(84vw, calc((100dvh - 430px) * 1.7778)); }
+    .lede { padding: 14px 16px 0; }
+    .lede h1 { font-size: 26px; }
+    .lede p { font-size: 13px; margin-top: 8px; }
+    .counter { display: none; }
     .nav-arrows { display: none; }
     .caption { min-height: 124px; padding: 4px 16px 14px; }
-    .caption h1 { font-size: 19px; }
+    .caption h2 { font-size: 19px; }
     .caption p { font-size: 13.5px; }
     .strip { padding: 14px 24px 18px; }
     .chip { width: 116px; }
@@ -298,7 +304,7 @@
 
 <main>
   <section class="stage" id="stage" aria-label="아티팩트 커버 보기">
-    <p class="lede"><b>배운 것을 한 장의 페이지로.</b><br>공부하고 정리한 슬라이드·설명서·도감·기획서.</p>
+    <header class="lede"><h1>배운 것을 한 장의 페이지로.</h1><p>공부하고 정리한 슬라이드·설명서·도감·기획서.</p></header>
     <div class="scene" id="scene" aria-roledescription="carousel">
       <div class="halo" aria-hidden="true"></div>
       <div id="sleeves"></div>
@@ -417,7 +423,7 @@
     const i = list[n];
     $('caption').innerHTML = `
       <div class="kicker mono"><span>${esc(i.type)}</span><span>·</span><span>${i.date}</span>${isNew(i.date) ? '<span class="new">NEW</span>' : ''}</div>
-      <h1>${esc(i.title)}</h1>
+      <h2>${esc(i.title)}</h2>
       <p>${esc(i.desc)}</p>
       <div class="admin-only cap-actions">
         <button type="button" class="pill" data-act="edit" data-href="${esc(i.href)}">수정</button>
@@ -449,13 +455,21 @@
   stripEl.addEventListener('click', e => { const b = e.target.closest('.chip'); if (b) go(+b.dataset.n); });
 
   // wheel / trackpad: free scroll, then settle on the nearest cover
-  let snapT;
+  // a mouse-wheel notch always moves at least one cover; trackpads glide and settle in the direction of travel
+  let snapT, wheelFrom = null;
   scene.addEventListener('wheel', e => {
     e.preventDefault();
     const d = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
+    if (!d) return;
+    if (wheelFrom === null) wheelFrom = Math.round(target);
     target = clamp(target + d * (e.deltaMode ? .33 : .0045));
     kick();
-    clearTimeout(snapT); snapT = setTimeout(() => go(target), 120);
+    clearTimeout(snapT);
+    snapT = setTimeout(() => {
+      const moved = target - wheelFrom;
+      go(Math.abs(moved) < .05 ? wheelFrom : wheelFrom + Math.sign(moved) * Math.max(1, Math.round(Math.abs(moved))));
+      wheelFrom = null;
+    }, 140);
   }, { passive: false });
 
   // drag / swipe
