@@ -1,0 +1,3357 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Layout Maker</title>
+  <script>
+    (function () {
+      var t = null;
+      try { t = localStorage.getItem('lm-theme'); } catch (e) {}
+      if (t !== 'light' && t !== 'dark') {
+        t = window.matchMedia && matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+      }
+      document.documentElement.setAttribute('data-theme', t);
+    })();
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-void: #060709;
+      --bg-surface: #0e1015;
+      --bg-surface-elevated: #14161e;
+      --bg-card: rgba(18, 20, 27, 0.75);
+      --bg-card-hover: rgba(26, 29, 39, 0.85);
+      --border-subtle: rgba(255, 255, 255, 0.07);
+      --border-strong: rgba(255, 255, 255, 0.14);
+      --border-focus: rgba(99, 102, 241, 0.5);
+      --text-primary: #f8fafc;
+      --text-secondary: #94a3b8;
+      --text-muted: #64748b;
+      --accent-cyan: #38bdf8;
+      --accent-blue: #3b82f6;
+      --accent-violet: #818cf8;
+      --accent-purple: #c084fc;
+      --accent-glow: rgba(56, 189, 248, 0.15);
+      --titanium-edge: linear-gradient(135deg, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0.02) 50%, rgba(255,255,255,0.1) 100%);
+      --radius-sm: 8px;
+      --radius-md: 14px;
+      --radius-lg: 20px;
+      --radius-xl: 28px;
+      --radius-pill: 9999px;
+      --font-display: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body {
+      background-color: var(--bg-void);
+      color: var(--text-primary);
+      font-family: var(--font-body);
+      overflow-x: hidden;
+      line-height: 1.5;
+      min-height: 100vh;
+      position: relative;
+    }
+
+    /* Ambient Space & Grid Mesh Background (Dovetail + Revolut style) */
+    .cosmic-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    .blueprint-grid {
+      position: absolute;
+      inset: 0;
+      background-image: 
+        linear-gradient(to right, rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+      background-size: 48px 48px;
+      mask-image: radial-gradient(ellipse 80% 60% at 50% 20%, black 20%, transparent 80%);
+    }
+
+    .ambient-glow-top {
+      position: absolute;
+      top: -150px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 800px;
+      height: 500px;
+      background: radial-gradient(circle, rgba(99, 102, 241, 0.18) 0%, rgba(56, 189, 248, 0.08) 45%, transparent 70%);
+      filter: blur(80px);
+    }
+
+    .ambient-glow-side {
+      position: absolute;
+      top: 400px;
+      right: -100px;
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(168, 85, 247, 0.12) 0%, rgba(59, 130, 246, 0.05) 50%, transparent 70%);
+      filter: blur(100px);
+    }
+
+    /* Top Announcement Bar (Graphite/Dovetail style) */
+    .top-announcement {
+      background: rgba(14, 16, 21, 0.85);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border-subtle);
+      font-size: 13px;
+      color: var(--text-secondary);
+      padding: 10px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      position: relative;
+      z-index: 50;
+    }
+
+    .announcement-badge {
+      background: rgba(56, 189, 248, 0.12);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      color: var(--accent-cyan);
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: var(--radius-pill);
+      letter-spacing: 0.5px;
+    }
+
+    .top-announcement a {
+      color: var(--text-primary);
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+
+    .top-announcement a:hover {
+      color: var(--accent-cyan);
+    }
+
+    /* Navigation Bar (Revolut/Graphite Style) */
+    header.site-header {
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      background: rgba(6, 7, 9, 0.82);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border-subtle);
+      transition: border-color 0.2s;
+    }
+
+    .header-inner {
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 0 32px;
+      height: 72px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .brand-group {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .brand-logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      color: var(--text-primary);
+    }
+
+    .brand-mark {
+      width: 36px;
+      height: 36px;
+      background: linear-gradient(135deg, #1e2230 0%, #0d0f14 100%);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.2);
+    }
+
+    .brand-mark svg {
+      width: 20px;
+      height: 20px;
+      fill: none;
+      stroke: var(--accent-cyan);
+      stroke-width: 2;
+    }
+
+    .brand-title {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 18px;
+      letter-spacing: -0.5px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .brand-badge {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 600;
+      padding: 2px 7px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-pill);
+      color: var(--text-secondary);
+      letter-spacing: 0.5px;
+    }
+
+    .nav-menu {
+      display: flex;
+      align-items: center;
+      gap: 32px;
+      list-style: none;
+    }
+
+    .nav-item a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 500;
+      transition: color 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .nav-item a:hover,
+    .nav-item.active a {
+      color: var(--text-primary);
+    }
+
+    .nav-pill-badge {
+      font-size: 10px;
+      background: rgba(99, 102, 241, 0.18);
+      color: var(--accent-violet);
+      padding: 1px 6px;
+      border-radius: 4px;
+      font-weight: 600;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .search-trigger {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border-subtle);
+      padding: 8px 14px;
+      border-radius: var(--radius-pill);
+      color: var(--text-muted);
+      font-size: 13px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .search-trigger:hover {
+      background: rgba(255, 255, 255, 0.08);
+      border-color: var(--border-strong);
+      color: var(--text-secondary);
+    }
+
+    .kbd-chip {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      background: rgba(255, 255, 255, 0.08);
+      padding: 2px 6px;
+      border-radius: 4px;
+      color: var(--text-secondary);
+    }
+
+    .btn-revolut-pill {
+      background: #ffffff;
+      color: #060709;
+      font-family: var(--font-body);
+      font-weight: 600;
+      font-size: 14px;
+      padding: 10px 22px;
+      border-radius: var(--radius-pill);
+      border: none;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 4px 20px rgba(255, 255, 255, 0.15);
+      text-decoration: none;
+    }
+
+    .btn-revolut-pill:hover {
+      background: #f1f5f9;
+      transform: translateY(-1px);
+      box-shadow: 0 8px 25px rgba(255, 255, 255, 0.25);
+    }
+
+    /* Main Container */
+    main.main-content {
+      position: relative;
+      z-index: 10;
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 56px 32px 120px;
+    }
+
+    /* Hero Section (Graphite + Revolut Dual Stage) */
+    .hero-section {
+      display: grid;
+      grid-template-columns: 1.15fr 1.35fr;
+      gap: 56px;
+      align-items: center;
+      margin-bottom: 96px;
+      min-height: 640px;
+    }
+
+    .hero-meta-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-pill);
+      padding: 6px 14px;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      margin-bottom: 24px;
+    }
+
+    .pulsing-dot {
+      width: 7px;
+      height: 7px;
+      background: var(--accent-cyan);
+      border-radius: 50%;
+      box-shadow: 0 0 10px var(--accent-cyan);
+      animation: pulseGlow 2s infinite;
+    }
+
+    @keyframes pulseGlow {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.85); }
+    }
+
+    .hero-title {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 54px;
+      line-height: 1.12;
+      letter-spacing: -1.8px;
+      margin-bottom: 24px;
+      color: #ffffff;
+    }
+
+    .hero-title span.gradient-text {
+      background: linear-gradient(135deg, #ffffff 30%, #94a3b8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero-title span.accent-highlight {
+      background: linear-gradient(135deg, var(--accent-cyan) 0%, var(--accent-violet) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero-description {
+      font-size: 17px;
+      line-height: 1.68;
+      color: var(--text-secondary);
+      margin-bottom: 36px;
+      max-width: 520px;
+    }
+
+    /* Device Selector Switcher Controls */
+    .device-selection-panel {
+      background: rgba(18, 20, 27, 0.6);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 20px;
+      backdrop-filter: blur(16px);
+      margin-bottom: 32px;
+      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.4);
+    }
+
+    .selector-label-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+
+    .selector-label {
+      font-size: 13px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: var(--text-muted);
+    }
+
+    .selector-status {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--accent-cyan);
+    }
+
+    /* Model Selection Tabs (Galaxy S vs Galaxy Z) */
+    .device-tab-group {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .device-tab-btn {
+      position: relative;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 14px 16px;
+      text-align: left;
+      cursor: pointer;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .device-tab-btn:hover {
+      background: rgba(255, 255, 255, 0.06);
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .device-tab-btn.active {
+      background: linear-gradient(145deg, rgba(30, 35, 48, 0.9) 0%, rgba(18, 20, 28, 0.95) 100%);
+      border-color: var(--accent-cyan);
+      box-shadow: 0 0 20px rgba(56, 189, 248, 0.2), inset 0 1px 1px rgba(255, 255, 255, 0.2);
+    }
+
+    .tab-header-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .tab-device-name {
+      font-family: var(--font-display);
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .tab-device-icon {
+      width: 18px;
+      height: 18px;
+      color: var(--text-muted);
+      transition: color 0.2s;
+    }
+
+    .device-tab-btn.active .tab-device-icon {
+      color: var(--accent-cyan);
+    }
+
+    .tab-device-specs {
+      font-size: 12px;
+      color: var(--text-muted);
+      line-height: 1.3;
+    }
+
+    .device-tab-btn.active .tab-device-specs {
+      color: var(--text-secondary);
+    }
+
+    /* Sub-Controls: Screen Type & Grid Toggle */
+    .canvas-mode-controls {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: 14px;
+      border-top: 1px solid var(--border-subtle);
+      gap: 12px;
+    }
+
+    .segmented-screen-type {
+      display: flex;
+      background: rgba(0, 0, 0, 0.35);
+      border-radius: var(--radius-sm);
+      padding: 3px;
+      border: 1px solid var(--border-subtle);
+    }
+
+    .screen-type-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-size: 12px;
+      font-weight: 600;
+      padding: 6px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .screen-type-btn.active {
+      background: rgba(255, 255, 255, 0.12);
+      color: #ffffff;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    .grid-guide-toggle {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      color: var(--text-secondary);
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .grid-guide-toggle input[type="checkbox"] {
+      appearance: none;
+      width: 16px;
+      height: 16px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid var(--border-subtle);
+      border-radius: 4px;
+      cursor: pointer;
+      position: relative;
+      outline: none;
+      transition: all 0.2s;
+    }
+
+    .grid-guide-toggle input[type="checkbox"]:checked {
+      background: var(--accent-cyan);
+      border-color: var(--accent-cyan);
+    }
+
+    .grid-guide-toggle input[type="checkbox"]:checked::after {
+      content: '✓';
+      position: absolute;
+      top: -2px;
+      left: 3px;
+      font-size: 11px;
+      color: #060709;
+      font-weight: 800;
+    }
+
+    /* Hero CTA Row */
+    .hero-cta-group {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .btn-maker-launch {
+      background: linear-gradient(135deg, #ffffff 0%, #e2e8f0 100%);
+      color: #060709;
+      font-family: var(--font-body);
+      font-weight: 700;
+      font-size: 15px;
+      padding: 14px 28px;
+      border-radius: var(--radius-pill);
+      border: none;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 4px 24px rgba(255, 255, 255, 0.2);
+    }
+
+    .btn-maker-launch:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 32px rgba(255, 255, 255, 0.35);
+      background: #ffffff;
+    }
+
+    .btn-maker-launch svg {
+      width: 18px;
+      height: 18px;
+      stroke-width: 2.5;
+    }
+
+    .btn-ghost-preview {
+      background: transparent;
+      color: var(--text-primary);
+      border: 1px solid var(--border-strong);
+      font-family: var(--font-body);
+      font-weight: 600;
+      font-size: 15px;
+      padding: 14px 24px;
+      border-radius: var(--radius-pill);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s;
+    }
+
+    .btn-ghost-preview:hover {
+      background: rgba(255, 255, 255, 0.05);
+      border-color: rgba(255, 255, 255, 0.3);
+    }
+
+    /* RIGHT HERO: The 3D Architectural Device Showcase Stage */
+    .hero-stage-container {
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      perspective: 1200px;
+    }
+
+    /* Holographic Geometric Glow Core (Graphite neon element inspired) */
+    .hologram-backdrop-ring {
+      position: absolute;
+      width: 440px;
+      height: 440px;
+      border: 1px dashed rgba(56, 189, 248, 0.25);
+      border-radius: 50%;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+      animation: rotateRing 40s linear infinite;
+    }
+
+    @keyframes rotateRing {
+      from { transform: translate(-50%, -50%) rotate(0deg); }
+      to { transform: translate(-50%, -50%) rotate(360deg); }
+    }
+
+    .hologram-backdrop-ring::after {
+      content: '';
+      position: absolute;
+      inset: 20px;
+      border: 1px solid rgba(129, 140, 248, 0.15);
+      border-radius: 50%;
+    }
+
+    .device-pedestal-platform {
+      position: relative;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 580px;
+    }
+
+    /* =========================================================================
+       DEVICE 1: GALAXY S SERIES HARDWARE MOCKUP (Candybar Flagship)
+       ========================================================================= */
+    .device-wrapper-s {
+      position: relative;
+      width: 290px;
+      height: 590px;
+      background: #0b0c10;
+      border-radius: 40px;
+      padding: 10px;
+      box-shadow: 
+        0 25px 60px -15px rgba(0, 0, 0, 0.8),
+        0 0 0 1px rgba(255, 255, 255, 0.15),
+        0 0 40px rgba(56, 189, 248, 0.18),
+        inset 0 0 2px 1px rgba(255, 255, 255, 0.3);
+      transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+      display: block;
+    }
+
+    .device-wrapper-s::before {
+      content: '';
+      position: absolute;
+      inset: -2px;
+      border-radius: 42px;
+      background: linear-gradient(135deg, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0) 40%, rgba(56,189,248,0.2) 100%);
+      pointer-events: none;
+      z-index: 10;
+    }
+
+    .screen-surface-s {
+      width: 100%;
+      height: 100%;
+      background: #07090e;
+      border-radius: 32px;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      background-image: 
+        radial-gradient(circle at 80% 20%, rgba(99, 102, 241, 0.15) 0%, transparent 60%),
+        radial-gradient(circle at 20% 80%, rgba(56, 189, 248, 0.12) 0%, transparent 60%);
+    }
+
+    /* Camera punch hole */
+    .camera-punchhole {
+      position: absolute;
+      top: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 10px;
+      height: 10px;
+      background: #000000;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 50%;
+      z-index: 20;
+    }
+
+    /* Screen Status Bar */
+    .phone-status-bar {
+      padding: 8px 18px 4px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 11px;
+      font-weight: 600;
+      color: rgba(255, 255, 255, 0.85);
+      font-family: var(--font-body);
+      z-index: 15;
+    }
+
+    .status-icons-mini {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 10px;
+    }
+
+    /* Interactive Layout Canvas Inner (Home Screen / App Tray) */
+    .phone-canvas-inner {
+      flex: 1;
+      padding: 10px 14px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+    }
+
+    /* Grid guide mesh overlay */
+    .grid-guide-mesh {
+      position: absolute;
+      inset: 8px;
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      grid-template-rows: repeat(6, 1fr);
+      gap: 6px;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.3s;
+      z-index: 12;
+    }
+
+    .grid-guide-mesh.show-guide {
+      opacity: 1;
+    }
+
+    .grid-cell-box {
+      border: 1px dashed rgba(56, 189, 248, 0.35);
+      border-radius: 8px;
+      background: rgba(56, 189, 248, 0.03);
+    }
+
+    /* One UI 7 Widget Elements */
+    .widget-container-clock {
+      background: rgba(255, 255, 255, 0.06);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 18px;
+      padding: 12px 14px;
+      margin-bottom: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: relative;
+      z-index: 5;
+    }
+
+    .clock-time-val {
+      font-family: var(--font-display);
+      font-size: 26px;
+      font-weight: 700;
+      line-height: 1;
+      color: #ffffff;
+    }
+
+    .clock-date-val {
+      font-size: 10px;
+      color: var(--text-secondary);
+      margin-top: 3px;
+    }
+
+    .weather-preview {
+      text-align: right;
+    }
+
+    .weather-temp {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--accent-cyan);
+    }
+
+    .weather-city {
+      font-size: 10px;
+      color: var(--text-muted);
+    }
+
+    /* Galaxy AI Smart Summary Widget (2x2) */
+    .widgets-row-dual {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 14px;
+      position: relative;
+      z-index: 5;
+    }
+
+    .mini-widget-card {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.09);
+      border-radius: 16px;
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      height: 72px;
+    }
+
+    .mini-widget-header {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--text-secondary);
+    }
+
+    .battery-rings-indicator {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 4px;
+    }
+
+    .battery-pill {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      font-weight: 700;
+      color: #10b981;
+    }
+
+    /* Icon Grid System */
+    .icons-matrix-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px 8px;
+      position: relative;
+      z-index: 5;
+      margin-bottom: auto;
+    }
+
+    .phone-icon-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+
+    .phone-icon-item:hover {
+      transform: scale(1.08);
+    }
+
+    .app-squircle {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.35);
+      position: relative;
+    }
+
+    .app-badge-unread {
+      position: absolute;
+      top: -3px;
+      right: -3px;
+      background: #ef4444;
+      color: white;
+      font-size: 9px;
+      font-weight: 700;
+      width: 15px;
+      height: 15px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1.5px solid #060709;
+    }
+
+    .app-label-text {
+      font-size: 9px;
+      font-weight: 500;
+      color: rgba(255, 255, 255, 0.85);
+      text-align: center;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 52px;
+    }
+
+    /* Bottom Dock Bar */
+    .phone-dock-bar {
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 24px;
+      padding: 8px 10px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 6px;
+      position: relative;
+      z-index: 10;
+      margin-top: 10px;
+    }
+
+    .home-indicator-pill {
+      width: 80px;
+      height: 4px;
+      background: rgba(255, 255, 255, 0.5);
+      border-radius: 2px;
+      margin: 8px auto 2px;
+    }
+
+    /* =========================================================================
+       DEVICE 2: GALAXY Z SERIES HARDWARE MOCKUP (Foldable Dual Screen)
+       ========================================================================= */
+    .device-wrapper-z {
+      position: relative;
+      width: 480px;
+      height: 540px;
+      background: #0b0c10;
+      border-radius: 28px;
+      padding: 10px;
+      box-shadow: 
+        0 30px 70px -15px rgba(0, 0, 0, 0.85),
+        0 0 0 1px rgba(255, 255, 255, 0.15),
+        0 0 50px rgba(168, 85, 247, 0.2),
+        inset 0 0 2px 1px rgba(255, 255, 255, 0.25);
+      transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+      display: none; /* Toggled via JS */
+    }
+
+    .device-wrapper-z::before {
+      content: '';
+      position: absolute;
+      inset: -2px;
+      border-radius: 30px;
+      background: linear-gradient(135deg, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0) 40%, rgba(168,85,247,0.3) 100%);
+      pointer-events: none;
+      z-index: 10;
+    }
+
+    .screen-surface-z {
+      width: 100%;
+      height: 100%;
+      background: #08090f;
+      border-radius: 20px;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      background-image: 
+        radial-gradient(circle at 20% 30%, rgba(168, 85, 247, 0.15) 0%, transparent 60%),
+        radial-gradient(circle at 80% 70%, rgba(56, 189, 248, 0.12) 0%, transparent 60%);
+    }
+
+    /* Foldable Center Crease Line (Interactive Visual Signature) */
+    .foldable-crease-guide {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 50%;
+      width: 2px;
+      transform: translateX(-50%);
+      background: linear-gradient(to bottom, 
+        transparent 0%, 
+        rgba(255, 255, 255, 0.12) 20%, 
+        rgba(56, 189, 248, 0.25) 50%, 
+        rgba(255, 255, 255, 0.12) 80%, 
+        transparent 100%
+      );
+      box-shadow: 0 0 12px rgba(56, 189, 248, 0.3);
+      z-index: 14;
+      pointer-events: none;
+    }
+
+    .fold-dual-pane {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      padding: 10px 16px;
+      position: relative;
+    }
+
+    .pane-half {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    /* Fold Taskbar (Specific to One UI 6 / 7 for Foldables) */
+    .fold-bottom-taskbar {
+      background: rgba(14, 16, 23, 0.9);
+      backdrop-filter: blur(16px);
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 6px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      z-index: 20;
+    }
+
+    .taskbar-apps-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .taskbar-mini-app {
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .taskbar-divider {
+      width: 1px;
+      height: 18px;
+      background: rgba(255, 255, 255, 0.15);
+      margin: 0 4px;
+    }
+
+    /* Floating Telemetry Chips on Device Stage (Dovetail Blueprint Style) */
+    .floating-spec-tag {
+      position: absolute;
+      background: rgba(14, 16, 21, 0.85);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--border-strong);
+      padding: 6px 12px;
+      border-radius: var(--radius-pill);
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+      z-index: 25;
+      pointer-events: none;
+      animation: floatSpec 4s ease-in-out infinite alternate;
+    }
+
+    .spec-tag-top-left {
+      top: 40px;
+      left: -20px;
+    }
+
+    .spec-tag-bottom-right {
+      bottom: 60px;
+      right: -24px;
+      animation-delay: -2s;
+    }
+
+    @keyframes floatSpec {
+      0% { transform: translateY(0px); }
+      100% { transform: translateY(-8px); }
+    }
+
+    .spec-indicator-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--accent-cyan);
+    }
+
+    /* SECTION 2: ARCHITECTURAL CAPABILITY STRIP (Dovetail Grid Inspired) */
+    .capability-strip-section {
+      margin-bottom: 96px;
+      border-top: 1px solid var(--border-subtle);
+      border-bottom: 1px solid var(--border-subtle);
+      padding: 48px 0;
+      position: relative;
+    }
+
+    .capability-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 32px;
+    }
+
+    .capability-cell {
+      position: relative;
+      padding-left: 20px;
+      border-left: 1px solid var(--border-subtle);
+    }
+
+    .capability-cell:first-child {
+      border-left: none;
+      padding-left: 0;
+    }
+
+    .cap-metric-eyebrow {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--accent-cyan);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .cap-title {
+      font-family: var(--font-display);
+      font-size: 18px;
+      font-weight: 700;
+      color: #ffffff;
+      margin-bottom: 8px;
+    }
+
+    .cap-desc {
+      font-size: 13px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    /* SECTION 3: RECENT LAYOUTS SHOWCASE (Next-Gen Bento Studio Workspace) */
+    .recent-layouts-section {
+      margin-bottom: 96px;
+    }
+
+    .section-header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-bottom: 32px;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+
+    .section-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--accent-violet);
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .section-title {
+      font-family: var(--font-display);
+      font-size: 32px;
+      font-weight: 800;
+      letter-spacing: -0.8px;
+      color: #ffffff;
+    }
+
+    .section-subtitle {
+      font-size: 15px;
+      color: var(--text-secondary);
+      margin-top: 4px;
+    }
+
+    /* Filter Pills & View Toggles */
+    .recent-filter-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 28px;
+      flex-wrap: wrap;
+    }
+
+    .filter-pills-cluster {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+    }
+
+    .filter-pill {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-secondary);
+      font-size: 13px;
+      font-weight: 500;
+      padding: 6px 14px;
+      border-radius: var(--radius-pill);
+      cursor: pointer;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+
+    .filter-pill:hover {
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--text-primary);
+    }
+
+    .filter-pill.active {
+      background: rgba(56, 189, 248, 0.12);
+      border-color: rgba(56, 189, 248, 0.35);
+      color: var(--accent-cyan);
+      font-weight: 600;
+    }
+
+    .view-switch-controls {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .view-toggle-btn {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-muted);
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .view-toggle-btn.active,
+    .view-toggle-btn:hover {
+      background: rgba(255, 255, 255, 0.1);
+      color: var(--text-primary);
+    }
+
+    /* BENTO GRID: RECENT LAYOUT WORKSPACE TILES */
+    .bento-layouts-grid {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 24px;
+    }
+
+    /* Bento Base Card Styles */
+    .bento-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-xl);
+      padding: 24px;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      backdrop-filter: blur(16px);
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+      cursor: pointer;
+    }
+
+    .bento-card:hover {
+      border-color: rgba(255, 255, 255, 0.2);
+      transform: translateY(-4px);
+      box-shadow: 0 20px 45px rgba(0, 0, 0, 0.5), 0 0 30px rgba(56, 189, 248, 0.08);
+    }
+
+    /* Feature Card (Hero Layout in Bento - 8 Columns) */
+    .bento-featured {
+      grid-column: span 8;
+      min-height: 420px;
+      background: linear-gradient(135deg, rgba(20, 24, 36, 0.85) 0%, rgba(12, 14, 20, 0.95) 100%);
+      border: 1px solid rgba(56, 189, 248, 0.2);
+    }
+
+    .bento-featured::after {
+      content: '';
+      position: absolute;
+      top: -100px;
+      right: -100px;
+      width: 320px;
+      height: 320px;
+      background: radial-gradient(circle, rgba(56, 189, 248, 0.15) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    /* Standard Bento Cards */
+    .bento-standard {
+      grid-column: span 4;
+      min-height: 420px;
+    }
+
+    .bento-compact {
+      grid-column: span 4;
+      min-height: 340px;
+    }
+
+    /* Card Top Metadata Row */
+    .card-top-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 16px;
+      position: relative;
+      z-index: 5;
+    }
+
+    .device-badge-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: var(--radius-pill);
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-primary);
+    }
+
+    .device-badge-pill.fold {
+      background: rgba(168, 85, 247, 0.15);
+      border-color: rgba(168, 85, 247, 0.35);
+      color: #d8b4fe;
+    }
+
+    .device-badge-pill.s-series {
+      background: rgba(56, 189, 248, 0.15);
+      border-color: rgba(56, 189, 248, 0.35);
+      color: #7dd3fc;
+    }
+
+    .screen-tag-badge {
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--text-muted);
+      background: rgba(0, 0, 0, 0.3);
+      padding: 3px 8px;
+      border-radius: 4px;
+      border: 1px solid var(--border-subtle);
+    }
+
+    /* Card Content */
+    .card-title {
+      font-family: var(--font-display);
+      font-size: 20px;
+      font-weight: 700;
+      color: #ffffff;
+      margin-bottom: 8px;
+      line-height: 1.3;
+    }
+
+    .card-description {
+      font-size: 13px;
+      color: var(--text-secondary);
+      line-height: 1.5;
+      margin-bottom: 20px;
+    }
+
+    /* Mini Canvas Mockup Inside Card */
+    .card-canvas-preview {
+      background: rgba(0, 0, 0, 0.45);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 14px;
+      flex: 1;
+      margin-bottom: 20px;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      overflow: hidden;
+      min-height: 160px;
+    }
+
+    /* Featured Fold Dual Mockup in Bento */
+    .featured-preview-split {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      align-items: center;
+      width: 100%;
+    }
+
+    .mini-widget-preview-box {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 10px;
+      padding: 8px 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 11px;
+      color: var(--text-secondary);
+    }
+
+    .mini-icon-cluster {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+    }
+
+    .sample-dot-icon {
+      width: 26px;
+      height: 26px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Card Footer Info & Actions */
+    .card-footer-info {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-top: 1px solid var(--border-subtle);
+      padding-top: 14px;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .author-time-meta {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .avatar-mini {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #4f46e5, #06b6d4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 10px;
+      font-weight: 700;
+    }
+
+    .card-actions-hover {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      opacity: 0.8;
+      transition: opacity 0.2s;
+    }
+
+    .bento-card:hover .card-actions-hover {
+      opacity: 1;
+    }
+
+    .btn-card-action {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-primary);
+      font-size: 11px;
+      font-weight: 600;
+      padding: 5px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      transition: all 0.2s;
+    }
+
+    .btn-card-action:hover {
+      background: rgba(255, 255, 255, 0.18);
+      border-color: rgba(255, 255, 255, 0.3);
+      color: #ffffff;
+    }
+
+    /* Compact List View Mode (Alternate modern representation) */
+    .recent-list-view {
+      display: none; /* Toggled via JS */
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .list-item-row {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 16px 24px;
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr auto;
+      align-items: center;
+      gap: 20px;
+      transition: all 0.2s;
+      cursor: pointer;
+    }
+
+    .list-item-row:hover {
+      background: var(--bg-card-hover);
+      border-color: rgba(255, 255, 255, 0.2);
+      transform: translateX(4px);
+    }
+
+    .list-item-title-grp {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .list-device-indicator {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+
+    .list-device-indicator.fold {
+      background: var(--accent-purple);
+      box-shadow: 0 0 8px var(--accent-purple);
+    }
+
+    .list-device-indicator.s-series {
+      background: var(--accent-cyan);
+      box-shadow: 0 0 8px var(--accent-cyan);
+    }
+
+    /* SLIDE-OUT QUICK INSPECT DRAWER / MODAL */
+    .inspect-drawer-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(8px);
+      z-index: 100;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+
+    .inspect-drawer-backdrop.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .inspect-drawer {
+      position: fixed;
+      top: 0;
+      right: 0;
+      width: 540px;
+      max-width: 90vw;
+      height: 100vh;
+      background: #0d0f15;
+      border-left: 1px solid var(--border-strong);
+      z-index: 101;
+      transform: translateX(100%);
+      transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+      display: flex;
+      flex-direction: column;
+      box-shadow: -20px 0 50px rgba(0, 0, 0, 0.7);
+    }
+
+    .inspect-drawer-backdrop.open .inspect-drawer {
+      transform: translateX(0);
+    }
+
+    .drawer-header {
+      padding: 24px 28px;
+      border-bottom: 1px solid var(--border-subtle);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .drawer-title {
+      font-family: var(--font-display);
+      font-size: 18px;
+      font-weight: 700;
+      color: #ffffff;
+    }
+
+    .btn-close-drawer {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-size: 20px;
+      padding: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: color 0.2s;
+    }
+
+    .btn-close-drawer:hover {
+      color: #ffffff;
+    }
+
+    .drawer-body {
+      padding: 28px;
+      flex: 1;
+      overflow-y: auto;
+    }
+
+    .drawer-spec-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 24px;
+      font-size: 13px;
+    }
+
+    .drawer-spec-table td {
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .drawer-spec-table td:first-child {
+      color: var(--text-muted);
+      width: 40%;
+    }
+
+    .drawer-spec-table td:last-child {
+      color: var(--text-primary);
+      font-family: var(--font-mono);
+      font-weight: 500;
+      text-align: right;
+    }
+
+    .drawer-footer {
+      padding: 20px 28px;
+      border-top: 1px solid var(--border-subtle);
+      background: rgba(14, 16, 21, 0.6);
+      display: flex;
+      gap: 12px;
+    }
+
+    /* FOOTER (Revolut / Graphite Clean Minimal) */
+    footer.site-footer {
+      border-top: 1px solid var(--border-subtle);
+      background: rgba(6, 7, 9, 0.95);
+      padding: 48px 32px;
+      color: var(--text-muted);
+      font-size: 13px;
+    }
+
+    .footer-inner {
+      max-width: 1440px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 24px;
+    }
+
+    .footer-brand-grp {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .footer-links {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      list-style: none;
+    }
+
+    .footer-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .footer-links a:hover {
+      color: var(--text-secondary);
+    }
+
+    .status-pulse-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: #10b981;
+    }
+
+    .status-pulse-dot {
+      width: 6px;
+      height: 6px;
+      background: #10b981;
+      border-radius: 50%;
+      box-shadow: 0 0 8px #10b981;
+    }
+
+    /* Responsive Adjustments */
+    @media (max-width: 1024px) {
+      .hero-section {
+        grid-template-columns: 1fr;
+        gap: 40px;
+      }
+      .capability-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .bento-featured {
+        grid-column: span 12;
+      }
+      .bento-standard {
+        grid-column: span 6;
+      }
+      .bento-compact {
+        grid-column: span 6;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .header-inner {
+        padding: 0 16px;
+      }
+      .nav-menu {
+        display: none;
+      }
+      main.main-content {
+        padding: 32px 16px 80px;
+      }
+      .hero-title {
+        font-size: 38px;
+      }
+      .device-wrapper-z {
+        width: 100%;
+        height: 480px;
+      }
+      .capability-grid {
+        grid-template-columns: 1fr;
+      }
+      .bento-standard, .bento-compact {
+        grid-column: span 12;
+      }
+    }
+
+    /* =====================================================================
+       MODERN MINIMAL OVERRIDE LAYER
+       장식 효과(글로우·그리드·홀로그램·그라디언트 텍스트)를 걷어내고
+       단일 폰트 · 단일 액센트 · 평면 서피스 중심으로 정리
+       ===================================================================== */
+    :root {
+      --bg-void: #0a0a0b;
+      --bg-surface: #111113;
+      --bg-surface-elevated: #18181b;
+      --bg-card: #111113;
+      --bg-card-hover: #151518;
+      --border-subtle: rgba(255, 255, 255, 0.08);
+      --border-strong: rgba(255, 255, 255, 0.16);
+      --border-focus: rgba(255, 255, 255, 0.4);
+      --text-primary: #fafafa;
+      --text-secondary: #a1a1aa;
+      --text-muted: #71717a;
+      --accent-cyan: #60a5fa;
+      --accent-blue: #3b82f6;
+      --accent-violet: #a1a1aa;
+      --accent-purple: #a78bfa;
+      --accent-glow: transparent;
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --radius-xl: 20px;
+      --font-display: 'Pretendard Variable', Pretendard, 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-body: 'Pretendard Variable', Pretendard, 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      --ease: cubic-bezier(0.2, 0, 0, 1);
+    }
+
+    body { letter-spacing: -0.01em; }
+    ::selection { background: rgba(96, 165, 250, 0.3); }
+    :focus-visible { outline: 2px solid var(--accent-cyan); outline-offset: 2px; }
+
+    /* 배경 장식 제거 */
+    .cosmic-canvas,
+    .hologram-backdrop-ring { display: none; }
+
+    /* 공지 바 */
+    .top-announcement {
+      background: var(--bg-void);
+      backdrop-filter: none;
+      padding: 9px 24px;
+    }
+    .announcement-badge {
+      font-family: var(--font-body);
+      background: transparent;
+      border: 1px solid var(--border-strong);
+      color: var(--text-primary);
+      letter-spacing: 0;
+    }
+    .top-announcement a:hover { color: var(--text-primary); text-decoration: underline; text-underline-offset: 3px; }
+
+    /* 헤더 */
+    header.site-header { background: rgba(10, 10, 11, 0.8); backdrop-filter: saturate(180%) blur(12px); }
+    .header-inner { height: 64px; max-width: 1280px; }
+    .brand-mark {
+      width: 30px; height: 30px; border-radius: 8px;
+      background: var(--text-primary); border: none; box-shadow: none;
+    }
+    .brand-mark svg { width: 16px; height: 16px; stroke: var(--bg-void); }
+    .brand-title { font-size: 16px; font-weight: 700; letter-spacing: -0.02em; }
+    .brand-badge { font-family: var(--font-body); letter-spacing: 0; background: transparent; }
+    .nav-menu { gap: 28px; }
+    .nav-pill-badge { background: var(--bg-surface-elevated); color: var(--text-secondary); }
+    .search-trigger { background: var(--bg-surface); border-radius: var(--radius-sm); }
+    .kbd-chip { font-family: var(--font-body); }
+    .btn-revolut-pill {
+      padding: 8px 16px; font-size: 13px;
+      border-radius: var(--radius-sm);
+      box-shadow: none;
+    }
+    .btn-revolut-pill:hover { transform: none; box-shadow: none; background: #e4e4e7; }
+
+    /* 메인 */
+    main.main-content { max-width: 1280px; padding: 72px 32px 120px; }
+
+    /* 히어로 */
+    .hero-section { gap: 64px; margin-bottom: 120px; min-height: 600px; }
+    .hero-meta-badge {
+      background: transparent; border: none; padding: 0;
+      font-size: 13px; color: var(--text-muted); letter-spacing: 0.02em;
+    }
+    .pulsing-dot { width: 6px; height: 6px; background: #22c55e; box-shadow: none; animation: none; }
+    .hero-title {
+      font-size: 52px; font-weight: 700; line-height: 1.15;
+      letter-spacing: -0.035em; word-break: keep-all;
+    }
+    .hero-title span.gradient-text,
+    .hero-title span.accent-highlight {
+      background: none;
+      -webkit-text-fill-color: currentColor;
+    }
+    .hero-title span.gradient-text { color: var(--text-primary); }
+    .hero-title span.accent-highlight { color: var(--text-muted); }
+    .hero-description { font-size: 16px; line-height: 1.75; word-break: keep-all; margin-bottom: 40px; }
+
+    /* 디바이스 선택 패널 */
+    .device-selection-panel {
+      background: var(--bg-surface);
+      backdrop-filter: none;
+      box-shadow: none;
+      border-radius: var(--radius-lg);
+    }
+    .device-tab-btn {
+      background: transparent;
+      border-radius: var(--radius-md);
+      transition: border-color 0.15s var(--ease), background 0.15s var(--ease);
+    }
+    .device-tab-btn:hover { background: rgba(255, 255, 255, 0.03); border-color: var(--border-strong); }
+    .device-tab-btn.active {
+      background: var(--bg-surface-elevated);
+      border-color: var(--text-primary);
+      box-shadow: none;
+    }
+    .device-tab-btn.active .tab-device-icon { color: var(--text-primary); }
+    .segmented-screen-type { background: var(--bg-void); border-radius: var(--radius-sm); }
+    .screen-type-btn { border-radius: 6px; }
+    .screen-type-btn.active { background: var(--bg-surface-elevated); box-shadow: 0 0 0 1px var(--border-strong); }
+    .grid-guide-toggle input[type="checkbox"]:checked { background: var(--accent-blue); border-color: var(--accent-blue); }
+    .selector-status { font-family: var(--font-body); }
+
+    /* CTA */
+    .btn-maker-launch {
+      background: var(--text-primary);
+      border-radius: var(--radius-md);
+      box-shadow: none;
+      transition: background 0.15s var(--ease);
+    }
+    .btn-maker-launch:hover { transform: none; box-shadow: none; background: #e4e4e7; }
+    .btn-ghost-preview { border-radius: var(--radius-md); }
+
+    /* 디바이스 목업: 컬러 글로우 → 중립 그림자 */
+    .device-wrapper-s,
+    .device-wrapper-z {
+      box-shadow:
+        0 0 0 1px rgba(255, 255, 255, 0.1),
+        0 30px 60px -20px rgba(0, 0, 0, 0.7);
+    }
+    .device-wrapper-s::before,
+    .device-wrapper-z::before { display: none; }
+    .screen-surface-s,
+    .screen-surface-z { background-image: none; }
+    .foldable-crease-guide {
+      background: linear-gradient(to bottom, transparent, rgba(255,255,255,0.12) 20%, rgba(255,255,255,0.12) 80%, transparent);
+      box-shadow: none;
+    }
+    .grid-cell-box { border-color: rgba(255, 255, 255, 0.12); background: transparent; }
+    .widget-container-clock,
+    .mini-widget-card,
+    .phone-dock-bar,
+    .fold-bottom-taskbar { backdrop-filter: none; }
+
+    /* 플로팅 스펙 칩: 정적·평면 */
+    .floating-spec-tag {
+      font-family: var(--font-body);
+      letter-spacing: 0;
+      background: var(--bg-surface);
+      backdrop-filter: none;
+      box-shadow: none;
+      animation: none;
+      border-radius: var(--radius-pill);
+    }
+    .spec-indicator-dot { background: #22c55e; }
+
+    /* 기능 스트립 */
+    .capability-strip-section { margin-bottom: 120px; padding: 56px 0; }
+    .cap-metric-eyebrow {
+      font-family: var(--font-body);
+      font-size: 12px; font-weight: 500;
+      color: var(--text-muted);
+      letter-spacing: 0.04em;
+      margin-bottom: 12px;
+    }
+    .cap-title { letter-spacing: -0.02em; }
+    .cap-desc { word-break: keep-all; }
+
+    /* 섹션 헤더 */
+    .section-eyebrow {
+      font-family: var(--font-body);
+      color: var(--text-muted);
+      letter-spacing: 0.04em;
+    }
+    .section-title { letter-spacing: -0.03em; }
+    .section-subtitle { word-break: keep-all; }
+
+    /* 필터 / 뷰 전환 */
+    .filter-pill {
+      background: transparent;
+      transition: all 0.15s var(--ease);
+    }
+    .filter-pill.active {
+      background: var(--text-primary);
+      border-color: var(--text-primary);
+      color: var(--bg-void);
+    }
+    .view-toggle-btn { background: transparent; }
+    .view-toggle-btn.active { background: var(--bg-surface-elevated); border-color: var(--border-strong); color: var(--text-primary); }
+
+    /* 벤토 카드: 평면 서피스 + 보더 호버 */
+    .bento-card {
+      background: var(--bg-card);
+      backdrop-filter: none;
+      box-shadow: none;
+      border-radius: var(--radius-lg);
+      transition: border-color 0.2s var(--ease), background 0.2s var(--ease);
+    }
+    .bento-card:hover {
+      transform: none;
+      background: var(--bg-card-hover);
+      border-color: var(--border-strong);
+      box-shadow: none;
+    }
+    .bento-featured { background: var(--bg-card); border-color: var(--border-subtle); }
+    .bento-featured::after { display: none; }
+    .card-title { letter-spacing: -0.02em; }
+    .card-description { word-break: keep-all; }
+    .card-canvas-preview { background: var(--bg-void) !important; border-radius: var(--radius-md); }
+    .device-badge-pill,
+    .device-badge-pill.fold,
+    .device-badge-pill.s-series {
+      font-family: var(--font-body);
+      letter-spacing: 0;
+      background: transparent;
+      border-color: var(--border-strong);
+      color: var(--text-secondary);
+    }
+    .device-badge-pill.fold::before,
+    .device-badge-pill.s-series::before {
+      content: ""; display: inline-block;
+      width: 6px; height: 6px; border-radius: 50%;
+      margin-right: 6px; vertical-align: 1px;
+    }
+    .device-badge-pill.fold::before { background: var(--accent-purple); }
+    .device-badge-pill.s-series::before { background: var(--accent-cyan); }
+    .screen-tag-badge { background: transparent; }
+    .avatar-mini { background: #3f3f46; }
+    .btn-card-action { border-radius: var(--radius-sm); }
+
+    /* 리스트 뷰 */
+    .list-item-row { background: var(--bg-card); backdrop-filter: none; }
+    .list-item-row:hover { transform: none; background: var(--bg-card-hover); border-color: var(--border-strong); }
+    .list-device-indicator.fold,
+    .list-device-indicator.s-series { box-shadow: none; }
+
+    /* 드로어 */
+    .inspect-drawer { background: var(--bg-surface); box-shadow: none; border-left: 1px solid var(--border-subtle); }
+    .inspect-drawer-backdrop { backdrop-filter: none; background: rgba(0, 0, 0, 0.55); }
+    .drawer-footer { background: transparent; }
+
+    /* 푸터 */
+    footer.site-footer { background: var(--bg-void); }
+    .footer-inner { max-width: 1280px; }
+    .status-pulse-badge { font-family: var(--font-body); }
+    .status-pulse-dot { box-shadow: none; }
+
+    /* 모노 폰트는 숫자/코드 성격에만 유지하고 나머지는 본문 폰트로 */
+    [style*="font-family: var(--font-mono)"] { letter-spacing: 0; }
+
+    @media (max-width: 1024px) {
+      .hero-section { gap: 48px; margin-bottom: 88px; }
+    }
+    @media (max-width: 768px) {
+      main.main-content { padding: 40px 16px 80px; }
+      .hero-title { font-size: 34px; }
+      .top-announcement { font-size: 12px; padding: 8px 16px; flex-wrap: wrap; }
+      .search-trigger span:not(.kbd-chip) { display: none; }
+      .capability-strip-section, .hero-section { margin-bottom: 72px; }
+      .hero-section > * { min-width: 0; }
+      .top-announcement > span:not(.announcement-badge) { display: none; }
+      .brand-badge, .search-trigger, .floating-spec-tag { display: none; }
+      .btn-revolut-pill { padding: 8px 12px; white-space: nowrap; }
+      .device-tab-group { grid-template-columns: 1fr; }
+      .canvas-mode-controls { flex-wrap: wrap; gap: 12px; }
+      .selector-label-row { flex-wrap: wrap; gap: 4px; }
+      .hero-cta-group { flex-direction: column; align-items: stretch; }
+      .btn-maker-launch, .btn-ghost-preview { justify-content: center; }
+      .capability-cell { border-left: none; padding-left: 0; }
+      .recent-filter-bar { flex-wrap: wrap; gap: 12px; }
+    }
+
+
+    /* 콘텐츠 축소에 맞춘 보정 */
+    .card-actions-hover { opacity: 0; }
+    .bento-card:hover .card-actions-hover,
+    .bento-card:focus-within .card-actions-hover { opacity: 1; }
+    @media (hover: none) { .card-actions-hover { opacity: 1; } }
+    .card-title { margin-bottom: 16px; word-break: keep-all; }
+    .hero-description { margin-bottom: 32px; }
+    .section-header-row { align-items: flex-end; }
+
+    .sample-dot-icon { font-size: 9px; white-space: nowrap; overflow: hidden; letter-spacing: -0.03em; }
+    @media (max-width: 768px) {
+      .featured-preview-split { grid-template-columns: 1fr; }
+      .section-header-row { flex-direction: row; align-items: center; }
+    }
+
+    .list-item-row { grid-template-columns: 1fr auto; padding: 14px 20px; gap: 16px; }
+    .list-item-title-grp > div:last-child > div:first-child { font-weight: 600 !important; word-break: keep-all; }
+
+    /* 상세 드로어 */
+    .inspect-drawer { width: 420px; }
+    .drawer-header { padding: 20px 24px; border-bottom: none; align-items: flex-start; gap: 16px; }
+    .drawer-title { font-size: 18px; font-weight: 600; line-height: 1.4; letter-spacing: -0.02em; word-break: keep-all; }
+    .btn-close-drawer { border-radius: var(--radius-sm); padding: 6px; margin: -4px -6px 0 0; }
+    .btn-close-drawer:hover { background: var(--bg-surface-elevated); color: var(--text-primary); }
+    .drawer-body { padding: 0 24px 24px; }
+    .drawer-desc { font-size: 14px; line-height: 1.7; color: var(--text-secondary); margin-bottom: 24px; word-break: keep-all; }
+    .drawer-spec-table { font-size: 14px; }
+    .drawer-spec-table td { padding: 12px 0; }
+    .drawer-spec-table tr:last-child td { border-bottom: none; }
+    .drawer-spec-table td:first-child { width: 30%; }
+    .drawer-spec-table td:last-child { font-family: var(--font-body); font-weight: 400; }
+    .drawer-json { margin-top: 16px; border-top: 1px solid var(--border-subtle); padding-top: 16px; }
+    .drawer-json summary { cursor: pointer; font-size: 13px; color: var(--text-muted); list-style: none; display: flex; align-items: center; gap: 6px; }
+    .drawer-json summary::-webkit-details-marker { display: none; }
+    .drawer-json summary::before { content: "›"; display: inline-block; transition: transform 0.15s var(--ease); }
+    .drawer-json[open] summary::before { transform: rotate(90deg); }
+    .drawer-json summary:hover { color: var(--text-secondary); }
+    .drawer-json pre { margin-top: 12px; padding: 14px; background: var(--bg-void); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); font-family: var(--font-mono); font-size: 12px; line-height: 1.6; color: var(--text-secondary); overflow-x: auto; }
+    .drawer-footer { padding: 16px 24px; gap: 8px; }
+    .drawer-footer .btn-revolut-pill, .drawer-footer .btn-ghost-preview { padding: 10px 16px; font-size: 14px; border-radius: var(--radius-md); }
+    @media (max-width: 768px) { .inspect-drawer { width: 100%; max-width: 100%; } }
+
+    /* =====================================================================
+       THEME: 공통 보정 + 라이트 모드
+       ===================================================================== */
+    :root { color-scheme: dark; }
+    body { transition: background-color 0.2s var(--ease), color 0.2s var(--ease); }
+
+    /* 테마와 무관하게 토큰을 따르도록 하드코딩 색 정리 */
+    .hero-title, .section-title, .card-title, .drawer-title { color: var(--text-primary); }
+    .btn-revolut-pill, .btn-maker-launch { background: var(--text-primary); color: var(--bg-void); }
+    .btn-revolut-pill:hover, .btn-maker-launch:hover { background: var(--btn-hover); }
+    .screen-type-btn.active { color: var(--text-primary); }
+    .device-tab-btn.active .tab-device-icon { color: var(--text-primary); }
+    .grid-guide-toggle input[type="checkbox"]:checked::after { color: #fff; }
+    .btn-ghost-preview:hover { background: var(--bg-surface-elevated); border-color: var(--border-strong); }
+    .filter-pill:hover, .view-toggle-btn:hover { background: var(--bg-surface-elevated); border-color: var(--border-strong); color: var(--text-primary); }
+    .btn-card-action { background: var(--bg-surface-elevated); color: var(--text-primary); }
+    .btn-card-action:hover { background: var(--border-subtle); border-color: var(--border-strong); color: var(--text-primary); }
+    .list-item-title-grp [style*="color: #fff"],
+    .footer-brand-grp [style*="color: #fff"] { color: var(--text-primary) !important; }
+    header.site-header { background: var(--header-bg); }
+    :root { --btn-hover: #e4e4e7; --header-bg: rgba(10, 10, 11, 0.8); }
+
+    /* 테마 토글 버튼 */
+    .theme-toggle {
+      width: 36px; height: 36px;
+      display: inline-flex; align-items: center; justify-content: center;
+      background: transparent;
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: background 0.15s var(--ease), color 0.15s var(--ease), border-color 0.15s var(--ease);
+    }
+    .theme-toggle:hover { background: var(--bg-surface-elevated); border-color: var(--border-strong); color: var(--text-primary); }
+    .theme-toggle .icon-moon { display: none; }
+    :root[data-theme="light"] .theme-toggle .icon-sun { display: none; }
+    :root[data-theme="light"] .theme-toggle .icon-moon { display: block; }
+
+    /* 라이트 모드 토큰 */
+    :root[data-theme="light"] {
+      color-scheme: light;
+      --bg-void: #fafafa;
+      --bg-surface: #ffffff;
+      --bg-surface-elevated: #f4f4f5;
+      --bg-card: #ffffff;
+      --bg-card-hover: #ffffff;
+      --border-subtle: rgba(0, 0, 0, 0.08);
+      --border-strong: rgba(0, 0, 0, 0.18);
+      --border-focus: rgba(0, 0, 0, 0.4);
+      --text-primary: #18181b;
+      --text-secondary: #52525b;
+      --text-muted: #71717a;
+      --accent-cyan: #2563eb;
+      --accent-blue: #2563eb;
+      --accent-purple: #7c3aed;
+      --btn-hover: #3f3f46;
+      --header-bg: rgba(250, 250, 250, 0.8);
+    }
+    :root[data-theme="light"] ::selection { background: rgba(37, 99, 235, 0.18); }
+    :root[data-theme="light"] .bento-card:hover,
+    :root[data-theme="light"] .list-item-row:hover { box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05); }
+    :root[data-theme="light"] .inspect-drawer-backdrop { background: rgba(0, 0, 0, 0.3); }
+    :root[data-theme="light"] .device-wrapper-s,
+    :root[data-theme="light"] .device-wrapper-z {
+      box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.12), 0 30px 60px -24px rgba(0, 0, 0, 0.35);
+    }
+
+    /* 폰 화면 · 카드 미리보기는 실제 기기 화면이므로 라이트 모드에서도 어둡게 유지 */
+    :root[data-theme="light"] .device-wrapper-s,
+    :root[data-theme="light"] .device-wrapper-z,
+    :root[data-theme="light"] .card-canvas-preview {
+      color-scheme: dark;
+      --bg-void: #0a0a0b;
+      --bg-surface: #111113;
+      --bg-surface-elevated: #18181b;
+      --border-subtle: rgba(255, 255, 255, 0.08);
+      --border-strong: rgba(255, 255, 255, 0.16);
+      --text-primary: #fafafa;
+      --text-secondary: #a1a1aa;
+      --text-muted: #71717a;
+      --accent-cyan: #60a5fa;
+      --accent-purple: #a78bfa;
+      color: var(--text-primary);
+    }
+
+    .footer-brand-grp > span:first-child { white-space: nowrap; }
+    @media (max-width: 768px) {
+      .footer-brand-grp { flex-wrap: wrap; gap: 4px 12px; }
+      .footer-brand-grp > span:nth-child(2) { display: none; }
+      .footer-brand-grp > span:nth-child(3) { flex-basis: 100%; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation: none !important; transition: none !important; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Ambient Space & Grid Mesh Background -->
+  <div class="cosmic-canvas">
+    <div class="blueprint-grid"></div>
+    <div class="ambient-glow-top"></div>
+    <div class="ambient-glow-side"></div>
+  </div>
+
+  <!-- Sticky Glass Navigation Header -->
+  <header class="site-header">
+    <div class="header-inner">
+      <div class="brand-group">
+        <a href="#" class="brand-logo">
+          <div class="brand-mark">
+            <svg viewBox="0 0 24 24">
+              <rect x="3" y="3" width="7" height="7" rx="2" />
+              <rect x="14" y="3" width="7" height="7" rx="2" />
+              <rect x="3" y="14" width="7" height="7" rx="2" />
+              <path d="M14 17.5a3.5 3.5 0 1 0 7 0a3.5 3.5 0 1 0 -7 0" />
+            </svg>
+          </div>
+          <span class="brand-title">Layout Maker</span>
+        </a>
+      </div>
+
+      <ul class="nav-menu">
+        <li class="nav-item"><a href="#recent-section">최근 레이아웃</a></li>
+        <li class="nav-item"><a href="#">위젯 라이브러리</a></li>
+        <li class="nav-item"><a href="#">가이드</a></li>
+      </ul>
+
+      <div class="header-actions">
+        <button class="theme-toggle" id="theme-toggle" type="button" aria-label="라이트 모드로 전환" title="테마 전환">
+          <svg class="icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+          <svg class="icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        </button>
+        <button class="btn-revolut-pill" id="header-create-btn">
+          <span>새 레이아웃 구성</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Workspace Content -->
+  <main class="main-content">
+
+    <!-- =======================================================================
+         HERO SECTION: DUAL HORIZON DEVICE SELECTOR & INTERACTIVE CANVAS STAGE
+         ======================================================================= -->
+    <section class="hero-section">
+      <!-- Left Column: Thesis Typography & Device Selection Controls -->
+      <div class="hero-content-col">
+
+        <h1 class="hero-title">
+          <span class="gradient-text">스마트폰의 첫인상을</span><br>
+          <span class="accent-highlight">완벽한 비례로 설계하다.</span>
+        </h1>
+
+        <p class="hero-description">
+          홈 화면과 앱 트레이의 아이콘·위젯 배치를 설계하고 바로 미리보세요.
+        </p>
+
+        <!-- Interactive Device Selection Card -->
+        <div class="device-selection-panel">
+
+          <!-- Model Switcher Tabs (Galaxy S vs Galaxy Z) -->
+          <div class="device-tab-group">
+            <!-- Galaxy S Tab -->
+            <button class="device-tab-btn active" id="tab-model-s" data-model="s-series">
+              <div class="tab-header-row">
+                <span class="tab-device-name">Galaxy S 시리즈</span>
+                <svg class="tab-device-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="7" y="2" width="10" height="20" rx="2.5" />
+                  <path d="M11 18h2" />
+                </svg>
+              </div>
+              <span class="tab-device-specs">바형 · 19.5:9</span>
+            </button>
+
+            <!-- Galaxy Z Tab -->
+            <button class="device-tab-btn" id="tab-model-z" data-model="z-series">
+              <div class="tab-header-row">
+                <span class="tab-device-name">Galaxy Z 시리즈</span>
+                <svg class="tab-device-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="3" y="3" width="8" height="18" rx="1.5" />
+                  <rect x="13" y="3" width="8" height="18" rx="1.5" />
+                  <path d="M11 3v18" stroke-dasharray="2 2"/>
+                </svg>
+              </div>
+              <span class="tab-device-specs">폴더블 · 8:7.1</span>
+            </button>
+          </div>
+
+          <!-- Secondary Canvas Controls: Screen Target (Home vs Apps) & Grid Toggle -->
+          <div class="canvas-mode-controls">
+            <div class="segmented-screen-type">
+              <button class="screen-type-btn active" id="btn-screen-home" data-screen="home">홈 화면 (Home)</button>
+              <button class="screen-type-btn" id="btn-screen-apps" data-screen="apps">앱 트레이 (Apps)</button>
+            </div>
+
+            <label class="grid-guide-toggle">
+              <input type="checkbox" id="toggle-grid-guides" checked>
+              <span>그리드 가이드</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Action CTA Button Row -->
+        <div class="hero-cta-group">
+          <button class="btn-maker-launch" id="btn-open-maker">
+            <span id="cta-button-text">레이아웃 만들기</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Right Column: Interactive Hardware Pedestal & Live One UI Preview -->
+      <div class="hero-stage-container">
+
+        <div class="device-pedestal-platform">
+
+          <!-- =================================================================
+               DEVICE 1: GALAXY S SERIES HARDWARE MOCKUP (Candybar Flagship)
+               ================================================================= -->
+          <div class="device-wrapper-s" id="device-view-s">
+            <div class="screen-surface-s">
+              <div class="camera-punchhole"></div>
+              
+              <!-- Phone Status Bar -->
+              <div class="phone-status-bar">
+                <span>09:41</span>
+                <div class="status-icons-mini">
+                  <span>5G</span>
+                  <span>98%</span>
+                </div>
+              </div>
+
+              <!-- Canvas Content Area -->
+              <div class="phone-canvas-inner">
+                <!-- Grid Guide Mesh Overlay (Interactive Toggle) -->
+                <div class="grid-guide-mesh show-guide" id="mesh-overlay-s">
+                  <div class="grid-cell-box"></div><div class="grid-cell-box"></div><div class="grid-cell-box"></div><div class="grid-cell-box"></div><div class="grid-cell-box"></div>
+                  <div class="grid-cell-box"></div><div class="grid-cell-box"></div><div class="grid-cell-box"></div><div class="grid-cell-box"></div><div class="grid-cell-box"></div>
+                  <div class="grid-cell-box"></div><div class="grid-cell-box"></div><div class="grid-cell-box"></div><div class="grid-cell-box"></div><div class="grid-cell-box"></div>
+                  <div class="grid-cell-box"></div><div class="grid-cell-box"></div><div class="grid-cell-box"></div><div class="grid-cell-box"></div><div class="grid-cell-box"></div>
+                  <div class="grid-cell-box"></div><div class="grid-cell-box"></div><div class="grid-cell-box"></div><div class="grid-cell-box"></div><div class="grid-cell-box"></div>
+                  <div class="grid-cell-box"></div><div class="grid-cell-box"></div><div class="grid-cell-box"></div><div class="grid-cell-box"></div><div class="grid-cell-box"></div>
+                </div>
+
+                <!-- [HOME SCREEN MODE CONTENT FOR GALAXY S] -->
+                <div id="s-home-content" style="display: flex; flex-direction: column; height: 100%; justify-content: space-between;">
+                  <!-- Top One UI 7 Weather/Clock Widget (4x2) -->
+                  <div class="widget-container-clock">
+                    <div>
+                      <div class="clock-time-val">09:41</div>
+                      <div class="clock-date-val">11월 9일 월요일 • 서울</div>
+                    </div>
+                    <div class="weather-preview">
+                      <div class="weather-temp">18°</div>
+                      <div class="weather-city">맑음 • 미세먼지 좋음</div>
+                    </div>
+                  </div>
+
+                  <!-- Galaxy AI Smart Pill & Battery Dual Widget (4x1) -->
+                  <div class="widgets-row-dual">
+                    <div class="mini-widget-card">
+                      <div class="mini-widget-header">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--accent-cyan)" stroke-width="2"><path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3Z"/></svg>
+                        <span>Galaxy AI</span>
+                      </div>
+                      <span style="font-size: 11px; font-weight: 600; color: #fff;">오늘 일정 요약 완료</span>
+                    </div>
+
+                    <div class="mini-widget-card">
+                      <div class="mini-widget-header">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2"><rect x="2" y="7" width="16" height="10" rx="2"/><path d="M22 11v2"/></svg>
+                        <span>배터리 상태</span>
+                      </div>
+                      <div class="battery-rings-indicator">
+                        <span class="battery-pill">S25 98%</span>
+                        <span style="font-size: 10px; color: var(--text-muted);">Buds 100%</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- 4x3 App Icons Grid -->
+                  <div class="icons-matrix-grid">
+                    <div class="phone-icon-item">
+                      <div class="app-squircle" style="background: linear-gradient(135deg, #ff5722, #f44336);">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                      </div>
+                      <span class="app-label-text">갤러리</span>
+                    </div>
+
+                    <div class="phone-icon-item">
+                      <div class="app-squircle" style="background: linear-gradient(135deg, #e91e63, #9c27b0);">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+                      </div>
+                      <span class="app-label-text">카메라</span>
+                    </div>
+
+                    <div class="phone-icon-item">
+                      <div class="app-squircle" style="background: linear-gradient(135deg, #ff9800, #ffb300);">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/></svg>
+                        <span class="app-badge-unread">2</span>
+                      </div>
+                      <span class="app-label-text">Samsung Note</span>
+                    </div>
+
+                    <div class="phone-icon-item">
+                      <div class="app-squircle" style="background: linear-gradient(135deg, #00c6ff, #0072ff);">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>
+                      </div>
+                      <span class="app-label-text">인터넷</span>
+                    </div>
+
+                    <div class="phone-icon-item">
+                      <div class="app-squircle" style="background: linear-gradient(135deg, #10b981, #059669);">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+                      </div>
+                      <span class="app-label-text">S-Health</span>
+                    </div>
+
+                    <div class="phone-icon-item">
+                      <div class="app-squircle" style="background: linear-gradient(135deg, #6366f1, #4f46e5);">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                      </div>
+                      <span class="app-label-text">SmartThings</span>
+                    </div>
+
+                    <div class="phone-icon-item">
+                      <div class="app-squircle" style="background: linear-gradient(135deg, #8b5cf6, #7c3aed);">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
+                      </div>
+                      <span class="app-label-text">Galaxy Store</span>
+                    </div>
+
+                    <div class="phone-icon-item">
+                      <div class="app-squircle" style="background: linear-gradient(135deg, #64748b, #475569);">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+                      </div>
+                      <span class="app-label-text">설정</span>
+                    </div>
+                  </div>
+
+                  <!-- Bottom Dock Bar (4 Essential Apps) -->
+                  <div class="phone-dock-bar">
+                    <div class="phone-icon-item">
+                      <div class="app-squircle" style="background: linear-gradient(135deg, #10b981, #047857);">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                      </div>
+                    </div>
+                    <div class="phone-icon-item">
+                      <div class="app-squircle" style="background: linear-gradient(135deg, #3b82f6, #1d4ed8);">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                      </div>
+                    </div>
+                    <div class="phone-icon-item">
+                      <div class="app-squircle" style="background: linear-gradient(135deg, #8b5cf6, #6d28d9);">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                      </div>
+                    </div>
+                    <div class="phone-icon-item">
+                      <div class="app-squircle" style="background: linear-gradient(135deg, #ec4899, #be185d);">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- [APP TRAY MODE CONTENT FOR GALAXY S - Hidden by default] -->
+                <div id="s-apps-content" style="display: none; flex-direction: column; height: 100%;">
+                  <!-- Search Bar in App Tray -->
+                  <div style="background: rgba(255,255,255,0.08); border-radius: var(--radius-pill); padding: 8px 14px; display: flex; align-items: center; gap: 8px; margin-bottom: 16px; border: 1px solid var(--border-subtle);">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                    <span style="font-size: 11px; color: var(--text-muted);">Finder 검색</span>
+                  </div>
+
+                  <!-- 4x5 App Tray Grid -->
+                  <div class="icons-matrix-grid" style="grid-template-columns: repeat(4, 1fr); gap: 14px 8px;">
+                    <div class="phone-icon-item"><div class="app-squircle" style="background: #2563eb;"><span style="font-size: 10px; font-weight: 700; color: white;">금융</span></div><span class="app-label-text">삼성월렛</span></div>
+                    <div class="phone-icon-item"><div class="app-squircle" style="background: #10b981;"><span style="font-size: 10px; font-weight: 700; color: white;">건강</span></div><span class="app-label-text">헬스</span></div>
+                    <div class="phone-icon-item"><div class="app-squircle" style="background: #f59e0b;"><span style="font-size: 10px; font-weight: 700; color: white;">노트</span></div><span class="app-label-text">메모장</span></div>
+                    <div class="phone-icon-item"><div class="app-squircle" style="background: #ef4444;"><span style="font-size: 10px; font-weight: 700; color: white;">영상</span></div><span class="app-label-text">YouTube</span></div>
+                    <div class="phone-icon-item"><div class="app-squircle" style="background: #8b5cf6;"><span style="font-size: 10px; font-weight: 700; color: white;">SNS</span></div><span class="app-label-text">인스타그램</span></div>
+                    <div class="phone-icon-item"><div class="app-squircle" style="background: #06b6d4;"><span style="font-size: 10px; font-weight: 700; color: white;">지도</span></div><span class="app-label-text">네이버지도</span></div>
+                    <div class="phone-icon-item"><div class="app-squircle" style="background: #14b8a6;"><span style="font-size: 10px; font-weight: 700; color: white;">쇼핑</span></div><span class="app-label-text">쿠팡</span></div>
+                    <div class="phone-icon-item"><div class="app-squircle" style="background: #6366f1;"><span style="font-size: 10px; font-weight: 700; color: white;">클라우드</span></div><span class="app-label-text">OneDrive</span></div>
+                    <div class="phone-icon-item"><div class="app-squircle" style="background: #475569;"><span style="font-size: 10px; font-weight: 700; color: white;">도구</span></div><span class="app-label-text">계산기</span></div>
+                    <div class="phone-icon-item"><div class="app-squircle" style="background: #334155;"><span style="font-size: 10px; font-weight: 700; color: white;">파일</span></div><span class="app-label-text">내 파일</span></div>
+                    <div class="phone-icon-item"><div class="app-squircle" style="background: #64748b;"><span style="font-size: 10px; font-weight: 700; color: white;">설정</span></div><span class="app-label-text">디바이스케어</span></div>
+                    <div class="phone-icon-item"><div class="app-squircle" style="background: #0f172a; border: 1px dashed rgba(255,255,255,0.2);"><span style="font-size: 16px; color: var(--accent-cyan);">+</span></div><span class="app-label-text">폴더 추가</span></div>
+                  </div>
+                </div>
+
+                <div class="home-indicator-pill"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- =================================================================
+               DEVICE 2: GALAXY Z SERIES HARDWARE MOCKUP (Foldable Horizon Stage)
+               ================================================================= -->
+          <div class="device-wrapper-z" id="device-view-z">
+            <div class="screen-surface-z">
+              <!-- Foldable Center Glowing Crease Hinge Line -->
+              <div class="foldable-crease-guide"></div>
+
+              <!-- Top Status Bar for Foldable Screen -->
+              <div class="phone-status-bar" style="padding: 10px 24px 6px;">
+                <div style="display: flex; align-items: center; gap: 8px;">
+                  <span>09:41</span>
+                  <span style="font-size: 10px; color: var(--accent-purple); font-weight: 600;">[Z FOLD DUAL WORKSPACE]</span>
+                </div>
+                <div class="status-icons-mini">
+                  <span>5G+</span>
+                  <span>100%</span>
+                </div>
+              </div>
+
+              <!-- Dual Split Canvas Body -->
+              <div class="fold-dual-pane">
+                
+                <!-- LEFT PANE: Widgets Stack & Smart Schedule -->
+                <div class="pane-half">
+                  <!-- Large Smart Calendar Widget (4x3 equivalent) -->
+                  <div style="background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; padding: 12px; display: flex; flex-direction: column; gap: 6px;">
+                    <div style="display: flex; justify-content: space-between; font-size: 11px; font-weight: 700; color: #fff;">
+                      <span>11월 9일 (월)</span>
+                      <span style="color: var(--accent-cyan);">스마트 일정</span>
+                    </div>
+                    <div style="background: rgba(56, 189, 248, 0.12); border-left: 3px solid var(--accent-cyan); padding: 6px 8px; border-radius: 4px; font-size: 11px;">
+                      <div style="font-weight: 600; color: #fff;">10:00 AM • One UI 7 론칭 점검</div>
+                      <div style="font-size: 9px; color: var(--text-secondary);">스마트폰 PP2그룹 / CX 회의실</div>
+                    </div>
+                    <div style="background: rgba(168, 85, 247, 0.12); border-left: 3px solid var(--accent-purple); padding: 6px 8px; border-radius: 4px; font-size: 11px;">
+                      <div style="font-weight: 600; color: #fff;">02:30 PM • Z Fold6 레이아웃 품평회</div>
+                      <div style="font-size: 9px; color: var(--text-secondary);">온라인 컨퍼런스 룸</div>
+                    </div>
+                  </div>
+
+                  <!-- Music / Media Waveform Pill Widget -->
+                  <div style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); border-radius: 14px; padding: 10px 12px; display: flex; align-items: center; justify-content: space-between;">
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                      <div style="width: 28px; height: 28px; border-radius: 8px; background: #10b981; display: flex; align-items: center; justify-content: center;">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="white"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                      </div>
+                      <div>
+                        <div style="font-size: 11px; font-weight: 600; color: #fff;">Galaxy Ambient Beats</div>
+                        <div style="font-size: 9px; color: var(--text-muted);">Spotify • Now Playing</div>
+                      </div>
+                    </div>
+                    <span style="font-family: var(--font-mono); font-size: 10px; color: var(--accent-cyan);">02:45</span>
+                  </div>
+
+                  <!-- Quick Action Note -->
+                  <div style="margin-top: auto; padding: 8px 12px; background: rgba(0,0,0,0.3); border-radius: 10px; border: 1px dashed rgba(255,255,255,0.1); font-size: 10px; color: var(--text-muted); display: flex; align-items: center; gap: 6px;">
+                    <span style="color: var(--accent-purple);">●</span>
+                    <span>왼쪽 화면: 위젯 & 실시간 대시보드 할당</span>
+                  </div>
+                </div>
+
+                <!-- RIGHT PANE: Dense Productivity 4x5 App Grid -->
+                <div class="pane-half">
+                  <div style="display: flex; justify-content: space-between; align-items: center; padding: 0 4px;">
+                    <span style="font-size: 11px; font-weight: 700; color: var(--text-secondary);">업무 생산성 워크스페이스</span>
+                    <span style="font-size: 10px; font-family: var(--font-mono); color: var(--accent-cyan);">4×5 GRID</span>
+                  </div>
+
+                  <div class="icons-matrix-grid" style="grid-template-columns: repeat(4, 1fr); gap: 12px 6px;">
+                    <div class="phone-icon-item"><div class="app-squircle" style="background: #2563eb;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M4 4h16v16H4z"/></svg></div><span class="app-label-text">Samsung DeX</span></div>
+                    <div class="phone-icon-item"><div class="app-squircle" style="background: #f59e0b;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><circle cx="12" cy="12" r="10"/></svg></div><span class="app-label-text">AI 번역</span></div>
+                    <div class="phone-icon-item"><div class="app-squircle" style="background: #10b981;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg></div><span class="app-label-text">Excel</span></div>
+                    <div class="phone-icon-item"><div class="app-squircle" style="background: #8b5cf6;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg></div><span class="app-label-text">S-Pen Studio</span></div>
+
+                    <div class="phone-icon-item"><div class="app-squircle" style="background: #06b6d4;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><circle cx="12" cy="12" r="8"/></svg></div><span class="app-label-text">팀즈</span></div>
+                    <div class="phone-icon-item"><div class="app-squircle" style="background: #ec4899;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div><span class="app-label-text">화상회의</span></div>
+                    <div class="phone-icon-item"><div class="app-squircle" style="background: #6366f1;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/></svg></div><span class="app-label-text">PRD 문서</span></div>
+                    <div class="phone-icon-item"><div class="app-squircle" style="background: #475569;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><circle cx="12" cy="12" r="3"/></svg></div><span class="app-label-text">보안폴더</span></div>
+                  </div>
+
+                  <!-- Quick Action Note -->
+                  <div style="margin-top: auto; padding: 8px 12px; background: rgba(0,0,0,0.3); border-radius: 10px; border: 1px dashed rgba(255,255,255,0.1); font-size: 10px; color: var(--text-muted); display: flex; align-items: center; gap: 6px;">
+                    <span style="color: var(--accent-cyan);">●</span>
+                    <span>오른쪽 화면: 멀티태스킹 앱 런처 배정</span>
+                  </div>
+                </div>
+
+              </div>
+
+              <!-- Foldable Dedicated Persistent Taskbar (Samsung One UI Signature) -->
+              <div class="fold-bottom-taskbar">
+                <div class="taskbar-apps-row">
+                  <div class="taskbar-mini-app" style="background: #10b981;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg></div>
+                  <div class="taskbar-mini-app" style="background: #3b82f6;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+                  <div class="taskbar-mini-app" style="background: #00c6ff;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><circle cx="12" cy="12" r="10"/></svg></div>
+                  <div class="taskbar-mini-app" style="background: #f59e0b;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/></svg></div>
+                  <div class="taskbar-mini-app" style="background: #e91e63;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/></svg></div>
+                  
+                  <div class="taskbar-divider"></div>
+
+                  <!-- 2 Recent Apps in Taskbar -->
+                  <div class="taskbar-mini-app" style="background: #8b5cf6; opacity: 0.85;"><span style="font-size: 9px; color: #fff;">최근</span></div>
+                  <div class="taskbar-mini-app" style="background: #06b6d4; opacity: 0.85;"><span style="font-size: 9px; color: #fff;">DeX</span></div>
+                </div>
+
+                <div style="font-family: var(--font-mono); font-size: 10px; color: var(--text-muted); display: flex; align-items: center; gap: 4px;">
+                  <span style="color: var(--accent-purple);">●</span> 태스크바 고정
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- =======================================================================
+         RECENT LAYOUTS SECTION: BENTO WORKSPACE SHOWCASE & RECENT LIST
+         ======================================================================= -->
+    <section class="recent-layouts-section" id="recent-section">
+      <!-- Section Header -->
+      <div class="section-header-row">
+        <div>
+          <h2 class="section-title">최근에 구성한 레이아웃</h2>
+        </div>
+
+        <!-- View Mode Switch (Bento Tiles vs Compact List) -->
+        <div class="view-switch-controls">
+          <button class="view-toggle-btn active" id="view-mode-bento" title="타일 벤토 뷰">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+          </button>
+          <button class="view-toggle-btn" id="view-mode-list" title="스마트 리스트 뷰">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Filter Controls Strip -->
+      <div class="recent-filter-bar">
+        <div class="filter-pills-cluster">
+          <button class="filter-pill active" data-filter="all">전체</button>
+          <button class="filter-pill" data-filter="s-series">Galaxy S</button>
+          <button class="filter-pill" data-filter="z-series">Galaxy Z</button>
+        </div>
+      </div>
+
+      <!-- BENTO GRID VIEW CONTAINER -->
+      <div class="bento-layouts-grid" id="container-bento-view">
+        
+        <!-- CARD 1: HERO FEATURED TILE (Z Fold6 Main Screen Showcase - Span 8) -->
+        <div class="bento-card bento-featured" data-category="z-series home favorite" onclick="openInspectDrawer('layout-zfold-master')">
+          <div>
+            <div class="card-top-row">
+              <div style="display: flex; gap: 8px; align-items: center;">
+                <span class="device-badge-pill fold">Galaxy Z Fold6 Main</span>
+                <span class="screen-tag-badge">홈 화면 Page 1</span>
+              </div>
+            </div>
+
+            <div class="card-title">2026 플래그십 표준 멀티태스킹 홈 레이아웃</div>
+          </div>
+
+          <!-- Featured Mini Canvas Mockup -->
+          <div class="card-canvas-preview">
+            <div class="featured-preview-split">
+              <!-- Left Preview -->
+              <div style="display: flex; flex-direction: column; gap: 8px;">
+                <div class="mini-widget-preview-box" style="border-left: 3px solid var(--accent-cyan);">
+                  <span style="color: var(--accent-cyan); font-weight: 700;">AI 위젯</span>
+                  <span>스마트 미팅 요약 & 실시간 날씨</span>
+                </div>
+                <div class="mini-widget-preview-box" style="border-left: 3px solid var(--accent-purple);">
+                  <span style="color: var(--accent-purple); font-weight: 700;">미디어</span>
+                  <span>Galaxy Buds Live 사운드 컨트롤러</span>
+                </div>
+              </div>
+
+              <!-- Right Preview -->
+              <div class="mini-icon-cluster">
+                <div class="sample-dot-icon" style="background: #2563eb; color: white;">DeX</div>
+                <div class="sample-dot-icon" style="background: #10b981; color: white;">노트</div>
+                <div class="sample-dot-icon" style="background: #f59e0b; color: white;">갤러리</div>
+                <div class="sample-dot-icon" style="background: #8b5cf6; color: white;">S-Pen</div>
+                <div class="sample-dot-icon" style="background: #ec4899; color: white;">화상</div>
+                <div class="sample-dot-icon" style="background: #06b6d4; color: white;">문서</div>
+                <div class="sample-dot-icon" style="background: #6366f1; color: white;">설정</div>
+                <div class="sample-dot-icon" style="background: #334155; color: white;">보안</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card-footer-info">
+            <div class="author-time-meta">
+              <div class="avatar-mini">K</div>
+              <span>김기획 책임 • 12분 전 수정</span>
+            </div>
+            <div class="card-actions-hover">
+              <button class="btn-card-action" onclick="event.stopPropagation(); alert('레이아웃 에디터 모듈로 연결됩니다.');">
+                <span>에디터 열기</span>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- CARD 2: GALAXY S25 ULTRA HOME (Span 4) -->
+        <div class="bento-card bento-standard" data-category="s-series home favorite" onclick="openInspectDrawer('layout-s25-essential')">
+          <div>
+            <div class="card-top-row">
+              <span class="device-badge-pill s-series">Galaxy S25 Ultra</span>
+              <span class="screen-tag-badge">홈 화면</span>
+            </div>
+            <div class="card-title">One UI 7.0 컴팩트 에센셜</div>
+          </div>
+
+          <div class="card-canvas-preview" style="align-items: center;">
+            <div style="width: 85%; background: rgba(255,255,255,0.06); border-radius: 8px; padding: 6px 10px; margin-bottom: 8px; font-size: 10px; display: flex; justify-content: space-between;">
+              <span>09:41 AM</span>
+              <span style="color: var(--accent-cyan);">맑음 18°</span>
+            </div>
+            <div class="mini-icon-cluster" style="grid-template-columns: repeat(4, 1fr); width: 85%;">
+              <div class="sample-dot-icon" style="background: #ff5722;"></div>
+              <div class="sample-dot-icon" style="background: #3b82f6;"></div>
+              <div class="sample-dot-icon" style="background: #10b981;"></div>
+              <div class="sample-dot-icon" style="background: #8b5cf6;"></div>
+            </div>
+          </div>
+
+          <div class="card-footer-info">
+            <div class="author-time-meta">
+              <div class="avatar-mini" style="background: #059669;">L</div>
+              <span>이선임 UX • 2시간 전</span>
+            </div>
+            <div class="card-actions-hover">
+              <button class="btn-card-action">상세 스펙</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- CARD 3: GALAXY S25 APP TRAY A-Z (Span 4) -->
+        <div class="bento-card bento-compact" data-category="s-series apps" onclick="openInspectDrawer('layout-s25-apptray')">
+          <div>
+            <div class="card-top-row">
+              <span class="device-badge-pill s-series">Galaxy S25 Series</span>
+              <span class="screen-tag-badge">앱 트레이</span>
+            </div>
+            <div class="card-title">업무 집중형 카테고리 앱 서랍</div>
+          </div>
+
+          <div class="card-canvas-preview">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+              <div style="background: rgba(255,255,255,0.04); border-radius: 6px; padding: 8px; text-align: center; font-size: 10px;">
+                <span style="color: #60a5fa; font-weight: 600;">[폴더] 금융</span><br>
+                <span style="color: var(--text-muted);">9개 앱</span>
+              </div>
+              <div style="background: rgba(255,255,255,0.04); border-radius: 6px; padding: 8px; text-align: center; font-size: 10px;">
+                <span style="color: #34d399; font-weight: 600;">[폴더] 업무</span><br>
+                <span style="color: var(--text-muted);">14개 앱</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="card-footer-info">
+            <div class="author-time-meta">
+              <div class="avatar-mini" style="background: #d97706;">P</div>
+              <span>박연구원 • 어제</span>
+            </div>
+            <div class="card-actions-hover">
+              <button class="btn-card-action">사본 복제</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- CARD 4: GALAXY Z FOLD6 COVER SCREEN (Span 4) -->
+        <div class="bento-card bento-compact" data-category="z-series home" onclick="openInspectDrawer('layout-zfold-cover')">
+          <div>
+            <div class="card-top-row">
+              <span class="device-badge-pill fold">Galaxy Z Fold6 Cover</span>
+              <span class="screen-tag-badge">커버 화면</span>
+            </div>
+            <div class="card-title">한 손 조작 커버 스크린 퀵 홈</div>
+          </div>
+
+          <div class="card-canvas-preview" style="align-items: center;">
+            <div style="width: 70px; height: 110px; border: 1px dashed rgba(168,85,247,0.4); border-radius: 8px; display: flex; flex-direction: column; justify-content: flex-end; padding: 6px; gap: 4px;">
+              <div style="height: 18px; background: rgba(168,85,247,0.25); border-radius: 4px;"></div>
+              <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 3px;">
+                <div style="height: 14px; background: rgba(255,255,255,0.15); border-radius: 3px;"></div>
+                <div style="height: 14px; background: rgba(255,255,255,0.15); border-radius: 3px;"></div>
+                <div style="height: 14px; background: rgba(255,255,255,0.15); border-radius: 3px;"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card-footer-info">
+            <div class="author-time-meta">
+              <div class="avatar-mini" style="background: #7c3aed;">C</div>
+              <span>최수석 CX • 3일 전</span>
+            </div>
+            <div class="card-actions-hover">
+              <button class="btn-card-action">JSON 내보내기</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- CARD 5: GALAXY S24 FE EASY MODE (Span 4) -->
+        <div class="bento-card bento-compact" data-category="s-series home" onclick="openInspectDrawer('layout-s24-easy')">
+          <div>
+            <div class="card-top-row">
+              <span class="device-badge-pill s-series">Galaxy S24 FE</span>
+              <span class="screen-tag-badge">이지 홈 모드</span>
+            </div>
+            <div class="card-title">고대비 시니어 이지 홈 프리셋</div>
+          </div>
+
+          <div class="card-canvas-preview">
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; width: 100%;">
+              <div class="sample-dot-icon" style="width: 38px; height: 38px; background: #22c55e; font-size: 16px;">전화</div>
+              <div class="sample-dot-icon" style="width: 38px; height: 38px; background: #3b82f6; font-size: 16px;">문자</div>
+              <div class="sample-dot-icon" style="width: 38px; height: 38px; background: #ef4444; font-size: 16px;">SOS</div>
+            </div>
+          </div>
+
+          <div class="card-footer-info">
+            <div class="author-time-meta">
+              <div class="avatar-mini" style="background: #0284c7;">A</div>
+              <span>접근성 TFT • 5일 전</span>
+            </div>
+            <div class="card-actions-hover">
+              <button class="btn-card-action">프리셋 로드</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- CARD 6: GALAXY Z FOLD6 GAMING & ENTERTAINMENT (Span 4) -->
+        <div class="bento-card bento-compact" data-category="z-series home favorite" onclick="openInspectDrawer('layout-zfold-gaming')">
+          <div>
+            <div class="card-top-row">
+              <span class="device-badge-pill fold">Galaxy Z Fold6</span>
+              <span class="screen-tag-badge">엔터테인먼트</span>
+            </div>
+            <div class="card-title">게이밍 허브 & 미디어 덱</div>
+          </div>
+
+          <div class="card-canvas-preview" style="background: linear-gradient(135deg, rgba(239,68,68,0.1) 0%, rgba(139,92,246,0.1) 100%);">
+            <div style="width: 100%; display: flex; flex-direction: column; gap: 6px;">
+              <div style="background: rgba(255,255,255,0.08); border-radius: 6px; padding: 6px 10px; font-size: 10px; display: flex; justify-content: space-between; align-items: center;">
+                <span style="color: #f87171; font-weight: 700;">Gaming Hub</span>
+                <span style="color: var(--accent-cyan); font-family: var(--font-mono);">120 FPS READY</span>
+              </div>
+              <div style="display: flex; gap: 6px; justify-content: center;">
+                <div class="sample-dot-icon" style="background: #7c3aed; color: white; width: 28px; height: 28px;">🎮</div>
+                <div class="sample-dot-icon" style="background: #5865f2; color: white; width: 28px; height: 28px;">💬</div>
+                <div class="sample-dot-icon" style="background: #9146ff; color: white; width: 28px; height: 28px;">📺</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card-footer-info">
+            <div class="author-time-meta">
+              <div class="avatar-mini" style="background: #e11d48;">G</div>
+              <span>게이밍 사업팀 • 1주일 전</span>
+            </div>
+            <div class="card-actions-hover">
+              <button class="btn-card-action">스펙 검사</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ALTERNATIVE COMPACT LIST VIEW CONTAINER (Toggled via button) -->
+      <div class="recent-list-view" id="container-list-view">
+        <div class="list-item-row" data-category="z-series home favorite" onclick="openInspectDrawer('layout-zfold-master')">
+          <div class="list-item-title-grp">
+            <div class="list-device-indicator fold"></div>
+            <div>
+              <div style="font-weight: 700; color: #fff;">2026 플래그십 표준 멀티태스킹 홈 레이아웃</div>
+              <div style="font-size: 12px; color: var(--text-muted);">Galaxy Z Fold6 Main · 홈 화면</div>
+            </div>
+          </div>
+          <span style="font-size: 12px; color: var(--text-muted);">12분 전</span>
+        </div>
+
+        <div class="list-item-row" data-category="s-series home favorite" onclick="openInspectDrawer('layout-s25-essential')">
+          <div class="list-item-title-grp">
+            <div class="list-device-indicator s-series"></div>
+            <div>
+              <div style="font-weight: 700; color: #fff;">One UI 7.0 컴팩트 에센셜</div>
+              <div style="font-size: 12px; color: var(--text-muted);">Galaxy S25 Ultra · 홈 화면</div>
+            </div>
+          </div>
+          <span style="font-size: 12px; color: var(--text-muted);">2시간 전</span>
+        </div>
+
+        <div class="list-item-row" data-category="s-series apps" onclick="openInspectDrawer('layout-s25-apptray')">
+          <div class="list-item-title-grp">
+            <div class="list-device-indicator s-series"></div>
+            <div>
+              <div style="font-weight: 700; color: #fff;">업무 집중형 카테고리 앱 서랍</div>
+              <div style="font-size: 12px; color: var(--text-muted);">Galaxy S25 Series · 앱 트레이</div>
+            </div>
+          </div>
+          <span style="font-size: 12px; color: var(--text-muted);">어제</span>
+        </div>
+
+        <div class="list-item-row" data-category="z-series home" onclick="openInspectDrawer('layout-zfold-cover')">
+          <div class="list-item-title-grp">
+            <div class="list-device-indicator fold"></div>
+            <div>
+              <div style="font-weight: 700; color: #fff;">한 손 조작 커버 스크린 퀵 홈</div>
+              <div style="font-size: 12px; color: var(--text-muted);">Galaxy Z Fold6 Cover · 커버 화면</div>
+            </div>
+          </div>
+          <span style="font-size: 12px; color: var(--text-muted);">3일 전</span>
+        </div>
+
+        <div class="list-item-row" data-category="s-series home" onclick="openInspectDrawer('layout-s24-easy')">
+          <div class="list-item-title-grp">
+            <div class="list-device-indicator s-series"></div>
+            <div>
+              <div style="font-weight: 700; color: #fff;">고대비 시니어 이지 홈 프리셋</div>
+              <div style="font-size: 12px; color: var(--text-muted);">Galaxy S24 FE · 이지 홈</div>
+            </div>
+          </div>
+          <span style="font-size: 12px; color: var(--text-muted);">5일 전</span>
+        </div>
+
+        <div class="list-item-row" data-category="z-series home favorite" onclick="openInspectDrawer('layout-zfold-gaming')">
+          <div class="list-item-title-grp">
+            <div class="list-device-indicator fold"></div>
+            <div>
+              <div style="font-weight: 700; color: #fff;">게이밍 허브 & 미디어 덱</div>
+              <div style="font-size: 12px; color: var(--text-muted);">Galaxy Z Fold6 · 엔터테인먼트</div>
+            </div>
+          </div>
+          <span style="font-size: 12px; color: var(--text-muted);">1주일 전</span>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- =======================================================================
+       INTERACTIVE SPEC INSPECTION DRAWER (Slide-out detailed modal)
+       ======================================================================= -->
+  <div class="inspect-drawer-backdrop" id="inspect-drawer-backdrop" onclick="closeInspectDrawer()">
+    <div class="inspect-drawer" onclick="event.stopPropagation()">
+      <div class="drawer-header">
+        <div>
+          <h3 class="drawer-title" id="drawer-title-text">레이아웃 세부 명세서</h3>
+        </div>
+        <button class="btn-close-drawer" onclick="closeInspectDrawer()" aria-label="닫기"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
+      </div>
+
+      <div class="drawer-body">
+        <p class="drawer-desc" id="drawer-desc-text">
+          선택한 레이아웃의 One UI 그리드 규칙, 위젯 비율, 디바이스 호환성 및 내보내기 메타데이터입니다.
+        </p>
+
+        <table class="drawer-spec-table">
+          <tbody>
+            <tr>
+              <td>디바이스</td>
+              <td id="drawer-spec-device">Galaxy Z Fold6 (SM-F956N)</td>
+            </tr>
+            <tr>
+              <td>화면</td>
+              <td id="drawer-spec-screen">내부 메인 화면 (언폴드)</td>
+            </tr>
+            <tr>
+              <td>그리드</td>
+              <td id="drawer-spec-grid">8 열 × 6 행 (듀얼 캔버스)</td>
+            </tr>
+            <tr>
+              <td>위젯</td>
+              <td id="drawer-spec-widgets">16 슬롯 (캘린더 4x3 + 미디어 4x1)</td>
+            </tr>
+            <tr>
+              <td>아이콘</td>
+              <td id="drawer-spec-icons">24개 (독 태스크바 8개 포함)</td>
+            </tr>
+            <tr>
+              <td>수정</td>
+              <td id="drawer-spec-author">김기획 책임 (스마트폰PP2그룹)</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <details class="drawer-json">
+          <summary>JSON 미리보기</summary>
+          <pre id="drawer-json-snippet">{
+  "deviceFamily": "Z_FOLD",
+  "gridSpan": { "columns": 8, "rows": 6 },
+  "defaultDpi": 420,
+  "taskbarEnabled": true,
+  "widgets": [
+    { "type": "calendar_agenda", "span": "4x3" },
+    { "type": "galaxy_ai_summary", "span": "4x1" }
+  ]
+}</pre>
+        </details>
+      </div>
+
+      <div class="drawer-footer">
+        <button class="btn-revolut-pill" style="flex: 1; justify-content: center;" onclick="alert('배치 메이커 캔버스로 진입합니다.');">
+          <span>수정하기</span>
+        </button>
+        <button class="btn-ghost-preview" onclick="copyJsonSnippet()">
+          <span>JSON 복사</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Minimal Dark Footer (Revolut/Graphite Style) -->
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-brand-grp">
+        <span style="font-family: var(--font-display); font-weight: 700; color: #fff;">Layout Maker</span>
+        <span>•</span>
+        <span>스마트폰PP2그룹 & CX실 플래그십 레이아웃 기획 플랫폼</span>
+      </div>
+
+      <div class="status-pulse-badge">
+        <span class="status-pulse-dot"></span>
+        <span>One UI 7.0 Launcher Engine Active</span>
+      </div>
+
+      <ul class="footer-links">
+        <li><a href="#">단말 스펙시트</a></li>
+        <li><a href="#">디자인 토큰</a></li>
+        <li><a href="#">위젯 가이드</a></li>
+        <li><a href="#">단축키 (⌘K)</a></li>
+      </ul>
+    </div>
+  </footer>
+
+  <!-- Interactive Logic Script -->
+  <script>
+    // State management
+    const state = {
+      model: 's-series', // 's-series' | 'z-series'
+      screenType: 'home', // 'home' | 'apps'
+      showGridGuide: true,
+      filter: 'all',
+      viewMode: 'bento' // 'bento' | 'list'
+    };
+
+    // DOM Elements
+    const tabModelS = document.getElementById('tab-model-s');
+    const tabModelZ = document.getElementById('tab-model-z');
+    const deviceViewS = document.getElementById('device-view-s');
+    const deviceViewZ = document.getElementById('device-view-z');
+    const modelStatusText = document.getElementById('model-status-text');
+    const ctaButtonText = document.getElementById('cta-button-text');
+    const chipTopSpec = document.getElementById('chip-top-spec');
+    const chipBottomSpec = document.getElementById('chip-bottom-spec');
+
+    const btnScreenHome = document.getElementById('btn-screen-home');
+    const btnScreenApps = document.getElementById('btn-screen-apps');
+    const sHomeContent = document.getElementById('s-home-content');
+    const sAppsContent = document.getElementById('s-apps-content');
+
+    const toggleGridGuides = document.getElementById('toggle-grid-guides');
+    const meshOverlayS = document.getElementById('mesh-overlay-s');
+
+    const viewModeBento = document.getElementById('view-mode-bento');
+    const viewModeList = document.getElementById('view-mode-list');
+    const containerBentoView = document.getElementById('container-bento-view');
+    const containerListView = document.getElementById('container-list-view');
+
+    const filterPills = document.querySelectorAll('.filter-pill');
+    const bentoCards = document.querySelectorAll('.bento-card');
+    const listRows = document.querySelectorAll('.list-item-row');
+
+    // Drawer Elements
+    const inspectBackdrop = document.getElementById('inspect-drawer-backdrop');
+    const drawerTitleText = document.getElementById('drawer-title-text');
+    const drawerDescText = document.getElementById('drawer-desc-text');
+    const drawerSpecDevice = document.getElementById('drawer-spec-device');
+    const drawerSpecScreen = document.getElementById('drawer-spec-screen');
+    const drawerSpecGrid = document.getElementById('drawer-spec-grid');
+    const drawerSpecWidgets = document.getElementById('drawer-spec-widgets');
+    const drawerSpecIcons = document.getElementById('drawer-spec-icons');
+    const drawerSpecAuthor = document.getElementById('drawer-spec-author');
+    const drawerJsonSnippet = document.getElementById('drawer-json-snippet');
+
+    // Layout Metadata Dictionary for Drawer
+    const layoutDetails = {
+      'layout-zfold-master': {
+        title: '2026 플래그십 표준 멀티태스킹 홈 레이아웃',
+        desc: '폴더블 대화면을 위해 좌측에는 스마트 AI 캘린더와 미디어 스택 위젯을 배치하고, 우측에는 16개 핵심 업무 앱 아이콘 및 하단 8앱 태스크바를 고정시킨 최신 표준 구성입니다.',
+        device: 'Galaxy Z Fold6 (SM-F956N)',
+        screen: '내부 메인 화면 (언폴드)',
+        resolution: '1856 × 2160 (8:7.1 Fold Ratio)',
+        grid: '8 열 × 6 행 (듀얼 캔버스)',
+        widgets: '16 슬롯 (캘린더 4x3 + 미디어 4x1)',
+        icons: '24개 (독 태스크바 8개 포함)',
+        version: 'One UI 6.1.1 ~ 7.0',
+        author: '김기획 책임 (스마트폰PP2그룹)',
+        json: `{\n  "deviceFamily": "GALAXY_Z_FOLD",\n  "screenType": "MAIN_UNFOLDED",\n  "gridMatrix": "8x6",\n  "taskbarEnabled": true,\n  "dockSlotCount": 8,\n  "widgets": [\n    { "id": "smart_agenda", "span": "4x3", "page": "left" },\n    { "id": "buds_controller", "span": "4x1", "page": "left" }\n  ]\n}`
+      },
+      'layout-s25-essential': {
+        title: 'One UI 7.0 컴팩트 에센셜',
+        desc: 'Galaxy S25 Ultra의 19.5:9 비율에 최적화된 5×6 고밀도 그리드. 상단 와이드 글래스 날씨 위젯과 배터리 게이지, 하단 4-Dock 아이콘 배치.',
+        device: 'Galaxy S25 Ultra (SM-S938N)',
+        screen: '단일 홈 화면 (1페이지)',
+        resolution: '1440 × 3120 (19.5:9 QHD+)',
+        grid: '5 열 × 6 행 (30 슬롯)',
+        widgets: '8 슬롯 (날씨시계 4x2 + AI배터리 4x1)',
+        icons: '16개 (하단 독 4개 포함)',
+        version: 'One UI 7.0 Exclusive',
+        author: '이선임 UX (CX실 기획팀)',
+        json: `{\n  "deviceFamily": "GALAXY_S_SERIES",\n  "screenType": "HOME_SCREEN",\n  "gridMatrix": "5x6",\n  "adaptiveRefreshRate": "120Hz",\n  "dockSlotCount": 4\n}`
+      },
+      'layout-s25-apptray': {
+        title: '업무 집중형 카테고리 앱 서랍',
+        desc: '금융, 업무, SNS, 미디어 등 4대 폴더 그룹화와 빠른 Finder 검색바 상단 고정 레이아웃.',
+        device: 'Galaxy S25 Series 공용',
+        screen: '앱 트레이 (App Tray)',
+        resolution: '1080 × 2340 ~ 1440 × 3120',
+        grid: '4 열 × 6 행 (24 슬롯/페이지)',
+        widgets: '상단 4x1 Finder 검색창 고정',
+        icons: '36개 앱 (4개 카테고리 폴더 내장)',
+        version: 'One UI 6.1 ~ 7.0',
+        author: '박연구원 (스마트폰PP2그룹)',
+        json: `{\n  "deviceFamily": "GALAXY_S_SERIES",\n  "screenType": "APP_TRAY",\n  "alphabeticalSorting": false,\n  "customFolderClusters": ["Finance", "Work", "Social", "Media"]\n}`
+      },
+      'layout-zfold-cover': {
+        title: '한 손 조작 커버 스크린 퀵 홈',
+        desc: '접힌 상태에서 한 손 엄지 이동 반경(Thumb Zone)을 고려한 하단 집중 위젯 및 앱 배치.',
+        device: 'Galaxy Z Fold6 Cover Screen',
+        screen: '외부 커버 화면',
+        resolution: '968 × 2376 (22:9 비율)',
+        grid: '4 열 × 6 행',
+        widgets: '4 슬롯 (하단 퀵 위젯)',
+        icons: '12개 아이콘',
+        version: 'One UI 6.1.1 ~ 7.0',
+        author: '최수석 CX (플래그십 선행기획)',
+        json: `{\n  "deviceFamily": "GALAXY_Z_FOLD",\n  "screenType": "COVER_SCREEN",\n  "oneHandedThumbOptimization": true\n}`
+      },
+      'layout-s24-easy': {
+        title: '고대비 시니어 이지 홈 프리셋',
+        desc: '3×4 대형 아이콘과 즉시 돋보기 위젯, 긴급 연락처 1열 타일로 접근성을 극대화한 특수 모드.',
+        device: 'Galaxy S24 FE / S24',
+        screen: '이지 홈 (Easy Mode)',
+        resolution: '1080 × 2340',
+        grid: '3 열 × 4 행 (대형 버튼 모드)',
+        widgets: '돋보기 & 손전등 3x1 위젯',
+        icons: '6개 초고대비 대형 아이콘',
+        version: 'One UI Accessibility',
+        author: '접근성 TFT',
+        json: `{\n  "deviceFamily": "GALAXY_S_SERIES",\n  "easyMode": true,\n  "contrastRatio": "7:1",\n  "iconScaleFactor": 1.4\n}`
+      },
+      'layout-zfold-gaming': {
+        title: '게이밍 허브 & 미디어 덱',
+        desc: '게임 런처 4×2 위젯과 Discord 음성 채널 위젯, 하단 GPU 부스트 퀵 토글 배치.',
+        device: 'Galaxy Z Fold6 (SM-F956N)',
+        screen: '엔터테인먼트 전용 대화면',
+        resolution: '1856 × 2160 (120Hz 고주사율)',
+        grid: '8 열 × 6 행 (게이밍 와이드)',
+        widgets: '12 슬롯 (게이밍 허브 4x2 + Discord 4x1)',
+        icons: '14개 게임/스트리밍 앱',
+        version: 'One UI Game Booster 7.0',
+        author: '게이밍 사업팀',
+        json: `{\n  "deviceFamily": "GALAXY_Z_FOLD",\n  "gamingProfile": "ULTRA_PERFORMANCE",\n  "refreshRate": 120,\n  "pinnedLaunchers": ["Discord", "Twitch", "GameHub"]\n}`
+      }
+    };
+
+    // Switch Device Model (Galaxy S vs Galaxy Z)
+    function setModel(model) {
+      state.model = model;
+      if (model === 's-series') {
+        tabModelS.classList.add('active');
+        tabModelZ.classList.remove('active');
+        deviceViewS.style.display = 'block';
+        deviceViewZ.style.display = 'none';
+
+        modelStatusText && (modelStatusText.textContent = 'Galaxy S25 Ultra • 5×6 One UI Grid');
+        ctaButtonText.textContent = '레이아웃 만들기';
+        if (chipTopSpec) chipTopSpec.innerHTML = `<span class="spec-indicator-dot"></span><span>ONE UI 7.0 • 19.5:9 TITANIUM BAR</span>`;
+        if (chipBottomSpec) chipBottomSpec.innerHTML = `<span class="spec-indicator-dot"></span><span>GRID SNAP: 5×6 (24 SLOTS OCCUPIED)</span>`;
+      } else {
+        tabModelZ.classList.add('active');
+        tabModelS.classList.remove('active');
+        deviceViewS.style.display = 'none';
+        deviceViewZ.style.display = 'block';
+
+        modelStatusText && (modelStatusText.textContent = 'Galaxy Z Fold6 • 8×6 Dual Workspace');
+        ctaButtonText.textContent = '레이아웃 만들기';
+        if (chipTopSpec) chipTopSpec.innerHTML = `<span class="spec-indicator-dot" style="background:#a855f7;"></span><span>FOLDABLE DUAL CANVAS • 8:7.1 RATIO</span>`;
+        if (chipBottomSpec) chipBottomSpec.innerHTML = `<span class="spec-indicator-dot" style="background:#a855f7;"></span><span>FLEX TASKBAR: 8 APPS DOCKED</span>`;
+      }
+    }
+
+    tabModelS.addEventListener('click', () => setModel('s-series'));
+    tabModelZ.addEventListener('click', () => setModel('z-series'));
+
+    // Switch Screen Type (Home vs Apps)
+    function setScreenType(type) {
+      state.screenType = type;
+      if (type === 'home') {
+        btnScreenHome.classList.add('active');
+        btnScreenApps.classList.remove('active');
+        sHomeContent.style.display = 'flex';
+        sAppsContent.style.display = 'none';
+      } else {
+        btnScreenApps.classList.add('active');
+        btnScreenHome.classList.remove('active');
+        sHomeContent.style.display = 'none';
+        sAppsContent.style.display = 'flex';
+      }
+    }
+
+    btnScreenHome.addEventListener('click', () => setScreenType('home'));
+    btnScreenApps.addEventListener('click', () => setScreenType('apps'));
+
+    // Toggle Grid Guides
+    toggleGridGuides.addEventListener('change', (e) => {
+      state.showGridGuide = e.target.checked;
+      if (e.target.checked) {
+        meshOverlayS.classList.add('show-guide');
+      } else {
+        meshOverlayS.classList.remove('show-guide');
+      }
+    });
+
+    // View Mode Toggle (Bento vs List)
+    viewModeBento.addEventListener('click', () => {
+      viewModeBento.classList.add('active');
+      viewModeList.classList.remove('active');
+      containerBentoView.style.display = 'grid';
+      containerListView.style.display = 'none';
+    });
+
+    viewModeList.addEventListener('click', () => {
+      viewModeList.classList.add('active');
+      viewModeBento.classList.remove('active');
+      containerBentoView.style.display = 'none';
+      containerListView.style.display = 'flex';
+    });
+
+    // Filter Pills Click Handler
+    filterPills.forEach(pill => {
+      pill.addEventListener('click', () => {
+        filterPills.forEach(p => p.classList.remove('active'));
+        pill.classList.add('active');
+        const filterVal = pill.getAttribute('data-filter');
+
+        bentoCards.forEach(card => {
+          const category = card.getAttribute('data-category') || '';
+          if (filterVal === 'all' || category.includes(filterVal)) {
+            card.style.display = 'flex';
+          } else {
+            card.style.display = 'none';
+          }
+        });
+
+        listRows.forEach(row => {
+          const category = row.getAttribute('data-category') || '';
+          row.style.display = (filterVal === 'all' || category.includes(filterVal)) ? '' : 'none';
+        });
+      });
+    });
+
+    // Open Inspect Drawer
+    function openInspectDrawer(id) {
+      const data = layoutDetails[id] || layoutDetails['layout-s25-essential'];
+      drawerTitleText.textContent = data.title;
+      drawerDescText.textContent = data.desc;
+      drawerSpecDevice.textContent = data.device.replace(/\s*\(.*\)$/, '');
+      drawerSpecScreen.textContent = data.screen;
+      drawerSpecGrid.textContent = data.grid;
+      drawerSpecWidgets.textContent = data.widgets;
+      drawerSpecIcons.textContent = data.icons;
+      drawerSpecAuthor.textContent = data.author.replace(/\s*\(.*\)$/, '');
+      drawerJsonSnippet.textContent = data.json;
+      const jsonBox = document.querySelector('.drawer-json');
+      if (jsonBox) jsonBox.open = false;
+
+      inspectBackdrop.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeInspectDrawer() {
+      inspectBackdrop.classList.remove('open');
+      document.body.style.overflow = 'auto';
+    }
+
+    document.getElementById('btn-inspect-current')?.addEventListener('click', () => {
+      if (state.model === 's-series') {
+        openInspectDrawer('layout-s25-essential');
+      } else {
+        openInspectDrawer('layout-zfold-master');
+      }
+    });
+
+    document.getElementById('btn-open-maker').addEventListener('click', () => {
+      alert(`[레이아웃 메이커 진입 시뮬레이션]\n\n선택 모델: ${state.model.toUpperCase()}\n화면 모드: ${state.screenType.toUpperCase()}\n\n실제 메이커 캔버스 스튜디오로 전환됩니다.`);
+    });
+
+    document.getElementById('header-create-btn').addEventListener('click', () => {
+      alert('[신규 레이아웃 프로젝트 생성]\n\nGalaxy S 시리즈 혹은 Z 시리즈의 빈 캔버스에서 시작합니다.');
+    });
+
+    // Search Trigger (⌘K)
+    function triggerSearch() {
+      const query = prompt('찾으시는 레이아웃 또는 위젯 키워드를 입력하세요:\n(예: Z Fold6, 5x6, AI 위젯, 이지 모드)', 'Z Fold6');
+      if (query) {
+        alert(`"${query}" 키워드에 부합하는 레이아웃을 필터링합니다.`);
+      }
+    }
+
+    document.getElementById('quick-search-btn')?.addEventListener('click', triggerSearch);
+    window.addEventListener('keydown', (e) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault();
+        triggerSearch();
+      }
+      if (e.key === 'Escape') {
+        closeInspectDrawer();
+      }
+    });
+
+    function copyJsonSnippet() {
+      const text = drawerJsonSnippet.textContent;
+      navigator.clipboard.writeText(text).then(() => {
+        alert('One UI 런처 설정 JSON이 클립보드에 복사되었습니다.');
+      }).catch(() => {
+        alert('복사되었습니다.');
+      });
+    }
+    // Theme Toggle (Dark / Light)
+    (function () {
+      const root = document.documentElement;
+      const btn = document.getElementById('theme-toggle');
+      const media = window.matchMedia('(prefers-color-scheme: light)');
+      const label = (t) => t === 'light' ? '다크 모드로 전환' : '라이트 모드로 전환';
+      const apply = (t) => {
+        root.setAttribute('data-theme', t);
+        if (btn) btn.setAttribute('aria-label', label(t));
+      };
+      apply(root.getAttribute('data-theme') || 'dark');
+      btn?.addEventListener('click', () => {
+        const next = root.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+        apply(next);
+        try { localStorage.setItem('lm-theme', next); } catch (e) {}
+      });
+      media.addEventListener?.('change', (e) => {
+        let saved = null;
+        try { saved = localStorage.getItem('lm-theme'); } catch (err) {}
+        if (saved !== 'light' && saved !== 'dark') apply(e.matches ? 'light' : 'dark');
+      });
+    })();
+  </script>
+</body>
+</html>
