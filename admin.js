@@ -418,9 +418,9 @@
     const d = dialog(`
       <form method="dialog">
         <div class="adm-head"><h3>아티팩트 삭제</h3>
-          <p><b>${esc(it.title)}</b>을(를) 아카이브 목록에서 지웁니다. git 기록에는 남아 있어 나중에 되살릴 수 있어요.</p></div>
+          <p><b>${esc(it.title)}</b>을(를) 아카이브에서 지우고, 이 항목의 페이지·썸네일 파일도 저장소에서 함께 삭제합니다.</p></div>
         <div class="adm-body">
-          ${own.length ? `<label class="adm-check full"><input type="checkbox" name="files" checked> 저장소 파일도 함께 삭제 (${own.length}개)</label>
+          ${own.length ? `<p class="adm-check full" style="margin:0">함께 삭제되는 파일 ${own.length}개</p>
           <ul class="adm-list full">${own.slice(0, 12).map(p => `<li>${esc(p)}</li>`).join('')}${own.length > 12 ? `<li>… 외 ${own.length - 12}개</li>` : ''}</ul>` : ''}
           <p class="adm-err"></p>
         </div>
@@ -430,7 +430,7 @@
     f.addEventListener('submit', e => {
       e.preventDefault();
       busy(d, async () => {
-        const del = own.length && f.elements.files && f.elements.files.checked ? own : [];
+        const del = own;
         await commit(`Remove artifact: ${it.title}`, items.filter(i => i !== it), [], del);
         delete previews[it.href];
         applyItems();
