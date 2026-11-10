@@ -284,8 +284,8 @@
     .bar { padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
     .brand .logo-full { display: none; }
     .brand .logo-mark { display: block; }
-    .install-btn .lbl { display: none; }
-    .install-btn { padding: 0 11px; }
+    .edit-entry .lbl { display: none; }
+    .edit-entry { padding: 0 11px; }
     .stage { --cw: min(84vw, calc((100dvh - 500px) * 1.7778)); }
     .lede { padding: 14px 16px 0; }
     .lede h1 { font-size: 34px; }
@@ -358,8 +358,11 @@
       <button class="pill edit-entry install-btn" id="installBtn" type="button" hidden title="홈 화면이나 데스크톱에 앱으로 설치">
         <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M8 2v8M4.5 6.5L8 10l3.5-3.5M3 13h10"/></svg><span class="lbl">설치</span>
       </button>
-      <button class="pill edit-entry" id="adminBtn" type="button" title="아티팩트 추가·수정·삭제">
-        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M10.5 2.5l3 3L5 14H2v-3z"/><path d="M9 4l3 3"/></svg>편집
+      <button class="pill edit-entry" id="submitBtn" type="button" title="아티팩트 제안하기 (관리자 검토 후 게시)">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M8 3v10M3 8h10"/></svg><span class="lbl">제출</span>
+      </button>
+      <button class="pill edit-entry" id="adminBtn" type="button" title="관리자: 아티팩트 추가·수정·삭제">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M10.5 2.5l3 3L5 14H2v-3z"/><path d="M9 4l3 3"/></svg><span class="lbl">편집</span>
       </button>
       <div class="toolgroup">
         <div class="tg-views" role="group" aria-label="보기 방식">
@@ -678,6 +681,10 @@
   }
   $('adminLink').onclick = e => { e.preventDefault(); loadAdmin(); };
   $('adminBtn').onclick = loadAdmin;
+  $('submitBtn').onclick = () => {
+    if (window.ArchiveSubmit) return window.ArchiveSubmit.open();
+    const sc = document.createElement('script'); sc.src = 'submit.js'; document.body.appendChild(sc);
+  };
 
   /* ── PWA: offline cache + install button ─ */
   if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) {

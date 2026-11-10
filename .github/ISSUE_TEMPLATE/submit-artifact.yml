@@ -1,0 +1,53 @@
+name: 아티팩트 제출
+description: Artifact Archives에 실을 아티팩트를 제안합니다. 관리자가 검토한 뒤 게시해요.
+title: "[제출] "
+labels: ["submission"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        공개된 웹 페이지(슬라이드·설명서·도감 등)의 **링크**로 제출해 주세요.
+        관리자가 내용을 확인한 뒤 아카이브에 올립니다. 게시되면 이 이슈가 닫혀요.
+  - type: input
+    id: artifact-title
+    attributes:
+      label: 제목
+    validations:
+      required: true
+  - type: input
+    id: artifact-type
+    attributes:
+      label: 종류
+      placeholder: 슬라이드, 가이드, 설명서, 도감…
+    validations:
+      required: true
+  - type: input
+    id: artifact-url
+    attributes:
+      label: 링크
+      description: https:// 로 시작하는 공개 주소
+      placeholder: https://
+    validations:
+      required: true
+  - type: textarea
+    id: artifact-desc
+    attributes:
+      label: 설명
+      description: 아카이브 카드에 보일 한두 문장
+  - type: input
+    id: artifact-tags
+    attributes:
+      label: 태그
+      placeholder: 쉼표로 구분 (예. LLM, 기본기)
+  - type: input
+    id: artifact-author
+    attributes:
+      label: 만든 사람
+      description: 선택 — 아카이브에 표시하지는 않아요
+  - type: checkboxes
+    id: artifact-consent
+    attributes:
+      label: 확인
+      options:
+        - label: 이 링크를 Artifact Archives에 공개로 게시해도 좋습니다.
+          required: true

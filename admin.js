@@ -23,54 +23,9 @@
   const previews = {};       // href -> data URL, so freshly uploaded thumbnails show before Pages redeploys
 
   /* ── styles ─────────────────────────────── */
-  const css = document.createElement('style');
-  css.textContent = `
-    .adm-dialog { border: 0; padding: 0; border-radius: 14px; background: var(--surface); color: var(--text); width: min(620px, calc(100vw - 32px)); max-height: calc(100dvh - 32px);
-      box-shadow: 0 40px 80px -20px rgba(0,0,0,.45); }
-    .adm-dialog::backdrop { background: rgba(10,10,12,.45); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); }
-    .adm-dialog form { display: flex; flex-direction: column; max-height: calc(100dvh - 32px); }
-    .adm-head { padding: 22px 24px 6px; }
-    .adm-head h3 { margin: 0; font-size: 20px; font-weight: 600; letter-spacing: -.02em; }
-    .adm-head p { margin: 6px 0 0; color: var(--text-60); font-size: 13px; line-height: 1.55; }
-    .adm-body { padding: 14px 24px 8px; overflow-y: auto; display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-    .adm-body .full { grid-column: 1 / -1; }
-    .adm-field { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
-    .adm-field > span { font-size: 12px; font-weight: 500; color: var(--text-60); }
-    .adm-field > span b { color: var(--accent); font-weight: 600; }
-    .adm-field small { font-size: 12px; color: var(--text-40); line-height: 1.45; }
-    .adm-field input[type=text], .adm-field input[type=date], .adm-field input[type=password], .adm-field textarea {
-      font: inherit; font-size: 15px; color: var(--text); background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; width: 100%; min-width: 0; }
-    .adm-field textarea { min-height: 84px; resize: vertical; line-height: 1.5; }
-    .adm-field input:focus, .adm-field textarea:focus { outline: 0; border-color: var(--text); }
-    .adm-field input[type=file] { font: inherit; font-size: 13px; color: var(--text-60); }
-    .adm-seg { display: flex; gap: 4px; background: var(--bg); border-radius: 999px; padding: 3px; width: max-content; max-width: 100%; }
-    .adm-seg label { padding: 6px 12px; border-radius: 999px; font-size: 13px; font-weight: 500; cursor: pointer; color: var(--text-60); }
-    .adm-dialog [hidden] { display: none !important; }
-    .adm-seg label { position: relative; }
-    .adm-seg input { position: absolute; opacity: 0; pointer-events: none; }
-    .adm-seg label:has(input:checked) { background: var(--text); color: var(--bg); }
-    .adm-thumb { display: flex; gap: 14px; align-items: center; }
-    .adm-thumb img { width: 160px; aspect-ratio: 16/9; object-fit: cover; object-position: top center; border-radius: 6px; background: var(--bg-2); flex: none; }
-    .adm-check { display: flex; gap: 8px; align-items: flex-start; font-size: 13px; color: var(--text-60); line-height: 1.5; }
-    .adm-check input { margin-top: 3px; }
-    .adm-foot { display: flex; justify-content: flex-end; gap: 8px; padding: 14px 24px 20px; border-top: 1px solid var(--line); margin-top: 8px; }
-    .adm-foot .pill { height: 38px; padding: 0 18px; font-size: 14px; }
-    .adm-foot .pill.danger { background: #d93a1b; color: #fff; }
-    .adm-err { grid-column: 1 / -1; color: #d93a1b; font-size: 13px; line-height: 1.6; margin: 0; white-space: pre-line; }
-    .adm-err:empty { display: none; }
-    .adm-list { margin: 0; padding-left: 18px; font-size: 12.5px; color: var(--text-60); line-height: 1.7; font-family: "JetBrains Mono", monospace; word-break: break-all; }
-    .adm-badge { font-size: 11px; font-weight: 600; color: var(--accent); white-space: nowrap; }
-    .adm-toast { position: fixed; left: 50%; bottom: calc(24px + env(safe-area-inset-bottom, 0px)); transform: translate(-50%, 20px); z-index: 60; opacity: 0;
-      background: var(--text); color: var(--bg); padding: 12px 18px; border-radius: 999px; font-size: 13px; font-weight: 500; transition: opacity .3s, transform .3s;
-      max-width: calc(100vw - 32px); text-align: center; pointer-events: none; }
-    .adm-toast.show { opacity: 1; transform: translate(-50%, 0); }
-    .adm-dialog[aria-busy="true"] .adm-foot .pill { opacity: .5; pointer-events: none; }
-    @media (max-width: 620px) {
-      .adm-body { grid-template-columns: 1fr; }
-      .adm-thumb { flex-direction: column; align-items: flex-start; }
-      .adm-bar-label { display: none; }
-    }`;
-  document.head.appendChild(css);
+  if (!document.querySelector('link[href="dialog.css"]')) {
+    const link = document.createElement('link'); link.rel = 'stylesheet'; link.href = 'dialog.css'; document.head.appendChild(link);
+  }
 
   /* ── small helpers ─────────────────────── */
   const toastEl = document.createElement('div');
@@ -269,7 +224,7 @@
         <div class="adm-body">
           <label class="adm-field full"><span>GitHub 토큰 <b>*</b></span>
             <input type="password" name="token" autocomplete="off" required placeholder="github_pat_…">
-            <small><a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">Fine-grained token 만들기 ↗</a> — Repository access는 <b>${REPO.split('/')[1]}</b>만, Permissions는 <b>Contents: Read and write</b>만 주면 됩니다.</small>
+            <small><a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">Fine-grained token 만들기 ↗</a> — Repository access는 <b>${REPO.split('/')[1]}</b>만, Permissions는 <b>Contents: Read and write</b>를 주세요. 방문자 제출을 승인·거절할 때 이슈도 자동으로 닫으려면 <b>Issues: Read and write</b>도 추가해요.</small>
           </label>
           <label class="adm-check full"><input type="checkbox" name="remember" checked> 이 브라우저에 기억하기 (공용 컴퓨터라면 끄세요)</label>
           <p class="adm-err"></p>
@@ -293,13 +248,16 @@
 
   const TYPES = () => [...new Set(items.map(i => i.type))];
 
-  function itemDialog(orig) {
+  // opts.prefill: field values for a new item (e.g. from a visitor submission)
+  // opts.heading: dialog title; opts.onSaved(next): runs after a successful commit
+  function itemDialog(orig, opts = {}) {
     const isNew = !orig;
-    const it = orig || { href: '', title: '', desc: '', type: '', tags: [], date: today(), thumb: '' };
+    const it = orig || { href: '', title: '', desc: '', type: '', tags: [], date: today(), thumb: '', ...opts.prefill };
+    const pathFirst = !isNew || !!it.href;
     const local = isLocal(it.href);
     const d = dialog(`
       <form method="dialog" novalidate>
-        <div class="adm-head"><h3>${isNew ? '새 아티팩트' : '아티팩트 수정'}</h3>
+        <div class="adm-head"><h3>${esc(opts.heading || (isNew ? '새 아티팩트' : '아티팩트 수정'))}</h3>
           <p>저장하면 커밋 하나로 저장소에 올라가고, 사이트에는 1~2분 뒤 반영됩니다.</p></div>
         <div class="adm-body">
           <label class="adm-field full"><span>제목 <b>*</b></span><input type="text" name="title" required value="${esc(it.title)}"></label>
@@ -311,8 +269,8 @@
 
           <div class="adm-field full"><span>페이지</span>
             <div class="adm-seg" role="radiogroup">
-              <label><input type="radio" name="src" value="upload" ${isNew ? 'checked' : ''}>HTML 파일 올리기</label>
-              <label><input type="radio" name="src" value="path" ${isNew ? '' : 'checked'}>경로·URL 입력</label>
+              <label><input type="radio" name="src" value="upload" ${pathFirst ? '' : 'checked'}>HTML 파일 올리기</label>
+              <label><input type="radio" name="src" value="path" ${pathFirst ? 'checked' : ''}>경로·URL 입력</label>
             </div>
           </div>
           <div class="adm-field full" data-src="upload">
@@ -399,6 +357,7 @@
         applyItems(next.href);
         d.close();
         toast(`${isNew ? '추가' : '저장'}했습니다. 사이트에는 1~2분 뒤 반영돼요.`, 4200);
+        if (opts.onSaved) opts.onSaved(next);
       }).catch(() => {});
     });
   }
@@ -440,10 +399,106 @@
     });
   }
 
+
+  /* ── visitor submissions (GitHub issues labelled "submission") ── */
+  const SITE = `https://${REPO.split('/')[0]}.github.io/${REPO.split('/')[1]}/`;
+  const ISSUE_HELP = '토큰에 Issues: Read and write 권한을 추가하면 이슈도 자동으로 닫혀요.';
+  let pending = [];
+
+  // issue forms render as "### <label>\n\n<value>" blocks
+  function parseIssue(body = '') {
+    const out = {};
+    const parts = body.split(/^###\s+/m).slice(1);
+    for (const part of parts) {
+      const nl = part.indexOf('\n');
+      const key = part.slice(0, nl).trim(), val = part.slice(nl + 1).trim();
+      out[key] = val === '_No response_' ? '' : val;
+    }
+    const url = (out['링크'] || '').split(/\s/)[0];
+    return {
+      title: (out['제목'] || '').slice(0, 120),
+      type: (out['종류'] || '').slice(0, 30),
+      url: /^https?:\/\//i.test(url) ? url : '',
+      desc: (out['설명'] || '').slice(0, 600),
+      tags: (out['태그'] || '').split(/[,，]/).map(t => t.trim().replace(/^#/, '')).filter(Boolean).slice(0, 8),
+      author: (out['만든 사람'] || '').slice(0, 60),
+    };
+  }
+
+  async function loadSubmissions() {
+    const list = await gh(`/repos/${REPO}/issues?labels=submission&state=open&per_page=50`);
+    pending = list.filter(i => !i.pull_request).map(i => ({ n: i.number, url: i.html_url, by: i.user && i.user.login, at: i.created_at.slice(0, 10), ...parseIssue(i.body) }));
+    const badge = document.querySelector('[data-act="queue"] .q-count');
+    if (badge) { badge.textContent = pending.length; badge.hidden = !pending.length; }
+    return pending;
+  }
+
+  async function closeIssue(n, comment, reason) {
+    try {
+      await gh(`/repos/${REPO}/issues/${n}/comments`, { method: 'POST', body: JSON.stringify({ body: comment }) });
+      await gh(`/repos/${REPO}/issues/${n}`, { method: 'PATCH', body: JSON.stringify({ state: 'closed', state_reason: reason }) });
+      return true;
+    } catch (e) {
+      if (e.noWrite) { toast('이슈를 닫지 못했어요. ' + ISSUE_HELP, 6000); return false; }
+      throw e;
+    }
+  }
+
+  async function queueDialog() {
+    const d = dialog(`
+      <form method="dialog">
+        <div class="adm-head"><h3>제출 검토</h3>
+          <p>방문자가 제안한 아티팩트예요. 링크를 열어 확인한 뒤 승인하면 아카이브에 올라가고, 제출 이슈가 닫혀요.</p></div>
+        <div class="adm-body"><div class="adm-queue full"><p class="adm-muted">불러오는 중…</p></div><p class="adm-err"></p></div>
+        <div class="adm-foot"><a class="pill" href="https://github.com/${REPO}/issues?q=is%3Aissue+label%3Asubmission" target="_blank" rel="noopener">GitHub에서 보기 ↗</a><button type="button" class="pill" data-close>닫기</button></div>
+      </form>`);
+    const box = d.querySelector('.adm-queue'), err = d.querySelector('.adm-err');
+    const render = () => {
+      box.innerHTML = pending.length ? pending.map(p => `
+        <div class="adm-sub" data-n="${p.n}">
+          <div class="adm-sub-meta mono">#${p.n} · ${esc(p.at)} · ${esc(p.by || '')}${p.type ? ' · ' + esc(p.type) : ''}</div>
+          <div class="adm-sub-title">${esc(p.title || '(제목 없음)')}</div>
+          ${p.url ? `<a class="adm-sub-link" href="${esc(p.url)}" target="_blank" rel="noopener noreferrer">${esc(p.url)} ↗</a>` : '<div class="adm-err">링크가 올바르지 않아요</div>'}
+          ${p.desc ? `<p class="adm-sub-desc">${esc(p.desc)}</p>` : ''}
+          <div class="adm-sub-actions">
+            <a class="pill" href="${esc(p.url ? `https://github.com/${REPO}/issues/${p.n}` : '#')}" target="_blank" rel="noopener">이슈 ↗</a>
+            <button type="button" class="pill danger-ghost" data-q="reject">거절</button>
+            <button type="button" class="pill primary" data-q="approve" ${p.url ? '' : 'disabled'}>승인…</button>
+          </div>
+        </div>`).join('') : '<p class="adm-muted">검토할 제출이 없어요.</p>';
+    };
+    try { await loadSubmissions(); render(); } catch (e) { box.innerHTML = ''; err.textContent = e.message; }
+
+    box.addEventListener('click', async e => {
+      const b = e.target.closest('[data-q]'); if (!b) return;
+      const p = pending.find(x => x.n === +b.closest('.adm-sub').dataset.n); if (!p) return;
+      if (b.dataset.q === 'approve') {
+        d.close();
+        itemDialog(null, {
+          heading: `제출 승인 · #${p.n}`,
+          prefill: { title: p.title, type: p.type, desc: p.desc, tags: p.tags, href: p.url, date: today() },
+          onSaved: async () => {
+            const ok = await closeIssue(p.n, `감사합니다! 아카이브에 게시했어요 → ${SITE}`, 'completed').catch(() => false);
+            await loadSubmissions().catch(() => {});
+            if (ok) toast(`#${p.n} 제출을 게시하고 이슈를 닫았어요.`, 4200);
+          },
+        });
+      } else {
+        if (!confirm(`#${p.n} "${p.title}" 제출을 거절할까요? 이슈에 안내 댓글을 남기고 닫아요.`)) return;
+        b.disabled = true; err.textContent = '';
+        try {
+          await closeIssue(p.n, '검토해 주셔서 감사해요. 이번에는 아카이브에 싣지 않기로 했어요.', 'not_planned');
+          await loadSubmissions(); render(); toast(`#${p.n} 제출을 거절했어요.`);
+        } catch (er) { err.textContent = er.message; b.disabled = false; }
+      }
+    });
+  }
+
   /* ── admin chrome ───────────────────────── */
   const bar = document.createElement('div');
   bar.className = 'admin-only'; bar.style.cssText = 'gap:8px;align-items:center';
   bar.innerHTML = `<span class="adm-badge adm-bar-label">관리 모드</span>
+    <button type="button" class="pill" data-act="queue" title="방문자 제출 검토">제출 <span class="q-count" hidden>0</span></button>
     <button type="button" class="pill primary" data-act="add">+ 추가</button>
     <button type="button" class="pill" data-act="logout" title="관리 모드 끄기">종료</button>`;
   document.querySelector('.actions').prepend(bar);
@@ -452,6 +507,7 @@
     const b = e.target.closest('[data-act]'); if (!b || !document.body.classList.contains('admin')) return;
     const act = b.dataset.act;
     if (act === 'add') itemDialog();
+    else if (act === 'queue') queueDialog();
     else if (act === 'logout') leave();
     else {
       const it = items.find(i => i.href === b.dataset.href); if (!it) return;
@@ -459,7 +515,7 @@
     }
   });
 
-  function enter() { document.body.classList.add('admin'); }
+  function enter() { document.body.classList.add('admin'); loadSubmissions().catch(() => {}); }
   function leave() {
     try { localStorage.removeItem(TOKEN_KEY); sessionStorage.removeItem(TOKEN_KEY); } catch (_) {}
     token = ''; document.body.classList.remove('admin');
