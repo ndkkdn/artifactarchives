@@ -11,15 +11,6 @@ window.ITEMS = [
     "thumb": "thumbs/pitl-redesign.jpg"
   },
   {
-    "href": "plans/p-20261108-sby0sm/",
-    "title": "2030 맛집 경험 공유 서비스",
-    "desc": "20~30대 사용자가 자신이 다닌 맛집을 공유하는 서비스를 만들고자 한다. 네이버 지도, 구글 지도 별점이 경쟁사다.",
-    "type": "기획서",
-    "tags": ["PITL", "상품기획"],
-    "date": "2026-11-07",
-    "thumb": "thumbs/p-20261108-sby0sm.jpg"
-  },
-  {
     "href": "plans/p-20261108-rr12kv/",
     "title": "스마트폰 앱 존속 여부 전망",
     "desc": "앞으로 스마트폰 앱이 그대로 존재할 지 사라질지를 예상하는 기획서를 작성해줘.",
