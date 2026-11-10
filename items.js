@@ -2,15 +2,6 @@
 // 직접 고칠 때도 JSON 형식(따옴표 붙은 키)을 유지해 주세요.
 window.ITEMS = [
   {
-    "href": "layout-maker/",
-    "title": "Layout Maker",
-    "desc": "Dabbit 스타일로 다시 만든 레이아웃 메이커 랜딩 페이지. S26 Ultra와 Fold8·Fold8 Ultra·Flip8의 커버·메인 화면을 실제 크기 비율로 보여주고, 홈 화면 목업에서 아이콘을 끌어 옮길 수 있다. 기기별 템플릿과 다크/라이트 모드를 지원한다.",
-    "type": "디자인",
-    "tags": ["Layout Maker", "Galaxy", "폴더블", "UI"],
-    "date": "2026-11-10",
-    "thumb": "thumbs/layout-maker.jpg"
-  },
-  {
     "href": "pitl-redesign/",
     "title": "PITL 워크스페이스 리디자인 제안",
     "desc": "Dribbble 웹 디자인 인기작에서 고른 여섯 가지(얇은 진행 레일, 벤토 그리드, 큰 숫자, 에이전트 흐름 등)를 섞은 PITL 화면 목업. 실행 중·중간 검토·완료 상태를 바꿔 볼 수 있다.",
