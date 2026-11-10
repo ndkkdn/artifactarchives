@@ -56,7 +56,7 @@
     .adm-foot { display: flex; justify-content: flex-end; gap: 8px; padding: 14px 24px 20px; border-top: 1px solid var(--line); margin-top: 8px; }
     .adm-foot .pill { height: 38px; padding: 0 18px; font-size: 14px; }
     .adm-foot .pill.danger { background: #d93a1b; color: #fff; }
-    .adm-err { grid-column: 1 / -1; color: #d93a1b; font-size: 13px; line-height: 1.5; margin: 0; }
+    .adm-err { grid-column: 1 / -1; color: #d93a1b; font-size: 13px; line-height: 1.6; margin: 0; white-space: pre-line; }
     .adm-err:empty { display: none; }
     .adm-list { margin: 0; padding-left: 18px; font-size: 12.5px; color: var(--text-60); line-height: 1.7; font-family: "JetBrains Mono", monospace; word-break: break-all; }
     .adm-badge { font-size: 11px; font-weight: 600; color: var(--accent); white-space: nowrap; }
@@ -114,6 +114,15 @@
   }
 
   /* ── GitHub API ─────────────────────────── */
+  // A public repo answers reads for any token, so a token without write access only fails on the
+  // first write — and GitHub reports that as 404 Not Found. Explain what to fix instead.
+  const WRITE_HELP = `이 토큰으로는 저장소에 쓸 수 없어요. (GitHub 응답: Not Found)
+공개 저장소라 읽기는 되지만, 저장·삭제에는 쓰기 권한이 있어야 해요. 다음을 확인해 주세요.
+• Fine-grained token: Repository access에 ${REPO.split('/')[1]}가 선택돼 있고, Permissions의 Contents가 "Read and write"인지 (Read-only면 안 돼요)
+• Classic token: public_repo 또는 repo 범위가 체크돼 있는지
+• 토큰을 만든 계정이 ${REPO.split('/')[0]}인지
+권한을 고친 뒤 토큰을 다시 넣어 주세요. (Fine-grained token은 권한만 바꾸면 같은 토큰을 그대로 써도 돼요.)`;
+
   async function gh(path, opts = {}) {
     const res = await fetch(API + path, {
       ...opts,
@@ -123,14 +132,21 @@
     });
     if (!res.ok) {
       let msg = ''; try { msg = (await res.json()).message || ''; } catch (_) {}
+      const write = (opts.method || 'GET') !== 'GET';
       const e = new Error(
         res.status === 401 ? '토큰이 올바르지 않거나 만료되었습니다.' :
+        write && (res.status === 403 || res.status === 404) ? WRITE_HELP :
         res.status === 403 || res.status === 404 ? `권한이 없습니다. 토큰에 ${REPO} 저장소의 Contents: Read and write 권한이 있는지 확인해 주세요. (${msg})` :
         res.status === 409 || res.status === 422 ? `저장소가 그 사이 바뀌었습니다. 새로고침 후 다시 시도해 주세요. (${msg})` :
         `GitHub API 오류 ${res.status}: ${msg}`);
-      e.status = res.status; throw e;
+      e.status = res.status; e.noWrite = write && (res.status === 403 || res.status === 404); throw e;
     }
     return res.status === 204 ? null : res.json();
+  }
+
+  // proves write access up front by creating a tiny unreferenced blob (harmless; GitHub garbage-collects it)
+  async function checkWrite() {
+    await gh(`/repos/${REPO}/git/blobs`, { method: 'POST', body: JSON.stringify({ content: 'archive write check', encoding: 'utf-8' }) });
   }
 
   async function readData(ref = BRANCH) {
@@ -265,13 +281,14 @@
       e.preventDefault();
       busy(d, async () => {
         token = f.elements.token.value.trim();
-        const r = await gh(`/repos/${REPO}`);
-        if (r.permissions && !r.permissions.push) throw new Error('이 토큰으로는 저장소에 쓸 수 없습니다.');
+        if (!token) throw new Error('토큰을 입력해 주세요.');
+        await checkWrite();
         await refresh(A.current && A.current.href);
         try { (f.elements.remember.checked ? localStorage : sessionStorage).setItem(TOKEN_KEY, token); } catch (_) {}
         enter(); d.close(); toast('관리 모드를 켰습니다.');
       }).catch(() => {});
     });
+    return d;
   }
 
   const TYPES = () => [...new Set(items.map(i => i.type))];
@@ -455,10 +472,10 @@
     try { saved = localStorage.getItem(TOKEN_KEY) || sessionStorage.getItem(TOKEN_KEY) || ''; } catch (_) {}
     if (!saved) return loginDialog();
     token = saved;
-    try { await refresh(A.current && A.current.href); enter(); }
+    try { await checkWrite(); await refresh(A.current && A.current.href); enter(); }
     catch (e) {
-      if (e.status === 401) { try { localStorage.removeItem(TOKEN_KEY); sessionStorage.removeItem(TOKEN_KEY); } catch (_) {} }
-      toast(e.message); loginDialog();
+      if (e.status === 401 || e.noWrite) { try { localStorage.removeItem(TOKEN_KEY); sessionStorage.removeItem(TOKEN_KEY); } catch (_) {} }
+      const d = loginDialog(); const err = d.querySelector('.adm-err'); if (err) err.textContent = e.message;
     }
   }
 
