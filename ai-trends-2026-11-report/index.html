@@ -1,0 +1,1198 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="METR 리포트, GPT Image 2.6, Weight-Space Programming, 프론티어 모델 3파전, OpenAI Dot, Claude 모델·Effort 운용 가이드를 스크롤로 읽는 상세 리포트">
+<title>최신 AI 핵심 동향 리포트</title>
+<link rel="icon" href="../favicon.ico" sizes="any">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&family=Noto+Serif+KR:wght@600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<style>
+/* Layout: editorial long-read — dark hero with animated paradigm shift, sticky top bar with read progress,
+   left TOC rail on desktop (collapsible on tablet/phone), 740px article column; figures play when scrolled into view. */
+:root {
+  --bg: #f6f2e8; --paper: #fffdf7; --paper-2: #efe9da; --ink: #101a2c; --ink-2: #4a5263; --ink-3: #7d8494;
+  --line: #e2dac6; --gold: #a87a12; --gold-soft: #f4e8c8; --coral: #d8461c; --coral-soft: #fbe3d8;
+  --blue: #2a63d4; --blue-soft: #e2ebfb; --green: #13865a; --green-soft: #dcf1e7; --violet: #6b4fd0; --violet-soft: #ebe5fb;
+  --redact: #101a2c; --code: #f0ebde;
+  --shadow: 0 1px 2px rgba(40, 30, 10, .05), 0 12px 32px rgba(40, 30, 10, .07);
+  --sans: "Pretendard Variable", Pretendard, Inter, -apple-system, system-ui, sans-serif;
+  --serif: "Noto Serif KR", "Pretendard Variable", serif;
+  --en: Inter, "Pretendard Variable", sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  --ease: cubic-bezier(.2, .8, .2, 1);
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0b1322; --paper: #111b2e; --paper-2: #17233a; --ink: #f1ede2; --ink-2: #b9bccb; --ink-3: #868ca0;
+    --line: #233150; --gold: #e0b450; --gold-soft: #2b2512; --coral: #ff7a4f; --coral-soft: #351a12;
+    --blue: #79a8ff; --blue-soft: #15223f; --green: #4fd09a; --green-soft: #0f2a20; --violet: #a993ff; --violet-soft: #1f1a3a;
+    --redact: #000; --code: #0d1626; --shadow: 0 1px 2px rgba(0,0,0,.4), 0 12px 32px rgba(0,0,0,.35);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0b1322; --paper: #111b2e; --paper-2: #17233a; --ink: #f1ede2; --ink-2: #b9bccb; --ink-3: #868ca0;
+  --line: #233150; --gold: #e0b450; --gold-soft: #2b2512; --coral: #ff7a4f; --coral-soft: #351a12;
+  --blue: #79a8ff; --blue-soft: #15223f; --green: #4fd09a; --green-soft: #0f2a20; --violet: #a993ff; --violet-soft: #1f1a3a;
+  --redact: #000; --code: #0d1626; --shadow: 0 1px 2px rgba(0,0,0,.4), 0 12px 32px rgba(0,0,0,.35);
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 76px; -webkit-text-size-adjust: 100%; }
+body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--sans); font-size: 17px; line-height: 1.82;
+  -webkit-font-smoothing: antialiased; word-break: keep-all; overflow-wrap: break-word; }
+a { color: var(--blue); text-underline-offset: 3px; }
+:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; border-radius: 4px; }
+.gutter { padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+@media (min-width: 640px) { .gutter { padding-left: max(28px, env(safe-area-inset-left, 0px)); padding-right: max(28px, env(safe-area-inset-right, 0px)); } }
+.mono { font-family: var(--mono); }
+.en { font-family: var(--en); }
+
+/* ---------- motion primitives: an ancestor gets .in when scrolled into view ---------- */
+@keyframes rise { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
+@keyframes pop { 0% { opacity: 0; transform: scale(.55); } 70% { transform: scale(1.06); } 100% { opacity: 1; transform: none; } }
+@keyframes growX { from { transform: scaleX(0); } to { transform: none; } }
+@keyframes growY { from { transform: scaleY(0); } to { transform: none; } }
+@keyframes slideIn { from { opacity: 0; transform: translateX(-18px); } to { opacity: 1; transform: none; } }
+@keyframes strike { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+@keyframes dash { to { stroke-dashoffset: -24; } }
+@keyframes blink { 50% { opacity: 0; } }
+@keyframes stamp { 0% { opacity: 0; transform: rotate(-14deg) scale(2.2); } 60% { opacity: 1; transform: rotate(-14deg) scale(.94); } 100% { opacity: 1; transform: rotate(-14deg) scale(1); } }
+@keyframes pulse { 0%, 100% { opacity: .35; } 50% { opacity: 1; } }
+.rv, .pop, .gx, .gy, .si { opacity: 1; }
+.js .rv, .js .pop, .js .si { opacity: 0; }
+.js .gx, .js .gy { transform: scaleX(0); }
+.js .gy { transform: scaleY(0); }
+.in .rv, .rv.in { animation: rise .7s var(--ease) both; animation-delay: var(--d, 0ms); }
+.in .pop { animation: pop .55s var(--ease) both; animation-delay: var(--d, 0ms); }
+.in .si { animation: slideIn .55s var(--ease) both; animation-delay: var(--d, 0ms); }
+.in .gx { transform-origin: left center; animation: growX .9s var(--ease) both; animation-delay: var(--d, 0ms); }
+.in .gy { transform-origin: bottom; animation: growY .8s var(--ease) both; animation-delay: var(--d, 0ms); }
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .js .rv, .js .pop, .js .si { opacity: 1; }
+  .js .gx, .js .gy { transform: none; }
+  *, *::before, *::after { animation-duration: .001ms !important; animation-delay: 0ms !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important; }
+}
+
+/* ---------- top bar ---------- */
+.topbar { position: sticky; top: 0; z-index: 20; background: color-mix(in srgb, var(--bg) 86%, transparent);
+  backdrop-filter: saturate(1.4) blur(14px); -webkit-backdrop-filter: saturate(1.4) blur(14px); border-bottom: 1px solid var(--line); }
+.topbar-in { max-width: 1180px; margin: 0 auto; height: 58px; display: flex; align-items: center; gap: 10px; }
+.crumb { display: flex; align-items: center; gap: 8px; min-width: 0; font-size: 14px; color: var(--ink-2); text-decoration: none; }
+.crumb b { color: var(--ink); font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.crumb .arch { font-family: var(--en); font-weight: 600; letter-spacing: .02em; white-space: nowrap; }
+.crumb .sep { color: var(--ink-3); }
+.topbar .sp { flex: 1; }
+.btn { appearance: none; border: 1px solid var(--line); background: var(--paper); color: var(--ink); height: 36px; padding: 0 13px;
+  border-radius: 999px; font: 600 13px/1 var(--sans); display: inline-flex; align-items: center; gap: 6px; cursor: pointer; text-decoration: none; white-space: nowrap; }
+.btn:hover { border-color: var(--gold); }
+.btn svg { width: 16px; height: 16px; }
+.progress { position: absolute; left: 0; bottom: -1px; height: 2px; width: 100%; background: var(--gold); transform-origin: left; transform: scaleX(0); }
+@media (max-width: 560px) { .crumb .arch, .crumb .sep { display: none; } .btn .lbl { display: none; } .btn { padding: 0 10px; } }
+
+/* ---------- hero ---------- */
+.hero { position: relative; overflow: hidden; background: #0c1524; color: #f3efe4; }
+.hero::before { content: ""; position: absolute; inset: -40px; opacity: .5;
+  background-image: radial-gradient(rgba(243,239,228,.16) 1.2px, transparent 1.4px); background-size: 22px 22px;
+  -webkit-mask-image: radial-gradient(ellipse 70% 80% at 70% 20%, #000 10%, transparent 75%); mask-image: radial-gradient(ellipse 70% 80% at 70% 20%, #000 10%, transparent 75%);
+  animation: drift 40s linear infinite; }
+@keyframes drift { to { transform: translate(22px, 22px); } }
+.hero-in { position: relative; max-width: 1180px; margin: 0 auto; padding: 72px 0 56px; }
+.kicker { font: 600 12.5px/1 var(--en); letter-spacing: .18em; text-transform: uppercase; color: #d5a844; display: flex; gap: 10px; align-items: center; }
+.kicker::before { content: ""; width: 26px; height: 1px; background: currentColor; }
+.hero h1 { font-family: var(--serif); font-weight: 700; font-size: clamp(34px, 5.6vw, 64px); line-height: 1.18; letter-spacing: -.01em; margin: 20px 0 18px; max-width: 15em; }
+.hero h1 em { font-style: normal; color: #d5a844; }
+.hero .lede { max-width: 640px; font-size: clamp(16px, 1.7vw, 19px); color: rgba(243,239,228,.78); margin: 0; }
+.hero .lede b { color: #f3efe4; }
+.meta { margin-top: 22px; display: flex; flex-wrap: wrap; gap: 8px 18px; font-size: 13.5px; color: rgba(243,239,228,.55); }
+.meta span { display: inline-flex; gap: 6px; align-items: center; }
+
+.shift { margin-top: 44px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0; position: relative; }
+.shift .st { position: relative; padding: 18px 18px 18px 0; }
+.shift .st .n { font: 700 12px/1 var(--mono); color: rgba(243,239,228,.45); }
+.shift .st h3 { margin: 10px 0 6px; font-size: clamp(16px, 2vw, 21px); line-height: 1.35; }
+.shift .st p { margin: 0; font-size: 14px; color: rgba(243,239,228,.62); line-height: 1.6; }
+.shift .st.old h3 { color: rgba(243,239,228,.55); }
+.shift .st.new h3 { color: #d5a844; }
+.shift .rail { position: absolute; left: 0; right: 0; top: 0; height: 2px; background: rgba(243,239,228,.14); }
+.shift .rail i { position: absolute; inset: 0; background: linear-gradient(90deg, rgba(243,239,228,.4), #d5a844 60%, #f0542a); transform-origin: left; transform: scaleX(0); }
+.in .shift .rail i { animation: growX 2.4s var(--ease) .5s both; }
+.shift .st::before { content: ""; position: absolute; top: -6px; left: 0; width: 12px; height: 12px; border-radius: 50%; background: #0c1524; border: 2px solid rgba(243,239,228,.4); }
+.shift .st.new::before { border-color: #d5a844; background: #d5a844; box-shadow: 0 0 0 6px rgba(213,168,68,.18); }
+.shift .glow { position: absolute; top: -5px; width: 10px; height: 10px; border-radius: 50%; background: #fff; box-shadow: 0 0 14px 4px rgba(213,168,68,.8); left: 0; opacity: 0; }
+.in .shift .glow { animation: travel 3.6s var(--ease) 1s infinite; }
+@keyframes travel { 0% { left: 0; opacity: 0; } 10% { opacity: 1; } 80% { opacity: 1; } 100% { left: calc(100% - 10px); opacity: 0; } }
+@media (max-width: 720px) {
+  .shift { grid-template-columns: minmax(0, 1fr); padding-left: 22px; }
+  .shift .rail { left: 5px; right: auto; top: 0; bottom: 0; width: 2px; height: auto; }
+  .shift .rail i { transform-origin: top; }
+  .in .shift .rail i { animation-name: growY; }
+  .shift .st { padding: 0 0 22px; }
+  .shift .st::before { left: -22px; top: 4px; }
+  .shift .glow { display: none; }
+}
+
+.stats { margin-top: 40px; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); border-top: 1px solid rgba(243,239,228,.12); }
+.stats a { padding: 18px 14px 4px 0; color: inherit; text-decoration: none; border-right: 1px solid rgba(243,239,228,.08); padding-left: 14px; }
+.stats a:first-child { padding-left: 0; }
+.stats a:last-child { border-right: 0; }
+.stats b { display: block; font: 800 clamp(24px, 3.2vw, 36px)/1.1 var(--en); letter-spacing: -.02em; color: #f3efe4; font-variant-numeric: tabular-nums; }
+.stats span { display: block; margin-top: 6px; font-size: 12.5px; line-height: 1.45; color: rgba(243,239,228,.55); }
+.stats a:hover b { color: #d5a844; }
+@media (max-width: 820px) { .stats { grid-template-columns: repeat(3, minmax(0, 1fr)); } .stats a:nth-child(3) { border-right: 0; } .stats a:nth-child(4) { padding-left: 0; } }
+@media (max-width: 480px) { .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); } .stats a { border-right: 0 !important; padding-left: 0 !important; } }
+
+/* ---------- shell ---------- */
+.shell { max-width: 1180px; margin: 0 auto; display: grid; grid-template-columns: 220px minmax(0, 1fr); gap: 56px; padding-top: 48px; }
+.toc { position: sticky; top: 82px; align-self: start; max-height: calc(100vh - 100px); overflow: auto; }
+.toc h4 { margin: 0 0 12px; font: 700 11.5px/1 var(--en); letter-spacing: .16em; color: var(--ink-3); }
+.toc ol { list-style: none; margin: 0; padding: 0; border-left: 1px solid var(--line); }
+.toc a { display: flex; gap: 10px; padding: 7px 0 7px 14px; margin-left: -1px; border-left: 2px solid transparent; font-size: 14px; line-height: 1.45; color: var(--ink-2); text-decoration: none; }
+.toc a .n { font: 600 11.5px/1.9 var(--mono); color: var(--ink-3); min-width: 18px; }
+.toc a:hover { color: var(--ink); }
+.toc a.on { border-left-color: var(--gold); color: var(--ink); font-weight: 650; }
+.toc a.on .n { color: var(--gold); }
+.toc-mobile { display: none; }
+article { max-width: 760px; min-width: 0; padding-bottom: 40px; }
+@media (max-width: 1000px) {
+  .shell { grid-template-columns: minmax(0, 1fr); gap: 0; padding-top: 28px; }
+  .toc { display: none; }
+  .toc-mobile { display: block; margin: 0 auto 8px; max-width: 760px; border: 1px solid var(--line); background: var(--paper); border-radius: 14px; }
+  .toc-mobile summary { cursor: pointer; padding: 12px 16px; font-weight: 700; font-size: 14px; list-style: none; display: flex; justify-content: space-between; }
+  .toc-mobile summary::after { content: "+"; color: var(--ink-3); }
+  .toc-mobile[open] summary::after { content: "−"; }
+  .toc-mobile ol { list-style: none; margin: 0; padding: 0 16px 12px; }
+  .toc-mobile a { display: flex; gap: 10px; padding: 6px 0; font-size: 14.5px; color: var(--ink-2); text-decoration: none; }
+  .toc-mobile a .n { font: 600 12px/1.9 var(--mono); color: var(--ink-3); min-width: 20px; }
+  article { margin: 0 auto; width: 100%; }
+}
+
+/* ---------- article typography ---------- */
+section { padding: 40px 0 28px; border-bottom: 1px solid var(--line); }
+section:last-of-type { border-bottom: 0; }
+.sec-label { display: inline-flex; gap: 8px; align-items: center; font: 700 12px/1 var(--en); letter-spacing: .14em; text-transform: uppercase; color: var(--gold); }
+.sec-label .num { font-family: var(--mono); }
+h2 { font-family: var(--serif); font-weight: 700; font-size: clamp(26px, 3.4vw, 36px); line-height: 1.3; letter-spacing: -.01em; margin: 12px 0 18px; }
+h3 { font-size: 20px; line-height: 1.45; margin: 34px 0 10px; }
+h3 .hn { font: 700 13px/1 var(--mono); color: var(--gold); margin-right: 8px; vertical-align: 2px; }
+p { margin: 0 0 16px; }
+strong { font-weight: 700; }
+mark { background: linear-gradient(transparent 58%, var(--gold-soft) 58%); color: inherit; padding: 0 1px; }
+.standfirst { font-size: 19px; line-height: 1.72; color: var(--ink-2); }
+.standfirst b { color: var(--ink); }
+ul.dots { margin: 0 0 18px; padding: 0; list-style: none; }
+ul.dots li { position: relative; padding-left: 20px; margin: 6px 0; }
+ul.dots li::before { content: ""; position: absolute; left: 4px; top: .78em; width: 6px; height: 6px; border-radius: 50%; background: var(--gold); }
+code { font-family: var(--mono); font-size: .86em; background: var(--code); padding: 2px 6px; border-radius: 6px; }
+.note { font-size: 13.5px; color: var(--ink-3); line-height: 1.6; margin: 10px 2px 0; }
+.note b { color: var(--ink-2); }
+.callout { border: 1px solid var(--line); border-left: 3px solid var(--gold); background: var(--paper); border-radius: 4px 14px 14px 4px; padding: 16px 20px; margin: 22px 0; font-size: 16px; }
+.callout.warn { border-left-color: var(--coral); }
+.callout .tag { display: inline-block; font: 700 11.5px/1 var(--en); letter-spacing: .12em; text-transform: uppercase; color: var(--gold); margin-bottom: 8px; }
+.callout.warn .tag { color: var(--coral); }
+.callout p:last-child { margin-bottom: 0; }
+
+/* ---------- figure shell ---------- */
+.fig { margin: 26px 0 30px; background: var(--paper); border: 1px solid var(--line); border-radius: 18px; box-shadow: var(--shadow); padding: 22px; overflow: hidden; }
+.fig-h { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; }
+.fig-h .t { font-weight: 700; font-size: 15px; }
+.fig-h .s { font-size: 12.5px; color: var(--ink-3); }
+.replay { appearance: none; border: 1px solid var(--line); background: transparent; color: var(--ink-2); font: 600 12px/1 var(--sans); padding: 6px 10px; border-radius: 999px; cursor: pointer; }
+.replay:hover { color: var(--ink); border-color: var(--gold); }
+figcaption { font-size: 13.5px; color: var(--ink-3); margin-top: 14px; line-height: 1.6; }
+@media (max-width: 560px) { .fig { padding: 16px; border-radius: 14px; margin-left: -4px; margin-right: -4px; } }
+
+/* METR: race */
+.race { display: grid; gap: 14px; }
+.race .row { display: grid; grid-template-columns: 92px minmax(0, 1fr) 54px; gap: 12px; align-items: center; font-size: 14px; }
+.race .lbl { color: var(--ink-2); line-height: 1.35; }
+.race .track { position: relative; height: 30px; border-radius: 8px; background: var(--paper-2); overflow: hidden; }
+.race .bar { position: absolute; inset: 0; transform-origin: left; transform: scaleX(0); border-radius: 8px; }
+.race .old .bar { background: var(--ink-3); }
+.race .now .bar { background: linear-gradient(90deg, var(--gold), var(--coral)); }
+.race .track .goal { position: absolute; right: 8px; top: 50%; transform: translateY(-50%); font: 700 11px/1 var(--mono); color: var(--ink-3); z-index: 1; }
+.race .time { font: 700 14px/1 var(--mono); text-align: right; font-variant-numeric: tabular-nums; }
+.race .now .time { color: var(--coral); }
+.mult { display: flex; align-items: baseline; gap: 14px; margin-top: 18px; padding-top: 16px; border-top: 1px dashed var(--line); flex-wrap: wrap; }
+.mult b { font: 800 46px/1 var(--en); letter-spacing: -.03em; color: var(--coral); font-variant-numeric: tabular-nums; }
+.mult span { font-size: 14px; color: var(--ink-2); }
+
+/* METR: perceived vs measured */
+.pvm { display: grid; gap: 12px; }
+.pvm .row { display: grid; grid-template-columns: 116px minmax(0, 1fr); gap: 12px; align-items: center; font-size: 14px; }
+.pvm .track { height: 26px; position: relative; }
+.pvm .bar { height: 100%; border-radius: 6px; display: flex; align-items: center; justify-content: flex-end; padding-right: 8px; font: 700 13px/1 var(--mono); color: #fff; min-width: 46px; }
+.pvm .a .bar { background: var(--violet); width: 100%; }
+.pvm .b .bar { background: var(--coral); width: 16.7%; }
+.pvm .axis { display: grid; grid-template-columns: 116px minmax(0, 1fr); gap: 12px; font: 500 11px/1 var(--mono); color: var(--ink-3); }
+.pvm .axis div { display: flex; justify-content: space-between; }
+
+/* METR: redaction */
+.doc { position: relative; background: #fbfaf5; color: #1b2233; border-radius: 10px; padding: 22px 24px 70px; font-size: 13.5px; line-height: 1.9; border: 1px solid #e6e0cf; }
+:root[data-theme="dark"] .doc { background: #e9e5d9; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .doc { background: #e9e5d9; } }
+.doc .dh { font: 700 11px/1 var(--mono); letter-spacing: .1em; color: #7b7766; display: flex; justify-content: space-between; margin-bottom: 12px; }
+.doc h5 { margin: 0 0 8px; font-size: 15px; }
+.doc p { margin: 0 0 6px; }
+.doc .r { position: relative; display: inline; }
+.doc .r::after { content: ""; position: absolute; left: -2px; right: -2px; top: .15em; bottom: .1em; background: var(--redact); transform-origin: left; transform: scaleX(0); border-radius: 2px; }
+.in .doc .r::after { animation: strike .35s ease-in both; animation-delay: var(--d, 0ms); }
+.doc .stamp { position: absolute; right: 26px; bottom: 16px; border: 3px solid #c8321c; color: #c8321c; font: 800 20px/1 var(--en); letter-spacing: .12em; padding: 8px 12px; border-radius: 6px; opacity: 0; transform: rotate(-14deg); background: rgba(251,250,245,.7); }
+.in .doc .stamp { animation: stamp .5s var(--ease) 2.6s both; }
+
+/* GPT Image grid */
+.feat { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+@media (max-width: 640px) { .feat { grid-template-columns: minmax(0, 1fr); } }
+.tile { border: 1px solid var(--line); border-radius: 14px; padding: 16px; background: var(--bg); min-width: 0; }
+.tile .tt { font-size: 13px; font-weight: 700; display: flex; justify-content: space-between; gap: 8px; margin-bottom: 12px; }
+.tile .tt i { font-style: normal; font: 600 11.5px/1.6 var(--mono); color: var(--ink-3); }
+.menu { background: #1b1410; color: #f6e8c9; border-radius: 10px; padding: 14px 16px; font-family: var(--serif); min-height: 150px; }
+.menu .mh { font-size: 18px; letter-spacing: .08em; text-align: center; border-bottom: 1px solid rgba(246,232,201,.3); padding-bottom: 6px; margin-bottom: 8px; }
+.menu .ml { display: flex; justify-content: space-between; font-size: 13.5px; line-height: 1.85; font-family: var(--sans); }
+.menu .ml span:last-child { font-family: var(--mono); color: #e7b660; }
+.caret { display: inline-block; width: 2px; height: 1em; background: currentColor; vertical-align: -2px; margin-left: 1px; animation: blink 1s steps(1) infinite; }
+.refs { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 6px; }
+.refs i { aspect-ratio: 1; border-radius: 6px; display: block; opacity: 0; }
+.in .refs i { animation: pop .4s var(--ease) both; animation-delay: var(--d); }
+.refs-out { margin-top: 10px; display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--ink-2); }
+.refs-out b { font: 800 22px/1 var(--en); color: var(--ink); font-variant-numeric: tabular-nums; }
+.gif { display: flex; gap: 4px; align-items: flex-end; height: 92px; }
+.gif .fr { flex: 1; border-radius: 4px; background: var(--paper-2); position: relative; height: 100%; overflow: hidden; }
+.gif .fr::after { content: ""; position: absolute; left: 50%; width: 16px; height: 16px; margin-left: -8px; border-radius: 50%; background: var(--blue); bottom: calc(var(--y) * 1%); }
+.gif .fr.on { outline: 2px solid var(--gold); outline-offset: 1px; }
+.gif-ctl { display: flex; align-items: center; gap: 10px; margin-top: 12px; font-size: 13px; color: var(--ink-2); }
+.gif-ctl input { flex: 1; accent-color: var(--gold); }
+.gif-ctl b { font-family: var(--mono); color: var(--ink); min-width: 4.5em; text-align: right; }
+.tiers { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.tier { border-radius: 10px; padding: 10px; background: var(--paper); border: 1px solid var(--line); }
+.tier h6 { margin: 0; font: 800 14px/1.3 var(--en); }
+.tier .px { margin: 8px 0; aspect-ratio: 1; border-radius: 6px; overflow: hidden; display: grid; }
+.tier .px i { display: block; }
+.tier p { margin: 0; font-size: 12px; line-height: 1.5; color: var(--ink-2); }
+.tier.fl h6 { color: var(--coral); } .tier.sb h6 { color: var(--gold); }
+
+/* weight-space: pipelines */
+.pipes { display: grid; gap: 16px; }
+.pipe { display: grid; grid-template-columns: 76px minmax(0, 1fr); gap: 12px; align-items: center; }
+.pipe .who { font: 700 12px/1.3 var(--en); color: var(--ink-3); letter-spacing: .06em; }
+.pipe.new .who { color: var(--gold); }
+.steps { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; position: relative; }
+.steps .s { padding: 8px 12px; border-radius: 10px; border: 1px solid var(--line); background: var(--bg); font-size: 14px; font-weight: 600; white-space: nowrap; }
+.steps .ar { color: var(--ink-3); font-size: 14px; }
+.pipe.old .steps .s { color: var(--ink-3); position: relative; }
+.pipe.old .steps .s::after { content: ""; position: absolute; left: 6px; right: 6px; top: 50%; height: 2px; background: var(--coral); transform: scaleX(0); transform-origin: left; }
+.in .pipe.old .steps .s::after { animation: strike .4s ease both; animation-delay: var(--d); }
+.pipe.new .steps .s { border-color: var(--gold); background: var(--gold-soft); color: var(--ink); }
+
+/* weight grid */
+.wg-wrap { display: grid; grid-template-columns: minmax(0, 1fr) 190px; gap: 20px; align-items: center; }
+@media (max-width: 640px) { .wg-wrap { grid-template-columns: minmax(0, 1fr); } }
+.wg { position: relative; display: grid; grid-template-columns: repeat(24, minmax(0, 1fr)); gap: 3px; }
+.wg i { aspect-ratio: 1; border-radius: 2px; display: block; background: var(--blue); transition: background .4s, transform .4s; }
+.wg i.fix { opacity: 1 !important; background: var(--gold) !important; transform: scale(1.25); box-shadow: 0 0 0 1px var(--paper); }
+.wg i.bad { background: var(--coral) !important; }
+.wg .scan { position: absolute; top: -4px; bottom: -4px; width: 3px; left: 0; background: var(--gold); box-shadow: 0 0 16px 3px color-mix(in srgb, var(--gold) 60%, transparent); opacity: 0; border-radius: 2px; }
+.meter { text-align: center; }
+.meter .ring { width: 150px; height: 150px; margin: 0 auto; position: relative; }
+.meter svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+.meter .val { position: absolute; inset: 0; display: grid; place-items: center; font: 800 34px/1 var(--en); font-variant-numeric: tabular-nums; }
+.meter .val small { display: block; font: 600 11.5px/1.4 var(--sans); color: var(--ink-3); margin-top: 4px; text-align: center; }
+.meter .phase { margin-top: 10px; font-size: 13px; color: var(--ink-2); min-height: 2.6em; line-height: 1.45; }
+.meter .phase b { color: var(--ink); }
+
+/* bench bars */
+.bench { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 22px; }
+.bench .b h6 { margin: 0 0 10px; font: 700 14px/1 var(--en); display: flex; justify-content: space-between; }
+.bench .b h6 span { color: var(--green); font-family: var(--mono); }
+.bench .cols { display: flex; gap: 14px; align-items: flex-end; height: 190px; border-bottom: 1px solid var(--line); padding: 0 8px; }
+.bench .col { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%; gap: 6px; }
+.bench .col .v { font: 700 14px/1 var(--mono); font-variant-numeric: tabular-nums; }
+.bench .col .bar { width: 100%; max-width: 64px; border-radius: 8px 8px 0 0; height: var(--h); }
+.bench .col.before .bar { background: var(--ink-3); opacity: .55; }
+.bench .col.after .bar { background: var(--green); }
+.bench .col.after .v { color: var(--green); }
+.bench .lbls { display: flex; gap: 14px; padding: 8px 8px 0; font-size: 12.5px; color: var(--ink-3); }
+.bench .lbls span { flex: 1; text-align: center; }
+@media (max-width: 480px) { .bench { grid-template-columns: minmax(0, 1fr); } .bench .cols { height: 150px; } }
+.dose { margin-top: 18px; display: flex; align-items: center; gap: 12px; font-size: 13.5px; color: var(--ink-2); flex-wrap: wrap; }
+.dose .strip { flex: 1; min-width: 180px; height: 12px; border-radius: 6px; background: var(--blue-soft); position: relative; overflow: hidden; }
+.dose .strip i { position: absolute; left: 61%; top: 0; bottom: 0; width: 2px; background: var(--gold); box-shadow: 0 0 8px var(--gold); }
+
+/* go */
+.go-wrap { display: grid; grid-template-columns: 220px minmax(0, 1fr); gap: 22px; align-items: center; }
+@media (max-width: 640px) { .go-wrap { grid-template-columns: minmax(0, 1fr); } .go-board { max-width: 240px; margin: 0 auto; } }
+.go-board { aspect-ratio: 1; background: #d9b26a; border-radius: 10px; position: relative; box-shadow: inset 0 0 0 1px rgba(0,0,0,.15); }
+.go-board svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+.code { background: #0c1524; color: #d6dbe6; border-radius: 12px; padding: 14px 16px; font: 500 12.5px/1.75 var(--mono); min-height: 196px; white-space: pre-wrap; overflow: hidden; }
+.code .k { color: #d5a844; } .code .c { color: #6f7b93; } .code .n { color: #6aa8ff; }
+.vs { margin-top: 16px; display: grid; grid-template-columns: 1fr auto 1fr; gap: 12px; align-items: stretch; }
+.vs > div { border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; background: var(--bg); }
+.vs .x { display: grid; place-items: center; border: 0; background: none; font: 800 13px/1 var(--en); color: var(--ink-3); padding: 0; }
+.vs b { display: block; font: 800 22px/1.15 var(--en); letter-spacing: -.02em; }
+.vs span { font-size: 12.5px; color: var(--ink-2); line-height: 1.4; display: block; margin-top: 4px; }
+.vs .w b { color: var(--gold); }
+
+/* frontier table */
+.tbl-wrap { overflow-x: auto; margin: 22px 0; border: 1px solid var(--line); border-radius: 16px; background: var(--paper); box-shadow: var(--shadow); }
+table { width: 100%; border-collapse: collapse; min-width: 620px; font-size: 14.5px; line-height: 1.55; }
+th, td { text-align: left; vertical-align: top; padding: 14px 16px; border-bottom: 1px solid var(--line); }
+tr:last-child td { border-bottom: 0; }
+thead th { font-size: 13px; background: var(--paper-2); }
+thead th small { display: block; font: 600 11px/1.4 var(--en); color: var(--ink-3); letter-spacing: .06em; text-transform: uppercase; }
+tbody th { font-size: 13px; color: var(--ink-3); width: 92px; font-weight: 700; }
+td .chip { display: inline-block; font: 700 11px/1 var(--en); padding: 4px 7px; border-radius: 999px; margin-bottom: 6px; }
+.c-g { background: var(--blue-soft); color: var(--blue); } .c-o { background: var(--green-soft); color: var(--green); } .c-a { background: var(--coral-soft); color: var(--coral); }
+.js .tbl-wrap td { opacity: 0; }
+.tbl-wrap.in td { animation: rise .5s var(--ease) both; animation-delay: var(--d); }
+
+.tl { position: relative; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; padding-top: 26px; }
+.tl::before { content: ""; position: absolute; left: 0; right: 0; top: 7px; height: 2px; background: var(--line); }
+.tl .ln { position: absolute; left: 0; right: 0; top: 7px; height: 2px; background: var(--gold); transform-origin: left; transform: scaleX(0); }
+.in .tl .ln { animation: growX 1.6s var(--ease) .2s both; }
+.tl .ev { position: relative; }
+.tl .ev::before { content: ""; position: absolute; top: -25px; left: 0; width: 12px; height: 12px; border-radius: 50%; background: var(--paper); border: 2px solid var(--gold); }
+.tl .ev .dt { font: 700 13px/1 var(--mono); color: var(--gold); }
+.tl .ev h6 { margin: 6px 0 4px; font-size: 15px; line-height: 1.35; }
+.tl .ev p { margin: 0; font-size: 13px; color: var(--ink-2); line-height: 1.55; }
+@media (max-width: 560px) {
+  .tl { grid-template-columns: minmax(0, 1fr); padding: 0 0 0 24px; }
+  .tl::before, .tl .ln { left: 5px; right: auto; top: 0; bottom: 0; width: 2px; height: auto; }
+  .tl .ln { transform-origin: top; transform: scaleY(0); }
+  .in .tl .ln { animation-name: growY; }
+  .tl .ev::before { top: 2px; left: -24px; }
+}
+
+.split { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; position: relative; }
+.split .base { grid-column: 1 / -1; text-align: center; padding: 14px; border-radius: 12px; background: var(--paper-2); font-weight: 700; font-size: 14.5px; }
+.split .base small { display: block; font-weight: 500; color: var(--ink-3); font-size: 12.5px; }
+.split .arm { border-radius: 14px; padding: 16px; border: 1px solid var(--line); background: var(--bg); min-width: 0; }
+.split .arm h6 { margin: 0 0 2px; font: 800 18px/1.3 var(--en); }
+.split .arm .g { font-size: 12.5px; font-weight: 700; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+.split .arm .g .shield { display: inline-flex; gap: 2px; }
+.split .arm .g .shield i { width: 8px; height: 12px; border-radius: 2px; background: var(--line); display: block; }
+.split .arm.fa h6, .split .arm.fa .g { color: var(--blue); } .split .arm.fa .g .shield i.on { background: var(--blue); }
+.split .arm.my h6, .split .arm.my .g { color: var(--violet); } .split .arm.my .g .shield i.on { background: var(--violet); }
+.split .arm ul { margin: 0; padding-left: 18px; font-size: 13.5px; color: var(--ink-2); line-height: 1.6; }
+.split .arm .price { margin-top: 10px; display: flex; gap: 8px; flex-wrap: wrap; }
+.split .arm .price span { font: 700 12px/1 var(--mono); padding: 6px 8px; border-radius: 8px; background: var(--blue-soft); color: var(--blue); }
+.split .fork { grid-column: 1 / -1; height: 26px; position: relative; }
+.split .fork svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.split .fork path { fill: none; stroke: var(--ink-3); stroke-width: 1.5; stroke-dasharray: 4 4; vector-effect: non-scaling-stroke; }
+.in .split .fork path { animation: dash 1s linear infinite; }
+@media (max-width: 520px) { .split { grid-template-columns: minmax(0, 1fr); } .split .fork { display: none; } }
+
+/* Dot */
+.dot-svg { width: 100%; height: auto; display: block; }
+.dot-svg .box { fill: var(--bg); stroke: var(--line); stroke-width: 1.5; }
+.dot-svg .box.cloud { fill: var(--gold-soft); stroke: var(--gold); }
+.dot-svg .box.wall { fill: var(--coral-soft); stroke: var(--coral); stroke-dasharray: 5 4; }
+.dot-svg text { fill: var(--ink); font-family: var(--sans); font-size: 14px; font-weight: 700; }
+.dot-svg text.sub { fill: var(--ink-2); font-size: 12px; font-weight: 500; }
+.dot-svg text.lock { fill: var(--coral); font-size: 12px; }
+.dot-svg .wire { fill: none; stroke: var(--line); stroke-width: 2; }
+.dot-svg .wire.live { stroke: var(--gold); stroke-dasharray: 6 6; }
+.in .dot-svg .wire.live { animation: dash 1.2s linear infinite; }
+.dot-svg .pk { fill: var(--gold); }
+.dot-svg .pk.b { fill: var(--blue); }
+.dot-svg .ico { fill: none; stroke: var(--ink-2); stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+.dot-svg.m { display: none; }
+@media (max-width: 560px) { .dot-svg.d { display: none; } .dot-svg.m { display: block; } .dot-svg.m text { font-size: 15px; } .dot-svg.m text.sub, .dot-svg.m text.lock { font-size: 13px; } }
+.ctrl { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-top: 18px; }
+@media (max-width: 560px) { .ctrl { grid-template-columns: minmax(0, 1fr); } }
+.ctrl .c { border: 1px solid var(--line); border-radius: 12px; padding: 14px; background: var(--bg); }
+.ctrl .c h6 { margin: 10px 0 4px; font-size: 14.5px; }
+.ctrl .c p { margin: 0; font-size: 13px; line-height: 1.55; color: var(--ink-2); }
+.sw { width: 46px; height: 26px; border-radius: 999px; background: var(--line); position: relative; transition: background .3s; }
+.sw::after { content: ""; position: absolute; top: 3px; left: 3px; width: 20px; height: 20px; border-radius: 50%; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,.25); transition: transform .3s var(--ease); }
+.sw.on { background: var(--green); } .sw.on::after { transform: translateX(20px); }
+.ctrl .ic { height: 26px; display: flex; align-items: center; gap: 8px; font: 700 12px/1 var(--mono); color: var(--ink-3); }
+.ctrl .ic .tk { padding: 6px 9px; border-radius: 8px; background: var(--blue-soft); color: var(--blue); }
+.ctrl .ic .rv2 { padding: 6px 9px; border-radius: 8px; background: var(--coral-soft); color: var(--coral); }
+
+/* Tips: ladder */
+.ladder { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; align-items: end; }
+.ladder .rung { display: flex; flex-direction: column; justify-content: flex-end; min-width: 0; }
+.ladder .blk { height: var(--h); border-radius: 12px 12px 4px 4px; padding: 12px; color: #fff; display: flex; flex-direction: column; justify-content: flex-end; }
+.ladder .blk b { font: 800 17px/1.2 var(--en); }
+.ladder .blk small { font-size: 11.5px; opacity: .85; }
+.ladder .use { margin-top: 10px; font-size: 13px; line-height: 1.5; color: var(--ink-2); }
+.r1 .blk { background: #5b8f7b; } .r2 .blk { background: #3f6fb5; } .r3 .blk { background: #8a5cc2; } .r4 .blk { background: linear-gradient(160deg, var(--gold), var(--coral)); }
+@media (max-width: 600px) {
+  .ladder { grid-template-columns: minmax(0, 1fr); }
+  .ladder .rung { display: grid; grid-template-columns: 138px minmax(0, 1fr); gap: 12px; align-items: center; }
+  .ladder .blk { height: 64px !important; border-radius: 12px; padding: 10px 12px; }
+  .ladder .blk b { font-size: 15px; white-space: nowrap; }
+  .ladder .use { margin: 0; }
+  .in .ladder .gy { animation-name: slideIn; }
+}
+
+/* troubleshooting */
+.flow { display: grid; gap: 0; }
+.flow .fs { display: grid; grid-template-columns: 44px minmax(0, 1fr); gap: 14px; position: relative; padding-bottom: 18px; }
+.flow .fs:last-child { padding-bottom: 0; }
+.flow .fs::before { content: ""; position: absolute; left: 21px; top: 44px; bottom: 0; width: 2px; background: var(--line); }
+.flow .fs:last-child::before { display: none; }
+.flow .bd { width: 44px; height: 44px; border-radius: 50%; display: grid; place-items: center; font: 800 16px/1 var(--en); background: var(--gold-soft); color: var(--gold); border: 1.5px solid var(--gold); }
+.flow h6 { margin: 8px 0 4px; font-size: 15.5px; }
+.flow p { margin: 0; font-size: 14px; color: var(--ink-2); line-height: 1.6; }
+.flow .loop { display: inline-flex; gap: 6px; margin-top: 8px; font: 600 12px/1 var(--mono); flex-wrap: wrap; }
+.flow .loop span { padding: 5px 8px; border-radius: 6px; background: var(--paper-2); color: var(--ink-2); }
+.flow .loop span.ok { background: var(--green-soft); color: var(--green); }
+.flow .eff { display: inline-flex; gap: 4px; margin-top: 8px; align-items: center; font: 600 12px/1 var(--mono); color: var(--ink-3); }
+.flow .eff i { width: 28px; height: 8px; border-radius: 4px; background: var(--line); display: block; }
+.flow .eff i.on { background: var(--gold); }
+
+/* Low-First sim */
+.sim-ctl { display: grid; grid-template-columns: 1fr 1fr; gap: 14px 22px; margin-bottom: 18px; }
+@media (max-width: 560px) { .sim-ctl { grid-template-columns: minmax(0, 1fr); } }
+.sim-ctl label { display: grid; gap: 6px; font-size: 13.5px; color: var(--ink-2); }
+.sim-ctl label span { display: flex; justify-content: space-between; }
+.sim-ctl label b { font-family: var(--mono); color: var(--ink); }
+.sim-ctl input { width: 100%; accent-color: var(--gold); }
+.lanes { display: grid; gap: 14px; }
+.lane .lh { display: flex; justify-content: space-between; font-size: 13.5px; margin-bottom: 8px; gap: 10px; }
+.lane .lh b { font-weight: 700; }
+.lane .lh span { font-family: var(--mono); color: var(--ink-2); font-size: 13px; }
+.tasks { display: grid; grid-template-columns: repeat(20, minmax(0, 1fr)); gap: 4px; }
+.tasks i { aspect-ratio: 1; border-radius: 4px; display: block; background: var(--paper-2); transition: background .3s, transform .3s; }
+.tasks i.lo { background: var(--blue); }
+.tasks i.hi { background: var(--violet); }
+.tasks i.fail { background: var(--coral); transform: scale(.8); }
+.costbar { margin-top: 8px; height: 14px; border-radius: 7px; background: var(--paper-2); overflow: hidden; display: flex; }
+.costbar i { display: block; height: 100%; width: 0; transition: width .6s var(--ease); }
+.costbar i.lo { background: var(--blue); } .costbar i.hi { background: var(--violet); }
+.sim-res { margin-top: 18px; padding: 14px 16px; border-radius: 12px; background: var(--green-soft); color: var(--ink); font-size: 14.5px; line-height: 1.6; }
+.sim-res.bad { background: var(--coral-soft); }
+.sim-res b { font-family: var(--en); font-weight: 800; }
+.legend { display: flex; gap: 14px; flex-wrap: wrap; font-size: 12.5px; color: var(--ink-3); margin-top: 12px; }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.legend i { width: 10px; height: 10px; border-radius: 3px; display: inline-block; }
+
+/* quote */
+.quote { margin: 30px 0; padding: 34px 28px; border-radius: 20px; background: #0c1524; border: 1px solid var(--line); color: #f3efe4; position: relative; overflow: hidden; }
+.quote::before { content: "\201C"; position: absolute; left: 18px; top: -18px; font: 700 120px/1 var(--serif); color: rgba(213,168,68,.22); }
+.quote .q { position: relative; font: 700 clamp(20px, 2.8vw, 27px)/1.6 var(--serif); min-height: 3.3em; }
+.quote .q em { font-style: normal; color: #d5a844; }
+.quote .by { margin-top: 12px; font-size: 13px; color: rgba(243,239,228,.5); }
+@media (max-width: 560px) { .quote { padding: 26px 20px; } .quote .q { min-height: 6.4em; } }
+
+/* conclusion */
+.concl { display: grid; gap: 12px; counter-reset: c; margin-top: 8px; }
+.concl .cc { display: grid; grid-template-columns: 52px minmax(0, 1fr); gap: 16px; padding: 18px; border-radius: 16px; background: var(--paper); border: 1px solid var(--line); text-decoration: none; color: inherit; transition: border-color .2s, transform .2s; }
+.concl .cc:hover { border-color: var(--gold); transform: translateY(-2px); }
+.concl .cc .ix { font: 800 30px/1 var(--en); color: var(--gold); letter-spacing: -.03em; }
+.concl .cc h6 { margin: 2px 0 4px; font-size: 16.5px; }
+.concl .cc p { margin: 0; font-size: 14.5px; color: var(--ink-2); line-height: 1.65; }
+
+.endnote { margin-top: 26px; font-size: 13.5px; color: var(--ink-3); line-height: 1.7; }
+footer.site { border-top: 1px solid var(--line); margin-top: 24px; }
+footer.site .in-wrap { max-width: 1180px; margin: 0 auto; padding: 22px 0 40px; display: flex; flex-wrap: wrap; gap: 10px 22px; font-size: 13.5px; color: var(--ink-3); }
+footer.site a { color: var(--ink-2); }
+.totop { position: fixed; right: max(16px, env(safe-area-inset-right, 0px)); bottom: max(16px, env(safe-area-inset-bottom, 0px)); z-index: 15; width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--line); background: var(--paper); color: var(--ink); box-shadow: var(--shadow); display: grid; place-items: center; cursor: pointer; opacity: 0; pointer-events: none; transition: opacity .3s, transform .3s; transform: translateY(8px); }
+.totop.show { opacity: 1; pointer-events: auto; transform: none; }
+</style>
+<script>document.documentElement.classList.add('js');try{var t=localStorage.getItem('archive-theme');if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body>
+
+<header class="topbar gutter">
+  <div class="topbar-in">
+    <a class="crumb" href="../"><span class="arch">ARTIFACT ARCHIVES</span><span class="sep">/</span><b>최신 AI 핵심 동향</b></a>
+    <span class="sp"></span>
+    <a class="btn" href="../ai-trends-2026-11/" title="같은 내용의 슬라이드 덱"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></svg><span class="lbl">슬라이드로 보기</span></a>
+    <button class="btn" id="themeBtn" type="button" aria-label="테마 전환"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 0 0 18z" fill="currentColor"/></svg><span class="lbl">테마</span></button>
+  </div>
+  <div class="progress" id="progress"></div>
+</header>
+
+<div class="hero gutter" id="hero">
+  <div class="hero-in">
+    <div class="kicker rv" style="--d:0ms">AI Trend Report · 2026.11</div>
+    <h1 class="rv" style="--d:120ms">최신 AI 핵심 동향<br><em>심층 분석</em></h1>
+    <p class="lede rv" style="--d:260ms">최근 발표되거나 유출된 핵심 AI 기술과 보고서 5가지, 그리고 실무 운용 팁 하나를 정리했습니다. 흐름을 한 줄로 요약하면 <b>“모델이 답을 추론하던 시대”에서 “AI가 작업 환경을 직접 다루고, AI가 AI를 만들고 고치는 시대”</b>로 넘어가고 있다는 것입니다.</p>
+    <div class="meta rv" style="--d:380ms"><span>📄 6개 주제</span><span>⏱ 약 12분 읽기</span><span>🖱 스크롤하면 도해가 움직여요</span></div>
+
+    <div class="shift rv" style="--d:480ms" aria-label="패러다임 전환 3단계">
+      <div class="rail"><i></i></div><div class="glow"></div>
+      <div class="st old"><div class="n">BEFORE</div><h3>모델 추론 중심</h3><p>질문을 받으면 답을 생성한다. 사람이 결과를 옮겨 쓴다.</p></div>
+      <div class="st"><div class="n">NOW</div><h3>자율 에이전트 환경 제어</h3><p>클라우드와 로컬 기기를 오가며 일을 직접 끝낸다.</p></div>
+      <div class="st new"><div class="n">NEXT</div><h3>AI에 의한 AI 개발·가중치 제어</h3><p>AI가 다음 AI의 연구를 앞당기고, 신경망 가중치를 직접 고친다.</p></div>
+    </div>
+
+    <div class="stats rv" style="--d:640ms">
+      <a href="#metr"><b data-count="2.0" data-dec="1" data-suf="×">0</b><span>앤트로픽 AI R&amp;D 가속 (METR)</span></a>
+      <a href="#image"><b data-count="15" data-suf="장">0</b><span>GPT Image 2.6 다중 레퍼런스</span></a>
+      <a href="#weights"><b data-count="0.016" data-dec="3" data-suf="%">0</b><span>가중치 수정으로 MATH-500 6배</span></a>
+      <a href="#frontier"><b data-count="59" data-suf="점">0</b><span>Gemini 4 Carbon, Intelligence Index v5</span></a>
+      <a href="#frontier"><b data-count="20" data-pre="−" data-suf="%">0</b><span>Claude Fable 5.2 가격 인하</span></a>
+    </div>
+  </div>
+</div>
+
+<div class="shell gutter">
+  <nav class="toc" aria-label="목차"><h4>CONTENTS</h4><ol id="toc"></ol></nav>
+
+  <article id="article">
+    <details class="toc-mobile"><summary>목차</summary><ol id="tocMobile"></ol></details>
+
+    <!-- ================= 1. METR ================= -->
+    <section id="metr" data-n="01" data-t="METR 리포트">
+      <span class="sec-label"><span class="num">01</span> · R&amp;D 가속 평가</span>
+      <h2>METR 리포트: AI가 다음 AI를 만드는 속도를 처음으로 잰 보고서</h2>
+      <p class="standfirst">AI 안전·역량 평가 비영리 연구기관 <b>METR(Model Evaluation and Threat Research)</b>이 2026년 11월 5일, 앤트로픽 내부 데이터를 바탕으로 한 <b>“내부 AI R&amp;D 가속 독립 평가 보고서”</b>를 공개했습니다.</p>
+      <p>“AI가 차세대 AI를 직접 만든다”는 말은 그동안 주장에 가까웠습니다. 이 보고서는 그 주장을 <mark>실제 프론티어 연구소의 내부 데이터로 정량 측정한 첫 공식 독립 보고서</mark>라는 점에서 의미가 큽니다.</p>
+
+      <h3><span class="hn">1.1</span>R&amp;D 역량 향상 속도, 약 2배</h3>
+      <p>METR은 앤트로픽 내부 엔지니어링·벤치마크 지표(AECI 등)를 분석했습니다. 결론은 잘 정의된 과제에서 모델 개발 가속도가 2024년 3월~2025년 10월 대비 <strong>약 1.9~2.0배</strong> 빨라졌다는 것입니다. 쉽게 말해, 예전 속도로 2년 걸리던 연구 진척을 지금은 1년 만에 해낸다는 뜻입니다.</p>
+
+      <div class="fig" data-fig="race">
+        <div class="fig-h"><span class="t">같은 연구 진척에 걸리는 시간</span><button class="replay" type="button" data-replay>다시 재생</button></div>
+        <div class="race">
+          <div class="row old"><span class="lbl">기존 속도<br><small style="color:var(--ink-3)">2024.3~2025.10</small></span><div class="track"><span class="goal">목표</span><div class="bar"></div></div><span class="time" data-t="old">0.0년</span></div>
+          <div class="row now"><span class="lbl">현재 속도</span><div class="track"><span class="goal">목표</span><div class="bar"></div></div><span class="time" data-t="now">0.0년</span></div>
+        </div>
+        <div class="mult"><b data-mult>1.0×</b><span>가속 배수 (METR 추정 1.9~2.0×)</span></div>
+        <figcaption>막대는 같은 양의 연구 진척을 채우는 데 걸리는 시간을 1초=1년 비율로 보여 줍니다.</figcaption>
+      </div>
+
+      <h3><span class="hn">1.2</span>가속의 주된 원인은 AI 자신</h3>
+      <p>연구원 개인이 체감하는 생산성 향상 배수(자기 보고 기준)는 평균 <strong>약 12배</strong>였습니다. 다만 이 숫자는 체감치이고, 조직 전체 진척 속도의 측정치(약 2배)와는 다른 값입니다. 두 숫자를 나란히 놓으면 차이가 분명히 보입니다.</p>
+
+      <div class="fig" data-fig="pvm">
+        <div class="fig-h"><span class="t">체감 생산성 vs 측정된 가속</span><span class="s">단위: 배</span></div>
+        <div class="pvm">
+          <div class="row a"><span>연구원 체감<br><small style="color:var(--ink-3)">자기 보고 평균</small></span><div class="track"><div class="bar gx">12×</div></div></div>
+          <div class="row b"><span>METR 측정<br><small style="color:var(--ink-3)">R&amp;D 진척 속도</small></span><div class="track"><div class="bar gx" style="--d:300ms">~2×</div></div></div>
+          <div class="axis"><span></span><div><span>0</span><span>3</span><span>6</span><span>9</span><span>12</span></div></div>
+        </div>
+      </div>
+
+      <p>METR은 진척 곡선의 기울기가 가팔라진 원인 대부분이 외부 요인이 아니라 <mark>Claude 자체를 연구·코딩 파이프라인에 적극 투입한 AI 자체 기여분</mark>이라고 평가했습니다.</p>
+
+      <h3><span class="hn">1.3</span>한계와 논란: 가려진 근거</h3>
+      <p>앤트로픽의 영업 비밀·보안 요청으로 핵심 근거 데이터, 단계별 효과 추정치, 컴퓨트 자원 배분 데이터의 상당수가 <strong>가림 처리(Redaction)</strong>된 채 공개되었습니다.</p>
+
+      <div class="fig" data-fig="redact">
+        <div class="fig-h"><span class="t">가림 처리는 이런 식으로 이루어집니다</span><button class="replay" type="button" data-replay>다시 재생</button></div>
+        <div class="doc" aria-label="가림 처리된 문서 예시">
+          <div class="dh"><span>METR · INTERNAL R&amp;D ACCELERATION</span><span>p. 14</span></div>
+          <h5>4.2 단계별 효과 추정</h5>
+          <p>코딩 보조 도입 이후 실험 반복 주기는 <span class="r" style="--d:400ms">약 3.1주에서 1.4주로</span> 단축되었으며, 이 중 <span class="r" style="--d:800ms">62%</span>가 모델 기여분으로 추정된다.</p>
+          <p>컴퓨트 배분은 <span class="r" style="--d:1200ms">사전 학습 41% · 강화 학습 33% · 평가 26%</span>로 조정되었고, 내부 지표 AECI는 <span class="r" style="--d:1600ms">분기당 0.27</span>씩 상승했다.</p>
+          <p>세부 근거는 <span class="r" style="--d:2000ms">부록 C의 실험 로그 1,240건</span>에 기록되어 있다.</p>
+          <div class="stamp">REDACTED</div>
+        </div>
+        <figcaption><b>예시 화면입니다.</b> 가려진 문장과 수치는 설명을 위해 지어낸 것이며 실제 보고서 내용이 아닙니다.</figcaption>
+      </div>
+
+      <div class="callout warn"><span class="tag">METR의 자기 평가</span><p>“독자가 외부 검증 없이 METR의 판단에 의존해야 하는 부분이 바람직한 수준보다 크다.” METR 스스로도 독립 평가의 제약을 인정했습니다. 2배라는 숫자는 의미 있지만, 외부에서 다시 검증할 수 없는 숫자라는 점도 함께 기억해야 합니다.</p></div>
+    </section>
+
+    <!-- ================= 2. GPT Image ================= -->
+    <section id="image" data-n="02" data-t="GPT Image 2.6">
+      <span class="sec-label"><span class="num">02</span> · 이미지 생성</span>
+      <h2>GPT Image 2.6: 글자와 일관성, 두 난제를 함께 풀다</h2>
+      <p class="standfirst">OpenAI의 최신 이미지 생성 파운데이션 모델 <b>GPT Image 2.6</b>이 Mage, ElevenLabs 등 파트너 플랫폼과 API로 정식 공급을 시작했습니다.</p>
+      <p>이미지 생성 모델의 오랜 약점은 두 가지였습니다. 이미지 속 글자가 깨지는 것, 그리고 여러 장을 만들면 캐릭터나 화풍이 조금씩 달라지는 것입니다. 2.6은 이 두 문제를 크게 개선했고, 애니메이션 GIF 생성과 두 가지 티어 구성을 더했습니다.</p>
+
+      <div class="fig" data-fig="image">
+        <div class="fig-h"><span class="t">네 가지 핵심 기능</span><button class="replay" type="button" data-replay>다시 재생</button></div>
+        <div class="feat">
+          <div class="tile"><div class="tt">① 인-이미지 텍스트 렌더링 <i>KO + EN</i></div>
+            <div class="menu"><div class="mh" data-type="오늘의 메뉴 · TODAY">&nbsp;</div><div id="menuLines"></div></div>
+          </div>
+          <div class="tile"><div class="tt">② 다중 참조 편집 <i>최대 15장</i></div>
+            <div class="refs" id="refs"></div>
+            <div class="refs-out"><b id="refN">0</b>/15장 입력 → 캐릭터·오브젝트·화풍 일관 유지</div>
+          </div>
+          <div class="tile"><div class="tt">③ 애니메이션 GIF 직접 생성 <i>2~16프레임</i></div>
+            <div class="gif" id="gif"></div>
+            <div class="gif-ctl"><span>프레임</span><input type="range" min="2" max="16" value="8" id="gifN" aria-label="프레임 수"><b id="gifL">8프레임</b></div>
+          </div>
+          <div class="tile"><div class="tt">④ 이원화 티어 <i>Flare / Sunburst</i></div>
+            <div class="tiers">
+              <div class="tier fl"><h6>Flare</h6><div class="px" id="pxF"></div><p>기본 티어 · 1K<br>빠르고 저렴함</p></div>
+              <div class="tier sb"><h6>Sunburst</h6><div class="px" id="pxS"></div><p>프리미엄 · 2K<br>고정밀 디테일, 복잡한 지시</p></div>
+            </div>
+          </div>
+        </div>
+        <figcaption>각 칸의 그림은 기능을 설명하는 도식입니다. 실제 모델 출력물이 아닙니다.</figcaption>
+      </div>
+
+      <h3><span class="hn">2.1</span>극대화된 인-이미지 텍스트 렌더링</h3>
+      <p>포스터, 브랜드 라벨, 식당 메뉴판, 다단 만화(웹툰)처럼 글자 배치가 복잡한 이미지에서도 오타 없는 타이포그래피를 만들 수 있습니다. 한국어와 영어를 섞어 쓰는 다국어 폰트 표현력도 크게 좋아졌습니다.</p>
+      <h3><span class="hn">2.2</span>다중 참조(Multi-Reference) 편집</h3>
+      <p>최대 <strong>15장의 레퍼런스 이미지</strong>를 프롬프트와 함께 넣을 수 있습니다. 캐릭터 외형, 특정 오브젝트, 화풍을 일관되게 유지하면서 정밀하게 편집할 수 있다는 뜻입니다.</p>
+      <h3><span class="hn">2.3</span>자체 애니메이션 GIF 생성</h3>
+      <p>텍스트 프롬프트 하나나 정지 이미지 한 장으로 <strong>2~16프레임</strong> 분량의 루프형 고화질 GIF를 바로 렌더링합니다.</p>
+      <h3><span class="hn">2.4</span>Flare vs. Sunburst</h3>
+      <ul class="dots">
+        <li><strong>GPT Image 2.6 Flare</strong>: 빠른 생성 속도와 비용 효율을 갖춘 기본 티어. 1K 해상도.</li>
+        <li><strong>GPT Image 2.6 Sunburst</strong>: 2K 고해상도, 고정밀 디테일 보정, 복잡한 시각 지시문 처리에 특화된 프리미엄 티어.</li>
+      </ul>
+    </section>
+
+    <!-- ================= 3. Weight-space ================= -->
+    <section id="weights" data-n="03" data-t="Weight-Space Programming">
+      <span class="sec-label"><span class="num">03</span> · 가중치 직접 제어</span>
+      <h2>Weight-Space Programming: 학습 없이 가중치를 고치다</h2>
+      <p class="standfirst">2026년 11월 2일, <b>MIT CSAIL 연구진(Rikiya Takehi 외)</b>이 논문 <i>“Sparks of Weight-Space Programming: LLMs can natively read &amp; write neural network weights”</i>를 발표했습니다.</p>
+      <p>지금까지 신경망을 바꾸는 방법은 사실상 하나였습니다. 데이터를 모으고, 역전파로 오차를 계산하고, 경사 하강법으로 가중치를 조금씩 움직이는 것입니다. 이 논문은 그 과정을 건너뜁니다. <mark>LLM이 대상 신경망의 원시 가중치 텐서를 코드처럼 읽고, 원인을 분석해, 바로 고쳐 씁니다.</mark></p>
+
+      <div class="fig" data-fig="pipes">
+        <div class="fig-h"><span class="t">신경망을 바꾸는 두 가지 길</span><button class="replay" type="button" data-replay>다시 재생</button></div>
+        <div class="pipes">
+          <div class="pipe old"><span class="who">기존<br>딥러닝</span>
+            <div class="steps"><span class="s" style="--d:300ms">데이터셋 수집</span><span class="ar">→</span><span class="s" style="--d:600ms">역전파</span><span class="ar">→</span><span class="s" style="--d:900ms">경사 하강법</span></div></div>
+          <div class="pipe new"><span class="who">Weight-Space<br>Programming</span>
+            <div class="steps"><span class="s si" style="--d:1300ms">가중치 읽기</span><span class="ar si" style="--d:1450ms">→</span><span class="s si" style="--d:1600ms">원인 분석</span><span class="ar si" style="--d:1750ms">→</span><span class="s si" style="--d:1900ms">직접 수정(Write)</span></div></div>
+        </div>
+      </div>
+
+      <h3><span class="hn">3.1</span>결함 신경망 즉각 교정: 3.5% 수정으로 0% → 100%</h3>
+      <p>강화학습(PPO) 훈련 중 국소 최적해(Local Minimum)에 빠져 주행 과제를 계속 실패하던 정책망이 있었습니다. GPT-6 Astra가 가중치 구조에서 실패 원인을 찾아냈고, <strong>전체 가중치의 3.5%를 단 한 번</strong> 고쳤습니다. 성공률은 0%에서 100%가 되었고, 1,024회 연속 성공했습니다.</p>
+
+      <div class="fig" data-fig="grid">
+        <div class="fig-h"><span class="t">가중치를 훑고, 고치고, 다시 달린다</span><button class="replay" type="button" data-replay>다시 재생</button></div>
+        <div class="wg-wrap">
+          <div class="wg" id="wg"><span class="scan" id="scan"></span></div>
+          <div class="meter">
+            <div class="ring"><svg viewBox="0 0 120 120"><circle cx="60" cy="60" r="52" fill="none" stroke="var(--paper-2)" stroke-width="12"/><circle id="ringArc" cx="60" cy="60" r="52" fill="none" stroke="var(--green)" stroke-width="12" stroke-linecap="round" stroke-dasharray="326.7" stroke-dashoffset="326.7"/></svg>
+              <div class="val"><div><span id="succ">0%</span><small>주행 성공률</small></div></div></div>
+            <div class="phase" id="phase">국소 최적해에 갇힌 정책망</div>
+          </div>
+        </div>
+        <figcaption>격자 한 칸은 가중치 묶음을 뜻하는 도식입니다. 288칸 중 10칸(약 3.5%)이 바뀝니다.</figcaption>
+      </div>
+
+      <h3><span class="hn">3.2</span>0.016%만 고쳐 수학 점수 6배</h3>
+      <p>오픈소스 소형 모델 Qwen3.5-0.8B의 가중치 중 <strong>단 0.016%</strong>만 직접 찾아 고쳤습니다. MATH-500 점수는 7.9%에서 48.1%로, GSM8K는 13.8%에서 67.1%로 올랐습니다.</p>
+
+      <div class="fig" data-fig="bench">
+        <div class="fig-h"><span class="t">Qwen3.5-0.8B, 가중치 0.016% 수정 전후</span><span class="s">정답률 %</span></div>
+        <div class="bench">
+          <div class="b"><h6>MATH-500 <span>×6.1</span></h6>
+            <div class="cols"><div class="col before"><span class="v" data-count="7.9" data-dec="1">0</span><div class="bar gy" style="--h:7.9%"></div></div><div class="col after"><span class="v" data-count="48.1" data-dec="1">0</span><div class="bar gy" style="--h:48.1%;--d:400ms"></div></div></div>
+            <div class="lbls"><span>수정 전</span><span>수정 후</span></div></div>
+          <div class="b"><h6>GSM8K <span>×4.9</span></h6>
+            <div class="cols"><div class="col before"><span class="v" data-count="13.8" data-dec="1">0</span><div class="bar gy" style="--h:13.8%;--d:200ms"></div></div><div class="col after"><span class="v" data-count="67.1" data-dec="1">0</span><div class="bar gy" style="--h:67.1%;--d:600ms"></div></div></div>
+            <div class="lbls"><span>수정 전</span><span>수정 후</span></div></div>
+        </div>
+        <div class="dose"><span>바뀐 가중치의 비중</span><div class="strip" aria-hidden="true"><i></i></div><span class="mono">0.016%</span></div>
+        <figcaption>띠 전체가 모델의 모든 가중치라면, 수정된 부분은 금색 선 하나보다도 얇습니다. 선은 보이도록 과장해 그렸습니다.</figcaption>
+      </div>
+
+      <h3><span class="hn">3.3</span>가중치 제로샷 코딩: 학습 없이 바둑 AI 조립</h3>
+      <p>훈련 데이터 없이, 9×9 바둑용 <strong>148만 개 가중치</strong> 신경망을 파이썬 코드로 레이어 단위로 직접 조립했습니다. 이 네트워크는 2,000만 회 대국으로 학습한 PPO 네트워크보다 강했습니다.</p>
+
+      <div class="fig" data-fig="go">
+        <div class="fig-h"><span class="t">데이터 대신 코드로 가중치를 쓴다</span><button class="replay" type="button" data-replay>다시 재생</button></div>
+        <div class="go-wrap">
+          <div class="go-board"><svg viewBox="0 0 100 100" id="goSvg" aria-label="9×9 바둑판"></svg></div>
+          <div class="code" id="goCode" aria-label="가중치 조립 코드 예시"></div>
+        </div>
+        <div class="vs">
+          <div class="w"><b>148만 개</b><span>가중치를 코드로 직접 작성<br>학습 데이터 0판</span></div>
+          <div class="x">&gt;</div>
+          <div><b>2,000만 판</b><span>대국으로 학습한<br>PPO 네트워크</span></div>
+        </div>
+        <figcaption><b>예시 화면입니다.</b> 바둑판의 수와 코드는 개념을 보여 주기 위한 것으로, 논문의 실제 코드가 아닙니다.</figcaption>
+      </div>
+
+      <div class="callout"><span class="tag">시사점</span><p>AI가 <strong>‘가중치 오라클(Weight Oracle)’</strong> 역할을 맡아 다른 모델이나 자기 자신의 파라미터를 실시간으로 편집하는 <strong>자율 진화형 AI(Self-Adaptive AI)</strong> 시대로 가는 이정표로 평가받습니다. 1장의 METR 보고서가 “AI가 AI 연구를 빠르게 한다”는 측정이라면, 이 논문은 “AI가 AI를 직접 고친다”는 시연입니다.</p></div>
+    </section>
+
+    <!-- ================= 4. Frontier ================= -->
+    <section id="frontier" data-n="04" data-t="프론티어 모델 3파전">
+      <span class="sec-label"><span class="num">04</span> · 플래그십 경쟁</span>
+      <h2>프론티어 모델 3파전: Carbon, Astra, Fable·Mythos</h2>
+      <p class="standfirst">구글, 오픈AI, 앤트로픽이 차세대 플래그십 AI를 두고 치열하게 맞붙고 있습니다. 세 회사의 움직임은 단계도 방식도 다릅니다. 하나는 1위를 차지했고, 하나는 몰래 시험 중이며, 하나는 정식 출시했습니다.</p>
+
+      <div class="tbl-wrap" data-fig="table">
+        <table>
+          <thead><tr><th>구분</th><th><small>Google</small>Gemini 4 Carbon</th><th><small>OpenAI</small>GPT-6.2 Astra</th><th><small>Anthropic</small>Claude Fable 5.2 / Mythos 5.2</th></tr></thead>
+          <tbody>
+            <tr><th>현황</th><td style="--d:100ms"><span class="chip c-g">1위</span><br>벤치마크 1위 등극 (10월 말)</td><td style="--d:250ms"><span class="chip c-o">A/B 테스트</span><br>Codex 내부 식별자 포착</td><td style="--d:400ms"><span class="chip c-a">정식 출시</span><br>11월 9일 공식 출시</td></tr>
+            <tr><th>특징</th><td style="--d:550ms">고성능 추론 최적화 모델</td><td style="--d:700ms">차세대 코딩·가중치 제어 특화</td><td style="--d:850ms">안전 등급 이원화 (일반용 vs 연구·보안용)</td></tr>
+            <tr><th>성능·가격</th><td style="--d:1000ms">Intelligence Index v5 <b>59점</b></td><td style="--d:1150ms"><code>gpt-6.2-astra</code> 트래픽 분기 테스트 중</td><td style="--d:1300ms">Fable 5.1 대비 가격 <b>20% 인하</b>, 속도 <b>30% 향상</b></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="fig" data-fig="timeline">
+        <div class="fig-h"><span class="t">2주 사이에 벌어진 일</span></div>
+        <div class="tl"><span class="ln"></span>
+          <div class="ev rv" style="--d:300ms"><span class="dt">10.28</span><h6>Gemini 4 Carbon 1위</h6><p>Artificial Analysis Intelligence Index v5에서 59점.</p></div>
+          <div class="ev rv" style="--d:800ms"><span class="dt">직후</span><h6><code>gpt-6.2-astra</code> 포착</h6><p>Codex 사용량 로그에서 식별자 유출, 일부 유료 트래픽에 교체 배포.</p></div>
+          <div class="ev rv" style="--d:1300ms"><span class="dt">11.09</span><h6>Fable 5.2 · Mythos 5.2 출시</h6><p>같은 최상위 모델 위에 가드레일을 두 단계로 나눠 출시.</p></div>
+        </div>
+      </div>
+
+      <h3><span class="hn">4.1</span>Google Gemini 4 Carbon</h3>
+      <p>10월 28일 Artificial Analysis의 Intelligence Index v5에서 59점을 기록해 글로벌 1위 모델로 공인받았습니다. 경쟁사들을 강하게 압박하는 결과였습니다.</p>
+      <h3><span class="hn">4.2</span>OpenAI GPT-6.2 Astra</h3>
+      <p>Gemini Carbon이 선두를 가져간 직후, OpenAI Codex 개발자 환경의 사용량 로그에서 <code>gpt-6.2-astra</code> 식별자가 유출되었습니다. 일부 유료 트래픽에 비공개로 교체 배포되어 성능 검증이 진행 중인 것으로 확인되었습니다. 3장에서 결함 신경망을 고친 모델이 바로 GPT-6 Astra 계열입니다.</p>
+      <h3><span class="hn">4.3</span>Anthropic Claude Fable 5.2 &amp; Mythos 5.2</h3>
+      <p>11월 9일, 앤트로픽은 <mark>같은 최상위 모델을 기반으로 가드레일 강도만 둘로 나눠</mark> 출시했습니다.</p>
+
+      <div class="fig" data-fig="split">
+        <div class="split">
+          <div class="base rv">동일한 최상위 모델 기반<small>가드레일 강도로 이원화</small></div>
+          <div class="fork" aria-hidden="true"><svg viewBox="0 0 100 26" preserveAspectRatio="none"><path d="M50 0 V10 H25 V26"/><path d="M50 10 H75 V26"/></svg></div>
+          <div class="arm fa rv" style="--d:300ms"><h6>Claude Fable 5.2</h6><div class="g">일반 엔터프라이즈·개발자용 <span class="shield"><i class="on"></i><i class="on"></i><i class="on"></i></span></div>
+            <ul><li>긴 호흡의 에이전트 작업</li><li>운영체제(OS) 자동 구축 등에 최적화</li><li>실행 속도 30% 향상</li></ul>
+            <div class="price"><span>입력 $8</span><span>출력 $40</span><span>−20%</span></div></div>
+          <div class="arm my rv" style="--d:500ms"><h6>Claude Mythos 5.2</h6><div class="g">인증 통과 전문 기관 전용 <span class="shield"><i class="on"></i><i></i><i></i></span></div>
+            <ul><li>Cyber / Life Sciences Verification Program 통과 필요</li><li>사이버 보안 취약점·익스플로잇 분석</li><li>단백질 캡시드 구조 예측 등 이중용도(Dual-use) 고위험 연구를 제한 없이 수행</li></ul></div>
+        </div>
+        <figcaption>방패 칸 수는 일반 사용자에게 걸리는 제한의 상대적 강도를 나타낸 도식입니다. Mythos는 기관 인증으로 접근을 통제하는 대신 과제 제한을 풉니다.</figcaption>
+      </div>
+      <p>Fable 5.2의 가격은 입력 $8, 출력 $40으로 Fable 5.1보다 20% 내렸습니다. 원문에는 과금 단위(토큰 수)가 적혀 있지 않습니다.</p>
+    </section>
+
+    <!-- ================= 5. Dot ================= -->
+    <section id="dot" data-n="05" data-t="OpenAI Dot">
+      <span class="sec-label"><span class="num">05</span> · 상시 가동 에이전트</span>
+      <h2>OpenAI Dot: 클라우드를 넘어 내 컴퓨터들로</h2>
+      <p class="standfirst">OpenAI의 차세대 퍼스널 에이전트 <b>Dot(OpenAI Dots)</b>이 독립 클라우드 가상 환경을 넘어, 사용자가 가진 <b>여러 대의 로컬 컴퓨터</b>에 직접 접속해 작업을 위임·수행하는 기능을 공식 지원하기 시작했습니다.</p>
+
+      <div class="fig" data-fig="dot">
+        <div class="fig-h"><span class="t">클라우드와 로컬의 하이브리드 협업</span><span class="s">작업 신호가 기기 사이를 오갑니다</span></div>
+        <svg class="dot-svg d" viewBox="0 0 720 360" role="img" aria-label="Dot 클라우드 머신이 사무실 PC, 개인 노트북, 홈 워크스테이션으로 작업을 분산하는 구조도">
+          <path class="wire live" id="w1" d="M360 112 C360 170, 120 170, 120 232"/>
+          <path class="wire live" id="w2" d="M360 112 L360 232"/>
+          <path class="wire live" id="w3" d="M360 112 C360 170, 600 170, 600 232"/>
+          <path class="wire" d="M470 70 H560" stroke-dasharray="4 5"/>
+          <rect class="box cloud" x="250" y="30" width="220" height="82" rx="16"/>
+          <text x="360" y="64" text-anchor="middle">Dot 클라우드 머신</text>
+          <text class="sub" x="360" y="88" text-anchor="middle">기본 작업 공간</text>
+          <rect class="box wall" x="560" y="38" width="140" height="64" rx="12"/>
+          <text class="lock" x="630" y="64" text-anchor="middle">CAPTCHA 차단</text>
+          <text class="lock" x="630" y="84" text-anchor="middle">사내 폐쇄망</text>
+          <g>
+            <rect class="box" x="30" y="232" width="180" height="100" rx="14"/>
+            <path class="ico" d="M104 252h32v20h-32z M112 280h16 M120 272v8"/>
+            <text x="120" y="304" text-anchor="middle">A · 사무실 PC</text><text class="sub" x="120" y="322" text-anchor="middle">로컬 파일 추출</text>
+          </g>
+          <g>
+            <rect class="box" x="270" y="232" width="180" height="100" rx="14"/>
+            <path class="ico" d="M346 254h28v18h-28z M340 276h40"/>
+            <text x="360" y="304" text-anchor="middle">개인 노트북</text><text class="sub" x="360" y="322" text-anchor="middle">브라우저로 CAPTCHA 우회</text>
+          </g>
+          <g>
+            <rect class="box" x="510" y="232" width="180" height="100" rx="14"/>
+            <path class="ico" d="M584 250h32v24h-32z M590 258h8 M590 264h14"/>
+            <text x="600" y="304" text-anchor="middle">B · 홈 워크스테이션</text><text class="sub" x="600" y="322" text-anchor="middle">Codex 코딩 · 로컬 스킬</text>
+          </g>
+          <circle class="pk" r="6"><animateMotion dur="2.4s" repeatCount="indefinite"><mpath href="#w1"/></animateMotion></circle>
+          <circle class="pk b" r="6"><animateMotion dur="2.4s" begin="0.8s" repeatCount="indefinite" keyPoints="1;0" keyTimes="0;1" calcMode="linear"><mpath href="#w2"/></animateMotion></circle>
+          <circle class="pk" r="6"><animateMotion dur="2.4s" begin="1.6s" repeatCount="indefinite"><mpath href="#w3"/></animateMotion></circle>
+        </svg>
+        <svg class="dot-svg m" viewBox="0 0 340 470" role="img" aria-label="Dot 클라우드 머신이 세 대의 로컬 기기로 작업을 분산하는 구조도">
+          <path class="wire live" id="m1" d="M40 108 V180 H60"/>
+          <path class="wire live" id="m2" d="M40 108 V290 H60"/>
+          <path class="wire live" id="m3" d="M40 108 V400 H60"/>
+          <rect class="box cloud" x="10" y="14" width="200" height="94" rx="16"/>
+          <text x="110" y="54" text-anchor="middle">Dot 클라우드 머신</text>
+          <text class="sub" x="110" y="80" text-anchor="middle">기본 작업 공간</text>
+          <path class="wire" d="M210 61 H226" stroke-dasharray="4 5"/>
+          <rect class="box wall" x="226" y="22" width="106" height="78" rx="12"/>
+          <text class="lock" x="279" y="56" text-anchor="middle">CAPTCHA</text>
+          <text class="lock" x="279" y="78" text-anchor="middle">사내 폐쇄망</text>
+          <rect class="box" x="60" y="140" width="272" height="80" rx="14"/>
+          <text x="80" y="174">A · 사무실 PC</text><text class="sub" x="80" y="198">로컬 파일 추출</text>
+          <rect class="box" x="60" y="250" width="272" height="80" rx="14"/>
+          <text x="80" y="284">개인 노트북</text><text class="sub" x="80" y="308">브라우저로 CAPTCHA 우회</text>
+          <rect class="box" x="60" y="360" width="272" height="80" rx="14"/>
+          <text x="80" y="394">B · 홈 워크스테이션</text><text class="sub" x="80" y="418">Codex 코딩 · 로컬 스킬</text>
+          <circle class="pk" r="6"><animateMotion dur="2.4s" repeatCount="indefinite"><mpath href="#m1"/></animateMotion></circle>
+          <circle class="pk b" r="6"><animateMotion dur="2.4s" begin="0.8s" repeatCount="indefinite" keyPoints="1;0" keyTimes="0;1" calcMode="linear"><mpath href="#m2"/></animateMotion></circle>
+          <circle class="pk" r="6"><animateMotion dur="2.4s" begin="1.6s" repeatCount="indefinite"><mpath href="#m3"/></animateMotion></circle>
+        </svg>
+        <figcaption>금색 점은 클라우드에서 기기로 내려가는 작업, 파란 점은 기기에서 올라오는 결과입니다. 기기별 역할은 보고서의 예시를 따랐습니다.</figcaption>
+      </div>
+
+      <h3><span class="hn">5.1</span>클라우드와 로컬의 하이브리드 협업</h3>
+      <p>Dot은 기본적으로 전용 클라우드 머신에서 일합니다. 그런데 웹사이트의 CAPTCHA(봇 방지)에 막히거나 사내 폐쇄망에 들어가야 할 때는, 연결된 사용자의 로컬 컴퓨터 브라우저를 백그라운드에서 호출해 우회합니다. 클라우드에서 못 하는 일을 “사람의 컴퓨터”를 빌려 해결하는 셈입니다.</p>
+      <h3><span class="hn">5.2</span>멀티 디바이스 환경</h3>
+      <p>ChatGPT 데스크톱 앱으로 사무실 PC, 개인 노트북, 홈 워크스테이션 등 여러 기기를 Dot에 등록할 수 있습니다. Dot은 작업 유형에 따라 “A 컴퓨터에서 로컬 파일 추출”, “B 워크스테이션에서 Codex 코딩 작업과 로컬 스킬 실행”처럼 기기별로 나눠 실행합니다.</p>
+      <h3><span class="hn">5.3</span>보안과 제어권 (Control &amp; Takeover)</h3>
+      <p>내 컴퓨터를 에이전트에게 맡기는 일이라 안전장치가 중요합니다. Dot에는 세 겹의 통제가 있습니다.</p>
+      <div class="fig" data-fig="ctrl">
+        <div class="ctrl" style="margin-top:0">
+          <div class="c rv"><div class="sw" id="sw" aria-hidden="true"></div><h6>① Allow access</h6><p>로컬 접근은 기본적으로 꺼져 있습니다. 기기마다 데스크톱 앱에서 사용자가 직접 승인해야 연결됩니다.</p></div>
+          <div class="c rv" style="--d:200ms"><div class="ic"><span class="tk">⏸ Takeover</span></div><h6>② 테이크오버</h6><p>작업 도중 언제든 제어권을 되찾아 사람이 직접 이어서 할 수 있습니다.</p></div>
+          <div class="c rv" style="--d:400ms"><div class="ic"><span class="rv2">✕ Revoke access</span></div><h6>③ 원클릭 권한 철회</h6><p>한 번의 클릭으로 기기 접근 권한을 회수해 로컬 데이터 유출 위험을 막습니다.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= 6. Tips ================= -->
+    <section id="tips" data-n="06" data-t="Claude 모델 · Effort 운용">
+      <span class="sec-label"><span class="num">06</span> · 실무 팁</span>
+      <h2>Claude 모델과 Effort, 비용 대비 품질을 맞추는 법</h2>
+      <p class="standfirst">Fable 같은 새 플래그십이 나오면 “제일 좋은 모델에 제일 높은 effort”로 쓰고 싶어집니다. 하지만 비용은 빠르게 커집니다. 엔지니어링·실무에서 비용과 품질을 함께 잡는 운용 가이드입니다.</p>
+
+      <h3><span class="hn">6.1</span>사용처별 기본 모델 매핑</h3>
+      <div class="fig" data-fig="ladder">
+        <div class="fig-h"><span class="t">일의 종류로 모델 체급을 정한다</span><span class="s">위로 갈수록 강하고 비쌉니다</span></div>
+        <div class="ladder">
+          <div class="rung r1"><div class="blk gy" style="--h:84px"><b>Haiku</b><small>고속 · 정형</small></div><div class="use">대량 분류, 단순 텍스트 추출, 시스템 로그 파싱</div></div>
+          <div class="rung r2"><div class="blk gy" style="--h:124px;--d:150ms"><b>Sonnet</b><small>일상 실무</small></div><div class="use">경계와 요구사항이 명확한 일상 작업</div></div>
+          <div class="rung r3"><div class="blk gy" style="--h:168px;--d:300ms"><b>Opus medium</b><small>기본 출발점</small></div><div class="use">대다수 복합 문제, 문서 작성, 일반 아키텍처 설계</div></div>
+          <div class="rung r4"><div class="blk gy" style="--h:214px;--d:450ms"><b>Fable</b><small>선별 투입</small></div><div class="use">극단적 추론력과 심층 에이전트 작업이 필요한 고난도 과제</div></div>
+        </div>
+      </div>
+
+      <h3><span class="hn">6.2</span>출력 품질이 부족할 때, 3단계</h3>
+      <p>결과가 아쉬울 때 가장 흔한 실수는 곧바로 더 비싼 모델로 바꾸는 것입니다. 순서를 지키면 비용을 아끼면서 원인을 정확히 찾을 수 있습니다.</p>
+      <div class="fig" data-fig="flow">
+        <div class="flow">
+          <div class="fs si"><div class="bd">1</div><div><h6>검증 장치를 먼저 붙인다</h6><p>모델이 테스트 코드, 빌드 스크립트, 단위 검증을 직접 돌려 결과를 스스로 확인할 수 있는 피드백 루프를 만듭니다.</p>
+            <div class="loop"><span>생성</span><span>→ 테스트</span><span>→ 실패 로그</span><span>→ 수정</span><span class="ok">✓ 통과</span></div></div></div>
+          <div class="fs si" style="--d:250ms"><div class="bd">2</div><div><h6>Effort를 한 단계만 올린다</h6><p>검증 장치가 있는데도 결과가 아쉬우면 effort를 한 단계 올려 다시 추론하게 합니다.</p>
+            <div class="eff">low <i class="on"></i><i class="on"></i><i></i><i></i> high</div></div></div>
+          <div class="fs si" style="--d:500ms"><div class="bd">3</div><div><h6>그래도 안 되면 상위 모델로</h6><p>그래도 실패하면 상위 모델로 바꿉니다. <strong>단, 모델을 바꿀 때는 effort를 다시 low/medium으로 낮춰서 시작</strong>합니다. 체급과 effort를 동시에 올리면 비용이 이중으로 늘어납니다.</p></div></div>
+        </div>
+      </div>
+
+      <h3><span class="hn">6.3</span>Effort를 무조건 올리면 안 되는 이유</h3>
+      <ul class="dots">
+        <li><code>high</code> 이상에서는 effort 한 단계를 올리는 추가 비용이 <strong>모델 체급을 한 단계 올리는 비용만큼</strong> 커질 수 있습니다.</li>
+        <li>Effort를 높여도 사전 학습에서 익히지 못한 배경 지식이나 본래 없는 능력이 새로 생기지는 않습니다. 더 오래 생각한다고 모르는 걸 알게 되지는 않습니다.</li>
+      </ul>
+
+      <h3><span class="hn">6.4</span>비용 절감을 위한 Low-First 전략</h3>
+      <p>모든 작업을 처음부터 high로 돌리지 않습니다. <mark>먼저 low로 전부 돌리고, 검증에 실패한 작업만 골라 high로 다시 실행</mark>합니다. 전체 비용을 크게 낮추면서 최종 성공률은 높이는, 가장 이상적인 파이프라인입니다. 아래에서 실패율과 비용 비율을 바꿔 보며 직접 비교해 보세요.</p>
+
+      <div class="fig" data-fig="sim">
+        <div class="fig-h"><span class="t">All-High vs Low-First 시뮬레이터</span><button class="replay" type="button" id="simRun">다시 실행</button></div>
+        <div class="sim-ctl">
+          <label><span>low 단계 검증 실패율 <b id="fLbl">25%</b></span><input type="range" id="fIn" min="0" max="90" step="5" value="25"></label>
+          <label><span>high 1회 비용 = low의 <b id="rLbl">3배</b></span><input type="range" id="rIn" min="1.5" max="8" step="0.5" value="3"></label>
+        </div>
+        <div class="lanes">
+          <div class="lane"><div class="lh"><b>All-High</b><span id="costA">비용 0</span></div><div class="tasks" id="tA"></div><div class="costbar"><i class="hi" id="cbA"></i></div></div>
+          <div class="lane"><div class="lh"><b>Low-First</b><span id="costB">비용 0</span></div><div class="tasks" id="tB"></div><div class="costbar"><i class="lo" id="cbBl"></i><i class="hi" id="cbBh"></i></div></div>
+        </div>
+        <div class="legend"><span><i style="background:var(--blue)"></i>low 실행·통과</span><span><i style="background:var(--coral)"></i>검증 실패</span><span><i style="background:var(--violet)"></i>high 실행</span></div>
+        <div class="sim-res" id="simRes" aria-live="polite"></div>
+        <figcaption><b>가정값입니다.</b> 보고서에는 비용 수치가 없어 작업 20개, high는 늘 통과한다고 가정했습니다. 손익분기는 실패율이 <span class="mono">1 − 1/비용비</span>일 때입니다. 기본값(3배)이면 실패율이 약 67%를 넘어야 All-High가 유리해집니다.</figcaption>
+      </div>
+
+      <div class="quote" data-fig="quote">
+        <div class="q" id="quoteTxt" aria-label="모델은 일의 종류로 정해 두고, 같은 일 안에서는 effort로 조절한다. 모델은 effort로도 안 될 때만 바꾼다."></div>
+        <div class="by">💡 핵심 요약 · 6장 실무 팁</div>
+      </div>
+    </section>
+
+    <!-- ================= Conclusion ================= -->
+    <section id="end" data-n="◎" data-t="요약 및 결론">
+      <span class="sec-label"><span class="num">◎</span> · 결론</span>
+      <h2>요약 및 결론</h2>
+      <p>다섯 가지 소식은 따로 보면 개별 뉴스지만, 모아 보면 한 방향을 가리킵니다. AI가 <strong>더 빨리 만들어지고</strong>, <strong>직접 고쳐지고</strong>, <strong>더 넓은 환경을 다루게</strong> 되고 있습니다. 그만큼 쓰는 쪽에서는 <strong>비용을 다루는 기술</strong>이 중요해집니다.</p>
+      <div class="concl">
+        <a class="cc rv" href="#metr"><span class="ix">01</span><div><h6>R&amp;D 자동화 가속</h6><p>METR 보고서가 보여 주듯, AI가 차세대 AI를 개발하는 속도가 약 2배 빨라졌습니다.</p></div></a>
+        <a class="cc rv" style="--d:100ms" href="#weights"><span class="ix">02</span><div><h6>가중치 직접 수정 시대</h6><p>MIT의 Weight-Space Programming은 역전파 없이 AI가 신경망 가중치를 직접 프로그래밍하는 길을 열었습니다.</p></div></a>
+        <a class="cc rv" style="--d:200ms" href="#frontier"><span class="ix">03</span><div><h6>프론티어 경쟁과 특화</h6><p>Gemini Carbon, GPT-6.2 Astra, Fable·Mythos 5.2의 경쟁은 텍스트 성능을 넘어 고난도 에이전트와 사이버·과학 특화 모델로 세분화되고 있습니다.</p></div></a>
+        <a class="cc rv" style="--d:300ms" href="#dot"><span class="ix">04</span><div><h6>에이전트의 로컬 제어 확장</h6><p>Dot의 멀티 로컬 컴퓨터 제어와 GPT Image 2.6의 복합 레퍼런스 편집은 AI가 사용자의 실제 작업 환경 전반을 대행하는 흐름을 보여 줍니다.</p></div></a>
+        <a class="cc rv" style="--d:400ms" href="#tips"><span class="ix">05</span><div><h6>비용 효율적 모델 운용</h6><p>모델 체급, 인퍼런스 노력도(Effort), 자체 검증 루프를 3단으로 조정하면 최고 사양 모델을 남용하지 않고도 최대 효율을 낼 수 있습니다.</p></div></a>
+      </div>
+      <p class="endnote">이 페이지는 「최신 AI 핵심 동향 심층 분석 보고서」의 내용을 웹 읽기용으로 다시 구성한 것입니다. 수치와 사실 관계는 보고서를 따랐고, 도해와 데모는 이해를 돕기 위해 새로 만들었습니다. “예시”, “가정값”이라고 적힌 그림은 보고서에 없는 내용입니다. 같은 내용을 발표용으로 보려면 <a href="../ai-trends-2026-11/">18장 슬라이드</a>를 열어 보세요.</p>
+    </section>
+  </article>
+</div>
+
+<footer class="site gutter"><div class="in-wrap"><a href="../">← Artifact Archives</a><a href="../ai-trends-2026-11/">슬라이드 버전</a><a href="https://github.com/ndkkdn/artifactarchives" target="_blank" rel="noopener">github.com/ndkkdn/artifactarchives</a></div></footer>
+<button class="totop" id="totop" type="button" aria-label="맨 위로"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg></button>
+
+<script>
+(() => {
+  const root = document.documentElement;
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const $ = s => document.querySelector(s), $$ = (s, el = document) => [...el.querySelectorAll(s)];
+  const wait = ms => new Promise(r => setTimeout(r, reduce ? 0 : ms));
+  const ease = t => 1 - Math.pow(1 - t, 3);
+  const css = v => getComputedStyle(root).getPropertyValue(v).trim();
+
+  $('#themeBtn').onclick = () => {
+    const dark = root.dataset.theme ? root.dataset.theme === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
+    root.dataset.theme = dark ? 'light' : 'dark';
+    try { localStorage.setItem('archive-theme', root.dataset.theme); } catch (e) {}
+    paintTiers();
+  };
+
+  /* count-up numbers */
+  function countUp(el, dur = 1400) {
+    const to = parseFloat(el.dataset.count), dec = +(el.dataset.dec || 0), pre = el.dataset.pre || '', suf = el.dataset.suf || '';
+    const fmt = v => pre + v.toLocaleString('en-US', { minimumFractionDigits: dec, maximumFractionDigits: dec }) + suf;
+    if (reduce) { el.textContent = fmt(to); return; }
+    const t0 = performance.now();
+    const step = now => { const t = Math.min(1, (now - t0) / dur); el.textContent = fmt(to * ease(t)); if (t < 1) requestAnimationFrame(step); };
+    requestAnimationFrame(step);
+  }
+
+  /* typewriter: html segments allowed via [text, cls] pairs */
+  let typeToken = 0;
+  async function typeInto(el, parts, speed = 45, token) {
+    el.innerHTML = '';
+    const caret = document.createElement('span'); caret.className = 'caret';
+    for (const p of parts) {
+      const [txt, cls] = Array.isArray(p) ? p : [p, null];
+      const span = cls ? Object.assign(document.createElement('span'), { className: cls }) : document.createTextNode('');
+      el.appendChild(span); el.appendChild(caret);
+      if (reduce) { span.textContent = txt; continue; }
+      for (const ch of txt) { if (token !== undefined && token.dead) return; span.textContent += ch; await wait(speed); }
+    }
+    if (!reduce) setTimeout(() => caret.remove(), 1800); else caret.remove();
+  }
+
+  /* ---------- figure scripts ---------- */
+  const HOOKS = {};
+  const runs = new WeakMap();
+  function play(fig) {
+    const prev = runs.get(fig); if (prev) prev.dead = true;
+    const tk = { dead: false }; runs.set(fig, tk);
+    fig.classList.remove('in'); void fig.offsetWidth; fig.classList.add('in');
+    $$('[data-count]', fig).forEach(el => countUp(el));
+    const h = HOOKS[fig.dataset.fig]; if (h) h(fig, tk);
+  }
+
+  HOOKS.race = async (fig, tk) => {
+    const bars = $$('.bar', fig), times = $$('.time', fig), m = $('[data-mult]', fig);
+    bars.forEach(b => { b.style.transition = 'none'; b.style.transform = 'scaleX(0)'; });
+    times.forEach(t => t.textContent = '0.0년'); m.textContent = '1.0×';
+    await wait(300); if (tk.dead) return;
+    const T = reduce ? 1 : 2000, t0 = performance.now();
+    const step = now => {
+      if (tk.dead) return;
+      const ms = reduce ? T : now - t0;
+      const old = Math.min(1, ms / T), cur = Math.min(1, ms / (T / 2));
+      bars[0].style.transform = `scaleX(${old})`; bars[1].style.transform = `scaleX(${cur})`;
+      times[0].textContent = (old * 2).toFixed(1) + '년'; times[1].textContent = (cur * 1).toFixed(1) + '년';
+      m.textContent = (1 + ease(old)).toFixed(1) + '×';
+      if (old < 1) requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+  };
+
+  /* GPT Image */
+  const MENU = [['아메리카노 Americano', '4.5'], ['카페라떼 Café Latte', '5.0'], ['말차 Matcha', '5.5'], ['크루아상 Croissant', '3.8']];
+  const REF_COLORS = ['#e8a87c', '#c38d9e', '#41b3a3', '#85cdca', '#e27d60', '#f6d365', '#a0c4ff', '#bdb2ff', '#ffc6ff', '#caffbf', '#9bf6ff', '#ffadad', '#fdffb6', '#d4a373', '#84a59d'];
+  $('#refs').innerHTML = REF_COLORS.map((c, i) => `<i style="background:${c};--d:${200 + i * 110}ms"></i>`).join('');
+  function paintTiers() {
+    const mk = (el, n) => {
+      el.style.gridTemplateColumns = `repeat(${n}, 1fr)`;
+      const a = css('--coral'), b = css('--gold'), c = css('--blue');
+      let h = '';
+      for (let y = 0; y < n; y++) for (let x = 0; x < n; x++) {
+        const dx = (x + .5) / n - .5, dy = (y + .5) / n - .42, r = Math.hypot(dx, dy);
+        const col = r < .22 ? b : (y / n > .72 ? c : (r < .3 ? a : 'transparent'));
+        h += `<i style="background:${col}"></i>`;
+      }
+      el.innerHTML = h;
+    };
+    mk($('#pxF'), 8); mk($('#pxS'), 16);
+  }
+  paintTiers();
+  let gifTimer = null, gifI = 0;
+  function buildGif() {
+    const n = +$('#gifN').value; $('#gifL').textContent = n + '프레임';
+    $('#gif').innerHTML = Array.from({ length: n }, (_, i) => `<span class="fr" style="--y:${(8 + 64 * Math.abs(Math.sin(Math.PI * i / n))).toFixed(1)}"></span>`).join('');
+    gifI = 0;
+  }
+  function runGif() {
+    clearInterval(gifTimer);
+    if (reduce) return;
+    gifTimer = setInterval(() => { const fr = $$('#gif .fr'); fr.forEach(f => f.classList.remove('on')); if (fr.length) fr[gifI++ % fr.length].classList.add('on'); }, 140);
+  }
+  $('#gifN').addEventListener('input', () => { buildGif(); runGif(); });
+  buildGif();
+  HOOKS.image = async (fig, tk) => {
+    const mh = $('.mh', fig), ml = $('#menuLines');
+    ml.innerHTML = '';
+    const refN = $('#refN'); refN.textContent = '0';
+    let k = 0; const ri = setInterval(() => { if (tk.dead || k >= 15) return clearInterval(ri); refN.textContent = ++k; }, reduce ? 0 : 110);
+    if (reduce) refN.textContent = '15';
+    runGif();
+    await typeInto(mh, ['오늘의 메뉴 · TODAY'], 60, tk);
+    for (const [name, price] of MENU) {
+      if (tk.dead) return;
+      const row = document.createElement('div'); row.className = 'ml';
+      row.innerHTML = '<span></span><span></span>'; ml.appendChild(row);
+      await typeInto(row.children[0], [name], 38, tk);
+      row.children[0].querySelector('.caret')?.remove();
+      await typeInto(row.children[1], [price], 60, tk);
+      row.children[1].querySelector('.caret')?.remove();
+    }
+  };
+
+  /* weight grid */
+  const COLS = 24, ROWS = 12, N = COLS * ROWS;
+  const wg = $('#wg');
+  const cells = [];
+  let seed = 7; const rnd = () => (seed = (Math.imul(seed, 1103515245) + 12345) >>> 0) / 4294967296;
+  for (let i = 0; i < N; i++) { const c = document.createElement('i'); c.style.opacity = (.25 + rnd() * .75).toFixed(2); wg.appendChild(c); cells.push(c); }
+  const FIX = [];
+  while (FIX.length < 10) { const i = Math.floor(rnd() * N); if (!FIX.includes(i)) FIX.push(i); }
+  const BAD = FIX.slice(0, 10);
+  HOOKS.grid = async (fig, tk) => {
+    const scan = $('#scan'), arc = $('#ringArc'), succ = $('#succ'), phase = $('#phase');
+    cells.forEach(c => c.classList.remove('fix', 'bad'));
+    arc.style.transition = 'none'; arc.style.strokeDashoffset = 326.7; succ.textContent = '0%';
+    phase.innerHTML = '국소 최적해에 갇힌 정책망<br><b>주행 실패</b>';
+    if (reduce) { FIX.forEach(i => cells[i].classList.add('fix')); arc.style.strokeDashoffset = 0; succ.textContent = '100%'; phase.innerHTML = '<b>1,024회 연속 성공</b>'; return; }
+    await wait(500); if (tk.dead) return;
+    phase.innerHTML = 'GPT-6 Astra가<br><b>가중치를 읽는 중…</b>';
+    scan.style.opacity = 1;
+    const T = 2200, t0 = performance.now();
+    await new Promise(res => {
+      const step = now => {
+        if (tk.dead) return res();
+        const t = Math.min(1, (now - t0) / T);
+        scan.style.left = `calc(${t * 100}% - 2px)`;
+        const col = Math.floor(t * COLS);
+        BAD.forEach(i => { if (i % COLS <= col) cells[i].classList.add('bad'); });
+        if (t < 1) requestAnimationFrame(step); else res();
+      };
+      requestAnimationFrame(step);
+    });
+    scan.style.opacity = 0; if (tk.dead) return;
+    phase.innerHTML = '원인 지점 10곳 발견<br><b>3.5%를 한 번에 수정</b>';
+    await wait(700);
+    for (const i of FIX) { if (tk.dead) return; cells[i].classList.remove('bad'); cells[i].classList.add('fix'); await wait(90); }
+    await wait(400); if (tk.dead) return;
+    phase.innerHTML = '다시 주행…';
+    arc.style.transition = 'stroke-dashoffset 1.6s cubic-bezier(.2,.8,.2,1)'; arc.style.strokeDashoffset = 0;
+    const s0 = performance.now();
+    const st = now => { if (tk.dead) return; const t = Math.min(1, (now - s0) / 1600); succ.textContent = Math.round(ease(t) * 100) + '%'; if (t < 1) requestAnimationFrame(st); else phase.innerHTML = '성공률 0% → 100%<br><b>1,024회 연속 성공</b>'; };
+    requestAnimationFrame(st);
+  };
+
+  /* go board + code */
+  const goSvg = $('#goSvg');
+  (() => {
+    const NS = 'http://www.w3.org/2000/svg';
+    let g = '';
+    for (let i = 0; i < 9; i++) { const p = 10 + i * 10; g += `<line x1="10" y1="${p}" x2="90" y2="${p}" stroke="rgba(0,0,0,.55)" stroke-width=".5"/><line x1="${p}" y1="10" x2="${p}" y2="90" stroke="rgba(0,0,0,.55)" stroke-width=".5"/>`; }
+    [[30, 30], [70, 30], [50, 50], [30, 70], [70, 70]].forEach(([x, y]) => g += `<circle cx="${x}" cy="${y}" r="1.1" fill="rgba(0,0,0,.6)"/>`);
+    goSvg.innerHTML = g + '<g id="stones"></g>';
+  })();
+  const MOVES = [[4, 4, 'b'], [2, 6, 'w'], [6, 2, 'b'], [6, 6, 'w'], [2, 2, 'b'], [5, 6, 'w'], [3, 5, 'b'], [6, 5, 'w'], [5, 3, 'b'], [3, 7, 'w'], [4, 6, 'b'], [7, 4, 'w']];
+  const CODE = [
+    ['# 학습 없이 레이어 단위로 가중치를 직접 작성', 'c'], ['\n'],
+    ['net', 'n'], [' = GoNet(board=9)\n'],
+    ['net', 'n'], ['.conv1.weight = '], ['liberty_kernels', 'k'], ['()\n'],
+    ['net', 'n'], ['.conv2.weight = '], ['capture_detector', 'k'], ['()\n'],
+    ['net', 'n'], ['.policy.weight = '], ['shape_prior', 'k'], ['(eye=True)\n'],
+    ['net', 'n'], ['.value.weight  = '], ['territory_score', 'k'], ['()\n'],
+    ['print', 'k'], ['(net.num_params())  '], ['# 1,480,000', 'c']
+  ];
+  HOOKS.go = async (fig, tk) => {
+    const stones = $('#stones'); stones.innerHTML = '';
+    const code = $('#goCode');
+    const typing = typeInto(code, CODE, 16, tk);
+    for (const [x, y, c] of MOVES) {
+      if (tk.dead) return;
+      const s = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+      s.setAttribute('cx', 10 + x * 10); s.setAttribute('cy', 10 + y * 10); s.setAttribute('r', 4.3);
+      s.setAttribute('fill', c === 'b' ? '#14161c' : '#f7f5ef'); s.setAttribute('stroke', 'rgba(0,0,0,.35)'); s.setAttribute('stroke-width', '.4');
+      if (!reduce) { s.style.transformBox = 'fill-box'; s.style.transformOrigin = 'center'; s.style.animation = 'pop .35s cubic-bezier(.2,.8,.2,1) both'; }
+      stones.appendChild(s);
+      await wait(380);
+    }
+    await typing;
+  };
+
+  /* Dot toggle */
+  HOOKS.ctrl = async (fig, tk) => { const sw = $('#sw'); sw.classList.remove('on'); await wait(900); if (!tk.dead) sw.classList.add('on'); };
+
+  /* Low-First simulator */
+  const TN = 20;
+  const tA = $('#tA'), tB = $('#tB');
+  tA.innerHTML = tB.innerHTML = '<i></i>'.repeat(TN);
+  let simTk = null;
+  async function sim(animate = true) {
+    if (simTk) simTk.dead = true; const tk = simTk = { dead: false };
+    const f = +$('#fIn').value / 100, r = +$('#rIn').value;
+    $('#fLbl').textContent = Math.round(f * 100) + '%'; $('#rLbl').textContent = r + '배';
+    const fails = Math.round(TN * f);
+    // spread failures evenly-ish through the batch
+    const failIdx = new Set(); for (let k = 0; k < fails; k++) failIdx.add(Math.floor((k + .5) * TN / Math.max(1, fails)) % TN);
+    const costA = TN * r, costB = TN + fails * r, max = Math.max(costA, costB);
+    const A = $$('i', tA), B = $$('i', tB);
+    const fast = !animate || reduce;
+    A.forEach(i => i.className = ''); B.forEach(i => i.className = '');
+    $('#cbA').style.width = $('#cbBl').style.width = $('#cbBh').style.width = '0';
+    $('#costA').textContent = '비용 0'; $('#costB').textContent = '비용 0';
+    const res = $('#simRes'); res.textContent = ''; res.className = 'sim-res';
+    const fmt = v => (Math.round(v * 10) / 10).toLocaleString('en-US');
+    // All-High
+    for (let i = 0; i < TN; i++) { if (tk.dead) return; A[i].className = 'hi'; if (!fast) await wait(28); }
+    $('#cbA').style.width = (costA / max * 100) + '%'; $('#costA').textContent = `high ${TN}회 = 비용 ${fmt(costA)}`;
+    // Low-First: low pass
+    for (let i = 0; i < TN; i++) { if (tk.dead) return; B[i].className = 'lo'; if (!fast) await wait(28); }
+    $('#cbBl').style.width = (TN / max * 100) + '%';
+    if (!fast) await wait(300);
+    failIdx.forEach(i => B[i].className = 'fail');
+    if (!fast) await wait(600);
+    for (const i of failIdx) { if (tk.dead) return; B[i].className = 'hi'; if (!fast) await wait(90); }
+    $('#cbBh').style.width = (fails * r / max * 100) + '%';
+    $('#costB').textContent = `low ${TN}회 + high ${fails}회 = 비용 ${fmt(costB)}`;
+    const save = 1 - costB / costA;
+    if (save > 0.001) res.innerHTML = `Low-First가 <b>${Math.round(save * 100)}%</b> 저렴합니다. 두 방식 모두 최종적으로 20개 작업을 모두 통과합니다.`;
+    else if (save > -0.001) res.innerHTML = `두 방식의 비용이 <b>같습니다</b>. 이 실패율이 손익분기점입니다.`;
+    else { res.className = 'sim-res bad'; res.innerHTML = `이 조건에서는 All-High가 <b>${Math.round(-save * 100)}%</b> 저렴합니다. low로 거의 다 실패하는 일이라면 처음부터 high(또는 상위 모델)가 맞습니다.`; }
+  }
+  HOOKS.sim = () => sim(true);
+  $('#simRun').onclick = () => sim(true);
+  $('#fIn').addEventListener('input', () => sim(false));
+  $('#rIn').addEventListener('input', () => sim(false));
+
+  /* quote */
+  HOOKS.quote = (fig, tk) => typeInto($('#quoteTxt'), ['“모델은 ', ['일의 종류', ''], '로 정해 두고, 같은 일 안에서는 ', ['effort', 'em-q'], '로 조절한다. 모델은 effort로도 안 될 때만 바꾼다.”'], 55, tk);
+  const st = document.createElement('style'); st.textContent = '.quote .em-q{color:#d5a844}'; document.head.appendChild(st);
+
+  /* ---------- observers ---------- */
+  const figs = $$('[data-fig]');
+  const io = 'IntersectionObserver' in window ? new IntersectionObserver(es => es.forEach(e => {
+    if (e.isIntersecting) { play(e.target); io.unobserve(e.target); }
+  }), { threshold: .3, rootMargin: '0px 0px -8% 0px' }) : null;
+  figs.forEach(f => io ? io.observe(f) : play(f));
+  $$('[data-replay]').forEach(b => b.addEventListener('click', () => play(b.closest('[data-fig]'))));
+
+  // standalone reveal elements outside figures
+  const rio = 'IntersectionObserver' in window ? new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); rio.unobserve(e.target); } }), { threshold: .15 }) : null;
+  $$('.concl').forEach(el => rio ? rio.observe(el) : el.classList.add('in'));
+
+  // hero
+  const hero = $('#hero');
+  requestAnimationFrame(() => { hero.classList.add('in'); setTimeout(() => $$('[data-count]', hero).forEach(el => countUp(el, 1600)), reduce ? 0 : 700); });
+
+  /* ---------- TOC, scroll spy, progress ---------- */
+  const secs = $$('article section');
+  const item = s => `<li><a href="#${s.id}"><span class="n">${s.dataset.n}</span><span>${s.dataset.t}</span></a></li>`;
+  $('#toc').innerHTML = secs.map(item).join('');
+  $('#tocMobile').innerHTML = secs.map(item).join('');
+  $$('#tocMobile a').forEach(a => a.addEventListener('click', () => a.closest('details').open = false));
+  const links = $$('#toc a'), bar = $('#progress'), top = $('#totop');
+  function onScroll() {
+    const h = document.documentElement.scrollHeight - innerHeight;
+    bar.style.transform = `scaleX(${h > 0 ? Math.min(1, scrollY / h) : 0})`;
+    top.classList.toggle('show', scrollY > innerHeight);
+    let cur = secs[0];
+    for (const s of secs) if (s.getBoundingClientRect().top < innerHeight * .35) cur = s;
+    links.forEach(a => a.classList.toggle('on', a.getAttribute('href') === '#' + cur.id));
+  }
+  addEventListener('scroll', onScroll, { passive: true }); addEventListener('resize', onScroll); onScroll();
+  top.onclick = () => scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' });
+})();
+</script>
+</body>
+</html>
