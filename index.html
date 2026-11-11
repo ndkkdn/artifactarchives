@@ -147,7 +147,9 @@
   /* highlighter-style service title: each wrapped line gets its own block */
   .lede h1 { margin: 0; font-family: Inter, sans-serif; font-size: clamp(28px, min(4.6vw, 6.3vh), 68px); font-weight: 700; letter-spacing: -.045em; line-height: 1.16; }
   .lede h1 span { background: var(--hl); color: var(--hl-text); transition: background-color 1.2s, color 1.2s; padding: 0 .2em; -webkit-box-decoration-break: clone; box-decoration-break: clone; }
-  .lede p { margin: 14px 0 0; font-size: 18px; font-weight: 500; letter-spacing: -.015em; }
+  /* subtitle: Paperlogy SemiBold (SIL OFL, via jsDelivr/project noonnu) */
+  @font-face { font-family: "Paperlogy"; font-weight: 600; font-style: normal; font-display: swap; src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/2408-3@1.0/Paperlogy-6SemiBold.woff2") format("woff2"); }
+  .lede p { margin: 14px 0 0; font-family: "Paperlogy", "Pretendard Variable", Pretendard, sans-serif; font-size: 18px; font-weight: 600; letter-spacing: -.01em; }
   .lede p span { background: var(--sub-bg); color: var(--text); padding: 4px 11px; -webkit-box-decoration-break: clone; box-decoration-break: clone; line-height: 1.8; }
 
   .scene { position: relative; perspective: 1700px; perspective-origin: 50% 45%; touch-action: pan-y; cursor: grab; user-select: none; -webkit-user-select: none; overflow: hidden; }
