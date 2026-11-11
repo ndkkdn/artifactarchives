@@ -5,13 +5,17 @@
  * 커밋 하나로 묶여 main 브랜치에 들어가고, Pages가 1~2분 안에 다시 배포합니다.
  *
  * 필요한 것: 이 저장소에 대한 Fine-grained token (Contents: Read and write).
- * 토큰은 이 브라우저(localStorage 또는 sessionStorage)에만 저장되고 GitHub API 외에는 보내지 않습니다.
+ * 토큰은 GitHub API 외에는 보내지 않습니다. 이 기기에 저장할 때는 직접 정한 패스워드로 암호화해
+ * (PBKDF2-SHA256 600,000회 → AES-256-GCM) localStorage에 넣고, 평문 토큰은 지금 열린 탭의
+ * sessionStorage에만 둡니다. 패스워드를 5번 틀리면 저장된 토큰을 지웁니다.
  */
 (() => {
   const REPO = 'ndkkdn/artifactarchives';
   const BRANCH = 'main';
   const DATA_PATH = 'items.js';
-  const TOKEN_KEY = 'archive-gh-token';
+  const TOKEN_KEY = 'archive-gh-token';      // plaintext: sessionStorage only (legacy: localStorage)
+  const VAULT_KEY = 'archive-gh-vault';      // password-encrypted token in localStorage
+  const MAX_FAILS = 5, PBKDF2_ITER = 600000, MIN_PW = 8;
   const API = 'https://api.github.com';
 
   const A = window.Archive;
@@ -216,31 +220,151 @@
     finally { d.removeAttribute('aria-busy'); }
   }
 
-  function loginDialog() {
+  /* ── token vault: the token is kept encrypted with a password the owner picks ── */
+  const ls = {
+    get: k => { try { return localStorage.getItem(k); } catch (_) { return null; } },
+    set: (k, v) => { try { localStorage.setItem(k, v); } catch (_) {} },
+    del: k => { try { localStorage.removeItem(k); } catch (_) {} },
+  };
+  const ss = {
+    get: k => { try { return sessionStorage.getItem(k); } catch (_) { return null; } },
+    set: (k, v) => { try { sessionStorage.setItem(k, v); } catch (_) {} },
+    del: k => { try { sessionStorage.removeItem(k); } catch (_) {} },
+  };
+  const b64 = u8 => bytesToB64(u8);
+  const unb64 = t => Uint8Array.from(atob(t), c => c.charCodeAt(0));
+  const canCrypt = !!(window.crypto && crypto.subtle && window.isSecureContext);
+  function readVault() { try { const v = JSON.parse(ls.get(VAULT_KEY) || 'null'); return v && v.ct ? v : null; } catch (_) { return null; } }
+  async function deriveKey(pw, salt, iter) {
+    const base = await crypto.subtle.importKey('raw', new TextEncoder().encode(pw), 'PBKDF2', false, ['deriveKey']);
+    return crypto.subtle.deriveKey({ name: 'PBKDF2', hash: 'SHA-256', salt, iterations: iter }, base, { name: 'AES-GCM', length: 256 }, false, ['encrypt', 'decrypt']);
+  }
+  async function sealToken(tok, pw) {
+    const salt = crypto.getRandomValues(new Uint8Array(16)), iv = crypto.getRandomValues(new Uint8Array(12));
+    const key = await deriveKey(pw, salt, PBKDF2_ITER);
+    const ct = new Uint8Array(await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, key, new TextEncoder().encode(tok)));
+    ls.set(VAULT_KEY, JSON.stringify({ v: 1, iter: PBKDF2_ITER, salt: b64(salt), iv: b64(iv), ct: b64(ct), fails: 0 }));
+  }
+  async function openVault(pw) {
+    const v = readVault(); if (!v) throw new Error('저장된 토큰이 없습니다.');
+    try {
+      const key = await deriveKey(pw, unb64(v.salt), v.iter || PBKDF2_ITER);
+      const tok = new TextDecoder().decode(await crypto.subtle.decrypt({ name: 'AES-GCM', iv: unb64(v.iv) }, key, unb64(v.ct)));
+      if (v.fails) { v.fails = 0; ls.set(VAULT_KEY, JSON.stringify(v)); }
+      return tok;
+    } catch (_) {
+      v.fails = (v.fails || 0) + 1;
+      if (v.fails >= MAX_FAILS) { ls.del(VAULT_KEY); const e = new Error(`패스워드를 ${MAX_FAILS}번 틀려서 이 기기에 저장된 토큰을 지웠어요. 토큰을 다시 넣어 주세요.`); e.wiped = true; throw e; }
+      ls.set(VAULT_KEY, JSON.stringify(v));
+      throw new Error(`패스워드가 맞지 않아요. (${MAX_FAILS - v.fails}번 남음)`);
+    }
+  }
+  function forgetAll() { ls.del(VAULT_KEY); ls.del(TOKEN_KEY); ss.del(TOKEN_KEY); }
+  function checkNewPw(f) {
+    const pw = f.elements.pw.value, pw2 = f.elements.pw2.value;
+    if (pw.length < MIN_PW) throw new Error(`패스워드는 ${MIN_PW}자 이상으로 정해 주세요. 단어 몇 개를 이은 문장이면 기억하기 쉽고 안전해요.`);
+    if (pw !== pw2) throw new Error('패스워드 확인이 일치하지 않아요.');
+    return pw;
+  }
+  const pwFields = `
+          <label class="adm-field"><span>새 패스워드 <b>*</b></span><input type="password" name="pw" autocomplete="new-password" minlength="${MIN_PW}" placeholder="${MIN_PW}자 이상"></label>
+          <label class="adm-field"><span>패스워드 확인 <b>*</b></span><input type="password" name="pw2" autocomplete="new-password"></label>
+          <p class="adm-field full" style="margin:0"><small>이 패스워드로 토큰을 암호화해 이 기기에만 저장해요. 패스워드는 어디에도 보내지 않아서 잊으면 되찾을 수 없고, 토큰을 다시 넣으면 돼요.</small></p>`;
+
+  async function unlocked(tok, d) {
+    token = tok;
+    await checkWrite();
+    await refresh(A.current && A.current.href);
+    ss.set(TOKEN_KEY, token);                // stays usable in this tab until it is closed
+    enter(); d && d.close();
+  }
+
+  // first time on this device: token + a password to lock it with
+  function loginDialog(msg) {
     const d = dialog(`
       <form method="dialog">
         <div class="adm-head"><h3>관리 모드</h3>
-          <p>아티팩트를 추가·수정·삭제하면 <b>${REPO}</b> 저장소에 바로 커밋됩니다. 이 저장소에 쓰기 권한이 있는 GitHub 토큰이 필요해요.</p></div>
+          <p>아티팩트를 추가·수정·삭제하면 <b>${REPO}</b> 저장소에 바로 커밋됩니다. 이 저장소에 쓰기 권한이 있는 GitHub 토큰이 필요해요. 이 기기에서는 한 번만 넣고, 다음부터는 패스워드로 열 수 있어요.</p></div>
         <div class="adm-body">
           <label class="adm-field full"><span>GitHub 토큰 <b>*</b></span>
             <input type="password" name="token" autocomplete="off" required placeholder="github_pat_…">
             <small><a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">Fine-grained token 만들기 ↗</a> — Repository access는 <b>${REPO.split('/')[1]}</b>만, Permissions는 <b>Contents: Read and write</b>를 주세요. 방문자 제출을 승인·거절할 때 이슈도 자동으로 닫으려면 <b>Issues: Read and write</b>도 추가해요.</small>
           </label>
-          <label class="adm-check full"><input type="checkbox" name="remember" checked> 이 브라우저에 기억하기 (공용 컴퓨터라면 끄세요)</label>
-          <p class="adm-err"></p>
+          <label class="adm-check full"><input type="checkbox" name="remember" ${canCrypt ? 'checked' : 'disabled'}> 이 기기에 패스워드로 잠가 저장하기${canCrypt ? ' (공용 컴퓨터라면 끄세요. 끄면 이 탭을 닫을 때까지만 써요)' : ' — 이 브라우저는 암호화를 지원하지 않아 이번 탭에서만 써요'}</label>
+          <div class="pw-wrap adm-body" style="padding:0;grid-column:1/-1">${pwFields}</div>
+          <p class="adm-err">${msg ? esc(msg) : ''}</p>
         </div>
         <div class="adm-foot"><button type="button" class="pill" data-close>취소</button><button type="submit" class="pill primary">시작하기</button></div>
       </form>`);
-    const f = d.querySelector('form');
+    const f = d.querySelector('form'), wrap = d.querySelector('.pw-wrap');
+    const sync = () => { wrap.style.display = f.elements.remember.checked ? '' : 'none'; };
+    f.elements.remember.addEventListener('change', sync); sync();
     f.addEventListener('submit', e => {
       e.preventDefault();
       busy(d, async () => {
-        token = f.elements.token.value.trim();
-        if (!token) throw new Error('토큰을 입력해 주세요.');
-        await checkWrite();
-        await refresh(A.current && A.current.href);
-        try { (f.elements.remember.checked ? localStorage : sessionStorage).setItem(TOKEN_KEY, token); } catch (_) {}
-        enter(); d.close(); toast('관리 모드를 켰습니다.');
+        const tok = f.elements.token.value.trim();
+        if (!tok) throw new Error('토큰을 입력해 주세요.');
+        const pw = f.elements.remember.checked ? checkNewPw(f) : null;
+        await unlocked(tok, null);
+        ls.del(TOKEN_KEY);
+        if (pw) { await sealToken(token, pw); toast('관리 모드를 켰습니다. 다음부터는 패스워드로 열 수 있어요.'); }
+        else { ls.del(VAULT_KEY); toast('관리 모드를 켰습니다. 이 탭을 닫으면 토큰은 사라져요.'); }
+        d.close();
+      }).catch(() => {});
+    });
+    return d;
+  }
+
+  // saved on this device: just the password
+  function unlockDialog(msg) {
+    const d = dialog(`
+      <form method="dialog">
+        <div class="adm-head"><h3>관리 모드</h3><p>이 기기에 저장해 둔 토큰을 패스워드로 엽니다.</p></div>
+        <div class="adm-body">
+          <label class="adm-field full"><span>패스워드</span><input type="password" name="pw" autocomplete="current-password" required autofocus></label>
+          <p class="adm-field full" style="margin:0"><small><a href="#" data-forget>패스워드를 잊었어요 · 다른 토큰 쓰기</a> — 저장된 토큰을 지우고 토큰을 다시 넣어요.</small></p>
+          <p class="adm-err">${msg ? esc(msg) : ''}</p>
+        </div>
+        <div class="adm-foot"><button type="button" class="pill" data-close>취소</button><button type="submit" class="pill primary">열기</button></div>
+      </form>`);
+    const f = d.querySelector('form');
+    d.querySelector('[data-forget]').addEventListener('click', e => { e.preventDefault(); forgetAll(); d.close(); loginDialog(); });
+    f.addEventListener('submit', e => {
+      e.preventDefault();
+      busy(d, async () => {
+        let tok;
+        try { tok = await openVault(f.elements.pw.value); }
+        catch (err) { if (err.wiped) { d.close(); loginDialog(err.message); return; } f.elements.pw.select(); throw err; }
+        try { await unlocked(tok, d); toast('관리 모드를 켰습니다.'); }
+        catch (err) {
+          // the password was right but the token no longer works (expired, revoked, permissions changed)
+          if (err.status === 401 || err.noWrite) { forgetAll(); d.close(); loginDialog(err.message + '\n저장돼 있던 토큰을 지웠어요. 새 토큰을 넣어 주세요.'); return; }
+          throw err;
+        }
+      }).catch(() => {});
+    });
+    return d;
+  }
+
+  // an older version kept the token in plain text on this device: lock it with a password now
+  function migrateDialog(legacy) {
+    const d = dialog(`
+      <form method="dialog">
+        <div class="adm-head"><h3>패스워드 설정</h3><p>이 기기에 토큰이 <b>암호화 없이</b> 저장돼 있어요. 패스워드를 정하면 토큰을 암호화해서 다시 저장하고, 다음부터는 패스워드로 열어요.</p></div>
+        <div class="adm-body">${pwFields}<p class="adm-err"></p></div>
+        <div class="adm-foot"><button type="button" class="pill" data-skip>저장하지 않고 이번만 쓰기</button><button type="submit" class="pill primary">패스워드로 잠그기</button></div>
+      </form>`);
+    const f = d.querySelector('form');
+    d.querySelector('[data-skip]').addEventListener('click', () => busy(d, async () => {
+      ls.del(TOKEN_KEY); await unlocked(legacy, d); toast('관리 모드를 켰습니다. 이 탭을 닫으면 토큰은 사라져요.');
+    }).catch(() => {}));
+    f.addEventListener('submit', e => {
+      e.preventDefault();
+      busy(d, async () => {
+        const pw = checkNewPw(f);
+        await unlocked(legacy, null);
+        await sealToken(token, pw); ls.del(TOKEN_KEY);
+        d.close(); toast('토큰을 패스워드로 잠갔어요. 다음부터는 패스워드로 열 수 있어요.');
       }).catch(() => {});
     });
     return d;
@@ -517,22 +641,27 @@
 
   function enter() { document.body.classList.add('admin'); loadSubmissions().catch(() => {}); }
   function leave() {
-    try { localStorage.removeItem(TOKEN_KEY); sessionStorage.removeItem(TOKEN_KEY); } catch (_) {}
+    ss.del(TOKEN_KEY); ls.del(TOKEN_KEY);
     token = ''; document.body.classList.remove('admin');
-    toast('관리 모드를 껐습니다. 토큰은 이 브라우저에서 지웠어요.');
+    toast(readVault() ? '관리 모드를 껐습니다. 다음엔 패스워드로 열 수 있어요.' : '관리 모드를 껐습니다. 토큰은 이 브라우저에서 지웠어요.');
   }
 
   async function open() {
-    if (document.body.classList.contains('admin')) return;
-    let saved = '';
-    try { saved = localStorage.getItem(TOKEN_KEY) || sessionStorage.getItem(TOKEN_KEY) || ''; } catch (_) {}
-    if (!saved) return loginDialog();
-    token = saved;
-    try { await checkWrite(); await refresh(A.current && A.current.href); enter(); }
-    catch (e) {
-      if (e.status === 401 || e.noWrite) { try { localStorage.removeItem(TOKEN_KEY); sessionStorage.removeItem(TOKEN_KEY); } catch (_) {} }
-      const d = loginDialog(); const err = d.querySelector('.adm-err'); if (err) err.textContent = e.message;
+    if (document.body.classList.contains('admin') || opening || document.querySelector('dialog.adm-dialog[open]')) return;
+    opening = true;
+    try { await openFlow(); } finally { opening = false; }
+  }
+  let opening = false;
+  async function openFlow() {
+    const session = ss.get(TOKEN_KEY), legacy = ls.get(TOKEN_KEY);
+    if (session) {                                   // already unlocked in this tab
+      try { await unlocked(session, null); return; }
+      catch (e) { ss.del(TOKEN_KEY); if (e.status === 401 || e.noWrite) { forgetAll(); return loginDialog(e.message); } }
     }
+    if (legacy && canCrypt) return migrateDialog(legacy);
+    if (legacy) { ls.del(TOKEN_KEY); try { await unlocked(legacy, null); return; } catch (e) { return loginDialog(e.message); } }
+    if (readVault() && canCrypt) return unlockDialog();
+    return loginDialog();
   }
 
   window.ArchiveAdmin = { open };
