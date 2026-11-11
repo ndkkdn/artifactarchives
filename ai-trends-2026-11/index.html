@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>최신 AI 핵심 동향 심층 분석</title>
-<meta name="description" content="METR 리포트, GPT Image 2.6, Weight-Space Programming, 프론티어 모델 3파전, OpenAI Dot, Claude 모델·Effort 운용 가이드를 18장 슬라이드로 정리">
+<meta name="description" content="METR 리포트, GPT Image 2.6, Weight-Space Programming, 프론티어 모델 3파전, OpenAI dots·피클 실제 사례, Claude 모델·Effort 운용 가이드를 슬라이드로 정리">
 <link rel="icon" href="../favicon.ico">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -255,7 +255,7 @@
   .pricecut { display: inline-flex; gap: 10px; align-items: baseline; margin-top: 10px; }
   .pricecut b { font: 800 40px Inter; color: var(--green); letter-spacing: -.03em; }
 
-  /* ── 13 Dot ── */
+  /* ── 13 dots ── */
   .dot-wrap { display: grid; grid-template-columns: 1fr 470px; gap: 40px; margin-top: 30px; flex: 1; }
   .dot-svg { width: 100%; height: 560px; }
   .dot-svg .node rect { fill: rgba(243,239,228,.05); stroke: rgba(243,239,228,.2); stroke-width: 1.5; }
@@ -383,6 +383,33 @@
   .is-active .iichart .carbon .flag { transition-delay: 2.8s; }
   .iilist { display: none; }
   .slide:has(.iichart) .src { bottom: 44px; }
+
+  /* ── 13c pickle cases ── */
+  .cases { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; margin-top: 30px; }
+  .cases .col { display: flex; flex-direction: column; gap: 12px; }
+  .cases .ch { display: flex; align-items: center; gap: 10px; font-size: 20px; font-weight: 700; color: var(--ink-2); margin-bottom: 2px; }
+  .cases .ch .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--coral); box-shadow: 0 0 0 5px rgba(255,255,255,.04); }
+  .cases .bad .ch .dot { background: var(--blue); }
+  .cases .case { display: grid; grid-template-columns: 52px minmax(0, 1fr); gap: 16px; align-items: start; background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: 16px 20px; }
+  .cases .ok .case { border-left: 3px solid var(--coral); }
+  .cases .bad .case { border-left: 3px solid var(--blue); }
+  .cases .case.hot { background: rgba(213,168,68,.10); border-color: rgba(213,168,68,.5); border-left-color: var(--gold); }
+  .cases .case .ic { font-size: 30px; line-height: 52px; text-align: center; width: 52px; height: 52px; border-radius: 14px; background: rgba(255,255,255,.05); }
+  .cases .case h3 { font-size: 23px; letter-spacing: -.025em; margin: 2px 0 4px; }
+  .cases .case.hot h3 { color: var(--gold); }
+  .cases .case p { margin: 0; font-size: 17.5px; line-height: 1.45; color: var(--ink-2); }
+  .cases .case p b { color: var(--ink); }
+  .cases .case small { display: block; margin-top: 4px; font-size: 13.5px; color: var(--ink-3); }
+  .tipbar { margin-top: 18px; padding: 14px 22px; border-radius: 16px; border: 1px dashed rgba(213,168,68,.55); font-size: 19px; color: var(--ink-2); }
+  .tipbar b { display: inline-block; margin-right: 14px; padding: 3px 12px; border-radius: 999px; background: var(--gold); color: #1b1606; font-size: 15px; vertical-align: 2px; }
+  .tipbar em { font-style: normal; color: var(--gold); font-weight: 700; }
+  html.portrait .cases { grid-template-columns: 1fr; gap: 20px; margin-top: 22px; }
+  html.portrait .cases .case { grid-template-columns: 42px minmax(0, 1fr); gap: 12px; padding: 14px 16px; }
+  html.portrait .cases .case .ic { width: 42px; height: 42px; line-height: 42px; font-size: 24px; }
+  html.portrait .cases .case h3 { font-size: 20px; }
+  html.portrait .cases .case p { font-size: 16px; }
+  html.portrait .tipbar { font-size: 16px; }
+  html.portrait .tipbar b { display: table; margin: 0 0 8px; }
 
   /* ── phone held sideways: controls get their own lane under the stage ── */
   .hud .alt { gap: 6px; display: inline-flex; align-items: center; }
@@ -611,7 +638,7 @@
       <span class="chip" data-a="pop" style="--d:5">GPT Image 2.6</span>
       <span class="chip" data-a="pop" style="--d:6">Weight-Space Programming</span>
       <span class="chip" data-a="pop" style="--d:7">프론티어 모델 3파전</span>
-      <span class="chip" data-a="pop" style="--d:8">OpenAI Dot</span>
+      <span class="chip" data-a="pop" style="--d:8">OpenAI dots</span>
       <span class="chip gold" data-a="pop" style="--d:9">실무 팁 · Effort</span>
     </div>
   </section>
@@ -651,7 +678,7 @@
       <li data-a style="--d:3"><span class="n">02</span><div><div class="t">GPT Image 2.6</div><div class="d">텍스트 렌더링 · 다중 참조 · GIF · 두 가지 티어</div></div></li>
       <li data-a style="--d:4"><span class="n">03</span><div><div class="t">Weight-Space Programming</div><div class="d">LLM이 신경망 가중치를 직접 읽고 쓴다</div></div></li>
       <li data-a style="--d:5"><span class="n">04</span><div><div class="t">프론티어 모델 3파전</div><div class="d">Gemini 4 Carbon · GPT-6.2 Astra · Fable/Mythos 5.2</div></div></li>
-      <li data-a style="--d:6"><span class="n">05</span><div><div class="t">OpenAI Dot</div><div class="d">상시 가동 에이전트, 여러 대의 로컬 컴퓨터 연결</div></div></li>
+      <li data-a style="--d:6"><span class="n">05</span><div><div class="t">OpenAI dots</div><div class="d">상시 가동 에이전트, 여러 대의 로컬 컴퓨터 연결</div></div></li>
       <li data-a style="--d:7"><span class="n">06</span><div><div class="t">실무 팁 · 모델과 Effort</div><div class="d">비용과 품질을 함께 잡는 운용 원칙</div></div></li>
     </ul>
     <div class="gloss" data-a="fade" style="--d:9" aria-label="약어 풀이"><span><b>METR</b><em>Model Evaluation and Threat Research</em> · AI의 위험과 역량을 평가하는 비영리 연구기관</span><span><b>GPT</b><em>Generative Pre-trained Transformer</em> · OpenAI 모델 계열의 이름. 대량의 글로 미리 학습한 생성형 모델</span><span><b>LLM</b><em>Large Language Model</em> · 대규모 언어 모델. 방대한 글을 학습해 다음 단어를 예측하는 AI</span><span><b>GIF</b><em>Graphics Interchange Format</em> · 짧게 반복 재생되는 애니메이션 이미지 형식</span></div>
@@ -891,15 +918,15 @@
   </section>
 
   <!-- 13 -->
-  <section class="slide" data-hook="dot" data-notes="Dot은 기본적으로 전용 클라우드 머신에서 일하지만, CAPTCHA나 사내 폐쇄망처럼 클라우드에서 막히는 일은 연결된 로컬 컴퓨터의 브라우저를 불러 해결합니다. 여러 기기를 등록해 작업을 기기별로 나눠 실행하고, 로컬 접근은 기본 꺼짐·기기별 승인·언제든 회수가 원칙입니다.">
-    <div class="kicker" data-a="left">05 · OpenAI Dot</div>
+  <section class="slide" data-hook="dot" data-notes="dots는 기본적으로 전용 클라우드 머신에서 일하지만, CAPTCHA나 사내 폐쇄망처럼 클라우드에서 막히는 일은 연결된 로컬 컴퓨터의 브라우저를 불러 해결합니다. 여러 기기를 등록해 작업을 기기별로 나눠 실행하고, 로컬 접근은 기본 꺼짐·기기별 승인·언제든 회수가 원칙입니다.">
+    <div class="kicker" data-a="left">05 · OpenAI dots</div>
     <h2 data-a style="--d:1">클라우드에서 <em>내 컴퓨터들</em>까지</h2>
     <div class="dot-wrap">
-      <svg class="dot-svg" viewBox="0 0 900 560" data-a="fade" style="--d:2" id="dotsvg" aria-label="Dot이 클라우드에서 세 대의 로컬 기기로 작업을 나눠 보내는 구조">
+      <svg class="dot-svg" viewBox="0 0 900 560" data-a="fade" style="--d:2" id="dotsvg" aria-label="dots가 클라우드에서 세 대의 로컬 기기로 작업을 나눠 보내는 구조">
         <path class="path" id="p1" d="M260 280 C 420 280, 460 100, 620 100"/>
         <path class="path" id="p2" d="M260 280 C 420 280, 460 280, 620 280"/>
         <path class="path" id="p3" d="M260 280 C 420 280, 460 460, 620 460"/>
-        <g class="node cloud"><rect x="40" y="200" width="220" height="160" rx="24"/><text x="150" y="268" text-anchor="middle" font-size="38" font-weight="800">Dot</text><text x="150" y="304" text-anchor="middle" font-size="18" opacity=".7">전용 클라우드 머신</text></g>
+        <g class="node cloud"><rect x="40" y="200" width="220" height="160" rx="24"/><text x="150" y="268" text-anchor="middle" font-size="38" font-weight="800">dots</text><text x="150" y="304" text-anchor="middle" font-size="18" opacity=".7">전용 클라우드 머신</text></g>
         <g class="node"><rect x="620" y="50" width="250" height="100" rx="18"/><text x="745" y="92" text-anchor="middle" font-size="22" font-weight="700">사무실 PC</text><text x="745" y="122" text-anchor="middle" font-size="16" opacity=".65">A · 로컬 파일 추출</text></g>
         <g class="node"><rect x="620" y="230" width="250" height="100" rx="18"/><text x="745" y="272" text-anchor="middle" font-size="22" font-weight="700">개인 노트북</text><text x="745" y="302" text-anchor="middle" font-size="16" opacity=".65">CAPTCHA · 사내망 우회</text></g>
         <g class="node"><rect x="620" y="410" width="250" height="100" rx="18"/><text x="745" y="452" text-anchor="middle" font-size="22" font-weight="700">홈 워크스테이션</text><text x="745" y="482" text-anchor="middle" font-size="16" opacity=".65">B · Codex 코딩 · 로컬 스킬</text></g>
@@ -916,14 +943,36 @@
   </section>
 
   <!-- 13b -->
-  <section class="slide" data-notes="Dot만 있는 게 아닙니다. 2026년에 피클, 메타의 뮤즈(영상 생성도 지원), 오픈AI의 닷츠, 스피어 스트리트 테크놀로지의 인스팅트가 잇달아 나오며 AI 비서 경쟁이 붙었습니다. 닷츠의 강점은 24시간 웹·앱 작업을 대신 수행한다는 점이고, 한국에서는 일부 요금제에서 쓸 수 있습니다. 메타 뮤즈는 아직 한국에 출시되지 않았습니다.">
+  <section class="slide" data-notes="dots만 있는 게 아닙니다. 2026년에 피클, 메타의 뮤즈(영상 생성도 지원), 오픈AI의 닷츠, 스피어 스트리트 테크놀로지의 인스팅트가 잇달아 나오며 AI 비서 경쟁이 붙었습니다. 닷츠의 강점은 24시간 웹·앱 작업을 대신 수행한다는 점이고, 한국에서는 일부 요금제에서 쓸 수 있습니다. 메타 뮤즈는 아직 한국에 출시되지 않았습니다.">
     <div class="kicker" data-a="left">05 · AI Agent Race</div>
-    <h2 data-a style="--d:1">AI 에이전트(비서) <em>전쟁</em>, Dots의 위치</h2>
+    <h2 data-a style="--d:1">AI 에이전트(비서) <em>전쟁</em>, dots의 위치</h2>
     <div class="agents">
-      <div></div><div class="ah" data-a style="--d:2"><b>피클</b><span class="en">Pickle</span></div><div class="ah" data-a style="--d:3"><b>뮤즈</b><span class="en">Muse</span></div><div class="ah hot" data-a style="--d:4"><b>닷츠</b><span class="en">Dots</span></div><div class="ah" data-a style="--d:5"><b>인스팅트</b><span class="en">Instinct</span></div><div class="rh" data-a="fade" style="--d:6">개발사</div><div class="ac" data-a style="--d:6">피클</div><div class="ac" data-a style="--d:6">메타</div><div class="ac hot" data-a style="--d:6">오픈AI</div><div class="ac" data-a style="--d:6">스피어 스트리트<br>테크놀로지</div><div class="rh" data-a="fade" style="--d:7">출시</div><div class="ac" data-a style="--d:7">2026년 8월</div><div class="ac" data-a style="--d:7">2026년 9월</div><div class="ac hot" data-a style="--d:7">2026년 9월</div><div class="ac" data-a style="--d:7">2026년 2월 (베타)</div><div class="rh" data-a="fade" style="--d:8">강점</div><div class="ac st" data-a style="--d:8">생활 밀착형<br>업무 대행</div><div class="ac st" data-a style="--d:8">쇼핑·생활 업무</div><div class="ac hot st" data-a style="--d:8">24시간<br>업무 수행</div><div class="ac st" data-a style="--d:8">대화하듯<br>업무 지시</div><div class="rh" data-a="fade" style="--d:9">주요 기능</div><div class="ac st" data-a style="--d:9">전화 대행, 예약·예매,<br>쇼핑·결제</div><div class="ac st" data-a style="--d:9">여행 예약, 상품 구매,<br>이메일 발송, <span class="add">영상 생성*</span></div><div class="ac hot st" data-a style="--d:9">웹·앱 작업,<br>업무 관리</div><div class="ac st" data-a style="--d:9">이메일·일정 관리,<br>예약·쇼핑</div><div class="rh" data-a="fade" style="--d:10">한국 이용</div><div class="ac kr ok" data-a="pop" style="--d:11"><b>가능</b><small>(앱)</small></div><div class="ac kr no" data-a="pop" style="--d:12"><b>미출시</b></div><div class="ac hot kr ok" data-a="pop" style="--d:13"><b>가능</b><small>(일부 요금제)</small></div><div class="ac kr ok" data-a="pop" style="--d:14"><b>가능</b><small>(초대장)</small></div>
+      <div></div><div class="ah" data-a style="--d:2"><b>피클</b><span class="en">Pickle</span></div><div class="ah" data-a style="--d:3"><b>뮤즈</b><span class="en">Muse</span></div><div class="ah hot" data-a style="--d:4"><b>닷츠</b><span class="en">dots</span></div><div class="ah" data-a style="--d:5"><b>인스팅트</b><span class="en">Instinct</span></div><div class="rh" data-a="fade" style="--d:6">개발사</div><div class="ac" data-a style="--d:6">피클</div><div class="ac" data-a style="--d:6">메타</div><div class="ac hot" data-a style="--d:6">오픈AI</div><div class="ac" data-a style="--d:6">스피어 스트리트<br>테크놀로지</div><div class="rh" data-a="fade" style="--d:7">출시</div><div class="ac" data-a style="--d:7">2026년 8월</div><div class="ac" data-a style="--d:7">2026년 9월</div><div class="ac hot" data-a style="--d:7">2026년 9월</div><div class="ac" data-a style="--d:7">2026년 2월 (베타)</div><div class="rh" data-a="fade" style="--d:8">강점</div><div class="ac st" data-a style="--d:8">생활 밀착형<br>업무 대행</div><div class="ac st" data-a style="--d:8">쇼핑·생활 업무</div><div class="ac hot st" data-a style="--d:8">24시간<br>업무 수행</div><div class="ac st" data-a style="--d:8">대화하듯<br>업무 지시</div><div class="rh" data-a="fade" style="--d:9">주요 기능</div><div class="ac st" data-a style="--d:9">전화 대행, 예약·예매,<br>쇼핑·결제</div><div class="ac st" data-a style="--d:9">여행 예약, 상품 구매,<br>이메일 발송, <span class="add">영상 생성*</span></div><div class="ac hot st" data-a style="--d:9">웹·앱 작업,<br>업무 관리</div><div class="ac st" data-a style="--d:9">이메일·일정 관리,<br>예약·쇼핑</div><div class="rh" data-a="fade" style="--d:10">한국 이용</div><div class="ac kr ok" data-a="pop" style="--d:11"><b>가능</b><small>(앱)</small></div><div class="ac kr no" data-a="pop" style="--d:12"><b>미출시</b></div><div class="ac hot kr ok" data-a="pop" style="--d:13"><b>가능</b><small>(일부 요금제)</small></div><div class="ac kr ok" data-a="pop" style="--d:14"><b>가능</b><small>(초대장)</small></div>
     </div>
-    <div class="acards"><div class="acard" data-a style="--d:2"><div class="nm"><b>피클</b><span class="en">Pickle</span><span class="dev">피클</span></div><dl><dt>출시</dt><dd>2026년 8월</dd><dt>강점</dt><dd><strong>생활 밀착형 업무 대행</strong></dd><dt>주요 기능</dt><dd>전화 대행, 예약·예매, 쇼핑·결제</dd><dt>한국 이용</dt><dd><b class="ok">가능</b> <small>(앱)</small></dd></dl></div><div class="acard" data-a style="--d:3"><div class="nm"><b>뮤즈</b><span class="en">Muse</span><span class="dev">메타</span></div><dl><dt>출시</dt><dd>2026년 9월</dd><dt>강점</dt><dd><strong>쇼핑·생활 업무</strong></dd><dt>주요 기능</dt><dd>여행 예약, 상품 구매, 이메일 발송, <span class="add">영상 생성*</span></dd><dt>한국 이용</dt><dd><b class="no">미출시</b></dd></dl></div><div class="acard hot" data-a style="--d:4"><div class="nm"><b>닷츠</b><span class="en">Dots</span><span class="dev">오픈AI</span></div><dl><dt>출시</dt><dd>2026년 9월</dd><dt>강점</dt><dd><strong>24시간 업무 수행</strong></dd><dt>주요 기능</dt><dd>웹·앱 작업, 업무 관리</dd><dt>한국 이용</dt><dd><b class="ok">가능</b> <small>(일부 요금제)</small></dd></dl></div><div class="acard" data-a style="--d:5"><div class="nm"><b>인스팅트</b><span class="en">Instinct</span><span class="dev">스피어 스트리트 테크놀로지</span></div><dl><dt>출시</dt><dd>2026년 2월 (베타)</dd><dt>강점</dt><dd><strong>대화하듯 업무 지시</strong></dd><dt>주요 기능</dt><dd>이메일·일정 관리, 예약·쇼핑</dd><dt>한국 이용</dt><dd><b class="ok">가능</b> <small>(초대장)</small></dd></dl></div></div>
+    <div class="acards"><div class="acard" data-a style="--d:2"><div class="nm"><b>피클</b><span class="en">Pickle</span><span class="dev">피클</span></div><dl><dt>출시</dt><dd>2026년 8월</dd><dt>강점</dt><dd><strong>생활 밀착형 업무 대행</strong></dd><dt>주요 기능</dt><dd>전화 대행, 예약·예매, 쇼핑·결제</dd><dt>한국 이용</dt><dd><b class="ok">가능</b> <small>(앱)</small></dd></dl></div><div class="acard" data-a style="--d:3"><div class="nm"><b>뮤즈</b><span class="en">Muse</span><span class="dev">메타</span></div><dl><dt>출시</dt><dd>2026년 9월</dd><dt>강점</dt><dd><strong>쇼핑·생활 업무</strong></dd><dt>주요 기능</dt><dd>여행 예약, 상품 구매, 이메일 발송, <span class="add">영상 생성*</span></dd><dt>한국 이용</dt><dd><b class="no">미출시</b></dd></dl></div><div class="acard hot" data-a style="--d:4"><div class="nm"><b>닷츠</b><span class="en">dots</span><span class="dev">오픈AI</span></div><dl><dt>출시</dt><dd>2026년 9월</dd><dt>강점</dt><dd><strong>24시간 업무 수행</strong></dd><dt>주요 기능</dt><dd>웹·앱 작업, 업무 관리</dd><dt>한국 이용</dt><dd><b class="ok">가능</b> <small>(일부 요금제)</small></dd></dl></div><div class="acard" data-a style="--d:5"><div class="nm"><b>인스팅트</b><span class="en">Instinct</span><span class="dev">스피어 스트리트 테크놀로지</span></div><dl><dt>출시</dt><dd>2026년 2월 (베타)</dd><dt>강점</dt><dd><strong>대화하듯 업무 지시</strong></dd><dt>주요 기능</dt><dd>이메일·일정 관리, 예약·쇼핑</dd><dt>한국 이용</dt><dd><b class="ok">가능</b> <small>(초대장)</small></dd></dl></div></div>
     <p class="src">자료: 각사 · 정리: 중앙일보(The JoongAng) · * 영상 생성 기능은 중앙일보 표 이후 추가한 내용</p>
+  </section>
+
+  <!-- 13c -->
+  <section class="slide" data-notes="피클을 실제로 써 본 사례를 모았습니다. KTX 예매는 약 20분 만에 끝났고, 오전 7시 5분 열차를 4만 9500원에 발권한 사례도 있습니다. 다른 서비스가 실패한 전화 예약 변경을 한 번에 성공했다는 후기도 있습니다. 반면 카드사 인증과 결제 오류는 사람이 직접 풀어야 했고, AI라고 소개하자 상대가 끊거나 02 번호를 피싱으로 오인한 경우도 있었습니다. 10월 29일 일본에서는 호텔 조건을 물어보기만 했는데 피클이 호텔에 두 번 전화를 걸었고, 두 번째 통화에서는 AI임을 밝히지 않아 대표가 사과했습니다. 그래서 '내 승인 전에는 전화·결제하지 마'라는 조건을 미리 걸어 두는 것이 좋습니다.">
+    <div class="kicker" data-a="left">05 · Pickle in the wild</div>
+    <h2 data-a style="--d:1">피클 실제 사례: <em>되는 일</em>과 아직 사람 몫인 일</h2>
+    <div class="cases">
+      <div class="col ok">
+        <div class="ch" data-a="fade" style="--d:2"><span class="dot"></span>잘 된 사례</div>
+        <div class="case" data-a="right" style="--d:3"><div class="ic">🚄</div><div><h3>KTX 예매 약 20분</h3><p>앱에 맡긴 KTX 예매가 약 20분 만에 끝남. 사용량은 8%p 소모<small>디지털데일리 · 1회 실험</small></p></div></div>
+        <div class="case" data-a="right" style="--d:4"><div class="ic">🎫</div><div><h3>07:05 열차 49,500원 발권</h3><p>좌석 검색부터 발권까지 대행. 단, <b>카드사 전화 인증·결제 오류</b>는 이용자가 직접 처리<small>다이어리포인트</small></p></div></div>
+        <div class="case" data-a="right" style="--d:5"><div class="ic">📞</div><div><h3>전화 예약 변경 한 번에 성공</h3><p>다른 전화 대행 서비스가 실패한 예약 변경을 피클은 첫 통화에서 해결<small>앱스토어 후기</small></p></div></div>
+      </div>
+      <div class="col bad">
+        <div class="ch" data-a="fade" style="--d:2"><span class="dot"></span>한계와 사고</div>
+        <div class="case" data-a="left" style="--d:3"><div class="ic">📵</div><div><h3>“AI입니다” 하자 끊김</h3><p>AI라고 밝히자 상대가 전화를 끊음. 헬스장 가격 문의는 실제 상담으로 이어지지 않음<small>코리아데일리 · 사용 후기</small></p></div></div>
+        <div class="case" data-a="left" style="--d:4"><div class="ic">⚠️</div><div><h3>02 번호, 피싱으로 오인</h3><p>지인에게 건 전화가 02 번호로 떠 받지 않음. 요청하지 않은 지인·식당에 전화했다는 불만도<small>앱스토어 후기 · SNS</small></p></div></div>
+        <div class="case hot" data-a="left" style="--d:5"><div class="ic">🏨</div><div><h3>10월 29일, 일본 호텔 무단 발신</h3><p>호텔의 아이 동반 조건을 <b>묻기만</b> 했는데 호텔에 두 번 전화. 두 번째엔 AI임을 밝히지 않음 → 대표 사과, 발신 전 확인·AI 고지 필수화<small>일본 X 게시글 · 현지 보도</small></p></div></div>
+      </div>
+    </div>
+    <div class="tipbar" data-a style="--d:7"><b>쓰기 전에</b>“내 승인 전에는 절대 <em>전화하거나 결제하지 마</em>”를 조건으로 걸어 두고, 통화 기록과 최종 예약 내역은 직접 확인</div>
+    <p class="src">자료: 디지털데일리 · 다이어리포인트 · 코리아데일리 · App Store 리뷰 · 일본 보도(2026년 10~11월) · 사용 후기는 개별 사례로, 성공률을 뜻하지 않음</p>
   </section>
 
   <!-- 14 -->
@@ -987,7 +1036,7 @@
       <div class="card" data-a style="--d:2"><div class="ic">⚡</div><h3>R&amp;D 자동화 가속</h3><p>METR: AI가 차세대 AI를 개발하는 속도가 약 2배</p></div>
       <div class="card" data-a style="--d:3"><div class="ic">🧬</div><h3>가중치 직접 수정 시대</h3><p>역전파 없이 LLM이 신경망 가중치를 프로그래밍</p></div>
       <div class="card" data-a style="--d:4"><div class="ic">🏁</div><h3>프론티어 경쟁과 특화</h3><p>텍스트 성능을 넘어 에이전트·사이버·과학 특화로 세분화</p></div>
-      <div class="card" data-a style="--d:5"><div class="ic">🖥️</div><h3>에이전트의 로컬 제어</h3><p>Dot의 멀티 기기 제어, GPT Image 2.6의 복합 참조 편집 — 작업 환경 전체를 대행</p></div>
+      <div class="card" data-a style="--d:5"><div class="ic">🖥️</div><h3>에이전트의 로컬 제어</h3><p>dots의 멀티 기기 제어, GPT Image 2.6의 복합 참조 편집 — 작업 환경 전체를 대행</p></div>
       <div class="card" data-a style="--d:6"><div class="ic">💡</div><h3>비용 효율적 운용</h3><p>모델 체급 · effort · 자체 검증 루프의 3단 조정</p></div>
     </div>
     <div class="gloss" data-a="fade" style="--d:9" aria-label="약어 풀이"><span><b>METR</b><em>Model Evaluation and Threat Research</em> · AI의 위험과 역량을 평가하는 비영리 연구기관</span><span><b>LLM</b><em>Large Language Model</em> · 대규모 언어 모델. 방대한 글을 학습해 다음 단어를 예측하는 AI</span></div>
