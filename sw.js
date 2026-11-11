@@ -1,11 +1,11 @@
 /* Artifact Archives service worker
  * - App shell is cached on install so the archive opens offline.
- * - Pages and items.js: network first (always fresh when online), cache as fallback.
- * - Images, scripts, fonts: served from cache, refreshed in the background.
+ * - Pages, scripts and stylesheets: network first (always fresh when online), cache as fallback.
+ * - Images and fonts: served from cache, refreshed in the background.
  * - GitHub API calls (admin mode) are never intercepted.
  * Bump VERSION when the shell file list changes.
  */
-const VERSION = 'v9';
+const VERSION = 'v10';
 const CACHE = `archives-${VERSION}`;
 const SHELL = [
   './', 'index.html', 'items.js', 'bg.js', 'admin.js', 'submit.js', 'dialog.css', 'manifest.webmanifest', 'favicon.ico',
@@ -50,7 +50,7 @@ self.addEventListener('fetch', e => {
   if (req.method !== 'GET') return;
   const url = new URL(req.url);
   if (url.origin === self.location.origin) {
-    const fresh = req.mode === 'navigate' || /\.(html|js|webmanifest)$/.test(url.pathname) || url.pathname.endsWith('/');
+    const fresh = req.mode === 'navigate' || /\.(html|js|css|webmanifest)$/.test(url.pathname) || url.pathname.endsWith('/');
     e.respondWith(fresh ? networkFirst(req) : staleWhileRevalidate(req, e));
   } else if (FONT_HOSTS.includes(url.hostname)) {
     e.respondWith(staleWhileRevalidate(req, e));
