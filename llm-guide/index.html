@@ -93,6 +93,8 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 .spacer { flex: 1; }
 .btn { appearance: none; border: 1px solid var(--line); background: var(--surface); color: var(--ink); min-height: 36px; padding: 0 12px; border-radius: 8px; font: 500 13px/1 var(--display); display: inline-flex; align-items: center; justify-content: center; gap: 6px; cursor: pointer; text-decoration: none; white-space: nowrap; }
 .btn:hover { border-color: var(--accent); }
+.alt-link { text-decoration: none; gap: 6px; }
+@media (max-width: 560px) { .alt-link .lbl { display: none; } .crumb { display: none; } }
 .btn.primary { background: var(--ink); color: var(--bg); border-color: var(--ink); }
 .progress { position: absolute; left: 0; bottom: -1px; height: 2px; width: 100%; background: var(--accent); transform-origin: left; transform: scaleX(0); }
 @media (max-width: 640px) { .crumb { display: none; } }
@@ -474,6 +476,7 @@ footer.site a { color: var(--muted); }
     <a class="brand" href="../"><span class="brand-mark">AA</span><span>Artifact Archives</span></a>
     <span class="crumb">/ guides / llm-guide</span>
     <span class="spacer"></span>
+    <a class="btn alt-link" href="../llm-slides/" title="같은 내용을 한 장씩 넘겨 보는 슬라이드형"><span aria-hidden="true">▭</span><span class="lbl">슬라이드형으로 보기</span></a>
     <button class="btn" id="themeBtn" type="button" aria-label="Theme 전환">◐ Theme</button>
   </div>
   <div class="progress" id="progress"></div>

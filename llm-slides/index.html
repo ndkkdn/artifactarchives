@@ -406,6 +406,8 @@ td.note { color: var(--muted); font-size: 19px; }
 #controls button:hover { background: var(--surface-2); }
 #source { font-family: var(--mono); font-size: 12.5px; color: var(--muted); text-decoration: none; padding: 0 10px 0 8px; margin-right: 2px; border-right: 1px solid var(--line); white-space: nowrap; line-height: 32px; }
 #source:hover { color: var(--accent); }
+#altLink { display: inline-flex; align-items: center; gap: 6px; height: 32px; padding: 0 10px; border-radius: 8px; color: var(--ink); text-decoration: none; font: 500 13px/1 var(--display); border-left: 1px solid var(--line); margin-left: 2px; }
+#altLink:hover { background: var(--surface-2); }
 #count { font-family: var(--mono); font-size: 12.5px; color: var(--muted); padding: 0 6px; font-variant-numeric: tabular-nums; }
 #notes { position: fixed; left: max(16px, env(safe-area-inset-left, 0px)); bottom: calc(16px + env(safe-area-inset-bottom, 0px)); max-width: min(560px, calc(100% - 32px)); z-index: 6;
   background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 12px 16px; font-size: 14px; line-height: 1.65; box-shadow: var(--shadow); }
@@ -468,6 +470,8 @@ td.note { color: var(--muted); font-size: 19px; }
 }
 @media (max-width: 560px) {
   #controls { left: max(10px, env(safe-area-inset-left, 0px)); right: max(10px, env(safe-area-inset-right, 0px)); bottom: calc(10px + env(safe-area-inset-bottom, 0px)); flex-wrap: wrap; justify-content: space-between; opacity: 1; }
+  #altLink .lbl { display: none; }
+  #altLink { min-width: 40px; height: 40px; justify-content: center; border-left: 0; }
   #source { flex: 1 0 100%; border-right: 0; border-bottom: 1px solid var(--line); text-align: center; line-height: 28px; margin: 0 0 4px; padding: 0 0 2px; }
   #notes { bottom: calc(104px + env(safe-area-inset-bottom, 0px)); }
 }
@@ -1103,6 +1107,7 @@ td.note { color: var(--muted); font-size: 19px; }
   <button type="button" id="notesBtn" aria-label="Speaker Notes (N)">Notes</button>
   <button type="button" id="themeBtn" aria-label="Theme 전환">◐</button>
   <button type="button" id="fsBtn" aria-label="Fullscreen (F)">⤢</button>
+  <a id="altLink" href="../llm-guide/" title="같은 내용을 위아래로 스크롤해 읽는 스크롤형"><span aria-hidden="true">☰</span><span class="lbl">스크롤형으로 보기</span></a>
 </div>
 
 <script>

@@ -21,7 +21,7 @@ window.ITEMS = [
   },
   {
     "href": "llm-slides/",
-    "title": "LLM 이해하기",
+    "title": "LLM 이해하기 (슬라이드형)",
     "desc": "발표용 28장 덱. 슬라이드마다 입장 애니메이션과 움직이는 도해, Speaker Notes(N), Fullscreen(F).",
     "type": "슬라이드",
     "tags": ["LLM", "기본기", "발표"],
@@ -30,7 +30,7 @@ window.ITEMS = [
   },
   {
     "href": "llm-guide/",
-    "title": "LLM 이해하기",
+    "title": "LLM 이해하기 (스크롤형)",
     "desc": "스크롤해 읽는 웹 가이드. 스크롤하면 재생되는 도해와 다음 Token 예측 데모, 태블릿·스마트폰 대응.",
     "type": "가이드",
     "tags": ["LLM", "기본기", "캐싱"],
