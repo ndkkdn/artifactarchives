@@ -104,15 +104,18 @@
   .brand svg { display: block; height: 40px; width: auto; overflow: visible; }
   .brand .logo-mark { display: none; height: 36px; }
   .install-btn[hidden] { display: none; }
-  .tabs { display: flex; gap: 20px; flex: 1; min-width: 0; }
+  .tabs { display: flex; align-items: center; gap: 6px; flex: 1; min-width: 0; }
   .tab {
-    appearance: none; background: none; border: 0; padding: 6px 0; cursor: pointer; color: var(--text-60);
-    font-weight: 500; white-space: nowrap; transition: color .3s; position: relative;
+    appearance: none; border: 0; height: 32px; padding: 0 12px 0 10px; border-radius: 999px; cursor: pointer;
+    display: inline-flex; align-items: center; gap: 6px; flex: none;
+    background: var(--btn); color: var(--text-60); font-size: 13.5px; font-weight: 500; white-space: nowrap;
+    backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); transition: background .3s, color .3s;
   }
-  .tab sup { font-size: 10px; margin-left: 2px; color: var(--text-40); font-family: "JetBrains Mono", monospace; }
-  .tab:hover, .tab[aria-pressed="true"] { color: var(--text); }
-  .tab::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 1px; background: currentColor; opacity: 0; transition: opacity .3s; }
-  .tab[aria-pressed="true"]::after { opacity: 1; }
+  .tab svg { width: 15px; height: 15px; flex: none; }
+  .tab sup { font-size: 10.5px; color: var(--text-40); font-family: "JetBrains Mono", monospace; vertical-align: 0; line-height: 1; transition: color .3s; }
+  .tab:hover { background: var(--btn-hover); color: var(--text); }
+  .tab[aria-pressed="true"] { background: var(--text); color: var(--bg); }
+  .tab[aria-pressed="true"] sup { color: var(--bg); opacity: .65; }
   .actions { display: flex; gap: 8px; align-items: center; margin-left: auto; }
   .toolgroup { display: flex; align-items: center; gap: 2px; background: var(--btn); border-radius: 999px; padding: 3px; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); flex: none; }
   .tg-views { display: flex; gap: 2px; }
@@ -270,10 +273,10 @@
   .pill.danger { color: #d93a1b; }
   .pill.primary { background: var(--text); color: var(--bg); }
   .cap-actions { gap: 6px; margin-top: 2px; }
-  .edit-entry { height: 36px; display: inline-flex; align-items: center; gap: 6px; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
-  .edit-entry svg { width: 14px; height: 14px; }
+  .edit-entry { height: 36px; width: 36px; padding: 0; display: inline-grid; place-items: center; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
+  .edit-entry svg { width: 16px; height: 16px; }
   body.admin .edit-entry { display: none; }
-  @media (pointer: coarse) { .edit-entry { height: 42px; } }
+  @media (pointer: coarse) { .edit-entry { height: 42px; width: 42px; } }
   .rows li { position: relative; }
   .row-actions { position: absolute; right: 0; top: 50%; transform: translateY(-50%); gap: 6px; }
   body.admin .rows a { padding-right: 140px; }
@@ -292,7 +295,7 @@
   /* ── responsive ────────────────────────────── */
   @media (max-width: 900px) {
     .bar-in { gap: 16px; }
-    .tabs { position: fixed; top: calc(56px + env(safe-area-inset-top, 0px)); left: 0; right: 0; padding: 0 max(16px, env(safe-area-inset-left, 0px)); overflow-x: auto; scrollbar-width: none; gap: 18px; }
+    .tabs { position: fixed; top: calc(56px + env(safe-area-inset-top, 0px)); left: 0; right: 0; height: 36px; padding: 0 max(16px, env(safe-area-inset-left, 0px)); overflow-x: auto; scrollbar-width: none; gap: 6px; }
     .tabs::-webkit-scrollbar { display: none; }
     .stage { padding-top: calc(92px + env(safe-area-inset-top, 0px)); --cw: min(560px, 74vw, calc((100dvh - 590px) * 1.7778)); }
     .counter { top: calc(92px + env(safe-area-inset-top, 0px) + 14px); }
@@ -304,8 +307,7 @@
     .bar { padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
     .brand .logo-full { display: none; }
     .brand .logo-mark { display: block; }
-    .edit-entry .lbl { display: none; }
-    .edit-entry { padding: 0 11px; }
+
     .stage { --cw: min(84vw, calc((100dvh - 500px) * 1.7778)); }
     .lede { padding: 14px 16px 0; }
     .lede h1 { font-size: 30px; }
@@ -341,8 +343,7 @@
     .bar-in { gap: 10px; }
     .actions { gap: 6px; }
     .toolgroup a.tg-btn, .tg-sep { display: none; }
-    .edit-entry { padding: 0 10px; }
-    .tabs { gap: 16px; }
+    .tabs { gap: 6px; }
   }
   /* short phones held upright: shrink the chrome so the cover gets the room */
   @media (max-width: 620px) and (max-height: 720px) {
@@ -368,7 +369,7 @@
   @media (pointer: coarse) {
     .round { width: 42px; height: 42px; }
     .tg-btn { width: 38px; height: 36px; }
-    .tab { padding: 10px 0; }
+    .tab { height: 34px; }
   }
   @media (hover: none) { .peek { display: none; } .open-hint { display: none; } }
   @media (prefers-reduced-motion: reduce) {
@@ -415,14 +416,14 @@
       </a>
     <div class="tabs" id="tabs" role="group" aria-label="종류 필터"></div>
     <div class="actions">
-      <button class="pill edit-entry install-btn" id="installBtn" type="button" hidden title="홈 화면이나 데스크톱에 앱으로 설치">
-        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M8 2v8M4.5 6.5L8 10l3.5-3.5M3 13h10"/></svg><span class="lbl">설치</span>
+      <button class="pill edit-entry install-btn" id="installBtn" type="button" hidden title="설치: 홈 화면이나 데스크톱에 앱으로 설치" aria-label="앱으로 설치">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 2v8M4.5 6.5L8 10l3.5-3.5M3 13h10"/></svg><span class="sr-only">앱으로 설치</span>
       </button>
-      <button class="pill edit-entry" id="submitBtn" type="button" title="아티팩트 제안하기 (관리자 검토 후 게시)">
-        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M8 3v10M3 8h10"/></svg><span class="lbl">제출</span>
+      <button class="pill edit-entry" id="submitBtn" type="button" title="신규: 아티팩트 제안하기 (관리자 검토 후 게시)" aria-label="신규 아티팩트 제안">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.6 14H3.5V2h5.6l3.4 3.4V8"/><path d="M9 2v3.5h3.5M12.5 10.2v4.6M10.2 12.5h4.6"/></svg><span class="sr-only">새 아티팩트 제안</span>
       </button>
-      <button class="pill edit-entry" id="adminBtn" type="button" title="관리자: 아티팩트 추가·수정·삭제">
-        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M10.5 2.5l3 3L5 14H2v-3z"/><path d="M9 4l3 3"/></svg><span class="lbl">편집</span>
+      <button class="pill edit-entry" id="adminBtn" type="button" title="편집: 관리자 아티팩트 추가·수정·삭제" aria-label="관리자 편집">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" aria-hidden="true"><path d="M10.5 2.5l3 3L5 14H2v-3z"/><path d="M9 4l3 3"/></svg><span class="sr-only">관리자 편집</span>
       </button>
       <div class="toolgroup">
         <div class="tg-views" role="group" aria-label="보기 방식">
@@ -502,10 +503,18 @@
   const sleevesEl = $('sleeves'), stripEl = $('strip'), scene = $('scene');
 
   /* filters */
+  const TAB_ICONS = {
+    '전체': '<rect x="2.5" y="2.5" width="4.5" height="4.5" rx="1"/><rect x="9" y="2.5" width="4.5" height="4.5" rx="1"/><rect x="2.5" y="9" width="4.5" height="4.5" rx="1"/><rect x="9" y="9" width="4.5" height="4.5" rx="1"/>',
+    '리포트': '<path d="M4 1.8h5.2L12.5 5v9.2H4z"/><path d="M9 1.8V5h3.5M6 8h4.5M6 10.6h4.5"/>',
+    '슬라이드': '<rect x="1.8" y="2.5" width="12.4" height="8.5" rx="1.2"/><path d="M8 11v2.6M5.5 13.8h5"/>',
+    '설명서': '<path d="M8 4.2C6.6 3 4.4 2.6 2 2.8v9.6c2.4-.2 4.6.2 6 1.4 1.4-1.2 3.6-1.6 6-1.4V2.8c-2.4-.2-4.6.2-6 1.4z"/><path d="M8 4.2v9.6"/>',
+  };
+  const TAB_DEFAULT = '<path d="M2.5 8.6V2.5h6.1l5 5-6.1 6.1z"/><circle cx="5.6" cy="5.6" r="1"/>';
+  const tabIcon = t => `<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true">${TAB_ICONS[t] || TAB_DEFAULT}</svg>`;
   function renderTabs() {
     types = ['전체', ...new Set(all.map(i => i.type))];
     if (!types.includes(active)) active = '전체';
-    $('tabs').innerHTML = types.map(t => `<button class="tab" type="button" aria-pressed="${t === active}" data-t="${esc(t)}">${esc(t)}<sup>${count(t)}</sup></button>`).join('');
+    $('tabs').innerHTML = types.map(t => `<button class="tab" type="button" aria-pressed="${t === active}" data-t="${esc(t)}">${tabIcon(t)}<span>${esc(t)}</span><sup>${count(t)}</sup></button>`).join('');
   }
   $('tabs').addEventListener('click', e => {
     const b = e.target.closest('.tab'); if (!b) return;
