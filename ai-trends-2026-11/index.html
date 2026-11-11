@@ -77,7 +77,9 @@
 
   /* ── 01 title ── */
   .s-title { justify-content: center; }
-  .s-title h1 { font-size: 104px; line-height: 1.04; letter-spacing: -.05em; margin-top: 26px; }
+  /* cover title: Paperlogy ExtraBold (SIL OFL, via jsDelivr/project noonnu) */
+  @font-face { font-family: "Paperlogy"; font-weight: 800; font-style: normal; font-display: swap; src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/2408-3@1.0/Paperlogy-8ExtraBold.woff2") format("woff2"); }
+  .s-title h1 { font-family: "Paperlogy", "Pretendard Variable", Pretendard, Inter, sans-serif; font-weight: 800; font-size: 104px; line-height: 1.1; letter-spacing: -.035em; margin-top: 26px; }
   .s-title .lead { font-size: 30px; margin-top: 30px; }
   .s-title .chips { display: flex; gap: 12px; margin-top: 54px; flex-wrap: wrap; }
   .s-title .date { position: absolute; right: 110px; top: 92px; font: 500 18px "JetBrains Mono", monospace; color: var(--ink-3); }

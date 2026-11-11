@@ -106,7 +106,9 @@ a { color: var(--blue); text-underline-offset: 3px; }
 .hero-in { position: relative; max-width: 1180px; margin: 0 auto; padding: 72px 0 56px; }
 .kicker { font: 600 12.5px/1 var(--en); letter-spacing: .18em; text-transform: uppercase; color: #d5a844; display: flex; gap: 10px; align-items: center; }
 .kicker::before { content: ""; width: 26px; height: 1px; background: currentColor; }
-.hero h1 { font-family: var(--serif); font-weight: 700; font-size: clamp(34px, 5.6vw, 64px); line-height: 1.18; letter-spacing: -.01em; margin: 20px 0 18px; max-width: 15em; }
+/* cover title: Paperlogy ExtraBold (SIL OFL, via jsDelivr/project noonnu) */
+@font-face { font-family: "Paperlogy"; font-weight: 800; font-style: normal; font-display: swap; src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/2408-3@1.0/Paperlogy-8ExtraBold.woff2") format("woff2"); }
+.hero h1 { font-family: "Paperlogy", var(--sans); font-weight: 800; font-size: clamp(34px, 5.6vw, 64px); line-height: 1.2; letter-spacing: -.02em; margin: 20px 0 18px; max-width: 15em; }
 .hero h1 em { font-style: normal; color: #d5a844; }
 .hero .lede { max-width: 640px; font-size: clamp(16px, 1.7vw, 19px); color: rgba(243,239,228,.78); margin: 0; }
 .hero .lede b { color: #f3efe4; }
