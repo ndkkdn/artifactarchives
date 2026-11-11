@@ -326,6 +326,45 @@
     .rows a:hover { padding-left: 0; }
     kbd { display: none; }
   }
+  /* list rows on tablets/phones: show the type under the title so same-titled items are told apart */
+  @media (max-width: 900px) {
+    .rows a { row-gap: 2px; }
+    .rows .n, .rows .ti, .rows .dt { grid-row: 1; }
+    .rows .ty { display: block; grid-column: 2; grid-row: 2; font-size: 12px; color: var(--text-40); }
+  }
+  @media (max-width: 620px) {
+    .rows .ty { grid-column: 1; }
+    .rows .dt { align-self: center; grid-row: 1 / span 2; }
+  }
+  /* narrow phones: keep every top-bar control on screen */
+  @media (max-width: 420px) {
+    .bar-in { gap: 10px; }
+    .actions { gap: 6px; }
+    .toolgroup a.tg-btn, .tg-sep { display: none; }
+    .edit-entry { padding: 0 10px; }
+    .tabs { gap: 16px; }
+  }
+  /* short phones held upright: shrink the chrome so the cover gets the room */
+  @media (max-width: 620px) and (max-height: 720px) {
+    .lede { padding-top: 8px; }
+    .lede h1 { font-size: 25px; }
+    .lede p { font-size: 13.5px; margin-top: 6px; }
+    .caption { min-height: 0; padding: 8px 14px 10px; gap: 5px; margin-bottom: 8px; }
+    .caption h2 { font-size: 17px; }
+    .caption p { -webkit-line-clamp: 1; font-size: 13px; }
+    .strip { padding: 10px 20px 12px; }
+  }
+  /* phones held sideways: drop the title and the strip, keep cover + caption */
+  @media (max-height: 520px) and (orientation: landscape) {
+    .stage { grid-template-rows: minmax(0, 1fr) auto; }
+    .lede { display: none; }
+    .strip-wrap { display: none; }
+    .caption { min-height: 0; padding: 6px 16px 8px; gap: 3px; margin-bottom: max(8px, env(safe-area-inset-bottom, 0px)); }
+    .caption h2 { font-size: 17px; }
+    .caption p { display: none; }
+    .counter { top: calc(92px + env(safe-area-inset-top, 0px) + 6px); }
+    .index-head { padding-bottom: 16px; }
+  }
   @media (pointer: coarse) {
     .round { width: 42px; height: 42px; }
     .tg-btn { width: 38px; height: 36px; }
