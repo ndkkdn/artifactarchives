@@ -30,9 +30,9 @@
   const hex = h => [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16));
   const P = (o) => Object.fromEntries(Object.entries(o).map(([k, v]) => [k, typeof v === 'string' ? hex(v) : v]));
   const NIGHT = P({ hl: '#f2c94c', skyTop: '#0b1030', skyBot: '#232b5a', glow: '#3a4580', seaDeep: '#060a20', seaMid: '#111943', seaLight: '#2a3878', foam: '#8a9ad2', glint: '#f4f1de', cloud: '#3c4474', cloud2: '#2e355f', cloudEdge: '#242a52', stars: 1 });
-  const DAWN = P({ hl: '#d9486a', skyTop: '#46559a', skyBot: '#f6bca4', glow: '#ffb38a', seaDeep: '#1d2a5c', seaMid: '#3f5092', seaLight: '#c48ca2', foam: '#ffdcc6', glint: '#ffe6b0', cloud: '#ffdccc', cloud2: '#f2b6aa', cloudEdge: '#f6d2cc', stars: .15 });
-  const DAY = P({ hl: '#f0542a', skyTop: '#8cb6f0', skyBot: '#dbe7f8', glow: '#ffffff', seaDeep: '#0d397a', seaMid: '#1e62c2', seaLight: '#58a6ee', foam: '#e6f5ff', glint: '#ffffff', cloud: '#fdfdfa', cloud2: '#e8eef8', cloudEdge: '#dce7f8', stars: 0 });
-  const SUNSET = P({ hl: '#c9302c', skyTop: '#3b4088', skyBot: '#ff8d50', glow: '#ff6a3d', seaDeep: '#1b1d4f', seaMid: '#58306e', seaLight: '#e0673f', foam: '#ffc27c', glint: '#ffe08a', cloud: '#ffb07c', cloud2: '#e07c70', cloudEdge: '#c47494', stars: 0 });
+  const DAWN = P({ hl: '#d9486a', skyTop: '#46559a', skyBot: '#f6bca4', glow: '#ffb38a', seaDeep: '#152150', seaMid: '#334483', seaLight: '#b87d97', foam: '#ffdcc6', glint: '#ffe6b0', cloud: '#ffdccc', cloud2: '#f2b6aa', cloudEdge: '#f6d2cc', stars: .15 });
+  const DAY = P({ hl: '#f0542a', skyTop: '#8cb6f0', skyBot: '#dbe7f8', glow: '#ffffff', seaDeep: '#08295e', seaMid: '#1450a8', seaLight: '#3a86d8', foam: '#e6f5ff', glint: '#ffffff', cloud: '#fdfdfa', cloud2: '#e8eef8', cloudEdge: '#dce7f8', stars: 0 });
+  const SUNSET = P({ hl: '#c9302c', skyTop: '#3b4088', skyBot: '#ff8d50', glow: '#ff6a3d', seaDeep: '#141541', seaMid: '#4a2862', seaLight: '#d65d38', foam: '#ffc27c', glint: '#ffe08a', cloud: '#ffb07c', cloud2: '#e07c70', cloudEdge: '#c47494', stars: 0 });
   const DUSK = P({ hl: '#7d3fa6', skyTop: '#1a1e50', skyBot: '#7a508e', glow: '#b05a7a', seaDeep: '#0c1034', seaMid: '#252963', seaLight: '#6a4a8a', foam: '#c4a0d0', glint: '#e8c0d8', cloud: '#94709e', cloud2: '#6e5482', cloudEdge: '#52406e', stars: .55 });
   const KEYS = [[0, NIGHT], [4.6, NIGHT], [6, DAWN], [8, DAY], [16.2, DAY], [18, SUNSET], [19.4, DUSK], [20.8, NIGHT], [24, NIGHT]];
   const SUNRISE = 6, SUNSET_H = 19;
@@ -125,6 +125,12 @@
         }
       }
     }
+    // under the dotted sea: a dark water base, so the gaps between dots read as deep water instead of sky
+    for (let j = seaRow0 + 1; j < rows; j++) {
+      const depth = (j - seaRow0) / Math.max(1, rows - seaRow0);
+      gl.fillStyle = css(mix(mix(pal.seaMid, pal.seaDeep, .55), pal.seaDeep, Math.min(1, depth * 1.3)));
+      gl.fillRect(0, j * C, cols * C, C);
+    }
     const disk = (pos, fill, crescent) => {
       if (!pos) return;
       const cx = pos.x * cols, cy = pos.y * rows, R = Math.max(4, Math.round(rows * .034));
@@ -184,7 +190,7 @@
           const dist = Math.sqrt(ddx * ddx + ddy * ddy), front = age * 22;
           if (Math.abs(dist - front) < 5) v += Math.cos((dist - front) * 1.1) * .35 * (1 - age / 2.6);
         }
-        v -= depth * .18;
+        v -= .06 + depth * .22;
         let c;
         if (depth < .05 && bay > .3) c = cHaze;                      // hazy horizon line
         else if (v < .34 + bay * .16) c = cDeep;
