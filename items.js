@@ -13,7 +13,7 @@ window.ITEMS = [
   {
     "href": "ai-trends-2026-11/",
     "title": "최신 AI 핵심 동향 심층 분석 (슬라이드형)",
-    "desc": "METR 리포트, GPT Image 2.6, Weight-Space Programming, 프론티어 모델 3파전, OpenAI Dot과 AI 에이전트 비교, Claude 모델·Effort 운용 가이드까지. 움직이는 도해와 약어 풀이가 들어간 19장 슬라이드, 폰 세로 화면 대응. Speaker Notes(N), Fullscreen(F).",
+    "desc": "METR 리포트, GPT Image 2.6, Weight-Space Programming, 프론티어 모델 3파전, 최신 Intelligence Index 순위, OpenAI Dot과 AI 에이전트 비교, Claude 모델·Effort 운용 가이드까지. 움직이는 도해와 약어 풀이가 들어간 20장 슬라이드, 폰 세로 화면 대응. Speaker Notes(N), Fullscreen(F).",
     "type": "슬라이드",
     "tags": ["AI 동향", "METR", "에이전트", "Effort"],
     "date": "2026-11-11",
