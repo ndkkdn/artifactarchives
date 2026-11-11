@@ -32,7 +32,7 @@ window.ITEMS = [
     "href": "llm-guide/",
     "title": "LLM 이해하기 (스크롤형)",
     "desc": "스크롤해 읽는 웹 가이드. 스크롤하면 재생되는 도해와 다음 Token 예측 데모, 태블릿·스마트폰 대응.",
-    "type": "가이드",
+    "type": "리포트",
     "tags": ["LLM", "기본기", "캐싱"],
     "date": "2026-10-29",
     "thumb": "thumbs/llm-guide.jpg"
