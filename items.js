@@ -2,6 +2,15 @@
 // 직접 고칠 때도 JSON 형식(따옴표 붙은 키)을 유지해 주세요.
 window.ITEMS = [
   {
+    "href": "ai-trends-2026-11/",
+    "title": "최신 AI 핵심 동향 심층 분석",
+    "desc": "METR 리포트, GPT Image 2.6, Weight-Space Programming, 프론티어 모델 3파전, OpenAI Dot, Claude 모델·Effort 운용 가이드까지. 장마다 움직이는 도해가 들어간 18장 슬라이드. Speaker Notes(N), Fullscreen(F).",
+    "type": "슬라이드",
+    "tags": ["AI 동향", "METR", "에이전트", "Effort"],
+    "date": "2026-11-11",
+    "thumb": "thumbs/ai-trends-2026-11.jpg"
+  },
+  {
     "href": "llm-slides/",
     "title": "LLM 이해하기",
     "desc": "발표용 28장 덱. 슬라이드마다 입장 애니메이션과 움직이는 도해, Speaker Notes(N), Fullscreen(F).",
