@@ -106,12 +106,12 @@
   .install-btn[hidden] { display: none; }
   .tabs { display: flex; align-items: center; gap: 6px; flex: 1; min-width: 0; }
   .tab {
-    appearance: none; border: 0; height: 32px; padding: 0 12px 0 10px; border-radius: 999px; cursor: pointer;
-    display: inline-flex; align-items: center; gap: 6px; flex: none;
+    appearance: none; border: 0; height: 32px; width: 40px; padding: 0; border-radius: 999px; cursor: pointer;
+    display: inline-grid; place-items: center; flex: none;
     background: var(--btn); color: var(--text-60); font-size: 13.5px; font-weight: 500; white-space: nowrap;
     backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); transition: background .3s, color .3s;
   }
-  .tab svg { width: 15px; height: 15px; flex: none; }
+  .tab svg { width: 16px; height: 16px; }
   .tab sup { font-size: 10.5px; color: var(--text-40); font-family: "JetBrains Mono", monospace; vertical-align: 0; line-height: 1; transition: color .3s; }
   .tab:hover { background: var(--btn-hover); color: var(--text); }
   .tab[aria-pressed="true"] { background: var(--text); color: var(--bg); }
@@ -369,7 +369,7 @@
   @media (pointer: coarse) {
     .round { width: 42px; height: 42px; }
     .tg-btn { width: 38px; height: 36px; }
-    .tab { height: 34px; }
+    .tab { height: 36px; width: 44px; }
   }
   @media (hover: none) { .peek { display: none; } .open-hint { display: none; } }
   @media (prefers-reduced-motion: reduce) {
@@ -514,7 +514,7 @@
   function renderTabs() {
     types = ['전체', ...new Set(all.map(i => i.type))];
     if (!types.includes(active)) active = '전체';
-    $('tabs').innerHTML = types.map(t => `<button class="tab" type="button" aria-pressed="${t === active}" data-t="${esc(t)}">${tabIcon(t)}<span>${esc(t)}</span><sup>${count(t)}</sup></button>`).join('');
+    $('tabs').innerHTML = types.map(t => `<button class="tab" type="button" aria-pressed="${t === active}" data-t="${esc(t)}" title="${esc(t)} ${count(t)}개" aria-label="${esc(t)} ${count(t)}개">${tabIcon(t)}</button>`).join('');
   }
   $('tabs').addEventListener('click', e => {
     const b = e.target.closest('.tab'); if (!b) return;
