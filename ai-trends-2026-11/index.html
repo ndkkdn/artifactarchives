@@ -47,7 +47,11 @@
   .kicker { display: inline-flex; align-items: center; gap: 10px; font: 600 18px/1 Inter, sans-serif; letter-spacing: .14em; text-transform: uppercase; color: var(--gold); }
   .kicker::before { content: ""; width: 28px; height: 2px; background: currentColor; }
   h1, h2, h3 { margin: 0; font-weight: 700; letter-spacing: -.035em; }
-  h2 { font-size: 58px; line-height: 1.15; margin-top: 18px; }
+  h2 { font-size: 58px; line-height: 1.18; margin-top: 18px; }
+  /* slide titles: Paperlogy (SIL OFL, via jsDelivr/project noonnu) */
+  @font-face { font-family: "Paperlogy"; font-weight: 700; font-style: normal; font-display: swap; src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/2408-3@1.0/Paperlogy-7Bold.woff2") format("woff2"); }
+  h1, h2 { font-family: "Paperlogy", "Pretendard Variable", Pretendard, Inter, sans-serif; letter-spacing: -.03em; }
+  h1 { font-weight: 800; }
   h2 em, h1 em { font-style: normal; color: var(--gold); }
   .lead { font-size: 25px; line-height: 1.6; color: var(--ink-2); margin: 18px 0 0; max-width: 1180px; }
   .lead b, .body b { color: var(--ink); font-weight: 600; }

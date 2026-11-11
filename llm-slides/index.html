@@ -73,9 +73,14 @@ body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--b
 
 .kicker { font-family: var(--mono); font-size: 19px; color: var(--accent); letter-spacing: .06em; display: flex; align-items: center; gap: 14px; }
 .kicker b { font-weight: 600; padding: 4px 12px; border-radius: 999px; background: var(--accent-soft); }
-h1 { font-family: var(--display); font-size: 132px; line-height: 1.04; letter-spacing: -.045em; font-weight: 800; margin: 0; text-wrap: balance; }
-h2 { font-family: var(--display); font-size: 56px; line-height: 1.16; letter-spacing: -.032em; font-weight: 750; margin: 18px 0 0; text-wrap: balance; }
+/* slide titles: Paperlogy (SIL OFL, via jsDelivr/project noonnu) */
+@font-face { font-family: "Paperlogy"; font-weight: 700; font-style: normal; font-display: swap; src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/2408-3@1.0/Paperlogy-7Bold.woff2") format("woff2"); }
+h1 { font-family: "Paperlogy", var(--display); font-size: 132px; line-height: 1.1; letter-spacing: -.03em; font-weight: 800; margin: 0; text-wrap: balance; }
+h2 { font-family: "Paperlogy", var(--display); font-size: 56px; line-height: 1.2; letter-spacing: -.025em; font-weight: 700; margin: 18px 0 0; text-wrap: balance; }
 h1 em, h2 em { font-style: normal; color: var(--accent); }
+/* cover title: Paperlogy ExtraBold (SIL OFL, via jsDelivr/project noonnu) */
+@font-face { font-family: "Paperlogy"; font-weight: 800; font-style: normal; font-display: swap; src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/2408-3@1.0/Paperlogy-8ExtraBold.woff2") format("woff2"); }
+h1.cover-title { font-family: "Paperlogy", var(--display); letter-spacing: -.03em; line-height: 1.1; }
 p { margin: 0; }
 .lead { font-size: 28px; line-height: 1.6; color: var(--muted); margin-top: 22px; max-width: 1260px; }
 .lead strong, .body strong { color: var(--ink); font-weight: 700; }
@@ -490,7 +495,7 @@ td.note { color: var(--muted); font-size: 19px; }
 <section class="slide title-slide" data-notes="AI(Artificial Intelligence)를 매일 쓰는 분들이 자주 묻는 기본기 질문에서 출발합니다. 어려운 건 없고, 비유를 많이 쓰되 오해를 부를 곳에서는 한계도 같이 말합니다.">
   <div class="glow g1"></div><div class="glow g2"></div>
   <div class="kicker"><b>LLM (Large Language Model)</b>14 chapters</div>
-  <h1 style="margin-top:28px">LLM <em>이해하기</em></h1>
+  <h1 class="cover-title" style="margin-top:28px">LLM <em>이해하기</em></h1>
   <p class="lead">채팅창 뒤에서 무슨 일이 벌어지는지. Token부터 Embedding, Attention, KV (Key-Value) Cache, Prompt Caching, MoE (Mixture of Experts)까지</p>
   <div class="ticker" aria-hidden="true"><div class="ticker-in" id="ticker"></div></div>
 </section>

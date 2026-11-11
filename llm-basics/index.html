@@ -42,8 +42,12 @@ body{background:var(--bg);color:var(--ink);font-family:"Pretendard Variable",Pre
 
 .kicker{font-size:22px;font-weight:600;color:var(--accent);letter-spacing:.02em;display:flex;align-items:center;gap:14px}
 .kicker .num{font-family:"JetBrains Mono",monospace;font-size:18px;padding:4px 10px;border-radius:999px;background:var(--accent-soft)}
-h1{font-size:96px;line-height:1.08;font-weight:800;letter-spacing:-.035em}
-h2{font-size:60px;line-height:1.15;font-weight:750;letter-spacing:-.03em;margin-top:18px}
+/* slide titles: Paperlogy (SIL OFL, via jsDelivr/project noonnu) */
+@font-face { font-family: "Paperlogy"; font-weight: 800; font-style: normal; font-display: swap; src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/2408-3@1.0/Paperlogy-8ExtraBold.woff2") format("woff2"); }
+@font-face { font-family: "Paperlogy"; font-weight: 700; font-style: normal; font-display: swap; src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/2408-3@1.0/Paperlogy-7Bold.woff2") format("woff2"); }
+h1,h2{font-family:"Paperlogy","Pretendard Variable",Pretendard,sans-serif}
+h1{font-size:96px;line-height:1.12;font-weight:800;letter-spacing:-.03em}
+h2{font-size:60px;line-height:1.2;font-weight:700;letter-spacing:-.025em;margin-top:18px}
 h3{font-size:28px;font-weight:700;letter-spacing:-.01em}
 p,li{font-size:28px;line-height:1.55;color:var(--muted)}
 strong{color:var(--ink);font-weight:700}

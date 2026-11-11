@@ -105,7 +105,9 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 .hero-in { max-width: 1200px; margin: 0 auto; padding-block: 64px 56px; display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); gap: 48px; align-items: center; }
 .eyebrow { font-family: var(--mono); font-size: 12px; letter-spacing: .06em; color: var(--accent); display: inline-flex; gap: 10px; align-items: center; flex-wrap: wrap; }
 .eyebrow i { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 0 4px var(--accent-soft); }
-.hero h1 { font-family: var(--display); font-size: clamp(44px, 7vw, 76px); line-height: 1.05; letter-spacing: -.04em; font-weight: 800; margin: 16px 0 16px; text-wrap: balance; }
+/* cover title: Paperlogy ExtraBold (SIL OFL, via jsDelivr/project noonnu) */
+@font-face { font-family: "Paperlogy"; font-weight: 800; font-style: normal; font-display: swap; src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/2408-3@1.0/Paperlogy-8ExtraBold.woff2") format("woff2"); }
+.hero h1 { font-family: "Paperlogy", var(--display); font-size: clamp(44px, 7vw, 76px); line-height: 1.1; letter-spacing: -.03em; font-weight: 800; margin: 16px 0 16px; text-wrap: balance; }
 .hero h1 em { font-style: normal; color: var(--accent); }
 .hero p.lede { font-size: 18px; color: var(--muted); margin: 0; max-width: 34em; }
 .meta { display: flex; flex-wrap: wrap; gap: 8px 18px; margin-top: 22px; font-size: 13px; color: var(--muted); font-family: var(--mono); }
