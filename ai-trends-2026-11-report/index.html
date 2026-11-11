@@ -240,9 +240,9 @@ figcaption { font-size: 13.5px; color: var(--ink-3); margin-top: 14px; line-heig
 .doc .dh { font: 700 11px/1 var(--mono); letter-spacing: .1em; color: #7b7766; display: flex; justify-content: space-between; margin-bottom: 12px; }
 .doc h5 { margin: 0 0 8px; font-size: 15px; }
 .doc p { margin: 0 0 6px; }
-.doc .r { position: relative; display: inline; }
-.doc .r::after { content: ""; position: absolute; left: -2px; right: -2px; top: .15em; bottom: .1em; background: var(--redact); transform-origin: left; transform: scaleX(0); border-radius: 2px; }
-.in .doc .r::after { animation: strike .35s ease-in both; animation-delay: var(--d, 0ms); }
+.doc .r { background: linear-gradient(var(--redact), var(--redact)) no-repeat left center / 0% 82%; -webkit-box-decoration-break: clone; box-decoration-break: clone; border-radius: 2px; padding: 0 2px; }
+@keyframes redact { to { background-size: 100% 82%; color: transparent; } }
+.in .doc .r { animation: redact .4s ease-in both; animation-delay: var(--d, 0ms); }
 .doc .stamp { position: absolute; right: 26px; bottom: 16px; border: 3px solid #c8321c; color: #c8321c; font: 800 20px/1 var(--en); letter-spacing: .12em; padding: 8px 12px; border-radius: 6px; opacity: 0; transform: rotate(-14deg); background: rgba(251,250,245,.7); }
 .in .doc .stamp { animation: stamp .5s var(--ease) 2.6s both; }
 
@@ -346,7 +346,7 @@ tr:last-child td { border-bottom: 0; }
 thead th { font-size: 13px; background: var(--paper-2); }
 thead th small { display: block; font: 600 11px/1.4 var(--en); color: var(--ink-3); letter-spacing: .06em; text-transform: uppercase; }
 tbody th { font-size: 13px; color: var(--ink-3); width: 92px; font-weight: 700; }
-td .chip { display: inline-block; font: 700 11px/1 var(--en); padding: 4px 7px; border-radius: 999px; margin-bottom: 6px; }
+td .chip, .mc .chip { display: inline-block; font: 700 11px/1 var(--en); padding: 4px 7px; border-radius: 999px; margin-bottom: 6px; }
 .c-g { background: var(--blue-soft); color: var(--blue); } .c-o { background: var(--green-soft); color: var(--green); } .c-a { background: var(--coral-soft); color: var(--coral); }
 .js .tbl-wrap td { opacity: 0; }
 .tbl-wrap.in td { animation: rise .5s var(--ease) both; animation-delay: var(--d); }
@@ -496,6 +496,71 @@ footer.site .in-wrap { max-width: 1180px; margin: 0 auto; padding: 22px 0 40px; 
 footer.site a { color: var(--ink-2); }
 .totop { position: fixed; right: max(16px, env(safe-area-inset-right, 0px)); bottom: max(16px, env(safe-area-inset-bottom, 0px)); z-index: 15; width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--line); background: var(--paper); color: var(--ink); box-shadow: var(--shadow); display: grid; place-items: center; cursor: pointer; opacity: 0; pointer-events: none; transition: opacity .3s, transform .3s; transform: translateY(8px); }
 .totop.show { opacity: 1; pointer-events: auto; transform: none; }
+
+/* ---------- mobile tuning ---------- */
+.toc-btn { display: none; max-width: 52vw; }
+.toc-btn span { overflow: hidden; text-overflow: ellipsis; }
+.sheet { border: 0; padding: 0; margin: auto auto 0; width: 100%; max-width: 560px; max-height: 78vh; border-radius: 20px 20px 0 0;
+  background: var(--paper); color: var(--ink); box-shadow: 0 -10px 40px rgba(0,0,0,.25); padding-bottom: env(safe-area-inset-bottom, 0px); }
+.sheet[open] { animation: sheetUp .32s var(--ease); }
+@keyframes sheetUp { from { transform: translateY(100%); } to { transform: none; } }
+.sheet::backdrop { background: rgba(8, 12, 22, .45); }
+.sheet-h { display: flex; justify-content: space-between; align-items: center; padding: 18px 18px 8px; position: sticky; top: 0; background: var(--paper); }
+.sheet-h::before { content: ""; position: absolute; left: 50%; top: 7px; width: 38px; height: 4px; margin-left: -19px; border-radius: 2px; background: var(--line); }
+.sheet-x { appearance: none; border: 0; background: var(--paper-2); color: var(--ink-2); width: 36px; height: 36px; border-radius: 50%; font-size: 14px; cursor: pointer; }
+.sheet ol { list-style: none; margin: 0; padding: 4px 10px 18px; }
+.sheet a { display: flex; gap: 12px; align-items: center; min-height: 48px; padding: 6px 10px; border-radius: 12px; color: var(--ink-2); text-decoration: none; font-size: 16px; line-height: 1.4; }
+.sheet a .n { font: 600 12.5px/1 var(--mono); color: var(--ink-3); min-width: 22px; }
+.sheet a.on { background: var(--gold-soft); color: var(--ink); font-weight: 700; }
+.sheet a.on .n { color: var(--gold); }
+.mcards { display: none; }
+.crumb .back { display: none; font-size: 18px; color: var(--ink); }
+.mc { border: 1px solid var(--line); background: var(--paper); border-radius: 16px; padding: 16px; box-shadow: var(--shadow); }
+.mc + .mc { margin-top: 10px; }
+.mc .mh { display: flex; flex-wrap: wrap; align-items: center; gap: 2px 8px; margin-bottom: 10px; }
+.mc .mh small { width: 100%; font: 600 11px/1.4 var(--en); letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3); }
+.mc .mh b { font-size: 16px; }
+.mc .mh .chip { margin: 0; }
+.mc dl { margin: 0; display: grid; grid-template-columns: 70px minmax(0, 1fr); gap: 8px 12px; font-size: 14.5px; line-height: 1.55; }
+.mc dt { color: var(--ink-3); font-size: 13px; font-weight: 700; }
+.mc dd { margin: 0; }
+@media (hover: none) { .concl .cc:hover { transform: none; } }
+@media (max-width: 1000px) { .toc-btn { display: inline-flex; } }
+@media (max-width: 640px) {
+  body { font-size: 16px; line-height: 1.78; }
+  .standfirst { font-size: 17px; }
+  h2 { font-size: 25px; margin-bottom: 14px; }
+  h3 { font-size: 18px; margin-top: 28px; }
+  section { padding: 32px 0 22px; }
+  .shell { padding-top: 8px; }
+  .hero-in { padding: 40px 0 36px; }
+  .hero h1 { margin: 14px 0 14px; }
+  .shift { margin-top: 30px; }
+  .stats { margin-top: 26px; }
+  .tbl-wrap { display: none; }
+  .mcards { display: block; margin: 20px 0; }
+  .replay { min-height: 34px; padding: 0 12px; }
+  .pipe { grid-template-columns: minmax(0, 1fr); gap: 8px; }
+  .pipe .who br { display: none; }
+  .steps .s { font-size: 13.5px; padding: 7px 10px; }
+  .code { font-size: 11.5px; white-space: pre; overflow-x: auto; -webkit-overflow-scrolling: touch; min-height: 0; }
+  .vs b { font-size: 19px; }
+  .doc { padding: 18px 16px 64px; font-size: 13px; }
+  .doc .dh span:first-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-right: 8px; }
+  .callout { padding: 14px 16px; font-size: 15px; }
+  .race .row { grid-template-columns: 74px minmax(0, 1fr) 46px; gap: 8px; }
+  .pvm .row, .pvm .axis { grid-template-columns: 84px minmax(0, 1fr); gap: 8px; }
+  .mult b { font-size: 38px; }
+  .quote { padding: 26px 20px; margin-left: -4px; margin-right: -4px; }
+  .topbar .btn[href] { display: none; }
+  .crumb .back { display: inline; }
+  .crumb b { font-size: 13.5px; }
+}
+@media (max-width: 480px) {
+  .stats a:last-child { grid-column: 1 / -1; }
+  .tasks { gap: 3px; }
+  .wg { gap: 2px; }
+}
 </style>
 <script>document.documentElement.classList.add('js');try{var t=localStorage.getItem('archive-theme');if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
 </head>
@@ -503,8 +568,9 @@ footer.site a { color: var(--ink-2); }
 
 <header class="topbar gutter">
   <div class="topbar-in">
-    <a class="crumb" href="../"><span class="arch">ARTIFACT ARCHIVES</span><span class="sep">/</span><b>최신 AI 핵심 동향</b></a>
+    <a class="crumb" href="../" aria-label="Artifact Archives로 돌아가기"><span class="back" aria-hidden="true">←</span><span class="arch">ARTIFACT ARCHIVES</span><span class="sep">/</span><b>최신 AI 핵심 동향</b></a>
     <span class="sp"></span>
+    <button class="btn toc-btn" id="tocBtn" type="button" aria-haspopup="dialog" aria-label="목차 열기"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h10"/></svg><span id="tocCur">목차</span></button>
     <a class="btn" href="../ai-trends-2026-11/" title="같은 내용의 슬라이드 덱"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></svg><span class="lbl">슬라이드로 보기</span></a>
     <button class="btn" id="themeBtn" type="button" aria-label="테마 전환"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 0 0 18z" fill="currentColor"/></svg><span class="lbl">테마</span></button>
   </div>
@@ -539,7 +605,6 @@ footer.site a { color: var(--ink-2); }
   <nav class="toc" aria-label="목차"><h4>CONTENTS</h4><ol id="toc"></ol></nav>
 
   <article id="article">
-    <details class="toc-mobile"><summary>목차</summary><ol id="tocMobile"></ol></details>
 
     <!-- ================= 1. METR ================= -->
     <section id="metr" data-n="01" data-t="METR 리포트">
@@ -648,9 +713,9 @@ footer.site a { color: var(--ink-2); }
       <div class="fig" data-fig="pipes">
         <div class="fig-h"><span class="t">신경망을 바꾸는 두 가지 길</span><button class="replay" type="button" data-replay>다시 재생</button></div>
         <div class="pipes">
-          <div class="pipe old"><span class="who">기존<br>딥러닝</span>
+          <div class="pipe old"><span class="who">기존<br> 딥러닝</span>
             <div class="steps"><span class="s" style="--d:300ms">데이터셋 수집</span><span class="ar">→</span><span class="s" style="--d:600ms">역전파</span><span class="ar">→</span><span class="s" style="--d:900ms">경사 하강법</span></div></div>
-          <div class="pipe new"><span class="who">Weight-Space<br>Programming</span>
+          <div class="pipe new"><span class="who">Weight-Space<br> Programming</span>
             <div class="steps"><span class="s si" style="--d:1300ms">가중치 읽기</span><span class="ar si" style="--d:1450ms">→</span><span class="s si" style="--d:1600ms">원인 분석</span><span class="ar si" style="--d:1750ms">→</span><span class="s si" style="--d:1900ms">직접 수정(Write)</span></div></div>
         </div>
       </div>
@@ -723,6 +788,15 @@ footer.site a { color: var(--ink-2); }
             <tr><th>성능·가격</th><td style="--d:1000ms">Intelligence Index v5 <b>59점</b></td><td style="--d:1150ms"><code>gpt-6.2-astra</code> 트래픽 분기 테스트 중</td><td style="--d:1300ms">Fable 5.1 대비 가격 <b>20% 인하</b>, 속도 <b>30% 향상</b></td></tr>
           </tbody>
         </table>
+      </div>
+
+      <div class="mcards" data-fig="mcards">
+        <div class="mc rv"><div class="mh"><small>Google</small><b>Gemini 4 Carbon</b><span class="chip c-g">1위</span></div>
+          <dl><dt>현황</dt><dd>벤치마크 1위 등극 (10월 말)</dd><dt>특징</dt><dd>고성능 추론 최적화 모델</dd><dt>성능·가격</dt><dd>Intelligence Index v5 <b>59점</b></dd></dl></div>
+        <div class="mc rv" style="--d:150ms"><div class="mh"><small>OpenAI</small><b>GPT-6.2 Astra</b><span class="chip c-o">A/B 테스트</span></div>
+          <dl><dt>현황</dt><dd>Codex 내부 식별자 포착</dd><dt>특징</dt><dd>차세대 코딩·가중치 제어 특화</dd><dt>성능·가격</dt><dd><code>gpt-6.2-astra</code> 트래픽 분기 테스트 중</dd></dl></div>
+        <div class="mc rv" style="--d:300ms"><div class="mh"><small>Anthropic</small><b>Claude Fable 5.2 / Mythos 5.2</b><span class="chip c-a">정식 출시</span></div>
+          <dl><dt>현황</dt><dd>11월 9일 공식 출시</dd><dt>특징</dt><dd>안전 등급 이원화 (일반용 vs 연구·보안용)</dd><dt>성능·가격</dt><dd>Fable 5.1 대비 가격 <b>20% 인하</b>, 속도 <b>30% 향상</b></dd></dl></div>
       </div>
 
       <div class="fig" data-fig="timeline">
@@ -910,6 +984,7 @@ footer.site a { color: var(--ink-2); }
 </div>
 
 <footer class="site gutter"><div class="in-wrap"><a href="../">← Artifact Archives</a><a href="../ai-trends-2026-11/">슬라이드 버전</a><a href="https://github.com/ndkkdn/artifactarchives" target="_blank" rel="noopener">github.com/ndkkdn/artifactarchives</a></div></footer>
+<dialog class="sheet" id="tocSheet" aria-label="목차"><div class="sheet-h"><b>목차</b><button type="button" class="sheet-x" data-close aria-label="닫기">✕</button></div><ol id="tocMobile"></ol></dialog>
 <button class="totop" id="totop" type="button" aria-label="맨 위로"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg></button>
 
 <script>
@@ -1180,7 +1255,10 @@ footer.site a { color: var(--ink-2); }
   const item = s => `<li><a href="#${s.id}"><span class="n">${s.dataset.n}</span><span>${s.dataset.t}</span></a></li>`;
   $('#toc').innerHTML = secs.map(item).join('');
   $('#tocMobile').innerHTML = secs.map(item).join('');
-  $$('#tocMobile a').forEach(a => a.addEventListener('click', () => a.closest('details').open = false));
+  const sheet = $('#tocSheet'), tocCur = $('#tocCur'), mLinks = $$('#tocMobile a');
+  $('#tocBtn').onclick = () => { sheet.showModal(); sheet.querySelector('a.on')?.focus(); };
+  sheet.addEventListener('click', e => { if (e.target === sheet || e.target.closest('[data-close]')) sheet.close(); });
+  mLinks.forEach(a => a.addEventListener('click', () => sheet.close()));
   const links = $$('#toc a'), bar = $('#progress'), top = $('#totop');
   function onScroll() {
     const h = document.documentElement.scrollHeight - innerHeight;
@@ -1188,7 +1266,9 @@ footer.site a { color: var(--ink-2); }
     top.classList.toggle('show', scrollY > innerHeight);
     let cur = secs[0];
     for (const s of secs) if (s.getBoundingClientRect().top < innerHeight * .35) cur = s;
-    links.forEach(a => a.classList.toggle('on', a.getAttribute('href') === '#' + cur.id));
+    links.concat(mLinks).forEach(a => a.classList.toggle('on', a.getAttribute('href') === '#' + cur.id));
+    const lbl = scrollY < innerHeight * .5 ? '목차' : cur.dataset.n + ' ' + cur.dataset.t;
+    if (tocCur.textContent !== lbl) tocCur.textContent = lbl;
   }
   addEventListener('scroll', onScroll, { passive: true }); addEventListener('resize', onScroll); onScroll();
   top.onclick = () => scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' });
