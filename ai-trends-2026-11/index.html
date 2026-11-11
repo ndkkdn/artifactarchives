@@ -349,6 +349,10 @@
   .agents .kr small { font-size: 16px; color: var(--ink-3); margin-top: 2px; }
 
   /* ── phone held sideways: controls get their own lane under the stage ── */
+  .hud .alt { gap: 6px; display: inline-flex; align-items: center; }
+  .hud .alt .ico { font-size: 13px; }
+  html.portrait .hud .alt .lbl, html.short .hud .alt .lbl { display: none; }
+  html.portrait .hud #fsBtn { display: none; }
   html.short .hud { bottom: max(8px, env(safe-area-inset-bottom)); gap: 6px; }
   html.short .hud button, html.short .hud a { height: 34px; min-width: 34px; }
   html.short .notes { bottom: 52px; }
@@ -938,6 +942,7 @@
   <button type="button" id="next" aria-label="다음 슬라이드">›</button>
   <button type="button" id="notesBtn" title="발표자 노트 (N)">N</button>
   <button type="button" id="fsBtn" title="전체 화면 (F)">⛶</button>
+  <a class="alt" href="../ai-trends-2026-11-report/" title="같은 내용을 위아래로 스크롤해 읽는 스크롤형"><span class="ico" aria-hidden="true">☰</span><span class="lbl">스크롤형으로 보기</span></a>
 </nav>
 
 <script>
