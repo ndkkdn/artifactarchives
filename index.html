@@ -173,6 +173,19 @@
     background: radial-gradient(closest-side, var(--floor), transparent); filter: blur(6px); opacity: var(--floorop, .6); pointer-events: none;
   }
   .sleeve.on { cursor: pointer; }
+  /* the selected cover gets a thin glowing ring whose light slowly travels around the edge */
+  @property --ring { syntax: '<angle>'; inherits: false; initial-value: 0deg; }
+  .sleeve::before {
+    content: ""; position: absolute; inset: -6px; border-radius: 12px; padding: 2px; pointer-events: none;
+    background: conic-gradient(from var(--ring), var(--hl) 0deg, rgba(255,255,255,.95) 40deg, var(--hl) 90deg, color-mix(in srgb, var(--hl) 30%, transparent) 180deg, var(--hl) 270deg, rgba(255,255,255,.95) 310deg, var(--hl) 360deg);
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor;
+    mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+    opacity: 0; transform: scale(.985); transition: opacity .45s, transform .45s cubic-bezier(.2,.8,.2,1), filter .45s;
+    filter: drop-shadow(0 0 10px color-mix(in srgb, var(--hl) 55%, transparent));
+  }
+  .sleeve.on::before { opacity: 1; transform: none; animation: ringSpin 7s linear infinite; }
+  .sleeve.on:hover::before { transform: translateY(-6px); filter: drop-shadow(0 0 16px color-mix(in srgb, var(--hl) 75%, transparent)); }
+  @keyframes ringSpin { to { --ring: 360deg; } }
   .sleeve.on:hover .face { transform: translateY(-6px); box-shadow: 0 1px 0 rgba(255,255,255,.4) inset, 0 2px 4px rgba(0,0,0,.06), 0 36px 60px -18px var(--floor); }
   .open-hint {
     position: absolute; right: 12px; bottom: 12px; padding: 7px 12px; border-radius: 999px; font-weight: 500; font-size: 13px;

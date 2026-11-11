@@ -621,10 +621,10 @@
   /* ── admin chrome ───────────────────────── */
   const bar = document.createElement('div');
   bar.className = 'admin-only'; bar.style.cssText = 'gap:8px;align-items:center';
-  bar.innerHTML = `<span class="adm-badge adm-bar-label">관리 모드</span>
-    <button type="button" class="pill" data-act="queue" title="방문자 제출 검토">제출 <span class="q-count" hidden>0</span></button>
-    <button type="button" class="pill primary" data-act="add">+ 추가</button>
-    <button type="button" class="pill" data-act="logout" title="관리 모드 끄기">종료</button>`;
+  bar.innerHTML = `<span class="adm-state" title="관리 모드 켜짐" role="img" aria-label="관리 모드 켜짐"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="5.5" cy="10.5" r="3"/><path d="M7.6 8.4 13.5 2.5M11 5l2 2M12.6 3.4l1.5 1.5"/></svg></span>
+    <button type="button" class="pill adm-ic" data-act="queue" title="제출: 방문자 제출 검토" aria-label="방문자 제출 검토"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 9.5 3.8 3.5h8.4L14 9.5V13H2z"/><path d="M2 9.5h3.5l.9 1.6h3.2l.9-1.6H14"/></svg><span class="q-count" hidden>0</span></button>
+    <button type="button" class="pill primary adm-ic" data-act="add" title="추가: 새 아티팩트 추가" aria-label="새 아티팩트 추가"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.6 14H3.5V2h5.6l3.4 3.4V8"/><path d="M9 2v3.5h3.5M12.5 10.2v4.6M10.2 12.5h4.6"/></svg></button>
+    <button type="button" class="pill adm-ic" data-act="logout" title="종료: 관리 모드 끄기" aria-label="관리 모드 끄기"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6.5 2.5H3v11h3.5"/><path d="M10 5l3 3-3 3M13 8H6.5"/></svg></button>`;
   document.querySelector('.actions').prepend(bar);
 
   document.addEventListener('click', e => {

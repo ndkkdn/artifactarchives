@@ -56,4 +56,11 @@
 .pill.danger-ghost { color: #d93a1b; }
 .q-count { display: inline-grid; place-items: center; min-width: 18px; height: 18px; padding: 0 5px; margin-left: 4px; border-radius: 999px; background: var(--hl, #f0542a); color: #fff; font-size: 11px; font-weight: 600; }
 .q-count[hidden] { display: none; }
+/* admin-mode top bar: icon-only buttons, same size as the regular top-bar icons */
+.pill.adm-ic { position: relative; width: 36px; height: 36px; padding: 0; display: inline-grid; place-items: center; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
+.pill.adm-ic svg { width: 16px; height: 16px; }
+.pill.adm-ic .q-count { position: absolute; top: -4px; right: -4px; margin: 0; min-width: 17px; height: 17px; font-size: 10.5px; box-shadow: 0 0 0 2px var(--bg); }
+.adm-state { width: 28px; height: 28px; display: inline-grid; place-items: center; border-radius: 999px; color: var(--accent); background: color-mix(in srgb, var(--accent) 14%, transparent); }
+.adm-state svg { width: 15px; height: 15px; }
+@media (pointer: coarse) { .pill.adm-ic { width: 42px; height: 42px; } }
 .adm-foot a.pill { display: inline-flex; align-items: center; text-decoration: none; margin-right: auto; }
