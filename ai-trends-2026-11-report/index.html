@@ -561,6 +561,41 @@ footer.site a { color: var(--ink-2); }
   .tasks { gap: 3px; }
   .wg { gap: 2px; }
 }
+
+/* agent comparison */
+.agents-tbl table { min-width: 680px; }
+.agents-tbl th, .agents-tbl td { text-align: center; vertical-align: middle; }
+.agents-tbl tbody th { text-align: left; }
+.agents-tbl thead th small { font-size: 12px; letter-spacing: .02em; text-transform: none; color: inherit; opacity: .8; }
+.agents-tbl .an, .mc.ag .an { color: var(--coral); font-size: 17px; }
+.agents-tbl thead th { color: var(--coral); }
+.agents-tbl thead th:first-child { color: var(--ink-3); }
+.agents-tbl .hot { background: var(--gold-soft); }
+.agents-tbl thead th.hot { color: var(--gold); box-shadow: inset 0 3px 0 var(--gold); }
+.agents-tbl thead th.hot .an { color: var(--gold); }
+.kr.ok { color: var(--coral); } .kr.no { color: var(--blue); }
+.add { color: var(--blue); font-weight: 700; }
+.mc.ag .mh .en-n { font: 600 13px var(--en); color: var(--coral); }
+.mc.ag.hot { border-color: var(--gold); background: var(--gold-soft); }
+.mc.ag.hot .an, .mc.ag.hot .en-n { color: var(--gold); }
+.mc.ag small { color: var(--ink-3); }
+
+/* glossary: tappable terms + appendix list */
+.term { text-decoration: underline dotted color-mix(in srgb, var(--gold) 80%, transparent); text-decoration-thickness: 1.5px; text-underline-offset: 4px; cursor: help; border-radius: 3px; }
+.term:hover, .term:focus-visible, .term.on { background: var(--gold-soft); outline: none; }
+.term-demo { text-decoration: underline dotted var(--gold); text-decoration-thickness: 1.5px; text-underline-offset: 4px; }
+.tpop { position: absolute; z-index: 30; max-width: min(340px, calc(100vw - 32px)); background: var(--ink); color: var(--bg); border-radius: 12px; padding: 12px 14px; font-size: 14px; line-height: 1.55; box-shadow: 0 14px 40px rgba(0,0,0,.3); opacity: 0; transform: translateY(4px); transition: opacity .18s, transform .18s; pointer-events: none; }
+.tpop.show { opacity: 1; transform: none; pointer-events: auto; }
+.tpop b { display: block; font: 700 13px var(--mono); color: var(--gold); }
+.tpop .f { display: block; font-weight: 700; margin: 2px 0 4px; }
+.tpop a { color: inherit; opacity: .7; font-size: 12.5px; }
+.glist { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin: 18px 0 0; }
+.glist .gi { border: 1px solid var(--line); background: var(--paper); border-radius: 14px; padding: 14px 16px; }
+.glist .gi:target { border-color: var(--gold); box-shadow: 0 0 0 3px var(--gold-soft); }
+.glist dt b { font: 700 14px var(--mono); color: var(--gold); margin-right: 8px; }
+.glist dt span { font-weight: 700; font-size: 14.5px; }
+.glist dd { margin: 4px 0 0; font-size: 14px; color: var(--ink-2); line-height: 1.6; }
+@media (max-width: 640px) { .glist { grid-template-columns: minmax(0, 1fr); } }
 </style>
 <script>document.documentElement.classList.add('js');try{var t=localStorage.getItem('archive-theme');if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
 </head>
@@ -905,6 +940,18 @@ footer.site a { color: var(--ink-2); }
           <div class="c rv" style="--d:400ms"><div class="ic"><span class="rv2">✕ Revoke access</span></div><h6>③ 원클릭 권한 철회</h6><p>한 번의 클릭으로 기기 접근 권한을 회수해 로컬 데이터 유출 위험을 막습니다.</p></div>
         </div>
       </div>
+
+      <h3><span class="hn">5.4</span>AI 에이전트(비서) 전쟁: Dots는 혼자가 아니다</h3>
+      <p>2026년에는 Dots 말고도 사람 대신 일을 처리해 주는 AI 비서가 잇달아 나왔습니다. 피클, 메타의 뮤즈, 오픈AI의 닷츠(Dots), 스피어 스트리트 테크놀로지의 인스팅트가 대표적입니다. 생활 밀착형 대행, 쇼핑, 24시간 업무 수행, 대화형 업무 지시처럼 <mark>저마다 내세우는 강점이 다릅니다.</mark></p>
+      <div class="tbl-wrap agents-tbl" data-fig="agents">
+        <table>
+          <thead><tr><th>구분</th><th class=""><b class="an">피클</b><small>Pickle</small></th><th class=""><b class="an">뮤즈</b><small>Muse</small></th><th class="hot"><b class="an">닷츠</b><small>Dots</small></th><th class=""><b class="an">인스팅트</b><small>Instinct</small></th></tr></thead>
+          <tbody><tr><th>개발사</th><td class="" style="--d:100ms">피클</td><td class="" style="--d:160ms">메타</td><td class="hot" style="--d:220ms">오픈AI</td><td class="" style="--d:280ms">스피어 스트리트 테크놀로지</td></tr><tr><th>출시</th><td class="" style="--d:340ms">2026년 8월</td><td class="" style="--d:400ms">2026년 9월</td><td class="hot" style="--d:460ms">2026년 9월</td><td class="" style="--d:520ms">2026년 2월 (베타)</td></tr><tr><th>강점</th><td class="" style="--d:580ms"><b>생활 밀착형 업무 대행</b></td><td class="" style="--d:640ms"><b>쇼핑·생활 업무</b></td><td class="hot" style="--d:700ms"><b>24시간 업무 수행</b></td><td class="" style="--d:760ms"><b>대화하듯 업무 지시</b></td></tr><tr><th>주요 기능</th><td class="" style="--d:820ms"><b>전화 대행, 예약·예매, 쇼핑·결제</b></td><td class="" style="--d:880ms"><b>여행 예약, 상품 구매, 이메일 발송, <span class="add">영상 생성*</span></b></td><td class="hot" style="--d:940ms"><b>웹·앱 작업, 업무 관리</b></td><td class="" style="--d:1000ms"><b>이메일·일정 관리, 예약·쇼핑</b></td></tr><tr><th>한국 이용</th><td class="" style="--d:1060ms"><b class="kr ok">가능</b><br><small>(앱)</small></td><td class="" style="--d:1120ms"><b class="kr no">미출시</b></td><td class="hot" style="--d:1180ms"><b class="kr ok">가능</b><br><small>(일부 요금제)</small></td><td class="" style="--d:1240ms"><b class="kr ok">가능</b><br><small>(초대장)</small></td></tr></tbody>
+        </table>
+      </div>
+      <div class="mcards" data-fig="agentcards"><div class="mc ag rv" style="--d:0ms"><div class="mh"><small>피클</small><b class="an">피클</b><span class="en-n">Pickle</span></div><dl><dt>출시</dt><dd>2026년 8월</dd><dt>강점</dt><dd><b>생활 밀착형 업무 대행</b></dd><dt>주요 기능</dt><dd>전화 대행, 예약·예매, 쇼핑·결제</dd><dt>한국 이용</dt><dd><b class="kr ok">가능</b> <small>(앱)</small></dd></dl></div><div class="mc ag rv" style="--d:120ms"><div class="mh"><small>메타</small><b class="an">뮤즈</b><span class="en-n">Muse</span></div><dl><dt>출시</dt><dd>2026년 9월</dd><dt>강점</dt><dd><b>쇼핑·생활 업무</b></dd><dt>주요 기능</dt><dd>여행 예약, 상품 구매, 이메일 발송, <span class="add">영상 생성*</span></dd><dt>한국 이용</dt><dd><b class="kr no">미출시</b></dd></dl></div><div class="mc ag hot rv" style="--d:240ms"><div class="mh"><small>오픈AI</small><b class="an">닷츠</b><span class="en-n">Dots</span></div><dl><dt>출시</dt><dd>2026년 9월</dd><dt>강점</dt><dd><b>24시간 업무 수행</b></dd><dt>주요 기능</dt><dd>웹·앱 작업, 업무 관리</dd><dt>한국 이용</dt><dd><b class="kr ok">가능</b> <small>(일부 요금제)</small></dd></dl></div><div class="mc ag rv" style="--d:360ms"><div class="mh"><small>스피어 스트리트 테크놀로지</small><b class="an">인스팅트</b><span class="en-n">Instinct</span></div><dl><dt>출시</dt><dd>2026년 2월 (베타)</dd><dt>강점</dt><dd><b>대화하듯 업무 지시</b></dd><dt>주요 기능</dt><dd>이메일·일정 관리, 예약·쇼핑</dd><dt>한국 이용</dt><dd><b class="kr ok">가능</b> <small>(초대장)</small></dd></dl></div></div>
+      <p class="note">자료: 각사 · 정리: 중앙일보(The JoongAng). <b>*</b> 뮤즈의 영상 생성 기능은 중앙일보 표 이후 추가한 내용입니다.</p>
+      <p>Dots의 차별점은 <strong>24시간 웹·앱 작업을 대신 수행</strong>한다는 점이고, 앞에서 본 여러 대의 로컬 컴퓨터 연결이 그 바탕입니다. 한국에서는 일부 요금제에서 쓸 수 있습니다. 메타 뮤즈는 아직 한국에 출시되지 않았습니다.</p>
     </section>
 
     <!-- ================= 6. Tips ================= -->
@@ -979,6 +1026,13 @@ footer.site a { color: var(--ink-2); }
         <a class="cc rv" style="--d:400ms" href="#tips"><span class="ix">05</span><div><h6>비용 효율적 모델 운용</h6><p>모델 체급, 인퍼런스 노력도(Effort), 자체 검증 루프를 3단으로 조정하면 최고 사양 모델을 남용하지 않고도 최대 효율을 낼 수 있습니다.</p></div></a>
       </div>
       <p class="endnote">이 페이지는 「최신 AI 핵심 동향 심층 분석 보고서」의 내용을 웹 읽기용으로 다시 구성한 것입니다. 수치와 사실 관계는 보고서를 따랐고, 도해와 데모는 이해를 돕기 위해 새로 만들었습니다. “예시”, “가정값”이라고 적힌 그림은 보고서에 없는 내용입니다. 같은 내용을 발표용으로 보려면 <a href="../ai-trends-2026-11/">19장 슬라이드</a>를 열어 보세요.</p>
+    </section>
+
+    <section id="glossary" data-n="※" data-t="용어 풀이">
+      <span class="sec-label"><span class="num">※</span> · 부록</span>
+      <h2>용어 풀이</h2>
+      <p>본문에서 <span class="term-demo">점선 밑줄</span>이 있는 약어를 누르면 풀네임과 설명이 바로 뜹니다. 한곳에 모아 보면 다음과 같습니다.</p>
+      <dl class="glist"><div class="gi rv"><dt><b>METR</b><span>Model Evaluation and Threat Research</span></dt><dd>AI의 위험과 역량을 평가하는 비영리 연구기관.</dd></div><div class="gi rv"><dt><b>R&amp;D</b><span>Research and Development</span></dt><dd>연구개발.</dd></div><div class="gi rv"><dt><b>AECI</b><span>앤트로픽 내부 지표</span></dt><dd>엔지니어링·벤치마크 진척을 재는 내부 지표 이름. 보고서에 풀네임은 나오지 않습니다.</dd></div><div class="gi rv"><dt><b>GPT</b><span>Generative Pre-trained Transformer</span></dt><dd>OpenAI 모델 계열의 이름. 대량의 글로 미리 학습한 생성형 모델.</dd></div><div class="gi rv"><dt><b>API</b><span>Application Programming Interface</span></dt><dd>다른 서비스가 모델 기능을 코드로 불러 쓰는 창구.</dd></div><div class="gi rv"><dt><b>GIF</b><span>Graphics Interchange Format</span></dt><dd>짧게 반복 재생되는 애니메이션 이미지 형식.</dd></div><div class="gi rv"><dt><b>1K</b><span>해상도 표기</span></dt><dd>가로 약 1,000픽셀. 2K는 약 2,000픽셀.</dd></div><div class="gi rv"><dt><b>MIT CSAIL</b><span>MIT Computer Science and Artificial Intelligence Laboratory</span></dt><dd>MIT 컴퓨터과학·인공지능 연구소.</dd></div><div class="gi rv"><dt><b>LLM</b><span>Large Language Model</span></dt><dd>대규모 언어 모델. 방대한 글을 학습해 다음 단어를 예측하는 AI.</dd></div><div class="gi rv"><dt><b>PPO</b><span>Proximal Policy Optimization</span></dt><dd>시행착오로 행동 정책을 조금씩 고쳐 배우는 강화학습 알고리즘.</dd></div><div class="gi rv"><dt><b>MATH-500</b><span>수학 벤치마크</span></dt><dd>경시대회 수준 수학 문제 500개로 정답률을 재는 시험.</dd></div><div class="gi rv"><dt><b>GSM8K</b><span>Grade School Math 8K</span></dt><dd>초등 수준 수학 서술형 문제 약 8,500개로 이뤄진 벤치마크.</dd></div><div class="gi rv"><dt><b>OS</b><span>Operating System</span></dt><dd>운영체제. Windows·macOS처럼 컴퓨터를 움직이는 기본 소프트웨어.</dd></div><div class="gi rv"><dt><b>A/B</b><span>A/B Testing</span></dt><dd>사용자를 두 무리로 나눠 서로 다른 버전을 비교하는 실험.</dd></div><div class="gi rv"><dt><b>CAPTCHA</b><span>Completely Automated Public Turing test to tell Computers and Humans Apart</span></dt><dd>사람인지 봇인지 가려내는 확인 문제.</dd></div><div class="gi rv"><dt><b>PC</b><span>Personal Computer</span></dt><dd>개인용 컴퓨터.</dd></div></dl>
     </section>
   </article>
 </div>
@@ -1244,11 +1298,67 @@ footer.site a { color: var(--ink-2); }
 
   // standalone reveal elements outside figures
   const rio = 'IntersectionObserver' in window ? new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); rio.unobserve(e.target); } }), { threshold: .15 }) : null;
-  $$('.concl').forEach(el => rio ? rio.observe(el) : el.classList.add('in'));
+  $$('.concl, .glist').forEach(el => rio ? rio.observe(el) : el.classList.add('in'));
 
   // hero
   const hero = $('#hero');
   requestAnimationFrame(() => { hero.classList.add('in'); setTimeout(() => $$('[data-count]', hero).forEach(el => countUp(el, 1600)), reduce ? 0 : 700); });
+
+  /* ---------- abbreviations: first mention per section becomes a tappable term ---------- */
+  const GLOSS = {"METR": ["Model Evaluation and Threat Research", "AI의 위험과 역량을 평가하는 비영리 연구기관."], "R&D": ["Research and Development", "연구개발."], "AECI": ["앤트로픽 내부 지표", "엔지니어링·벤치마크 진척을 재는 내부 지표 이름. 보고서에 풀네임은 나오지 않습니다."], "GPT": ["Generative Pre-trained Transformer", "OpenAI 모델 계열의 이름. 대량의 글로 미리 학습한 생성형 모델."], "API": ["Application Programming Interface", "다른 서비스가 모델 기능을 코드로 불러 쓰는 창구."], "GIF": ["Graphics Interchange Format", "짧게 반복 재생되는 애니메이션 이미지 형식."], "1K": ["해상도 표기", "가로 약 1,000픽셀. 2K는 약 2,000픽셀."], "2K": ["해상도 표기", "가로 약 2,000픽셀. 1K보다 두 배 가까이 세밀합니다."], "MIT CSAIL": ["MIT Computer Science and Artificial Intelligence Laboratory", "MIT 컴퓨터과학·인공지능 연구소."], "LLM": ["Large Language Model", "대규모 언어 모델. 방대한 글을 학습해 다음 단어를 예측하는 AI."], "PPO": ["Proximal Policy Optimization", "시행착오로 행동 정책을 조금씩 고쳐 배우는 강화학습 알고리즘."], "MATH-500": ["수학 벤치마크", "경시대회 수준 수학 문제 500개로 정답률을 재는 시험."], "GSM8K": ["Grade School Math 8K", "초등 수준 수학 서술형 문제 약 8,500개로 이뤄진 벤치마크."], "OS": ["Operating System", "운영체제. Windows·macOS처럼 컴퓨터를 움직이는 기본 소프트웨어."], "A/B": ["A/B Testing", "사용자를 두 무리로 나눠 서로 다른 버전을 비교하는 실험."], "CAPTCHA": ["Completely Automated Public Turing test to tell Computers and Humans Apart", "사람인지 봇인지 가려내는 확인 문제."], "PC": ["Personal Computer", "개인용 컴퓨터."]};
+  const keys = Object.keys(GLOSS).sort((a, b) => b.length - a.length);
+  const escRe = k => k.replace(/[.*+?^${}()|[\]\\/&]/g, '\\$&');
+  const re = new RegExp('(^|[^A-Za-z0-9])(' + keys.map(escRe).join('|') + ')(?![A-Za-z0-9])');
+  $$('article section').forEach(sec => {
+    if (sec.id === 'glossary') return;
+    const seen = new Set();
+    const walker = document.createTreeWalker(sec, NodeFilter.SHOW_TEXT, { acceptNode: n =>
+      n.parentElement.closest('.fig, .code, code, h2, .sec-label, .tbl-wrap, .mcards, .term, a, .quote, svg, .note') ? NodeFilter.FILTER_REJECT : NodeFilter.FILTER_ACCEPT });
+    const nodes = []; while (walker.nextNode()) nodes.push(walker.currentNode);
+    nodes.forEach(node => {
+      let n = node;
+      for (let guard = 0; guard < 6 && n; guard++) {
+        const m = re.exec(n.data); if (!m) break;
+        const k = m[2], at = m.index + m[1].length;
+        if (seen.has(k)) { const rest = n.splitText(at + k.length); n = rest; continue; }
+        seen.add(k);
+        const mid = n.splitText(at), rest = mid.splitText(k.length);
+        const t = document.createElement('span'); t.className = 'term'; t.tabIndex = 0; t.dataset.k = k;
+        t.setAttribute('role', 'button'); t.setAttribute('aria-label', `${k}: ${GLOSS[k][0]}. ${GLOSS[k][1]}`);
+        t.textContent = k; mid.replaceWith(t); n = rest;
+      }
+    });
+  });
+  const pop = document.createElement('div'); pop.className = 'tpop'; pop.setAttribute('role', 'tooltip'); document.body.appendChild(pop);
+  let popFor = null;
+  const slug = k => 'g-' + k.replace(/[^A-Za-z0-9]/g, '');
+  $$('.glist .gi').forEach(gi => gi.id = slug(gi.querySelector('dt b').textContent));
+  function showTerm(t) {
+    const [full, exp] = GLOSS[t.dataset.k];
+    pop.innerHTML = `<b>${t.dataset.k.replace(/&/g, '&amp;')}</b><span class="f">${full}</span>${exp}<br><a href="#${slug(t.dataset.k === '2K' ? '1K' : t.dataset.k)}">용어 풀이 전체 보기 →</a>`;
+    $$('.term.on').forEach(x => x.classList.remove('on')); t.classList.add('on'); popFor = t;
+    const r = t.getBoundingClientRect(), w = Math.min(340, innerWidth - 32);
+    pop.style.left = Math.max(16, Math.min(scrollX + r.left, scrollX + innerWidth - w - 16)) + 'px';
+    pop.style.top = (scrollY + r.bottom + 8) + 'px';
+    pop.classList.add('show');
+  }
+  function hideTerm() { pop.classList.remove('show'); popFor && popFor.classList.remove('on'); popFor = null; }
+  document.addEventListener('click', e => {
+    const t = e.target.closest('.term');
+    if (t) { e.preventDefault(); popFor === t ? hideTerm() : showTerm(t); }
+    else if (!e.target.closest('.tpop')) hideTerm();
+  });
+  document.addEventListener('keydown', e => {
+    const t = e.target.closest && e.target.closest('.term');
+    if (t && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); showTerm(t); }
+    if (e.key === 'Escape') hideTerm();
+  });
+  if (matchMedia('(hover: hover)').matches) {
+    document.addEventListener('mouseover', e => { const t = e.target.closest('.term'); if (t && t !== popFor) showTerm(t); });
+    document.addEventListener('mouseout', e => { const t = e.target.closest('.term'); if (t && !(e.relatedTarget && (e.relatedTarget.closest('.tpop') || e.relatedTarget.closest('.term') === t))) hideTerm(); });
+    pop.addEventListener('mouseleave', hideTerm);
+  }
+  addEventListener('resize', hideTerm);
 
   /* ---------- TOC, scroll spy, progress ---------- */
   const secs = $$('article section');
