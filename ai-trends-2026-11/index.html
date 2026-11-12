@@ -385,31 +385,26 @@
   .slide:has(.iichart) .src { bottom: 44px; }
 
   /* ── 13c pickle cases ── */
-  .cases { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; margin-top: 30px; }
-  .cases .col { display: flex; flex-direction: column; gap: 12px; }
-  .cases .ch { display: flex; align-items: center; gap: 10px; font-size: 20px; font-weight: 700; color: var(--ink-2); margin-bottom: 2px; }
-  .cases .ch .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--coral); box-shadow: 0 0 0 5px rgba(255,255,255,.04); }
-  .cases .bad .ch .dot { background: var(--blue); }
-  .cases .case { display: grid; grid-template-columns: 52px minmax(0, 1fr); gap: 16px; align-items: start; background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: 16px 20px; }
-  .cases .ok .case { border-left: 3px solid var(--coral); }
-  .cases .bad .case { border-left: 3px solid var(--blue); }
-  .cases .case.hot { background: rgba(213,168,68,.10); border-color: rgba(213,168,68,.5); border-left-color: var(--gold); }
-  .cases .case .ic { font-size: 30px; line-height: 52px; text-align: center; width: 52px; height: 52px; border-radius: 14px; background: rgba(255,255,255,.05); }
-  .cases .case h3 { font-size: 23px; letter-spacing: -.025em; margin: 2px 0 4px; }
-  .cases .case.hot h3 { color: var(--gold); }
-  .cases .case p { margin: 0; font-size: 17.5px; line-height: 1.45; color: var(--ink-2); }
-  .cases .case p b { color: var(--ink); }
-  .cases .case small { display: block; margin-top: 4px; font-size: 13.5px; color: var(--ink-3); }
-  .tipbar { margin-top: 18px; padding: 14px 22px; border-radius: 16px; border: 1px dashed rgba(213,168,68,.55); font-size: 19px; color: var(--ink-2); }
-  .tipbar b { display: inline-block; margin-right: 14px; padding: 3px 12px; border-radius: 999px; background: var(--gold); color: #1b1606; font-size: 15px; vertical-align: 2px; }
-  .tipbar em { font-style: normal; color: var(--gold); font-weight: 700; }
-  html.portrait .cases { grid-template-columns: 1fr; gap: 20px; margin-top: 22px; }
-  html.portrait .cases .case { grid-template-columns: 42px minmax(0, 1fr); gap: 12px; padding: 14px 16px; }
-  html.portrait .cases .case .ic { width: 42px; height: 42px; line-height: 42px; font-size: 24px; }
-  html.portrait .cases .case h3 { font-size: 20px; }
-  html.portrait .cases .case p { font-size: 16px; }
-  html.portrait .tipbar { font-size: 16px; }
-  html.portrait .tipbar b { display: table; margin: 0 0 8px; }
+  .pcases { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin-top: 30px; }
+  .pcases .case { background: var(--card); border: 1px solid var(--line); border-radius: 20px; padding: 20px 22px 22px; }
+  .pcases .case.hot { background: rgba(213,168,68,.10); border-color: rgba(213,168,68,.5); box-shadow: 0 24px 60px -34px rgba(213,168,68,.7); }
+  .pcases .ic { font-size: 26px; width: 48px; height: 48px; line-height: 48px; text-align: center; border-radius: 14px; background: rgba(255,255,255,.05); }
+  .pcases h3 { font-size: 24px; letter-spacing: -.025em; margin: 14px 0 8px; }
+  .pcases .hot h3 { color: var(--gold); }
+  .pcases p { margin: 0; font-size: 17px; line-height: 1.55; color: var(--ink-2); }
+  .pcases p b { color: var(--ink); }
+  .pcases .tm { display: inline-block; margin: 0 6px 0 2px; padding: 0 6px; border-radius: 6px; font: 600 13.5px/1.6 "JetBrains Mono", monospace; color: var(--gold); background: rgba(213,168,68,.12); }
+  .vsbar { display: flex; align-items: center; gap: 16px; margin-top: 18px; padding: 14px 22px; border-radius: 16px; border: 1px dashed rgba(213,168,68,.55); font-size: 19px; color: var(--ink-2); }
+  .vsbar b { flex: none; padding: 3px 12px; border-radius: 999px; background: var(--gold); color: #1b1606; font-size: 15px; }
+  .vsbar em { font-style: normal; color: var(--ink); font-weight: 700; }
+  .vsbar .sep { width: 1px; align-self: stretch; background: var(--line); }
+  html.portrait .pcases { grid-template-columns: 1fr; gap: 12px; margin-top: 22px; }
+  html.portrait .pcases .case { display: grid; grid-template-columns: 42px minmax(0, 1fr); column-gap: 12px; padding: 14px 16px; }
+  html.portrait .pcases .ic { width: 42px; height: 42px; line-height: 42px; font-size: 22px; grid-row: span 2; }
+  html.portrait .pcases h3 { font-size: 20px; margin: 2px 0 4px; }
+  html.portrait .pcases p { font-size: 15.5px; }
+  html.portrait .vsbar { flex-direction: column; align-items: flex-start; gap: 6px; font-size: 16px; }
+  html.portrait .vsbar .sep { display: none; }
 
   /* ── phone held sideways: controls get their own lane under the stage ── */
   .hud .alt { gap: 6px; display: inline-flex; align-items: center; }
@@ -954,25 +949,19 @@
   </section>
 
   <!-- 13c -->
-  <section class="slide" data-notes="피클을 실제로 써 본 사례를 모았습니다. KTX 예매는 약 20분 만에 끝났고, 오전 7시 5분 열차를 4만 9500원에 발권한 사례도 있습니다. 다른 서비스가 실패한 전화 예약 변경을 한 번에 성공했다는 후기도 있습니다. 반면 카드사 인증과 결제 오류는 사람이 직접 풀어야 했고, AI라고 소개하자 상대가 끊거나 02 번호를 피싱으로 오인한 경우도 있었습니다. 10월 29일 일본에서는 호텔 조건을 물어보기만 했는데 피클이 호텔에 두 번 전화를 걸었고, 두 번째 통화에서는 AI임을 밝히지 않아 대표가 사과했습니다. 그래서 '내 승인 전에는 전화·결제하지 마'라는 조건을 미리 걸어 두는 것이 좋습니다.">
+  <section class="slide" data-notes="피클을 2주 넘게 써 본 한 사용자의 후기입니다. 네이버 선착순 쿠폰은 9시 50분부터 브라우저를 켜고 대기하다 10시 정각에 3종을 모두 받아 왔고, 서버가 터진 29CM 럭키 쿠폰은 실패해 사용자가 직접 받았습니다. 아침마다 네이버페이·지마켓·11번가 출석체크를 알아서 돌리고, 영수증 사진 한 장으로 네이버 MY플레이스 리뷰를 등록합니다. 칠순 가족여행 8인 일정을 2박 3일 독채 펜션으로 다시 짜 경비 명세서까지 만들었고, 전화를 걸어 날씨를 브리핑하기도 합니다. 보고 형식을 규칙으로 걸어 두면 그대로 따릅니다. 한국 서비스에 특화돼 뮤즈가 못 하는 일을 해 주지만, 코딩 같은 업무보다는 일상 잡무를 맡기는 현실 비서에 가깝다는 평가입니다.">
     <div class="kicker" data-a="left">05 · Pickle in the wild</div>
-    <h2 data-a style="--d:1">피클 실제 사례: <em>되는 일</em>과 아직 사람 몫인 일</h2>
-    <div class="cases">
-      <div class="col ok">
-        <div class="ch" data-a="fade" style="--d:2"><span class="dot"></span>잘 된 사례</div>
-        <div class="case" data-a="right" style="--d:3"><div class="ic">🚄</div><div><h3>KTX 예매 약 20분</h3><p>앱에 맡긴 KTX 예매가 약 20분 만에 끝남. 사용량은 8%p 소모<small>디지털데일리 · 1회 실험</small></p></div></div>
-        <div class="case" data-a="right" style="--d:4"><div class="ic">🎫</div><div><h3>07:05 열차 49,500원 발권</h3><p>좌석 검색부터 발권까지 대행. 단, <b>카드사 전화 인증·결제 오류</b>는 이용자가 직접 처리<small>다이어리포인트</small></p></div></div>
-        <div class="case" data-a="right" style="--d:5"><div class="ic">📞</div><div><h3>전화 예약 변경 한 번에 성공</h3><p>다른 전화 대행 서비스가 실패한 예약 변경을 피클은 첫 통화에서 해결<small>앱스토어 후기</small></p></div></div>
-      </div>
-      <div class="col bad">
-        <div class="ch" data-a="fade" style="--d:2"><span class="dot"></span>한계와 사고</div>
-        <div class="case" data-a="left" style="--d:3"><div class="ic">📵</div><div><h3>“AI입니다” 하자 끊김</h3><p>AI라고 밝히자 상대가 전화를 끊음. 헬스장 가격 문의는 실제 상담으로 이어지지 않음<small>코리아데일리 · 사용 후기</small></p></div></div>
-        <div class="case" data-a="left" style="--d:4"><div class="ic">⚠️</div><div><h3>02 번호, 피싱으로 오인</h3><p>지인에게 건 전화가 02 번호로 떠 받지 않음. 요청하지 않은 지인·식당에 전화했다는 불만도<small>앱스토어 후기 · SNS</small></p></div></div>
-        <div class="case hot" data-a="left" style="--d:5"><div class="ic">🏨</div><div><h3>10월 29일, 일본 호텔 무단 발신</h3><p>호텔의 아이 동반 조건을 <b>묻기만</b> 했는데 호텔에 두 번 전화. 두 번째엔 AI임을 밝히지 않음 → 대표 사과, 발신 전 확인·AI 고지 필수화<small>일본 X 게시글 · 현지 보도</small></p></div></div>
-      </div>
+    <h2 data-a style="--d:1">피클 2주 사용기: <em>“이게 진짜 되네”</em></h2>
+    <div class="pcases">
+      <div class="case hot" data-a style="--d:2"><div class="ic">🎯</div><h3>선착순 쿠폰 광클</h3><p>네이버 넾다세일 10시 쿠폰 3종(10·7·5%)을 9:50부터 대기하다 <b>정각에 모두 확보</b>. 서버가 터진 29CM 럭키 쿠폰은 지연 팝업에 갇혀 실패 → 다음 날 12시 자동 재시도 예약</p></div>
+      <div class="case" data-a style="--d:3"><div class="ic">☀️</div><h3>아침 출석체크</h3><p><span class="tm">08:30</span>네이버페이 포인트·퀴즈 <span class="tm">08:35</span>지마켓 스마일캐시·쿠폰 5종 <span class="tm">08:40</span>11번가 장바구니 쿠폰. 클릭이 막히면 <b>체류 미션으로 우회</b></p></div>
+      <div class="case" data-a style="--d:4"><div class="ic">🧾</div><h3>영수증 리뷰·체험단</h3><p>영수증 사진 한 장으로 MY플레이스에 로그인해 별점·키워드·사진까지 <b>등록 후 캡처</b>. 체험단 15건을 골라 신청하고 발표일 확인 일정도 등록</p></div>
+      <div class="case" data-a style="--d:5"><div class="ic">✈️</div><h3>칠순 가족여행 설계</h3><p>8인(어른 6·초등 1·36개월 1) 미야코지마. “화목하면 돼” 한마디에 3박 4일을 <b>독채 펜션 바비큐 2박 3일</b>로 재설계, 일정표·총경비 명세서 파일까지</p></div>
+      <div class="case" data-a style="--d:6"><div class="ic">📞</div><h3>전화도 겁니다</h3><p>“나한테 전화 걸어봐” → 실제로 걸려 와 <b>AI 음성으로 광명 날씨 브리핑</b>. 점심 식당 폐업 여부를 교차 확인해 네이버 지도 리스트로</p></div>
+      <div class="case" data-a style="--d:7"><div class="ic">🎛️</div><h3>입맛대로 조련</h3><p>인사말 생략, 질문은 버튼 카드로, 보고는 <b>결론 · 실측 증빙 · 다음 액션</b> 세 줄. 규칙을 걸어 두면 군더더기 없이 결과만</p></div>
     </div>
-    <div class="tipbar" data-a style="--d:7"><b>쓰기 전에</b>“내 승인 전에는 절대 <em>전화하거나 결제하지 마</em>”를 조건으로 걸어 두고, 통화 기록과 최종 예약 내역은 직접 확인</div>
-    <p class="src">자료: 디지털데일리 · 다이어리포인트 · 코리아데일리 · App Store 리뷰 · 일본 보도(2026년 10~11월) · 사용 후기는 개별 사례로, 성공률을 뜻하지 않음</p>
+    <div class="vsbar" data-a style="--d:8"><b>뮤즈와 차이</b><span>한국 서비스에 특화돼 <em>뮤즈가 못 하는 일</em>까지 처리</span><span class="sep"></span><span>코딩 같은 업무보다는 귀찮은 <em>일상 잡무를 맡기는 현실 비서</em></span></div>
+    <p class="src">자료: 피클 사용자 후기(2주 이상 사용) · 개인 사용 경험으로, 모든 이용 환경에서 같은 결과를 보장하지 않음</p>
   </section>
 
   <!-- 14 -->
