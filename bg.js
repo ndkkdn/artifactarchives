@@ -12,7 +12,8 @@
  * Seasons (:root[data-season], set by the page; ?season=winter to preview) tint the palette, move
  * sunrise and sunset, thicken or thin the clouds, raise a seasonal shoreline on the horizon (blossom hills,
  * green islands, autumn foliage, snowy peaks) and drop fluttering petals, swinging leaves or snow (petals and leaves
- * come to rest on the sea for a while) — or, in summer, send gulls
+ * come to rest on the sea for a while; all three settle and pile up on the top edges of the covers and scatter
+ * when a cover moves) — or, in summer, send gulls
  * across the day sky and fireflies over the night shore.
  *
  * The body gets .sky-light / .sky-dark so the top bar can keep its text readable, and --hl / --hl-text
@@ -335,7 +336,7 @@
   }
   function newFlake(f, y) {
     const x = Math.random() * cols;
-    return { x, x0: x, y, ph: Math.random() * 6.28, sp: f.speed * (.6 + Math.random() * .8),
+    return { x, x0: x, y, on: 0, bal: null, at: 0, u: 0, stay2: 0, ph: Math.random() * 6.28, sp: f.speed * (.6 + Math.random() * .8),
       c: Math.floor(Math.random() * f.colors.length), land: seaRow0 + 1 + Math.random() * (rows - seaRow0) * .85, tw: Math.random() < .5,
       amp: f.sway * (.6 + Math.random() * .8), om: .8 + Math.random() * .6, tumble: Math.random() < .2, fl: null,
       stay: f.float ? f.float[0] + Math.random() * (f.float[1] - f.float[0]) : 0 };
@@ -348,6 +349,40 @@
     edge: ['...', '##d', '...'],
   };
   const LEAF_SPIN = ['flat', 'right', 'edge', 'left'];
+
+  /* ── ledges: the top edge of every visible cover, in cell units, read from the corner markers (.cn) ── */
+  let ledges = [];
+  const ledgeOf = new Map(), prevEdge = new WeakMap(), ledgeId = new WeakMap();
+  let nextLedgeId = 1;
+  function readLedges() {
+    ledges = []; ledgeOf.clear();
+    for (const s of document.querySelectorAll('#sleeves .sleeve')) {
+      if (s.style.visibility === 'hidden' || +s.style.opacity < .5) continue;
+      const face = s.querySelector('.face'); if (!face || face.style.visibility === 'hidden') continue;
+      const m = face.querySelectorAll('.cn'); if (m.length < 4) continue;
+      const pts = [...m].map(e => { const r = e.getBoundingClientRect(); return [r.left / C, r.top / C]; });
+      if (!ledgeId.has(s)) ledgeId.set(s, nextLedgeId++);
+      // the selected cover wears a glowing ring 6px outside its edge: rest on the ring
+      const lift = s.classList.contains('on') ? 6 / C : 0;
+      const L = { id: ledgeId.get(s), z: +s.style.zIndex || 0, x1: pts[0][0], y1: pts[0][1] - lift, x2: pts[1][0], y2: pts[1][1] - lift, poly: pts };
+      const pv = prevEdge.get(s);
+      L.mv = pv ? Math.max(Math.hypot(L.x1 - pv[0], L.y1 - pv[1]), Math.hypot(L.x2 - pv[2], L.y2 - pv[3])) : 0;
+      L.vx = pv ? (L.x1 - pv[0] + L.x2 - pv[2]) / 2 : 0;
+      prevEdge.set(s, [L.x1, L.y1, L.x2, L.y2]);
+      ledges.push(L); ledgeOf.set(L.id, L);
+    }
+  }
+  const edgeY = (L, x) => L.y1 + (L.y2 - L.y1) * (x - L.x1) / ((L.x2 - L.x1) || 1);
+  function inQuad(q, x, y) {
+    let inside = false;
+    for (let a = 0, b = 3; a < 4; b = a++) {
+      const [xa, ya] = q[a], [xb, yb] = q[b];
+      if ((ya > y) !== (yb > y) && x < (xb - xa) * (y - ya) / (yb - ya) + xa) inside = !inside;
+    }
+    return inside;
+  }
+  // a spot on a cover's edge that a nearer cover hides is no place to settle
+  const hidden = (L, x, y) => ledges.some(o => o.z > L.z && inQuad(o.poly, x, y));
   function drawFall(t) {
     if (flakeKey !== seasonKey() + cols + 'x' + rows) seedFall();
     const f = season().fall; if (!f) return;
@@ -357,12 +392,41 @@
     // spring: every so often a breeze sweeps the petals sideways
     const breeze = f.shape === 'petal' ? Math.pow(Math.max(0, Math.sin(t * .33)), 4) : 0;
     const aspect = W / H, R = .16, R2 = R * R;
+    // covers: settled flakes ride their cover's edge, pile up a few deep, and scatter when it moves
+    readLedges();
+    const thick = f.shape === 'leaf' ? 2 : 1, maxH = f.shape === 'flake' ? 4 : 2;
+    const piles = new Map(), pileKey = (L, x) => L.id * 4096 + Math.round(x);
+    const cap = flakes.length * .45;
+    let settled = 0;
+    const resting = flakes.filter(p => p.on);
+    resting.sort((a, b) => a.at - b.at);
+    for (const p of resting) {
+      const L = ledgeOf.get(p.on);
+      if (!L || L.mv > .7) {          // the cover moved (or went away): fling the pile off and let it fall again
+        const vx = L ? L.vx : 0;
+        p.on = 0; p.bal = { vx: vx * (.4 + Math.random() * .5) + (Math.random() - .5) * .9, vy: -(.25 + Math.random() * .9) };
+        continue;
+      }
+      const x = L.x1 + (L.x2 - L.x1) * p.u, k = pileKey(L, x), h = piles.get(k) || 0;
+      piles.set(k, h + 1);
+      p.x = p.x0 = x; p.y = edgeY(L, x) - (thick === 2 ? 2 : 1) - h * thick;
+      settled++;
+    }
     for (const p of flakes) {
       if (!reducedMq.matches) {
+        const py = p.y;
         let wx = 0, wy = 0;
         for (const g of gusts) { const ex = (p.x / cols - g.x) * aspect, ey = p.y / rows - g.y, d2 = ex * ex + ey * ey;
           if (d2 < R2) { const s = (1 - d2 / R2) * g.life; wx += g.vx * s * cols * .4; wy += g.vy * s * rows * .4; } }
-        if (p.fl !== null) {
+        if (p.on) {
+          // resting on a cover: stay put (position set above), melt or blow away after a while
+          if (t - p.at > p.stay2) { p.on = 0; Object.assign(p, newFlake(f, -2 - Math.random() * rows * .2)); }
+        } else if (p.bal) {
+          // flung off a moving cover: a little hop, then gravity takes over and it falls as usual
+          p.x += p.bal.vx + wx; p.y += p.bal.vy + wy; p.bal.vy += .07; p.bal.vx *= .95;
+          p.x0 = p.x;
+          if (p.bal.vy > p.sp) p.bal = null;
+        } else if (p.fl !== null) {
           // resting on the water: bob along with the swell, then sink away
           p.x += .025 + Math.sin(t * .7 + p.ph) * .03;
           if (t - p.fl > p.stay) Object.assign(p, newFlake(f, -2 - Math.random() * rows * .2));
@@ -381,34 +445,51 @@
           p.y += p.sp + wy;
           p.x += f.drift + Math.sin(t * 1.3 + p.ph) * f.sway * .12 + wx;
         }
-        if (p.fl === null && (p.y > p.land || p.y > rows)) {
+        if (!p.on && p.fl === null && p.y > py && (!p.bal || p.bal.vy > 0) && settled < cap) {
+          const base = thick === 2 ? 2 : 1;
+          for (const L of ledges) {
+            if (p.x < Math.min(L.x1, L.x2) + 1 || p.x > Math.max(L.x1, L.x2) - 1) continue;
+            const h = piles.get(pileKey(L, p.x)) || 0; if (h >= maxH) continue;
+            const ey = edgeY(L, p.x) - base - h * thick;
+            if (py < ey && p.y >= ey && !hidden(L, p.x, ey)) {
+              p.on = L.id; p.u = (p.x - L.x1) / ((L.x2 - L.x1) || 1); p.at = t; p.bal = null;
+              p.stay2 = f.shape === 'flake' ? 30 + Math.random() * 40 : 20 + Math.random() * 30;
+              p.y = ey; piles.set(pileKey(L, p.x), h + 1); settled++;
+              break;
+            }
+          }
+        }
+        if (!p.on && p.fl === null && (p.y > p.land || p.y > rows)) {
           if (f.float && p.land < rows) { p.y = Math.round(p.land); p.fl = t; }
           else Object.assign(p, newFlake(f, -2));
         }
-        if (p.x > cols + 2) { p.x -= cols + 4; p.x0 -= cols + 4; } else if (p.x < -2) { p.x += cols + 4; p.x0 += cols + 4; }
+        if (!p.on && p.x > cols + 2) { p.x -= cols + 4; p.x0 -= cols + 4; } else if (!p.on && p.x < -2) { p.x += cols + 4; p.x0 += cols + 4; }
       }
       const i = Math.round(p.x), j = Math.round(p.y);
       if (j < 0 || j >= rows || i < 0 || i >= cols) continue;
       // fade out over the last two seconds afloat
-      const alpha = p.fl === null ? 255 : Math.round(255 * Math.max(0, Math.min(1, (p.stay - (t - p.fl)) / 2)));
+      const alpha = p.on ? Math.round(255 * Math.max(0, Math.min(1, (p.stay2 - (t - p.at)) / 2)))
+        : p.fl === null ? 255 : Math.round(255 * Math.max(0, Math.min(1, (p.stay - (t - p.fl)) / 2)));
       if (!alpha) continue;
       const put = (di, dj, c) => { const ii = i + di, jj = j + dj; if (ii >= 0 && ii < cols && jj >= 0 && jj < rows) cloudBuf[jj * cols + ii] = c; };
       const hue = f.colors[p.c];
       if (f.shape === 'leaf') {
         const main = tone(hue, 1, alpha), dark = tone(hue, .6, alpha);
         let shape;
-        if (p.fl !== null) shape = Math.sin(t * 1.4 + p.ph) > 0 ? LEAF.flat : LEAF.edge;      // rocking on the swell
+        if (p.on) shape = LEAF.flat;                                                          // lying on a cover
+        else if (p.fl !== null) shape = Math.sin(t * 1.4 + p.ph) > 0 ? LEAF.flat : LEAF.edge;      // rocking on the swell
         else if (p.tumble) shape = LEAF[LEAF_SPIN[Math.floor(t * 5 + p.ph) & 3]];
         else { const sw = Math.sin(t * p.om + p.ph + 1.57); shape = sw > .35 ? LEAF.right : sw < -.35 ? LEAF.left : LEAF.flat; }
         for (let r = 0; r < 3; r++) for (let q = 0; q < 3; q++) { const ch = shape[r][q]; if (ch !== '.') put(q - 1, r - 1, ch === 'd' ? dark : main); }
       } else if (f.shape === 'petal') {
         // a petal flips as it falls: pink face, pale back, and broad (two cells) when it turns flat to us
-        const s2 = Math.sin(t * 3.2 + p.ph), c = s2 > .55 ? tone(f.back, 1, alpha) : tone(hue, 1, alpha);
+        const s2 = p.on ? 0 : Math.sin(t * 3.2 + p.ph), c = s2 > .55 ? tone(f.back, 1, alpha) : tone(hue, 1, alpha);
         put(0, 0, c);
-        if (p.fl === null && Math.abs(s2) < .3) put(1, 0, tone(hue, .92, alpha));
+        if (p.fl === null && !p.on && Math.abs(s2) < .3) put(1, 0, tone(hue, .92, alpha));
       } else {
         const c = cols8[p.c];
         put(0, 0, c);
+        if (p.on) { const w = tone('#ffffff', 1, alpha); put(0, 0, w); put(-1, 0, w); put(1, 0, w); continue; }   // settled snow: a flat lump, so a pile reads as a snow cap
         if (p.tw) { put(1, 0, c); put(-1, 0, c); put(0, 1, c); put(0, -1, c); }   // some snowflakes are a small plus
       }
     }

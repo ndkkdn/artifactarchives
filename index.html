@@ -178,6 +178,9 @@
     background: radial-gradient(closest-side, var(--floor), transparent); filter: blur(6px); opacity: var(--floorop, .6); pointer-events: none;
   }
   .sleeve.on { cursor: pointer; }
+  /* zero-size corner markers: bg.js reads their projected positions so petals, leaves and snow can settle on the covers */
+  .face .cn { position: absolute; width: 0; height: 0; pointer-events: none; }
+  .cn.tl { left: 0; top: 0; } .cn.tr { right: 0; top: 0; } .cn.br { right: 0; bottom: 0; } .cn.bl { left: 0; bottom: 0; }
   /* the selected cover gets a thin glowing ring whose light slowly travels around the edge */
   @property --ring { syntax: '<angle>'; inherits: false; initial-value: 0deg; }
   .sleeve::before {
@@ -583,7 +586,7 @@
   function buildStage() {
     sleevesEl.innerHTML = list.map((i, n) => `
       <a class="sleeve${i.hidden ? ' is-hidden' : ''}" href="${esc(i.href)}" data-n="${n}"${/스크롤형/.test(i.title) ? ' data-live="1"' : ''} tabindex="-1" aria-label="${esc(i.title)} 열기" draggable="false">
-        <div class="face"><img src="${esc(i._preview || i.thumb)}" alt="" draggable="false" ${n > 6 ? 'loading="lazy"' : ''}><span class="open-hint">열기 ↗</span></div>
+        <div class="face"><img src="${esc(i._preview || i.thumb)}" alt="" draggable="false" ${n > 6 ? 'loading="lazy"' : ''}><span class="open-hint">열기 ↗</span><i class="cn tl"></i><i class="cn tr"></i><i class="cn br"></i><i class="cn bl"></i></div>
       </a>`).join('');
     stripEl.innerHTML = list.map((i, n) => `
       <button class="chip${i.hidden ? ' is-hidden' : ''}" type="button" data-n="${n}">
