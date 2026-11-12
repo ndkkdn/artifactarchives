@@ -10,7 +10,9 @@
  *   #bg-sea    the sea, one canvas pixel per cell, masked into a dot grid by CSS; animated
  *   #bg-cloud  pixel clouds that drift and stream away from the mouse; animated
  * Seasons (:root[data-season], set by the page; ?season=winter to preview) tint the palette, move
- * sunrise and sunset, thicken or thin the clouds, and drop petals, leaves or snow over the scene.
+ * sunrise and sunset, thicken or thin the clouds, raise a seasonal shoreline on the horizon (blossom hills,
+ * green islands, autumn foliage, snowy peaks) and drop petals, leaves or snow — or, in summer, send gulls
+ * across the day sky and fireflies over the night shore.
  *
  * The body gets .sky-light / .sky-dark so the top bar can keep its text readable, and --hl / --hl-text
  * on :root so the title highlight changes colour with the sky.
@@ -71,6 +73,7 @@
     for (const key in a) out[key] = Array.isArray(a[key]) ? a[key].map((v, i) => v + (b[key][i] - v) * s) : a[key] + (b[key] - a[key]) * s;
     // season tint, strongest in daylight so nights stay night
     const daylight = Math.min(1, Math.max(0, (lum(out.skyBot) - .25) / .5));
+    dayLight = daylight;
     const tint = season().tint;
     for (const key in tint) out[key] = mix(out[key], tint[key][0], tint[key][1] * (key === 'hl' ? 1 : .35 + .65 * daylight));
     if (isDark()) for (const key in out) if (Array.isArray(out[key]) && key !== 'hl') out[key] = out[key].map((v, i) => v * .55 + [14, 16, 40][i] * .3);
@@ -90,7 +93,7 @@
     return a + (b - a) * xf + (c - a) * yf + (a - b - c + d) * xf * yf; };
   const fbm = (x, y, o) => { let v = 0, a = .5, f = 1; for (let i = 0; i < o; i++) { v += a * vn(x * f, y * f); f *= 2; a *= .5; } return v; };
 
-  let W, H, C, cols, rows, HZ, seaRow0, pal, sunPos = null, moonPos = null;
+  let W, H, C, cols, rows, HZ, seaRow0, pal, sunPos = null, moonPos = null, dayLight = 1;
   let seaImg, seaBuf, cloudImg, cloudBuf, dx, dy;
 
   const hourNow = now => {
@@ -174,6 +177,51 @@
     };
     disk(sunPos, [255, 236, 170]);
     disk(moonPos, [244, 240, 222], true);
+    drawLand();
+  }
+
+  /* ── seasonal shoreline on the horizon: a hazy far ridge and a near ridge, higher toward the edges
+     (the covers own the middle) ── */
+  const LANDS = {
+    spring: { height: .09, far: '#a7bccb', near: '#78ad5e', nearDark: '#54894a', top: ['#f7b6cb', '#fbd3e0', '#f19bb8', '#fde8ef'], topAmt: .6 },
+    summer: { height: .08, farScale: .5, islands: true, far: '#94bccb', near: '#2f9050', nearDark: '#1f6e3a', top: ['#46ad5e', '#62bf6c'], topAmt: .35, beach: '#f1dca2' },
+    autumn: { height: .09, far: '#a99aa6', near: '#bb532c', nearDark: '#7a3420', top: ['#e07a2c', '#f0b040', '#d9542a', '#a8381f', '#e89a3a'], topAmt: .75 },
+    winter: { height: .13, peaks: true, far: '#8e9db4', rock: '#5f6f88', near: '#eef2f7', nearDark: '#c3cfdd', top: ['#ffffff', '#f6f9fc'], topAmt: .5 },
+  };
+  function drawLand() {
+    const L = LANDS[seasonKey()]; if (!L) return;
+    const light = .28 + .72 * dayLight, night = mix(pal.seaDeep, pal.skyTop, .3), dark = isDark();
+    const shade = c => { let o = mix(night, c, light); if (dark) o = o.map((v, i) => v * .55 + [14, 16, 40][i] * .3); return o; };
+    const far = shade(mix(hex(L.far), pal.skyBot, .35)), near = shade(hex(L.near)), nearD = shade(hex(L.nearDark));
+    const tops = L.top.map(c => shade(hex(c))), snow = shade(hex('#f6f9fc'));
+    const rock = L.rock ? shade(mix(mix(hex(L.far), pal.skyBot, .35), hex(L.rock), .7)) : null, beach = L.beach ? shade(hex(L.beach)) : null;
+    const env = x => .35 + .65 * Math.min(1, Math.abs(x - .5) * 2.4);
+    const maxH = L.height * rows;
+    const cell = (i, j, c) => { gl.fillStyle = css(c); gl.fillRect(i * C, j * C, C, C); };
+    const stretch = (v, a, b) => Math.max(0, Math.min(1, (v - a) / (b - a)));   // fbm sits near .5; spread it out
+    for (let i = 0; i < cols; i++) {
+      const x = i / cols, e = env(x);
+      let fh = stretch(fbm(x * 5 + 3, 1.7, 3), .25, .75);
+      if (L.peaks) fh = 1 - Math.abs(2 * fh - 1);
+      fh = Math.round(maxH * (L.peaks ? 1.15 : .9) * (L.farScale || 1) * fh * e);
+      let nh = .3 + .7 * stretch(fbm(x * 9 + 11, 4.2, 3), .25, .75);
+      // islands either side of the covers, open water between
+      if (L.islands) { const m = stretch(fbm(x * 7 + 20.4, 2.1, 2), .32, .39); nh *= Math.sqrt(m); }
+      nh = Math.round(maxH * .75 * nh * e);
+      for (let d = 0; d < fh; d++) {
+        const j = seaRow0 - 1 - d; if (j < 0) break;
+        cell(i, j, L.peaks ? (d > fh * .6 && fh > maxH * .45 ? snow : rock) : far);
+      }
+      for (let d = 0; d < nh; d++) {
+        const j = seaRow0 - 1 - d; if (j < 0) break;
+        const bay = BAYER[(j & 3) * 4 + (i & 3)], fromTop = nh - 1 - d, n = fbm(i / 3.2 + 50, j / 3.2, 2);
+        let c = d / nh < .45 + bay * .3 ? nearD : near;
+        if (fromTop < 2 + n * 4 && n > 1 - L.topAmt) c = tops[Math.floor(hash(i, j) * tops.length)];
+        else if (n > 1 - L.topAmt * .55) c = tops[Math.floor(hash(i * 3, j) * tops.length)];
+        if (beach && d === 0) c = beach;
+        cell(i, j, c);
+      }
+    }
   }
 
   /* ── cursor wind (clouds) and ripples (sea) ── */
@@ -263,6 +311,7 @@
       }
     }
     drawFall(t);
+    drawFauna(t);
     gc.putImageData(cloudImg, 0, 0);
   }
 
@@ -303,6 +352,48 @@
       // petals and leaves are two cells, tumbling between flat and upright; some snowflakes are a small plus
       if (f.shape === 'pair') { if (Math.sin(t * 2.2 + p.ph) > 0) put(0, 1); else put(1, 0); }
       else if (p.tw) { put(1, 0); put(-1, 0); put(0, 1); put(0, -1); }
+    }
+  }
+
+  /* ── summer: gulls across the day sky, fireflies over the night shore ── */
+  let gulls = [], flies = [], faunaKey = '';
+  const GULL = [
+    [[-3, -2], [-2, -1], [-1, 0], [0, 0], [1, 0], [2, -1], [3, -2]],
+    [[-3, -1], [-2, -1], [-1, 0], [0, 0], [1, 0], [2, -1], [3, -1]],
+    [[-3, 1], [-2, 0], [-1, 0], [0, 0], [1, 0], [2, 0], [3, 1]],
+  ];
+  const GULL_S = [[[-2, -1], [-1, 0], [0, 0], [1, 0], [2, -1]], [[-2, 0], [-1, 0], [0, 0], [1, 0], [2, 0]], [[-2, 1], [-1, 0], [0, 0], [1, 0], [2, 1]]];
+  const newGull = x => { const dir = Math.random() < .5 ? 1 : -1;
+    return { x: x ?? Math.random() * cols, y: rows * (.1 + Math.random() * .3), v: (.16 + Math.random() * .2) * dir, ph: Math.random() * 6.28, small: Math.random() < .4 }; };
+  function seedFauna() {
+    faunaKey = seasonKey() + cols + 'x' + rows; gulls = []; flies = [];
+    if (seasonKey() !== 'summer') return;
+    for (let k = 0; k < 6; k++) gulls.push(newGull());
+    const n = Math.round(cols * rows / 1000);
+    for (let k = 0; k < n; k++) flies.push({ x: Math.random() * cols, y: seaRow0 - rows * (.01 + Math.random() * .2), ph: Math.random() * 6.28, f: .6 + Math.random() * 1.1 });
+  }
+  function drawFauna(t) {
+    if (faunaKey !== seasonKey() + cols + 'x' + rows) seedFauna();
+    if (!gulls.length) return;
+    const dim = isDark() ? .72 : 1, P = c => pack(hex(c).map(v => v * dim)), moving = !reducedMq.matches;
+    const put = (i, j, c) => { i = Math.round(i); j = Math.round(j); if (i >= 0 && i < cols && j >= 0 && j < seaRow0) cloudBuf[j * cols + i] = c; };
+    const body = P('#46505f'), tip = P('#262c37');
+    const showG = Math.round(gulls.length * Math.min(1, Math.max(0, (dayLight - .2) / .4)));
+    gulls.forEach((g, k) => {
+      if (moving) { g.x += g.v; if (g.x > cols + 6 || g.x < -6) Object.assign(g, newGull(g.v > 0 ? -5 : cols + 5)); }
+      if (k >= showG) return;
+      const shape = (g.small ? GULL_S : GULL)[Math.floor((t * 4 + g.ph) % 3)], y = g.y + Math.sin(t * .7 + g.ph) * 1.5;
+      shape.forEach(([di, dj], q) => put(g.x + di, y + dj, q === 0 || q === shape.length - 1 ? tip : body));
+    });
+    const showF = Math.round(flies.length * Math.min(1, Math.max(0, (.55 - dayLight) / .35)));
+    const core = hex('#f4ffa8'), mid = hex('#c6ec5a'), halo = P('#5f7a2e');
+    for (let k = 0; k < showF; k++) {
+      const f = flies[k];
+      const x = f.x + Math.sin(t * .35 * f.f + f.ph) * 6, y = f.y + Math.cos(t * .28 * f.f + f.ph * 1.3) * 2.5;
+      const b = Math.sin(t * f.f * 1.6 + f.ph);
+      if (b < .15) continue;
+      put(x, y, pack(mix(mid, core, b).map(v => v * dim)));
+      if (b > .75) { put(x + 1, y, halo); put(x - 1, y, halo); put(x, y + 1, halo); put(x, y - 1, halo); }
     }
   }
 
