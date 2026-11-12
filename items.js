@@ -64,7 +64,8 @@ window.ITEMS = [
     "type": "설명서",
     "tags": ["AI 품질", "도감"],
     "date": "2026-09-04",
-    "thumb": "thumbs/ai-quality-anatomy-illustrated.jpg"
+    "thumb": "thumbs/ai-quality-anatomy-illustrated.jpg",
+    "hidden": true
   },
   {
     "href": "ai-quality-anatomy.html",
