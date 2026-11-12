@@ -54,8 +54,7 @@ window.ITEMS = [
     "type": "슬라이드",
     "tags": ["LLM", "기본기", "캐싱"],
     "date": "2026-10-29",
-    "thumb": "thumbs/llm-basics.jpg",
-    "hidden": true
+    "thumb": "thumbs/llm-basics.jpg"
   },
   {
     "href": "ai-quality-anatomy-illustrated.html",
