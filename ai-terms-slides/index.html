@@ -97,6 +97,14 @@
   .chip small { font: 500 14px var(--en); color: var(--ink-3); }
   button.chip { cursor: pointer; font-family: inherit; }
   button.chip:hover { border-color: var(--gold); color: var(--ink); }
+  /* ── abbreviation strip at the foot of a slide ── */
+  .gloss { margin-top: auto; padding-top: 14px; border-top: 1px solid var(--line); display: flex; flex-wrap: wrap; gap: 6px 28px; font-size: 15px; line-height: 1.5; color: var(--ink-3); position: relative; z-index: 1; }
+  .gloss span { max-width: 100%; }
+  .gloss b { font: 700 14px var(--mono); color: var(--gold); margin-right: 8px; }
+  .gloss em { font-style: normal; color: var(--ink-2); }
+  html.portrait .gloss { font-size: 15px; gap: 6px 18px; padding-top: 12px; margin-top: 24px; }
+  html.portrait .gloss b { font-size: 14px; }
+  html.portrait .gloss span { display: block; }
   .cols { display: grid; grid-template-columns: var(--cl, 1fr 1fr); gap: 44px; margin-top: 30px; align-items: start; min-height: 0; }
   .side p { font-size: 21px; line-height: 1.72; color: var(--ink-2); margin: 0 0 18px; }
   .side strong { color: var(--ink); }
@@ -792,6 +800,7 @@
       <div class="tc" id="t-param" data-m="param" data-k="파라미터" data-e="Parameter" data-a style="--d:3"><dt><span class="ko">파라미터</span><span class="enn">Parameter</span></dt><dd>가중치와 편향을 합쳐 부르는 말입니다. “700억 파라미터 모델”이라고 하면 학습으로 조정되는 숫자가 700억 개라는 뜻입니다.</dd></div>
       <div class="tc wide" id="t-act" data-m="act" data-k="활성화 함수" data-e="Activation Function" data-a style="--d:4"><dt><span class="ko">활성화 함수</span><span class="enn">Activation Function</span></dt><dd>ReLU, GELU 같은 비선형 함수입니다. 이것이 없으면 층을 아무리 쌓아도 단순한 직선 계산에 머물러 복잡한 패턴을 표현할 수 없습니다.</dd></div>
     </dl>
+    <div class="gloss" data-a="fade" style="--d:9" aria-label="약어 풀이"><span><b>ReLU</b><em>Rectified Linear Unit</em> · 음수는 0으로 자르고 양수는 그대로 내보내는, 가장 흔한 활성화 함수</span><span><b>GELU</b><em>Gaussian Error Linear Unit</em> · 0 근처를 부드럽게 굽힌 ReLU의 변형. GPT·BERT 같은 트랜스포머 모델이 주로 씀</span></div>
   </section>
 
   <section class="slide s-demo" data-notes="뉴런 하나는 입력에 가중치를 곱해 더하고, 편향을 더한 뒤, 활성화 함수에 통과시킵니다. 가중치를 음수로 내려 가중합이 0보다 작아지면 ReLU가 출력을 0으로 자릅니다. 700억 파라미터는 이런 w와 b가 700억 개라는 뜻입니다.">
@@ -821,6 +830,7 @@
         <figcaption>가중치를 음수로 내려 가중합이 0보다 작아지면, ReLU를 켠 상태에서는 출력이 0이 됩니다. 이 “꺾임”이 쌓여서 신경망이 직선이 아닌 복잡한 패턴을 그릴 수 있게 됩니다.</figcaption>
       </div>
     </div>
+    <div class="gloss" data-a="fade" style="--d:9" aria-label="약어 풀이"><span><b>ReLU</b><em>Rectified Linear Unit</em> · 음수는 0으로 자르고 양수는 그대로 내보내는, 가장 흔한 활성화 함수</span></div>
   </section>
 
   <!-- ================= 02 TRAINING ================= -->
@@ -925,6 +935,7 @@
       <div class="emb-lbl" id="embLbl">첫 토큰의 임베딩 (16차원만 표시, 실제로는 수백~수천 차원)</div>
       <figcaption><b>예시 토크나이저입니다.</b> 실제 모델은 학습으로 만든 어휘표를 써서 쪼개는 위치와 토큰 번호가 다릅니다. 한국어는 보통 한 단어가 여러 토큰으로 나뉜다는 점만 보여 줍니다.</figcaption>
     </div>
+    <div class="gloss" data-a="fade" style="--d:9" aria-label="약어 풀이"><span><b>LLM</b><em>Large Language Model</em> · 대규모 언어 모델. 방대한 글을 학습해 다음 토큰을 예측하는 AI</span></div>
   </section>
 
   <section class="slide" data-ch="03" data-notes="글을 숫자로 바꾸고, 숫자 사이의 관계를 계산하는 흐름입니다. 토큰과 임베딩이 입력을 준비하고, 트랜스포머의 어텐션이 토큰끼리 서로 참고하게 합니다.">
@@ -957,6 +968,7 @@
       <div class="tc" id="t-ft" data-m="ft" data-k="파인튜닝" data-e="Fine-tuning" data-a style="--d:3"><dt><span class="ko">파인튜닝</span><span class="enn">Fine-tuning</span></dt><dd>사전학습된 모델을 특정 목적에 맞는 데이터로 추가 학습시키는 것입니다.</dd></div>
       <div class="tc wide" id="t-rlhf" data-m="rlhf" data-k="RLHF" data-e="Reinforcement Learning from Human Feedback" data-a style="--d:4"><dt><span class="ko">RLHF</span><span class="enn">인간 피드백 기반 강화학습</span></dt><dd>사람이 여러 답변을 비교 평가한 결과로 보상 모델을 만들고, 그 보상을 기준으로 모델을 조정하는 기법입니다. 모델을 더 유용하고 안전하게 다듬는 데 쓰입니다.</dd></div>
     </dl>
+    <div class="gloss" data-a="fade" style="--d:9" aria-label="약어 풀이"><span><b>LLM</b><em>Large Language Model</em> · 대규모 언어 모델. 방대한 글을 학습해 다음 토큰을 예측하는 AI</span><span><b>RLHF</b><em>Reinforcement Learning from Human Feedback</em> · 인간 피드백 기반 강화학습. 사람이 고른 더 나은 답을 보상으로 삼아 모델을 다듬는 방법</span></div>
   </section>
 
   <section class="slide s-demo" id="s-paper" data-notes="2017년 구글 연구진 8명이 낸 논문으로, 제목 그대로 어텐션만으로 모델을 만들었습니다. 핵심은 순서대로 처리하던 RNN을 버리고 문장 전체를 한꺼번에 계산하게 했다는 점이고, 이 구조가 BERT와 GPT를 거쳐 오늘날 LLM의 뼈대가 되었습니다.">
@@ -977,6 +989,7 @@
         </dl>
       </div>
     </div>
+    <div class="gloss" data-a="fade" style="--d:9" aria-label="약어 풀이"><span><b>RNN</b><em>Recurrent Neural Network</em> · 순환 신경망. 트랜스포머 이전의 주류 구조</span><span><b>WMT</b><em>Workshop on Machine Translation</em> · 기계 번역 대회와 그 공개 데이터셋</span><span><b>BLEU</b><em>Bilingual Evaluation Understudy</em> · 사람 번역과 겹치는 정도로 매기는 번역 점수</span><span><b>NeurIPS</b><em>Neural Information Processing Systems</em> · 대표적인 AI 학회(2017년 당시 NIPS)</span><span><b>BERT</b><em>Bidirectional Encoder Representations from Transformers</em> · 구글의 인코더 전용 모델</span><span><b>GPT</b><em>Generative Pre-trained Transformer</em> · OpenAI의 디코더 전용 생성 모델 계열</span></div>
   </section>
 
   <section class="slide s-demo" data-hook="rnn" data-notes="같은 여섯 단어를 처리하는 방식의 차이입니다. RNN은 앞 단어가 끝나야 다음 단어로 넘어가 여섯 단계가 걸리고, 트랜스포머는 모든 단어가 서로를 한 번에 참고해 한 단계로 끝납니다. 학습할 때를 기준으로 한 그림입니다.">
@@ -990,6 +1003,7 @@
       </div>
       <figcaption>학습할 때를 기준으로 그린 그림입니다. 트랜스포머도 답을 <b>생성</b>할 때는 4장에서 보듯 한 토큰씩 만들지만, 이미 주어진 문장은 한꺼번에 계산합니다.</figcaption>
     </div>
+    <div class="gloss" data-a="fade" style="--d:9" aria-label="약어 풀이"><span><b>RNN</b><em>Recurrent Neural Network</em> · 순환 신경망. 단어를 하나씩 차례로 읽으며 앞 내용을 기억에 누적하는, 트랜스포머 이전의 주류 구조</span></div>
   </section>
 
   <section class="slide s-demo s-arch" id="s-arch" data-hook="arch" data-notes="트랜스포머는 임베딩, 같은 구조의 블록 여러 층, 출력층으로 이루어집니다. 블록 하나는 어텐션과 피드포워드 두 부분이고 각각 뒤에 더하기와 정규화가 붙습니다. 흐름 재생으로 위에서 아래로 따라가고, 인코더-디코더로 바꾸면 2017년 원 논문 구조가 나옵니다.">
@@ -1012,6 +1026,7 @@
         <div class="legend"><span><i style="background:var(--violet-soft);border:1px solid var(--violet)"></i>입력 준비</span><span><i style="background:var(--gold-soft);border:1px solid var(--gold)"></i>어텐션</span><span><i style="background:var(--blue-soft);border:1px solid var(--blue)"></i>피드포워드</span><span><i style="background:var(--green-soft);border:1px solid var(--green)"></i>더하기 &amp; 정규화 · 초록 선은 잔차 연결</span><span><i style="background:var(--coral-soft);border:1px solid var(--coral)"></i>출력</span></div>
       </div>
     </div>
+    <div class="gloss" data-a="fade" style="--d:9" aria-label="약어 풀이"><span><b>GPT</b><em>Generative Pre-trained Transformer</em> · OpenAI 모델 계열의 이름. 대량의 글로 미리 학습한 디코더 전용 생성형 트랜스포머</span><span><b>LLM</b><em>Large Language Model</em> · 대규모 언어 모델. 방대한 글을 학습해 다음 토큰을 예측하는 AI</span></div>
   </section>
 
   <section class="slide s-demo" id="s-fig1" data-notes="원 논문의 Figure 1입니다. 앞 장 구조도의 인코더-디코더 모드와 같은 내용을 논문은 이렇게 그렸습니다. 상자를 누르면 설명이 나오고, 오늘날 LLM이 쓰는 부분 버튼을 누르면 디코더 전용 모델에서 빠지는 인코더와 크로스 어텐션이 가려집니다.">
@@ -1026,6 +1041,7 @@
       <div class="pimg" data-a style="--d:3"><div class="pin" id="pin"><img src="../ai-terms/transformer-figure1.png" width="538" height="782" alt="Attention Is All You Need 논문 Figure 1. 왼쪽 인코더 열과 오른쪽 디코더 열이 각각 N번 반복되는 블록으로 그려져 있다. 인코더 블록은 Multi-Head Attention, Add &amp; Norm, Feed Forward, Add &amp; Norm, 디코더 블록은 Masked Multi-Head Attention, Add &amp; Norm, Multi-Head Attention, Add &amp; Norm, Feed Forward, Add &amp; Norm으로 이루어지고, 맨 위에 Linear와 Softmax가 있다."></div></div>
       <div class="apanel" id="ppanel" aria-live="polite" data-a style="--d:4"></div>
     </div>
+    <div class="gloss" data-a="fade" style="--d:9" aria-label="약어 풀이"><span><b>NeurIPS</b><em>Neural Information Processing Systems</em> · 대표적인 AI·머신러닝 학회. 2017년에는 NIPS라는 이름이었음</span><span><b>LLM</b><em>Large Language Model</em> · 대규모 언어 모델. 방대한 글을 학습해 다음 토큰을 예측하는 AI</span></div>
   </section>
 
   <section class="slide s-demo" data-notes="논문 그림과 우리 구조도를 비교할 때 헷갈리기 쉬운 표기 여섯 가지입니다. 특히 어텐션 아래 세 갈래 화살표가 쿼리, 키, 값이라는 점과, 오늘날 디코더 전용 LLM은 오른쪽 열에서 가운데 어텐션을 뺀 구조라는 점을 짚어 주면 됩니다.">
@@ -1039,6 +1055,7 @@
       <div class="card" data-a style="--d:6"><h3><span class="i">05</span>어텐션 아래에서 세 갈래로 갈라지는 화살표</h3><p>어텐션에 들어가는 <b>쿼리(Q)·키(K)·값(V)</b>입니다. “무엇을 찾는지(Q)”를 “각 토큰의 꼬리표(K)”와 맞춰 보고, 잘 맞는 토큰의 “내용(V)”을 많이 가져옵니다. 디코더 가운데 어텐션은 K·V를 인코더에서, Q를 디코더에서 받습니다.</p></div>
       <div class="card" data-a style="--d:7"><h3><span class="i">06</span>오늘날 디코더 전용 LLM</h3><p>오른쪽 열에서 가운데 Multi-Head Attention과 그 Add &amp; Norm을 뺀 구조를 수십 층 쌓은 것입니다. 앞 장의 “오늘날 LLM이 쓰는 부분” 버튼으로 확인해 보세요.</p></div>
     </div>
+    <div class="gloss" data-a="fade" style="--d:9" aria-label="약어 풀이"><span><b>LLM</b><em>Large Language Model</em> · 대규모 언어 모델. 방대한 글을 학습해 다음 토큰을 예측하는 AI</span></div>
   </section>
 
   <section class="slide s-demo" data-notes="디코더의 어텐션은 자기보다 뒤에 있는 토큰을 볼 수 없게 가립니다. 다음 토큰을 맞히도록 학습하는데 뒤를 보면 정답을 미리 보는 셈이기 때문입니다. 행을 눌러 보고, 인코더로 바꾸면 가림이 사라지는 것을 보여 주면 됩니다.">
@@ -1116,6 +1133,7 @@
       <div class="legend"><span><i style="background:var(--paper-2);border:1px solid var(--line)"></i>KV 캐시에서 재사용</span><span><i style="background:var(--gold-soft);border:1px solid var(--gold)"></i>이번에 새로 계산</span><span><i style="background:var(--coral)"></i>예측한 다음 토큰</span></div>
       <figcaption>방금 예측한 토큰이 다음 단계의 입력이 됩니다. 앞 토큰들의 어텐션 계산값은 <b>KV 캐시</b>에 저장해 두고 재사용하므로, 매 단계 새 토큰 하나만 계산하면 됩니다.</figcaption>
     </div>
+    <div class="gloss" data-a="fade" style="--d:9" aria-label="약어 풀이"><span><b>LLM</b><em>Large Language Model</em> · 대규모 언어 모델. 방대한 글을 학습해 다음 토큰을 예측하는 AI</span><span><b>KV</b><em>Key · Value</em> · 어텐션에서 토큰마다 만드는 키(찾아볼 표지)와 값(전달할 내용) 벡터. 이를 저장해 두는 것이 KV 캐시</span></div>
   </section>
 
   <section class="slide" data-ch="04" data-notes="추론에서 다음 토큰이 나오는 과정입니다. 모든 후보에 점수인 로짓을 매기고, 소프트맥스로 확률로 바꾼 뒤, 온도에 따라 샘플링합니다. 이 과정을 한 토큰씩 반복하는 것이 자기회귀 생성입니다.">
@@ -1138,6 +1156,7 @@
       <div class="tc" id="t-hall" data-m="hall" data-k="환각" data-e="Hallucination" data-a style="--d:4"><dt><span class="ko">환각</span><span class="enn">Hallucination</span></dt><dd>모델이 그럴듯하지만 사실이 아닌 내용을 생성하는 현상입니다. 모델이 사실을 검색하는 것이 아니라 확률적으로 그럴듯한 다음 토큰을 만들어 내기 때문에 생깁니다.</dd></div>
       <div class="tc" id="t-kv" data-m="kv" data-k="KV 캐시" data-e="KV Cache" data-a style="--d:5"><dt><span class="ko">KV 캐시</span><span class="enn">KV Cache</span></dt><dd>앞에서 계산한 어텐션 값을 저장해 두고 재사용하여 생성 속도를 높이는 기법입니다.</dd></div>
     </dl>
+    <div class="gloss" data-a="fade" style="--d:9" aria-label="약어 풀이"><span><b>KV</b><em>Key · Value</em> · 어텐션에서 토큰마다 만드는 키(찾아볼 표지)와 값(전달할 내용) 벡터. 이를 저장해 두는 것이 KV 캐시</span></div>
   </section>
 
   <section class="slide s-demo" data-notes="온도는 확률 분포를 뾰족하게 또는 평평하게 만드는 손잡이입니다. 0.3쯤에서 20번 뽑으면 거의 좋네요만 나오고, 1.8쯤에서는 바나나도 가끔 나옵니다. 모델은 사실 여부가 아니라 그럴듯함으로 고른다는 점이 환각의 이유입니다.">
@@ -1210,6 +1229,7 @@
       <div class="tc" id="t-scaling" data-m="scaling" data-k="스케일링 법칙" data-e="Scaling Laws" data-a style="--d:2"><dt><span class="ko">스케일링 법칙</span><span class="enn">Scaling Laws</span></dt><dd>파라미터 수, 데이터 양, 연산량을 늘리면 성능이 예측 가능한 패턴으로 향상된다는 경험적 법칙입니다.</dd></div>
       <div class="tc" id="t-gpu" data-m="gpu" data-k="GPU / TPU" data-e="Graphics / Tensor Processing Unit" data-a style="--d:3"><dt><span class="ko">GPU / TPU</span><span class="enn">Graphics / Tensor Processing Unit</span></dt><dd>행렬 곱셈을 대량으로 병렬 처리하는 칩입니다. 학습과 추론 모두의 핵심 하드웨어입니다.</dd></div>
     </dl>
+    <div class="gloss" data-a="fade" style="--d:9" aria-label="약어 풀이"><span><b>GPU</b><em>Graphics Processing Unit</em> · 행렬 계산을 대량으로 병렬 처리하는 칩. AI 학습·추론의 핵심 하드웨어</span><span><b>TPU</b><em>Tensor Processing Unit</em> · 구글이 AI 연산 전용으로 만든 칩</span></div>
   </section>
 
   <section class="slide" data-ch="05" data-notes="가볍게 만드는 쪽의 용어입니다. 양자화는 숫자를 적은 비트로 저장하고, 지식 증류는 큰 모델을 작은 모델이 따라 배우게 하며, MoE는 전체는 크지만 입력마다 일부 전문가만 계산합니다.">
@@ -1220,12 +1240,13 @@
       <div class="tc" id="t-distill" data-m="distill" data-k="지식 증류" data-e="Distillation" data-a style="--d:3"><dt><span class="ko">지식 증류</span><span class="enn">Distillation</span></dt><dd>큰 모델(교사)의 출력을 작은 모델(학생)이 따라 배우게 해서 작지만 성능 좋은 모델을 만드는 방법입니다.</dd></div>
       <div class="tc wide" id="t-moe" data-m="moe" data-k="MoE" data-e="Mixture of Experts" data-a style="--d:4"><dt><span class="ko">MoE</span><span class="enn">Mixture of Experts</span></dt><dd>여러 “전문가” 하위 네트워크 중 입력마다 일부만 활성화해서, 전체 규모는 크지만 계산은 효율적으로 하는 구조입니다.</dd></div>
     </dl>
+    <div class="gloss" data-a="fade" style="--d:9" aria-label="약어 풀이"><span><b>MoE</b><em>Mixture of Experts</em> · 전문가 혼합. 입력마다 일부 전문가 네트워크만 켜서 계산을 아끼는 구조</span></div>
   </section>
 
   <section class="slide s-demo" id="s-quant" data-notes="같은 70B 모델도 숫자 하나를 몇 비트로 저장하느냐에 따라 280GB에서 35GB까지 줄어듭니다. 점선은 80GB GPU 한 장 기준선으로, 8비트부터 한 장 안에 들어갑니다. 실제로는 KV 캐시 등 추가 메모리가 더 필요합니다.">
     <div class="kicker" data-a="left">5.1 · 양자화</div>
     <h2 data-a style="--d:1">같은 모델을 더 적은 비트로</h2>
-    <div class="cols" style="--cl: 420px minmax(0, 1fr)">
+    <div class="cols" style="--cl: 420px minmax(0, 1fr); align-items: center">
       <div class="side" data-a style="--d:2">
         <p>700억(70B) 파라미터 모델의 가중치를 숫자 하나당 몇 비트로 저장하느냐에 따라 필요한 메모리가 크게 달라집니다. 비트를 절반으로 줄이면 메모리도 절반이 됩니다.</p>
         <p class="cap">가중치만 계산한 값입니다(700억 × 4·2·1·0.5바이트). 실제로 돌릴 때는 KV 캐시 등 추가 메모리가 더 필요합니다. 점선은 메모리 80GB짜리 GPU 한 장을 기준으로 그은 선입니다.</p>
@@ -1241,6 +1262,7 @@
         </div>
       </div>
     </div>
+    <div class="gloss" data-a="fade" style="--d:9" aria-label="약어 풀이"><span><b>FP32 · FP16</b><em>Floating Point 32 · 16-bit</em> · 32비트·16비트 부동소수점. 소수점 위치를 옮겨 가며 넓은 범위의 실수를 표현</span><span><b>BF16</b><em>Brain Floating Point 16</em> · 구글 브레인이 만든 16비트 형식. FP32와 같은 범위를 정밀도를 줄여 담아 학습에 널리 쓰임</span><span><b>INT8 · INT4</b><em>8-bit · 4-bit Integer</em> · 8비트·4비트 정수. 가중치를 몇 단계의 정수로 반올림해 저장하는 양자화 형식</span><span><b>GPU</b><em>Graphics Processing Unit</em> · 행렬 계산을 대량으로 병렬 처리하는 칩. AI 학습·추론의 핵심 하드웨어</span><span><b>KV</b><em>Key · Value</em> · 어텐션에서 토큰마다 만드는 키(찾아볼 표지)와 값(전달할 내용) 벡터. 이를 저장해 두는 것이 KV 캐시</span></div>
   </section>
 
   <section class="slide s-demo" data-hook="moe" data-notes="MoE 모델은 토큰마다 라우터가 전문가를 고릅니다. 여기서는 전문가 여덟 개 중 두 개만 깨우므로 전문가 층의 계산량은 약 4분의 1입니다. 전체 파라미터는 크지만 토큰 하나에 드는 계산은 작습니다.">
@@ -1261,6 +1283,7 @@
         </div>
       </div>
     </div>
+    <div class="gloss" data-a="fade" style="--d:9" aria-label="약어 풀이"><span><b>MoE</b><em>Mixture of Experts</em> · 전문가 혼합. 입력마다 일부 전문가 네트워크만 켜서 계산을 아끼는 구조</span></div>
   </section>
 
   <!-- ================= FLOW ================= -->
@@ -1309,6 +1332,7 @@
       <button type="button" data-go="s-inference" data-a style="--d:5"><span class="ix">04</span><h3>추론</h3><p>고정된 가중치로 다음 토큰을 하나씩 확률적으로 뽑아 문장을 만듭니다. 환각도 여기서 생깁니다.</p></button>
       <button type="button" data-go="s-scale" data-a style="--d:6"><span class="ix">05</span><h3>규모와 효율</h3><p>키우면 좋아지지만(스케일링 법칙), 양자화·증류·MoE로 같은 성능을 더 가볍게 냅니다.</p></button>
     </div>
+    <div class="gloss" data-a="fade" style="--d:9" aria-label="약어 풀이"><span><b>LLM</b><em>Large Language Model</em> · 대규모 언어 모델. 방대한 글을 학습해 다음 토큰을 예측하는 AI</span></div>
   </section>
 
   <section class="slide" id="s-index" data-notes="42개 용어를 장별로 모았습니다. 용어를 누르면 그 용어 카드가 있는 슬라이드로 이동하고 카드가 강조됩니다. 질의응답 때 다시 찾아갈 때 쓰면 편합니다.">
