@@ -58,7 +58,7 @@
   const slugOk = s => /^[a-z0-9][a-z0-9-]{0,60}$/.test(s);
 
   function serialize(list) {
-    const clean = list.map(({ href, title, desc, type, tags, date, thumb }) => ({ href, title, desc, type, tags, date, thumb }));
+    const clean = list.map(({ href, title, desc, type, tags, date, thumb, hidden }) => ({ href, title, desc, type, tags, date, thumb, ...(hidden ? { hidden: true } : {}) }));
     const json = JSON.stringify(clean, null, 2)
       .replace(/\[\n\s+("[^\]]*?")\n\s+\]/g, (m, inner) => '[' + inner.split(/,\n\s+/).join(', ') + ']');
     return '// 아카이브 데이터. 관리 모드(편집)에서 저장하면 이 파일이 자동으로 다시 쓰입니다.\n' +
@@ -390,6 +390,7 @@
           <label class="adm-field"><span>날짜 <b>*</b></span><input type="date" name="date" required value="${esc(it.date)}"></label>
           <label class="adm-field full"><span>설명</span><textarea name="desc">${esc(it.desc)}</textarea></label>
           <label class="adm-field full"><span>태그</span><input type="text" name="tags" value="${esc(it.tags.join(', '))}" placeholder="쉼표로 구분"></label>
+          <label class="adm-check full"><input type="checkbox" name="hidden" ${it.hidden ? 'checked' : ''}> 아카이브 목록에서 숨기기 (관리 모드에서만 보이고, 페이지 주소로는 계속 열려요)</label>
 
           <div class="adm-field full"><span>페이지</span>
             <div class="adm-seg" role="radiogroup">
@@ -437,6 +438,7 @@
           tags: v('tags').split(/[,，]/).map(s => s.trim().replace(/^#/, '')).filter(Boolean),
           date: v('date'), thumb: it.thumb,
         };
+        if (f.elements.hidden.checked) next.hidden = true;
         const files = [];
         const htmlFile = f.elements.html.files[0];
 
@@ -523,6 +525,22 @@
     });
   }
 
+
+  let toggling = false;
+  async function toggleHidden(it, btn) {
+    if (toggling) return;
+    toggling = true; btn.disabled = true;
+    const hide = !it.hidden;
+    const next = { ...it }; if (hide) next.hidden = true; else delete next.hidden;
+    try {
+      await commit(`${hide ? 'Hide' : 'Show'} artifact: ${it.title}`, items.map(i => i === it ? next : i));
+      applyItems(it.href);
+      toast(hide ? '숨겼습니다. 방문자 목록에서는 1~2분 뒤 사라져요.' : '다시 보이게 했습니다. 사이트에는 1~2분 뒤 반영돼요.', 4200);
+    } catch (e) {
+      toast(e.message || '저장하지 못했습니다.', 5000);
+      if (e.conflict) refresh(it.href).catch(() => {});
+    } finally { toggling = false; btn.disabled = false; }
+  }
 
   /* ── visitor submissions (GitHub issues labelled "submission") ── */
   const SITE = `https://${REPO.split('/')[0]}.github.io/${REPO.split('/')[1]}/`;
@@ -635,7 +653,9 @@
     else if (act === 'logout') leave();
     else {
       const it = items.find(i => i.href === b.dataset.href); if (!it) return;
-      act === 'edit' ? itemDialog(it) : deleteDialog(it);
+      if (act === 'edit') itemDialog(it);
+      else if (act === 'hide') toggleHidden(it, b);
+      else deleteDialog(it);
     }
   });
 

@@ -297,7 +297,12 @@
   @media (pointer: coarse) { .edit-entry { height: 42px; width: 42px; } }
   .rows li { position: relative; }
   .row-actions { position: absolute; right: 0; top: 50%; transform: translateY(-50%); gap: 6px; }
-  body.admin .rows a { padding-right: 140px; }
+  body.admin .rows a { padding-right: 210px; }
+  /* hidden items: only listed in admin mode, dimmed and tagged */
+  .hid { font-family: inherit; font-size: 10px; font-weight: 600; letter-spacing: .04em; color: var(--bg); background: var(--text-60, #888); padding: 1px 6px; border-radius: 999px; margin-left: 6px; vertical-align: 2px; }
+  .sleeve.is-hidden .face img { opacity: .4; filter: grayscale(1); }
+  .rows li.is-hidden a { opacity: .5; }
+  .chip.is-hidden { opacity: .5; }
   body.admin .caption { min-height: 168px; }
   /* short laptop screens: tighten the chrome around the covers */
   @media (max-height: 800px) and (min-width: 621px) {
@@ -522,10 +527,14 @@
   const byDate = (a, b) => b.date.localeCompare(a.date);
   let all = (Array.isArray(window.ITEMS) ? window.ITEMS : []).slice().sort(byDate);
   let types = [];
-  const count = t => t === '전체' ? all.length : all.filter(i => i.type === t).length;
+  // hidden items stay in the data but are only shown while admin mode is on
+  const isAdmin = () => document.body.classList.contains('admin');
+  const shownAll = () => isAdmin() ? all : all.filter(i => !i.hidden);
+  const inTab = () => shownAll().filter(i => active === '전체' || i.type === active);
+  const count = t => t === '전체' ? shownAll().length : shownAll().filter(i => i.type === t).length;
 
   let active = '전체';
-  let list = all;
+  let list = inTab();
   let view = 'stage';
   let pos = 0, target = 0, shown = -1, raf = 0, lastT = 0;
   const sleevesEl = $('sleeves'), stripEl = $('strip'), scene = $('scene');
@@ -540,7 +549,7 @@
   const TAB_DEFAULT = '<path d="M2.5 8.6V2.5h6.1l5 5-6.1 6.1z"/><circle cx="5.6" cy="5.6" r="1"/>';
   const tabIcon = t => `<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true">${TAB_ICONS[t] || TAB_DEFAULT}</svg>`;
   function renderTabs() {
-    types = ['전체', ...new Set(all.map(i => i.type))];
+    types = ['전체', ...new Set(shownAll().map(i => i.type))];
     if (!types.includes(active)) active = '전체';
     $('tabs').innerHTML = types.map(t => `<button class="tab" type="button" aria-pressed="${t === active}" data-t="${esc(t)}" title="${esc(t)} ${count(t)}개" aria-label="${esc(t)} ${count(t)}개">${tabIcon(t)}</button>`).join('');
   }
@@ -548,7 +557,7 @@
     const b = e.target.closest('.tab'); if (!b) return;
     active = b.dataset.t;
     $('tabs').querySelectorAll('.tab').forEach(x => x.setAttribute('aria-pressed', x === b));
-    list = all.filter(i => active === '전체' || i.type === active);
+    list = inTab();
     buildStage(); renderIndex();
   });
 
@@ -556,20 +565,28 @@
   function setItems(items, focusHref) {
     all = items.slice().sort(byDate);
     renderTabs();
-    list = all.filter(i => active === '전체' || i.type === active);
+    list = inTab();
     buildStage(); renderIndex();
     const n = list.findIndex(i => i.href === focusHref);
     if (n >= 0) { pos = target = n; shown = -1; layout(); }
   }
+  // entering or leaving admin mode shows or hides the hidden items
+  let wasAdmin = isAdmin();
+  new MutationObserver(() => {
+    if (isAdmin() === wasAdmin) return;
+    wasAdmin = isAdmin();
+    const cur = list[clamp(Math.round(pos))];
+    setItems(all, cur && cur.href);
+  }).observe(document.body, { attributes: true, attributeFilter: ['class'] });
 
   /* ── stage ─────────────────────────────── */
   function buildStage() {
     sleevesEl.innerHTML = list.map((i, n) => `
-      <a class="sleeve" href="${esc(i.href)}" data-n="${n}"${/스크롤형/.test(i.title) ? ' data-live="1"' : ''} tabindex="-1" aria-label="${esc(i.title)} 열기" draggable="false">
+      <a class="sleeve${i.hidden ? ' is-hidden' : ''}" href="${esc(i.href)}" data-n="${n}"${/스크롤형/.test(i.title) ? ' data-live="1"' : ''} tabindex="-1" aria-label="${esc(i.title)} 열기" draggable="false">
         <div class="face"><img src="${esc(i._preview || i.thumb)}" alt="" draggable="false" ${n > 6 ? 'loading="lazy"' : ''}><span class="open-hint">열기 ↗</span></div>
       </a>`).join('');
     stripEl.innerHTML = list.map((i, n) => `
-      <button class="chip" type="button" data-n="${n}">
+      <button class="chip${i.hidden ? ' is-hidden' : ''}" type="button" data-n="${n}">
         <small class="mono">${short(i.date)}<span style="background:none">${esc(i.type)}</span>${isNew(i.date) ? '<span class="new" style="background:none">NEW</span>' : ''}</small>
         <div class="t"><span>${esc(i.title)}</span></div>
       </button>`).join('');
@@ -604,11 +621,12 @@
   function showCaption(n) {
     const i = list[n];
     $('caption').innerHTML = `
-      <div class="kicker mono"><span>${esc(i.type)}</span><span>·</span><span>${i.date}</span>${isNew(i.date) ? '<span class="new">NEW</span>' : ''}</div>
+      <div class="kicker mono"><span>${esc(i.type)}</span><span>·</span><span>${i.date}</span>${isNew(i.date) ? '<span class="new">NEW</span>' : ''}${i.hidden ? '<span class="hid">숨김</span>' : ''}</div>
       <h2>${esc(i.title)}</h2>
       <p>${esc(i.desc)}</p>
       <div class="admin-only cap-actions">
         <button type="button" class="pill" data-act="edit" data-href="${esc(i.href)}">수정</button>
+        <button type="button" class="pill" data-act="hide" data-href="${esc(i.href)}" aria-pressed="${!!i.hidden}">${i.hidden ? '보이기' : '숨기기'}</button>
         <button type="button" class="pill danger" data-act="delete" data-href="${esc(i.href)}">삭제</button>
       </div>`;
     $('counter').innerHTML = `<b>${String(n + 1).padStart(2, '0')}</b> / ${String(list.length).padStart(2, '0')}`;
@@ -766,14 +784,15 @@
     const rows = list.filter(i => !term || [i.title, i.desc, i.type, ...i.tags].join(' ').toLowerCase().includes(term));
     $('indexTitle').innerHTML = `${active === '전체' ? '모든 아티팩트' : esc(active)} <em class="mono">${String(rows.length).padStart(2, '0')}</em>`;
     rowsEl.innerHTML = rows.length ? rows.map((i, n) => `
-      <li><a href="${esc(i.href)}" data-thumb="${esc(i._preview || i.thumb)}"${/스크롤형/.test(i.title) ? ' data-live="1"' : ''}>
+      <li${i.hidden ? ' class="is-hidden"' : ''}><a href="${esc(i.href)}" data-thumb="${esc(i._preview || i.thumb)}"${/스크롤형/.test(i.title) ? ' data-live="1"' : ''}>
         <span class="n mono">${String(n + 1).padStart(2, '0')}</span>
-        <span class="ti">${esc(i.title)}${isNew(i.date) ? '<span class="new">NEW</span>' : ''}</span>
+        <span class="ti">${esc(i.title)}${isNew(i.date) ? '<span class="new">NEW</span>' : ''}${i.hidden ? '<span class="hid">숨김</span>' : ''}</span>
         <span class="de">${esc(i.desc)}</span>
         <span class="ty">${esc(i.type)}</span>
         <span class="dt mono">${i.date}</span>
       </a><div class="admin-only row-actions">
         <button type="button" class="pill" data-act="edit" data-href="${esc(i.href)}">수정</button>
+        <button type="button" class="pill" data-act="hide" data-href="${esc(i.href)}" aria-pressed="${!!i.hidden}">${i.hidden ? '보이기' : '숨기기'}</button>
         <button type="button" class="pill danger" data-act="delete" data-href="${esc(i.href)}">삭제</button>
       </div></li>`).join('') : '<li class="empty">검색 결과가 없습니다.</li>';
   }
