@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="description" content="신경망 구조, 학습, LLM, 추론, 규모와 효율까지. AI가 작동하는 과정을 따라 필수 용어 38개를 스크롤로 읽는 리포트">
+<meta name="description" content="신경망 구조, 학습, LLM, 추론, 규모와 효율까지. AI가 작동하는 과정을 따라 필수 용어 42개를 스크롤로 읽는 리포트">
 <title>AI 작동 원리 용어</title>
 <link rel="icon" href="../favicon.ico" sizes="any">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -568,6 +568,7 @@ footer.site a { color: var(--ink-2); }
 .seg { display: inline-flex; padding: 3px; border-radius: 999px; background: var(--paper-2); gap: 2px; margin-bottom: 14px; flex-wrap: wrap; }
 .seg button { appearance: none; border: 0; background: transparent; color: var(--ink-2); font: 700 13px/1 var(--sans); padding: 9px 14px; border-radius: 999px; cursor: pointer; }
 .seg button.on { background: var(--paper); color: var(--ink); box-shadow: 0 1px 3px rgba(0,0,0,.12); }
+@media (max-width: 520px) { .seg { display: flex; width: 100%; border-radius: 14px; flex-wrap: nowrap; } .seg button { flex: 1; border-radius: 11px; font-size: 12px; line-height: 1.3; padding: 8px 6px; } }
 .kp-prompt { font: 700 clamp(17px, 2.3vw, 21px)/1.5 var(--sans); margin-bottom: 12px; }
 .kp-prompt .blank { display: inline-block; min-width: 3em; border-bottom: 2px solid var(--coral); }
 .kp-head, .kp > div { display: grid; grid-template-columns: 70px minmax(0, 1fr) 48px 48px 52px; gap: 8px; align-items: center; }
@@ -598,6 +599,60 @@ footer.site a { color: var(--ink-2); }
   .kp > div { font-size: 13px; }
   .kp .pc, .kp .cu, .kp .fi { font-size: 11.5px; }
 }
+
+/* ---------- transformer architecture ---------- */
+.arch-wrap { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 18px; align-items: start; }
+.arch-wrap.ed { grid-template-columns: minmax(0, 1fr); }
+@media (max-width: 640px) { .arch-wrap { grid-template-columns: minmax(0, 1fr); } }
+.arch { display: grid; grid-template-columns: repeat(var(--cols, 1), minmax(0, 1fr)); gap: 14px; align-items: start; }
+.acol { display: flex; flex-direction: column; align-items: stretch; min-width: 0; }
+.ach { font: 700 11.5px/1 var(--en); letter-spacing: .12em; text-transform: uppercase; color: var(--ink-3); text-align: center; margin-bottom: 8px; }
+.ar2 { display: block; height: 14px; position: relative; }
+.ar2::before { content: ""; position: absolute; left: 50%; top: 1px; bottom: 4px; width: 1.5px; background: var(--ink-3); }
+.ar2::after { content: ""; position: absolute; left: 50%; bottom: 1px; margin-left: -3.5px; border: 4px solid transparent; border-top: 5px solid var(--ink-3); border-bottom: 0; width: 0; }
+.nd2 { appearance: none; width: 100%; border: 1.5px solid var(--line); border-radius: 10px; padding: 8px 10px; background: var(--bg); color: var(--ink); font: 700 13.5px/1.3 var(--sans); cursor: pointer; text-align: center; transition: transform .2s, box-shadow .2s, background .2s; }
+.nd2 small { display: block; font: 500 10.5px/1.3 var(--en); color: var(--ink-3); margin-top: 2px; }
+.nd2:hover { transform: translateY(-1px); }
+.nd2.io { background: var(--paper-2); }
+.nd2.prep { background: var(--violet-soft); border-color: color-mix(in srgb, var(--violet) 55%, transparent); }
+.nd2.att { background: var(--gold-soft); border-color: color-mix(in srgb, var(--gold) 65%, transparent); }
+.nd2.ffn { background: var(--blue-soft); border-color: color-mix(in srgb, var(--blue) 55%, transparent); }
+.nd2.norm { background: var(--green-soft); border-color: color-mix(in srgb, var(--green) 50%, transparent); padding: 4px 8px; font-size: 12px; }
+.nd2.norm small { display: none; }
+.nd2.head { background: var(--coral-soft); border-color: color-mix(in srgb, var(--coral) 50%, transparent); }
+.nd2.hot { box-shadow: 0 0 0 3px color-mix(in srgb, var(--gold) 55%, transparent), 0 6px 18px color-mix(in srgb, var(--gold) 30%, transparent); transform: scale(1.03); }
+.nd2.sel { outline: 2px solid var(--ink); outline-offset: 2px; }
+.nd2 .xin { display: block; font: 700 10.5px var(--sans); color: var(--coral); margin-top: 3px; }
+.blk2 { position: relative; border: 1.5px dashed var(--ink-3); border-radius: 14px; padding: 34px 10px 10px 26px; background: color-mix(in srgb, var(--paper-2) 45%, transparent); }
+.blk2 .rep { position: absolute; top: 6px; left: 8px; right: 8px; appearance: none; border: 0; background: none; cursor: pointer; display: flex; justify-content: space-between; align-items: baseline; gap: 6px; font: 800 13px/1.2 var(--en); color: var(--ink); padding: 2px 4px; border-radius: 6px; }
+.blk2 .rep small { font: 500 11px var(--sans); color: var(--ink-3); }
+.blk2 .rep.hot, .blk2 .rep.sel { background: var(--gold-soft); }
+.sub2 { position: relative; }
+.sub2::before { content: ""; position: absolute; left: -16px; top: 12px; bottom: 10px; width: 10px; border: 1.5px solid var(--green); border-right: 0; border-radius: 8px 0 0 8px; }
+.sub2::after { content: ""; position: absolute; left: -7px; bottom: 6px; border: 4px solid transparent; border-left: 5px solid var(--green); border-right: 0; }
+.apanel { border: 1px solid var(--line); background: var(--bg); border-radius: 14px; padding: 16px 18px; min-height: 200px; position: sticky; top: 80px; }
+.arch-wrap.ed .apanel { position: static; min-height: 0; }
+.apanel .k { font: 700 11px/1 var(--en); letter-spacing: .12em; text-transform: uppercase; color: var(--gold); }
+.apanel h6 { margin: 8px 0 2px; font-size: 18px; line-height: 1.35; }
+.apanel .en2 { font: 500 12.5px var(--en); color: var(--ink-3); }
+.apanel p { margin: 10px 0 0; font-size: 14.5px; line-height: 1.7; color: var(--ink-2); }
+.apanel p b { color: var(--ink); }
+.apanel .num { display: inline-block; margin-top: 12px; font: 600 12px/1.5 var(--mono); padding: 6px 9px; border-radius: 8px; background: var(--paper-2); color: var(--ink-2); }
+.apanel .step { margin-top: 12px; font: 700 12px var(--mono); color: var(--ink-3); }
+
+.mgrid { display: grid; grid-template-columns: 62px repeat(5, minmax(0, 1fr)); gap: 4px; margin-top: 4px; }
+.mgrid .hd { font-size: 12.5px; font-weight: 700; color: var(--ink-2); text-align: center; padding: 4px 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.mgrid .rl { appearance: none; border: 1.5px solid var(--line); background: var(--bg); color: var(--ink); font: 700 12.5px var(--sans); border-radius: 8px; cursor: pointer; padding: 0 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.mgrid .rl.sel { border-color: var(--coral); background: var(--coral-soft); }
+.mgrid .mc { height: 36px; border-radius: 7px; display: grid; place-items: center; font: 700 11px var(--mono); color: var(--ink); background: color-mix(in srgb, var(--gold) calc(var(--a) * 100%), var(--paper-2)); transition: background .3s, opacity .3s; }
+.mgrid .mc.x { background: repeating-linear-gradient(135deg, var(--paper-2) 0 5px, var(--line) 5px 7px); color: var(--ink-3); font-size: 13px; }
+.mgrid .mc.dim { opacity: .35; }
+.js .mgrid .mc { opacity: 0; }
+.in .mgrid .mc { animation: pop .4s var(--ease) both; animation-delay: var(--d); }
+.in .mgrid .mc.dim { animation-name: popDim; }
+@keyframes popDim { 0% { opacity: 0; transform: scale(.55); } 100% { opacity: .35; transform: none; } }
+@media (max-width: 480px) { .mgrid { grid-template-columns: 52px repeat(5, minmax(0, 1fr)); gap: 3px; } .mgrid .hd { font-size: 11px; } .mgrid .mc { height: 30px; font-size: 10px; } }
+.mini .s-gr { stroke: var(--green); stroke-width: 2; } .mini .s-v { stroke: var(--violet); stroke-width: 2; }
 
 @media (max-width: 640px) {
   body { font-size: 16px; line-height: 1.78; }
@@ -635,9 +690,9 @@ footer.site a { color: var(--ink-2); }
 <div class="hero gutter" id="hero">
   <div class="hero-in">
     <div class="kicker rv" style="--d:0ms">AI Basics · Glossary</div>
-    <h1 class="rv" style="--d:120ms">AI는 어떻게 작동할까<br><em>필수 용어 38개</em></h1>
+    <h1 class="rv" style="--d:120ms">AI는 어떻게 작동할까<br><em>필수 용어 42개</em></h1>
     <p class="lede rv" style="--d:260ms">AI가 작동하는 과정은 크게 <b>구조(신경망) → 학습(가중치 조정) → 추론(학습된 모델 사용)</b>의 세 단계로 볼 수 있습니다. 이 흐름을 따라가며 꼭 알아야 할 용어를 정리했습니다.</p>
-    <div class="meta rv" style="--d:380ms"><span>📄 5개 장 · 38개 용어</span><span>⏱ 약 12분 읽기</span><span>🖱 도해와 용어 카드를 직접 움직여 볼 수 있어요</span></div>
+    <div class="meta rv" style="--d:380ms"><span>📄 5개 장 · 42개 용어</span><span>⏱ 약 14분 읽기</span><span>🖱 도해와 용어 카드를 직접 움직여 볼 수 있어요</span></div>
 
     <div class="shift rv" style="--d:480ms" aria-label="AI 작동 3단계">
       <div class="rail"><i></i></div><div class="glow"></div>
@@ -647,7 +702,7 @@ footer.site a { color: var(--ink-2); }
     </div>
 
     <div class="stats rv" style="--d:640ms">
-      <a href="#index"><b data-count="38" data-suf="개">0</b><span>이 페이지에 담은 필수 용어</span></a>
+      <a href="#index"><b data-count="42" data-suf="개">0</b><span>이 페이지에 담은 필수 용어</span></a>
       <a href="#structure"><b data-count="700" data-suf="억">0</b><span>“70B 모델”이 학습으로 조정하는 숫자의 개수</span></a>
       <a href="#llm"><b>2017</b><span>트랜스포머를 제안한 논문이 나온 해</span></a>
       <a href="#inference"><b data-count="1" data-suf="토큰">0</b><span>LLM이 한 번에 예측하는 양</span></a>
@@ -784,6 +839,10 @@ footer.site a { color: var(--ink-2); }
         <div class="tc" id="t-emb" data-k="임베딩" data-e="Embedding"><dt><span class="ko">임베딩</span><span class="enn">Embedding</span></dt><dd>토큰을 수백에서 수천 차원의 숫자 벡터로 바꾼 것입니다. 의미가 비슷한 단어는 벡터 공간에서 가까운 위치에 놓입니다.</dd></div>
         <div class="tc" id="t-tf" data-k="트랜스포머" data-e="Transformer"><dt><span class="ko">트랜스포머</span><span class="enn">Transformer</span></dt><dd>2017년 논문 “Attention Is All You Need”에서 제안된 구조로, 현재 대부분의 LLM이 이 구조를 기반으로 합니다.</dd></div>
         <div class="tc" id="t-attn" data-k="어텐션 / 셀프 어텐션" data-e="Attention / Self-Attention"><dt><span class="ko">어텐션 / 셀프 어텐션</span><span class="enn">Attention / Self-Attention</span></dt><dd>문장 안의 각 토큰이 다른 토큰들 중 어디를 얼마나 참고할지 계산하는 메커니즘입니다. 예를 들어 “그것”이 앞의 어떤 명사를 가리키는지 파악하는 데 쓰입니다.</dd></div>
+        <div class="tc" id="t-pos" data-k="위치 인코딩" data-e="Positional Encoding"><dt><span class="ko">위치 인코딩</span><span class="enn">Positional Encoding</span></dt><dd>어텐션은 토큰의 순서를 스스로 알지 못합니다. 그래서 각 토큰이 몇 번째 자리인지 나타내는 값을 임베딩에 더해 주는 장치입니다.</dd></div>
+        <div class="tc" id="t-mha" data-k="멀티헤드 어텐션" data-e="Multi-Head Attention"><dt><span class="ko">멀티헤드 어텐션</span><span class="enn">Multi-Head Attention</span></dt><dd>어텐션을 여러 개(헤드) 나란히 돌려, 문법 관계·지시 대상·주제처럼 서로 다른 관계를 동시에 보게 하는 구조입니다. 원 논문은 헤드 8개를 썼습니다.</dd></div>
+        <div class="tc" id="t-ffn" data-k="피드포워드 신경망" data-e="Feed-Forward Network"><dt><span class="ko">피드포워드 신경망</span><span class="enn">Feed-Forward Network</span></dt><dd>트랜스포머 블록 안에서 토큰 벡터 하나하나를 따로 가공하는 2층 신경망입니다. 모델 파라미터의 큰 몫을 차지합니다.</dd></div>
+        <div class="tc" id="t-res" data-k="잔차 연결 / 층 정규화" data-e="Residual Connection / Layer Norm"><dt><span class="ko">잔차 연결 / 층 정규화</span><span class="enn">Residual Connection / Layer Norm</span></dt><dd>각 단계의 입력을 출력에 그대로 더하고(잔차 연결), 값의 범위를 고르게 맞추는(층 정규화) 장치입니다. 층을 깊게 쌓아도 학습이 안정되게 해 줍니다.</dd></div>
         <div class="tc" id="t-ctx" data-k="컨텍스트 윈도우" data-e="Context Window"><dt><span class="ko">컨텍스트 윈도우</span><span class="enn">Context Window</span></dt><dd>모델이 한 번에 읽고 고려할 수 있는 최대 토큰 수입니다.</dd></div>
         <div class="tc" id="t-pre" data-k="사전학습" data-e="Pre-training"><dt><span class="ko">사전학습</span><span class="enn">Pre-training</span></dt><dd>방대한 텍스트로 “다음 토큰 맞히기”를 반복하며 언어와 세상에 대한 일반 지식을 익히는 단계입니다. 비용이 가장 많이 드는 단계이기도 합니다.</dd></div>
         <div class="tc" id="t-ft" data-k="파인튜닝" data-e="Fine-tuning"><dt><span class="ko">파인튜닝</span><span class="enn">Fine-tuning</span></dt><dd>사전학습된 모델을 특정 목적에 맞는 데이터로 추가 학습시키는 것입니다.</dd></div>
@@ -818,7 +877,32 @@ footer.site a { color: var(--ink-2); }
         <figcaption>학습할 때를 기준으로 그린 그림입니다. 트랜스포머도 답을 <b>생성</b>할 때는 4장에서 보듯 한 토큰씩 만들지만, 이미 주어진 문장은 한꺼번에 계산합니다.</figcaption>
       </div>
 
-      <h3><span class="hn">3.2</span>어텐션: 각 토큰이 어디를 보는가</h3>
+      <h3><span class="hn">3.2</span>트랜스포머 아키텍처: 같은 블록을 층층이 쌓은 구조</h3>
+      <p>트랜스포머는 <strong>임베딩 → 같은 구조의 블록 여러 층 → 출력층</strong>으로 이루어집니다. 블록 하나는 토큰끼리 정보를 주고받는 <mark>어텐션</mark>과 토큰 하나하나를 따로 가공하는 <mark>피드포워드 신경망</mark>, 두 부분으로 되어 있고, 각 부분 뒤에는 <strong>더하기 &amp; 정규화</strong>가 붙습니다.</p>
+      <p>원 논문은 번역을 위해 원문을 읽는 <b>인코더</b>와 번역문을 쓰는 <b>디코더</b>를 짝지었습니다. GPT 계열을 비롯한 오늘날 대부분의 LLM은 이 중 <b>디코더만</b> 여러 층 쌓은 구조를 씁니다. 아래 그림에서 블록을 눌러 각 부분이 하는 일을 확인해 보세요.</p>
+
+      <div class="fig" data-fig="arch">
+        <div class="fig-h"><span class="t">트랜스포머 구조도</span><button class="replay" type="button" id="archPlay">▶ 흐름 재생</button></div>
+        <div class="seg" role="group" aria-label="구조 선택" id="archSeg"><button type="button" class="on" data-m="dec">디코더 전용 · 오늘날 LLM</button><button type="button" data-m="ed">인코더-디코더 · 2017 원 논문</button></div>
+        <div class="arch-wrap" id="archWrap">
+          <div class="arch" id="arch"></div>
+          <div class="apanel" id="apanel" aria-live="polite"></div>
+        </div>
+        <div class="legend"><span><i style="background:var(--violet-soft);border:1px solid var(--violet)"></i>입력 준비</span><span><i style="background:var(--gold-soft);border:1px solid var(--gold)"></i>어텐션</span><span><i style="background:var(--blue-soft);border:1px solid var(--blue)"></i>피드포워드</span><span><i style="background:var(--green-soft);border:1px solid var(--green)"></i>더하기 &amp; 정규화 · 초록 선은 잔차 연결</span><span><i style="background:var(--coral-soft);border:1px solid var(--coral)"></i>출력</span></div>
+        <figcaption>원 논문 수치는 기본(base) 모델 기준입니다. 최근 모델은 정규화 위치, 위치 인코딩 방식 등 세부를 바꿨지만 큰 틀은 같습니다.</figcaption>
+      </div>
+
+      <p>디코더의 어텐션에는 <strong>마스크</strong>가 붙습니다. 다음 토큰을 맞히도록 학습하는데, 각 위치가 자기보다 뒤에 있는 토큰(곧 정답)을 미리 보면 시험지를 보고 답을 쓰는 셈이 되기 때문입니다. 그래서 어텐션 점수표의 오른쪽 위 절반을 가립니다.</p>
+
+      <div class="fig" data-fig="mask">
+        <div class="fig-h"><span class="t">마스크드 어텐션: 앞만 보게 가리기</span><span class="s">행을 눌러 보세요 · 값은 예시</span></div>
+        <div class="seg" role="group" aria-label="마스크 선택" id="maskSeg"><button type="button" class="on" data-m="1">디코더 · 마스크 있음</button><button type="button" data-m="0">인코더 · 마스크 없음</button></div>
+        <div class="mgrid" id="mgrid"></div>
+        <div class="verdict" id="maskNote"></div>
+        <figcaption>행은 “지금 이해하려는 토큰”, 열은 “참고할 수 있는 토큰”입니다. 색이 진할수록 많이 참고합니다.</figcaption>
+      </div>
+
+      <h3><span class="hn">3.3</span>어텐션: 각 토큰이 어디를 보는가</h3>
       <p>“그것은”이라는 토큰만 봐서는 무엇을 가리키는지 알 수 없습니다. 셀프 어텐션은 문장 안의 다른 토큰들에 점수를 매겨, 이 토큰을 이해할 때 어디를 얼마나 참고할지 정합니다. 토큰을 눌러 보세요.</p>
 
       <div class="fig" data-fig="attn">
@@ -831,7 +915,7 @@ footer.site a { color: var(--ink-2); }
         <figcaption><b>예시 값입니다.</b> 실제 모델은 어텐션을 여러 층, 여러 “헤드”에서 동시에 계산하고, 헤드마다 보는 관계가 다릅니다.</figcaption>
       </div>
 
-      <h3><span class="hn">3.3</span>컨텍스트 윈도우: 한 번에 볼 수 있는 범위</h3>
+      <h3><span class="hn">3.4</span>컨텍스트 윈도우: 한 번에 볼 수 있는 범위</h3>
       <p>대화가 길어지면 앞부분부터 창 밖으로 밀려납니다. 창 밖으로 나간 내용은 모델에게 더 이상 보이지 않습니다.</p>
       <div class="fig" data-fig="ctx">
         <div class="fig-h"><span class="t">대화가 길어질 때</span><button class="replay" type="button" data-replay>다시 재생</button></div>
@@ -1006,7 +1090,7 @@ footer.site a { color: var(--ink-2); }
     <section id="index" data-n="※" data-t="용어 색인">
       <span class="sec-label"><span class="num">※</span> · 부록</span>
       <h2>용어 색인</h2>
-      <p>38개 용어를 장별로 모았습니다. 누르면 해당 설명으로 이동합니다.</p>
+      <p>42개 용어를 장별로 모았습니다. 누르면 해당 설명으로 이동합니다.</p>
       <div class="tindex" id="tindex"></div>
       <p class="endnote">이 페이지는 2026년 6월까지 알려진 일반적인 지식을 바탕으로 정리했습니다. 도해와 데모는 이해를 돕기 위해 새로 만든 것이며, “예시”라고 적힌 수치는 실제 모델의 값이 아닙니다.</p>
     </section>
@@ -1325,6 +1409,89 @@ footer.site a { color: var(--ink-2); }
     }
   };
 
+
+  /* ---------- 03 transformer architecture ---------- */
+  const PARTS = {
+    tok: ['입력 토큰', 'Input Tokens', '문장을 토큰으로 쪼갠 뒤 각 토큰을 어휘표의 번호로 바꾼 목록입니다. 예: “오늘 날씨가 정말” → [번호, 번호, 번호].'],
+    tok_src: ['입력 문장 (원문)', 'Source Tokens', '번역할 원문입니다. 원 논문의 번역 과제에서는 영어 문장이 여기에 들어갑니다.'],
+    tok_tgt: ['지금까지 만든 출력', 'Output So Far', '디코더는 지금까지 만든 번역문을 입력으로 받아 다음 단어를 예측합니다. 처음에는 시작 기호 하나만 들어갑니다.'],
+    emb: ['토큰 임베딩', 'Token Embedding', '토큰 번호를 수백~수천 차원의 숫자 벡터로 바꿉니다. 이 벡터가 블록을 하나씩 지나며 문맥을 담도록 계속 다듬어집니다.', '원 논문: 512차원'],
+    pos: ['+ 위치 인코딩', 'Positional Encoding', '어텐션은 그 자체로는 토큰의 순서를 모릅니다. “몇 번째 자리인지”를 나타내는 값을 임베딩에 더해, “개가 사람을 물었다”와 “사람이 개를 물었다”를 구별하게 합니다.', '원 논문: 사인·코사인 함수 · 요즘은 RoPE 같은 방식도 많이 씀'],
+    mattn: ['마스크드 멀티헤드 셀프 어텐션', 'Masked Multi-Head Self-Attention', '각 토큰이 문맥 속 다른 토큰을 참고해 자기 벡터를 고칩니다. 다음 토큰을 미리 보면 안 되므로 <b>자기보다 앞쪽 토큰만</b> 보도록 뒤쪽을 가립니다(아래 마스크 그림). 여러 헤드가 서로 다른 관계를 동시에 봅니다.', '원 논문: 헤드 8개'],
+    sattn: ['멀티헤드 셀프 어텐션', 'Multi-Head Self-Attention', '인코더에서는 가림 없이 모든 토큰이 앞뒤를 다 봅니다. 원문 전체의 뜻을 파악하는 단계입니다.', '원 논문: 헤드 8개'],
+    cross: ['크로스 어텐션', 'Encoder–Decoder Attention', '디코더가 <b>인코더가 만든 원문 표현</b>을 참고하는 어텐션입니다. 번역할 때 “지금 원문의 어느 단어를 옮길 차례인지” 찾는 역할을 합니다. 디코더 전용 모델에는 이 층이 없습니다.'],
+    addnorm: ['더하기 & 정규화', 'Add & Norm', '바로 앞 단계의 입력을 출력에 그대로 더하고(<b>잔차 연결</b>, 초록 선), 값의 범위를 고르게 맞춥니다(<b>층 정규화</b>). 층을 깊게 쌓아도 정보가 사라지지 않고 학습이 안정됩니다.'],
+    ffn: ['피드포워드 신경망', 'Feed-Forward Network', '토큰 벡터 하나하나를 따로 통과시키는 작은 2층 신경망입니다. 어텐션이 “다른 토큰에서 정보 모으기”라면, 피드포워드는 “모은 정보를 각자 가공하기”입니다. 모델 파라미터의 상당 부분이 여기에 있습니다.', '원 논문: 내부 2048차원'],
+    block: ['트랜스포머 블록', 'Transformer Block', '어텐션과 피드포워드로 이루어진 같은 구조의 블록을 여러 층 쌓습니다. 층을 지날수록 토큰 벡터가 문맥을 더 많이 담게 됩니다. 1장의 “은닉층”이 여기에 해당합니다.'],
+    linear: ['출력 선형층', 'Linear · LM Head', '마지막 위치의 벡터를 어휘표 크기만큼의 점수(로짓)로 바꿉니다. 어휘가 5만 개라면 점수도 5만 개가 나옵니다.'],
+    softmax: ['소프트맥스', 'Softmax', '로짓을 모두 더하면 1이 되는 확률로 바꿉니다. 여기서 나온 확률로 4장의 샘플링(온도, Top-k, Top-p)을 합니다.'],
+    out: ['다음 토큰', 'Next Token', '확률에 따라 고른 토큰을 입력 끝에 붙이고 처음부터 다시 계산합니다. 4장의 자기회귀 생성이 바로 이 반복입니다.'],
+  };
+  const PTYPE = { tok: 'io', tok_src: 'io', tok_tgt: 'io', out: 'head', emb: 'prep', pos: 'prep', mattn: 'att', sattn: 'att', cross: 'att', addnorm: 'norm', ffn: 'ffn', linear: 'head', softmax: 'head' };
+  const ARCHS = {
+    dec: [{ title: '디코더 전용', items: ['tok', 'emb', 'pos', { rep: '× N층', note: '모델마다 수십 층', subs: [['mattn', 'addnorm'], ['ffn', 'addnorm']] }, 'linear', 'softmax', 'out'] }],
+    ed: [
+      { title: '인코더 · 원문 읽기', items: ['tok_src', 'emb', 'pos', { rep: '× 6층', note: '원 논문', subs: [['sattn', 'addnorm'], ['ffn', 'addnorm']] }] },
+      { title: '디코더 · 번역문 쓰기', items: ['tok_tgt', 'emb', 'pos', { rep: '× 6층', note: '원 논문', subs: [['mattn', 'addnorm'], ['cross', 'addnorm'], ['ffn', 'addnorm']] }, 'linear', 'softmax', 'out'] },
+    ],
+  };
+  let archMode = 'dec', archRun = 0;
+  const AR = '<i class="ar2" aria-hidden="true"></i>';
+  const nodeH = k => `<button type="button" class="nd2 ${PTYPE[k]}" data-k="${k}">${PARTS[k][0]}<small>${PARTS[k][1]}</small>${k === 'cross' ? '<span class="xin">← 인코더 출력이 들어옴</span>' : ''}</button>`;
+  function renderArch() {
+    const cols = ARCHS[archMode];
+    $('#archWrap').classList.toggle('ed', archMode === 'ed');
+    $('#arch').style.setProperty('--cols', cols.length);
+    $('#arch').innerHTML = cols.map(c => `<div class="acol"><div class="ach">${c.title}</div>${c.items.map(it => typeof it === 'string' ? nodeH(it) :
+      `<div class="blk2"><button type="button" class="rep" data-k="block">${it.rep}<small>${it.note}</small></button>${it.subs.map(sb => `<div class="sub2">${sb.map(nodeH).join(AR)}</div>`).join(AR)}</div>`).join(AR)}</div>`).join('');
+    $$('#arch [data-k]').forEach(b => b.onclick = () => { archRun++; showPart(b); });
+    showPart($('#arch [data-k="' + (archMode === 'ed' ? 'cross' : 'mattn') + '"]'));
+  }
+  function showPart(el, step) {
+    const k = el.dataset.k, [t, en, d, n] = PARTS[k];
+    $$('#arch [data-k]').forEach(x => x.classList.toggle('sel', x === el));
+    const num = k === 'block' ? (archMode === 'ed' ? '원 논문: 인코더 6층 + 디코더 6층' : '모델 규모에 따라 수십 층 이상') : n;
+    $('#apanel').innerHTML = `<span class="k">${{ io: '입출력', prep: '입력 준비', att: '어텐션', ffn: '피드포워드', norm: '잔차 연결 · 정규화', head: '출력' }[PTYPE[k]] || '블록'}</span><h6>${t.replace(/^\+ /, '')}</h6><div class="en2">${en}</div><p>${d}</p>${num ? `<span class="num">${num}</span>` : ''}${step ? `<div class="step">흐름 ${step}</div>` : ''}`;
+  }
+  async function flowArch() {
+    const id = ++archRun, seq = $$('#arch [data-k]');
+    for (let i = 0; i < seq.length; i++) {
+      seq.forEach(x => x.classList.remove('hot'));
+      seq[i].classList.add('hot'); showPart(seq[i], `${i + 1} / ${seq.length}`);
+      await wait(1300); if (id !== archRun) { seq.forEach(x => x.classList.remove('hot')); return; }
+    }
+    seq.forEach(x => x.classList.remove('hot'));
+  }
+  $$('#archSeg button').forEach(b => b.onclick = () => { archRun++; archMode = b.dataset.m; $$('#archSeg button').forEach(x => x.classList.toggle('on', x === b)); renderArch(); });
+  $('#archPlay').onclick = flowArch;
+  renderArch();
+  HOOKS.arch = () => flowArch();
+
+  /* masked attention grid */
+  const idx = n => [...Array(n).keys()];
+  const MT = ['오늘', '날씨가', '정말', '좋네요', '.'];
+  let maskOn = true, mrow = 2;
+  function drawMask() {
+    const n = MT.length;
+    let h = '<span></span>' + MT.map(t => `<span class="hd">${t}</span>`).join('');
+    for (let i = 0; i < n; i++) {
+      const vis = idx(n).map(j => maskOn ? j <= i : true), raw = idx(n).map(j => vis[j] ? (j === i ? 1.4 : 0.4 + ((i * 7 + j * 3) % 5) / 4) : 0);
+      const sum = raw.reduce((a, b) => a + b, 0);
+      h += `<button type="button" class="rl${i === mrow ? ' sel' : ''}" data-r="${i}" aria-pressed="${i === mrow}">${MT[i]}</button>`;
+      h += idx(n).map(j => vis[j] ? `<span class="mc${i === mrow ? '' : ' dim'}" style="--a:${(raw[j] / sum * .9).toFixed(2)};--d:${(i * 5 + j) * 30}ms">${Math.round(raw[j] / sum * 100)}%</span>`
+        : `<span class="mc x${i === mrow ? '' : ' dim'}" style="--d:${(i * 5 + j) * 30}ms" aria-label="가림">✕</span>`).join('');
+    }
+    $('#mgrid').innerHTML = h;
+    $$('#mgrid .rl').forEach(b => b.onclick = () => { mrow = +b.dataset.r; drawMask(); });
+    const seen = MT.slice(0, mrow + 1).map(t => `“${t}”`).join(', '), hidden = MT.slice(mrow + 1).map(t => `“${t}”`).join(', ');
+    $('#maskNote').className = 'verdict ' + (maskOn ? 'ok' : 'mid');
+    $('#maskNote').innerHTML = maskOn
+      ? `<b>“${MT[mrow]}” 자리</b>는 ${seen}만 볼 수 있습니다.${hidden ? ` 뒤에 오는 ${hidden}은(는) 가려져 있어, 다음 토큰을 미리 보지 못합니다.` : ' 마지막 자리라 모든 토큰을 봅니다.'}`
+      : `가림이 없으면 <b>“${MT[mrow]}” 자리</b>도 뒤에 오는 토큰까지 모두 봅니다. 원문 전체를 읽는 인코더에서는 이렇게 하지만, 다음 토큰을 맞혀야 하는 디코더에서는 정답을 미리 보는 셈이 됩니다.`;
+  }
+  $$('#maskSeg button').forEach(b => b.onclick = () => { maskOn = b.dataset.m === '1'; $$('#maskSeg button').forEach(x => x.classList.toggle('on', x === b)); drawMask(); });
+  drawMask();
+
   /* ---------- 04 top-k / top-p ---------- */
   const SC = [
     { q: '오늘 날씨가 정말', c: [['좋네요', 3.0], ['맑아요', 2.4], ['덥네요', 1.9], ['춥네요', 1.3], ['흐려요', .9], ['바나나', -1.2]] },
@@ -1358,7 +1525,7 @@ footer.site a { color: var(--ink-2); }
       (pT < .999 && k >= 6 ? ` <span style="color:var(--ink-3)">상황을 바꿔 보세요. 같은 p라도 후보 수가 달라집니다.</span>` : '') +
       (k < 6 && pT >= .999 ? ` <span style="color:var(--ink-3)">상황을 바꿔도 후보는 늘 ${k}개입니다.</span>` : '');
   }
-  $$('.seg button').forEach(b => b.onclick = () => { sc = +b.dataset.sc; $$('.seg button').forEach(x => x.classList.toggle('on', x === b)); drawKP(); });
+  $$('[data-fig="kp"] .seg button').forEach(b => b.onclick = () => { sc = +b.dataset.sc; $$('[data-fig="kp"] .seg button').forEach(x => x.classList.toggle('on', x === b)); drawKP(); });
   $('#kIn').addEventListener('input', drawKP); $('#pIn').addEventListener('input', drawKP);
   $$('#kpPre button').forEach(b => b.onclick = () => { $('#kIn').value = b.dataset.k; $('#pIn').value = b.dataset.p; drawKP(); });
   drawKP();
@@ -1416,13 +1583,19 @@ footer.site a { color: var(--ink-2); }
     'gpu': () => { let s = ''; for (let y = 0; y < 5; y++) for (let x = 0; x < 8; x++) s += R(6 + x * 9, 6 + y * 9.5, 7, 7, 'f-b a-pulse', '', 1.5); return s; },
     'quant': () => R(6, 12, 68, 12, 'f-v a-sx', '--s1:.125', 2) + range(8).map(i => L(6 + i * 8.5, 12, 6 + i * 8.5, 24, 's-l', 'stroke-width:1')).join('') + Tx(6, 42, '32bit → 4bit'),
     'distill': () => C(18, 28, 14, 'f-k') + C(64, 28, 7, 'f-g a-pulse') + [-6, 0, 6].map((dy, i) => C(32, 28 + dy, 2.5, 'f-k a-move', `--dx:24px;--dy:${-dy * .6}px;--t:${i * .3}s`)).join(''),
+    'pos': () => P('M4 16 Q12 4 20 16 T36 16 T52 16 T68 16', 's-v a-draw', '--len:120') + range(4).map(i => R(6 + i * 18, 30, 14, 12, 'f-l', '', 2) + Tx(10 + i * 18, 52, i + 1, 'mt a-pop').replace('class="mt a-pop"', `class="mt a-pop" style="--t:${.3 + i * .2}s"`)).join(''),
+    'mha': () => { const xs = [10, 26, 42, 58, 74]; const arc = (a, b, cl, t) => P(`M${xs[a]} 42 Q${(xs[a] + xs[b]) / 2} ${42 - Math.abs(xs[a] - xs[b]) * .7} ${xs[b]} 42`, cl + ' a-draw', `--len:90;--t:${t}s`);
+      return arc(3, 1, 's-g', 0) + arc(3, 0, 's-b', .35) + arc(3, 4, 's-c', .7) + xs.map((x, i) => R(x - 6, 42, 12, 8, i === 3 ? 'f-k' : 'f-l', '', 2)).join(''); },
+    'ffn': () => bars([10, 14, 8, 12], () => 'f-b', 4, 6, 4, 40) + bars([18, 26, 12, 30, 22, 8, 28, 16], i => 'f-g a-gy', 28, 5, 3.5, 44, i => `--s0:.15;--t:${i * .06}s`) + bars([12, 9, 16, 10], () => 'f-c a-pop', 70, 2.5, 1.8, 40, () => '--t:1s') + Tx(4, 54, '확장 → 압축'),
+    'res': () => L(4, 32, 28, 32, 's-k') + R(28, 22, 26, 20, 'f-b', '', 3) + L(54, 32, 64, 32, 's-k') + P('M14 32 V10 H69 V26', 's-gr a-draw', '--len:90;stroke-width:2') + C(69, 32, 5.5, 'f-gr') + Tx(66, 35.5, '+', 'mt') + L(75, 32, 79, 32, 's-k'),
     'moe': () => C(40, 9, 5, 'f-k') + range(4).map(i => L(40, 14, 11.5 + i * 19, 34, 's-l') + R(4 + i * 19, 34, 15, 14, 'f-l', '', 3) + ([1, 3].includes(i) ? R(4 + i * 19, 34, 15, 14, 'f-g a-pulse', `--t:${i === 3 ? .1 : 0}s`, 3) : '')).join(''),
   };
   const MAP = { 't-nn': 'nn', 't-neuron': 'neuron', 't-layer': 'layer', 't-weight': 'weight', 't-bias': 'bias', 't-param': 'param', 't-act': 'act',
     't-data': 'data', 't-fwd': 'fwd', 't-loss': 'loss', 't-bp': 'bp', 't-gd': 'gd', 't-lr': 'lr', 't-batch': 'batch', 't-over': 'over', 't-hyper': 'hyper',
     't-token': 'token', 't-emb': 'emb', 't-tf': 'tf', 't-attn': 'attn', 't-ctx': 'ctx', 't-pre': 'pre', 't-ft': 'ft', 't-rlhf': 'rlhf', 't-cutoff': 'cutoff',
     't-inf': 'inf', 't-ar': 'ar', 't-logit': 'logit', 't-temp': 'temp', 't-topk': 'topk', 't-topp': 'topp', 't-hall': 'hall', 't-kv': 'kv',
-    't-scaling': 'scaling', 't-gpu': 'gpu', 't-quant': 'quant', 't-distill': 'distill', 't-moe': 'moe' };
+    't-scaling': 'scaling', 't-gpu': 'gpu', 't-quant': 'quant', 't-distill': 'distill', 't-moe': 'moe',
+    't-pos': 'pos', 't-mha': 'mha', 't-ffn': 'ffn', 't-res': 'res' };
   const cards = $$('.terms .tc');
   const hoverable = matchMedia('(hover: hover)').matches;
   cards.forEach(tc => {
