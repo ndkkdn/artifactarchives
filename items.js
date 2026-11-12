@@ -73,7 +73,8 @@ window.ITEMS = [
     "type": "설명서",
     "tags": ["AI 품질"],
     "date": "2026-09-04",
-    "thumb": "thumbs/ai-quality-anatomy.jpg"
+    "thumb": "thumbs/ai-quality-anatomy.jpg",
+    "hidden": true
   },
   {
     "href": "ai-quality-report-card.html",
