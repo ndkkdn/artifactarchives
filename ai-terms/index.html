@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="description" content="신경망 구조, 학습, LLM, 추론, 규모와 효율까지. AI가 작동하는 과정을 따라 필수 용어 36개를 스크롤로 읽는 리포트">
+<meta name="description" content="신경망 구조, 학습, LLM, 추론, 규모와 효율까지. AI가 작동하는 과정을 따라 필수 용어 38개를 스크롤로 읽는 리포트">
 <title>AI 작동 원리 용어</title>
 <link rel="icon" href="../favicon.ico" sizes="any">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -489,6 +489,116 @@ footer.site a { color: var(--ink-2); }
 .tindex a small { font: 500 11.5px var(--en); color: var(--ink-3); }
 .tindex a:hover { border-color: var(--gold); background: var(--gold-soft); }
 
+/* ---------- term-card mini animations ---------- */
+.terms-hint { font-size: 14px; color: var(--ink-2); margin: 18px 0 -8px; display: flex; gap: 8px; align-items: baseline; }
+.terms-hint .pi { font-size: 10px; color: var(--gold); }
+.terms .tc { position: relative; padding-right: 108px; cursor: pointer; transition: border-color .2s, box-shadow .2s; }
+.terms .tc:hover, .terms .tc.pin { border-color: color-mix(in srgb, var(--gold) 60%, var(--line)); }
+.terms .tc:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+.mini { position: absolute; right: 12px; top: 12px; width: 82px; height: 58px; border-radius: 10px; background: var(--bg); border: 1px solid var(--line); overflow: hidden; }
+.mini svg { width: 100%; height: 100%; display: block; }
+.mini::after { content: "▶"; position: absolute; right: 5px; bottom: 3px; font-size: 8px; line-height: 1; color: var(--ink-3); transition: opacity .2s; }
+.tc.on .mini::after { opacity: 0; }
+.tc.pin .mini { border-color: var(--gold); }
+@media (max-width: 400px) { .terms .tc { padding-right: 96px; } .mini { width: 72px; height: 51px; right: 10px; } }
+.mini svg * { transform-box: fill-box; }
+.mini .f-g { fill: var(--gold); } .mini .f-b { fill: var(--blue); } .mini .f-c { fill: var(--coral); } .mini .f-k { fill: var(--ink-3); }
+.mini .f-l { fill: var(--line); } .mini .f-p { fill: var(--paper-2); } .mini .f-gs { fill: var(--gold-soft); } .mini .f-v { fill: var(--violet); } .mini .f-gr { fill: var(--green); }
+.mini line, .mini path { fill: none; }
+.mini .s-g { stroke: var(--gold); stroke-width: 2; } .mini .s-b { stroke: var(--blue); stroke-width: 2; } .mini .s-c { stroke: var(--coral); stroke-width: 2; }
+.mini .s-k { stroke: var(--ink-3); stroke-width: 1.5; } .mini .s-l { stroke: var(--line); stroke-width: 1.5; }
+.mini .mt { font: 700 9px var(--mono); fill: var(--ink-2); }
+.mini .mt.c { fill: var(--coral); font-size: 16px; }
+@keyframes mPulse { 0%, 100% { opacity: .22; } 35%, 65% { opacity: 1; } }
+@keyframes mPop { 0% { opacity: 0; transform: scale(.3); } 20%, 85% { opacity: 1; transform: scale(1); } 100% { opacity: 0; transform: scale(1); } }
+@keyframes mMove { 0% { opacity: 0; transform: translate(0, 0); } 12% { opacity: 1; } 70% { opacity: 1; transform: translate(var(--dx, 0px), var(--dy, 0px)); } 85%, 100% { opacity: 0; transform: translate(var(--dx, 0px), var(--dy, 0px)); } }
+@keyframes mShift { 0%, 15% { transform: translate(0, 0); } 50%, 85% { transform: translate(var(--dx, 0px), var(--dy, 0px)); } 100% { transform: translate(0, 0); } }
+@keyframes mGx { 0% { transform: scaleX(var(--s0, 0)); } 55%, 85% { transform: scaleX(1); } 100% { transform: scaleX(var(--s0, 0)); } }
+@keyframes mGy { 0% { transform: scaleY(var(--s0, 0)); } 55%, 85% { transform: scaleY(1); } 100% { transform: scaleY(var(--s0, 0)); } }
+@keyframes mSy { 0%, 15% { transform: scaleY(1); } 50%, 80% { transform: scaleY(var(--s1, 1)); } 100% { transform: scaleY(1); } }
+@keyframes mSx { 0%, 15% { transform: scaleX(1); } 50%, 80% { transform: scaleX(var(--s1, 1)); } 100% { transform: scaleX(1); } }
+@keyframes mDraw { 0% { stroke-dashoffset: var(--len, 100); opacity: 1; } 60%, 85% { stroke-dashoffset: 0; opacity: 1; } 100% { stroke-dashoffset: 0; opacity: 0; } }
+@keyframes mSpin { 0%, 10% { transform: rotate(0deg); } 50%, 80% { transform: rotate(var(--r, 90deg)); } 100% { transform: rotate(0deg); } }
+@keyframes mFade { 0%, 25% { opacity: 1; } 50%, 85% { opacity: .12; } 100% { opacity: 1; } }
+.tc.on .a-pulse { animation: mPulse 2.4s var(--t, 0s) infinite ease-in-out both; }
+.tc.on .a-pop { animation: mPop 2.4s var(--t, 0s) infinite var(--ease) both; transform-origin: center; }
+.tc.on .a-move { animation: mMove 2.4s var(--t, 0s) infinite ease-in-out both; }
+.tc.on .a-shift { animation: mShift 2.4s var(--t, 0s) infinite ease-in-out both; }
+.tc.on .a-gx { animation: mGx 2.4s var(--t, 0s) infinite var(--ease) both; transform-origin: 0 50%; }
+.tc.on .a-gy { animation: mGy 2.4s var(--t, 0s) infinite var(--ease) both; transform-origin: 50% 100%; }
+.tc.on .a-sy { animation: mSy 2.4s var(--t, 0s) infinite ease-in-out both; transform-origin: 50% 100%; }
+.tc.on .a-sx { animation: mSx 2.4s var(--t, 0s) infinite ease-in-out both; transform-origin: 0 50%; }
+.tc.on .a-draw { stroke-dasharray: var(--len, 100); animation: mDraw 2.4s var(--t, 0s) infinite ease-in-out both; }
+.tc.on .a-spin { transform-box: view-box; animation: mSpin 2.4s var(--t, 0s) infinite ease-in-out both; }
+.tc.on .a-fade { animation: mFade 2.4s var(--t, 0s) infinite ease-in-out both; }
+
+/* ---------- paper card ---------- */
+.paper { background: #fbfaf5; color: #1b2233; border-radius: 12px; padding: 20px 22px; border: 1px solid #e6e0cf; }
+:root[data-theme="dark"] .paper { background: #e9e5d9; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .paper { background: #e9e5d9; } }
+.paper .ph { display: flex; justify-content: space-between; gap: 10px; font: 700 11px/1 var(--mono); letter-spacing: .06em; color: #7b7766; }
+.paper .pt { font: 700 clamp(22px, 3vw, 28px)/1.25 var(--serif); margin: 14px 0 6px; letter-spacing: -.01em; }
+.paper .pa { font-size: 12.5px; color: #5b5848; line-height: 1.55; padding-bottom: 14px; border-bottom: 1px solid #ddd6c2; }
+.paper .pd { margin: 14px 0 0; display: grid; gap: 10px; }
+.paper .pd div { display: grid; grid-template-columns: 74px minmax(0, 1fr); gap: 12px; }
+.paper .pd dt { font: 800 12.5px/1.6 var(--sans); color: #a87a12; }
+.paper .pd dd { margin: 0; font-size: 14px; line-height: 1.65; color: #2c3344; }
+.paper .pd dd b { color: #101a2c; }
+@media (max-width: 520px) { .paper { padding: 16px; } .paper .pd div { grid-template-columns: minmax(0, 1fr); gap: 2px; } }
+
+.lanes2 { display: grid; gap: 18px; }
+.ln2 { position: relative; }
+.lh2 { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; margin-bottom: 8px; font-size: 13px; color: var(--ink-3); }
+.lh2 b { font-size: 14.5px; color: var(--ink); }
+.lh2 em { margin-left: auto; font: 700 12.5px var(--mono); font-style: normal; color: var(--ink-2); }
+.tfm .lh2 b { color: var(--gold); }
+.row2 { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 6px; position: relative; z-index: 1; }
+.row2 span { text-align: center; padding: 9px 2px; border-radius: 9px; border: 1.5px solid var(--line); background: var(--bg); font-size: 14px; font-weight: 700; color: var(--ink-3); transition: all .3s; position: relative; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.row2 span.on { color: var(--ink); border-color: var(--blue); background: var(--blue-soft); }
+.row2 span.done { color: var(--ink-2); border-color: var(--line); background: var(--paper-2); }
+.tfm .row2 span.on { border-color: var(--gold); background: var(--gold-soft); }
+#laneR .row2 span:not(:last-child)::after { content: ""; }
+.arcs { position: absolute; left: 0; right: 0; width: 100%; height: 40px; bottom: 100%; margin-bottom: -10px; pointer-events: none; overflow: visible; }
+.ln2.tfm { padding-top: 0; }
+.arcs path { fill: none; stroke: var(--gold); stroke-width: 1.4; opacity: 0; vector-effect: non-scaling-stroke; transition: opacity .4s; }
+.arcs.on path { opacity: .55; }
+@media (max-width: 520px) { .row2 span { font-size: 12px; padding: 8px 1px; } .lh2 span { width: 100%; order: 3; } }
+
+/* ---------- top-k / top-p lab ---------- */
+.seg { display: inline-flex; padding: 3px; border-radius: 999px; background: var(--paper-2); gap: 2px; margin-bottom: 14px; flex-wrap: wrap; }
+.seg button { appearance: none; border: 0; background: transparent; color: var(--ink-2); font: 700 13px/1 var(--sans); padding: 9px 14px; border-radius: 999px; cursor: pointer; }
+.seg button.on { background: var(--paper); color: var(--ink); box-shadow: 0 1px 3px rgba(0,0,0,.12); }
+.kp-prompt { font: 700 clamp(17px, 2.3vw, 21px)/1.5 var(--sans); margin-bottom: 12px; }
+.kp-prompt .blank { display: inline-block; min-width: 3em; border-bottom: 2px solid var(--coral); }
+.kp-head, .kp > div { display: grid; grid-template-columns: 70px minmax(0, 1fr) 48px 48px 52px; gap: 8px; align-items: center; }
+.kp-head { font-size: 11.5px; color: var(--ink-3); margin-bottom: 6px; }
+.kp-head span:nth-child(2) { grid-column: 2 / 4; }
+.kp-head span:nth-child(3), .kp-head span:nth-child(4) { text-align: right; }
+.kp { display: grid; gap: 6px; }
+.kp > div { font-size: 14px; transition: opacity .3s; }
+.kp .w { font-weight: 700; position: relative; }
+.kp .tr { height: 18px; border-radius: 5px; background: var(--paper-2); overflow: hidden; position: relative; }
+.kp .tr i { display: block; height: 100%; border-radius: 5px; background: var(--blue); transition: width .35s var(--ease), background .3s; }
+.kp .pc, .kp .cu, .kp .fi { font: 700 12.5px var(--mono); text-align: right; font-variant-numeric: tabular-nums; }
+.kp .cu { color: var(--ink-3); }
+.kp .fi { color: var(--green); }
+.kp > div.cut { opacity: .5; }
+.kp > div.cut .w { text-decoration: line-through; text-decoration-color: var(--coral); text-decoration-thickness: 2px; }
+.kp > div.cut .tr i { background: repeating-linear-gradient(135deg, var(--ink-3) 0 4px, transparent 4px 7px); }
+.kp > div.cut .fi { color: var(--coral); }
+.kp .tag2 { font: 700 10px var(--sans); padding: 2px 6px; border-radius: 999px; margin-left: 4px; background: var(--coral-soft); color: var(--coral); vertical-align: 1px; }
+.kp-ctl { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 22px; margin-top: 16px; }
+.kp-ctl label { display: grid; gap: 6px; font-size: 13.5px; color: var(--ink-2); }
+.kp-ctl label span { display: flex; justify-content: space-between; gap: 8px; }
+.kp-ctl label b { font-family: var(--mono); color: var(--ink); font-size: 12.5px; }
+.kp-ctl input { width: 100%; accent-color: var(--gold); }
+@media (max-width: 560px) {
+  .kp-ctl { grid-template-columns: minmax(0, 1fr); }
+  .kp-head, .kp > div { grid-template-columns: 58px minmax(0, 1fr) 42px 42px 46px; gap: 6px; }
+  .kp > div { font-size: 13px; }
+  .kp .pc, .kp .cu, .kp .fi { font-size: 11.5px; }
+}
+
 @media (max-width: 640px) {
   body { font-size: 16px; line-height: 1.78; }
   .standfirst { font-size: 17px; }
@@ -525,9 +635,9 @@ footer.site a { color: var(--ink-2); }
 <div class="hero gutter" id="hero">
   <div class="hero-in">
     <div class="kicker rv" style="--d:0ms">AI Basics · Glossary</div>
-    <h1 class="rv" style="--d:120ms">AI는 어떻게 작동할까<br><em>필수 용어 36개</em></h1>
+    <h1 class="rv" style="--d:120ms">AI는 어떻게 작동할까<br><em>필수 용어 38개</em></h1>
     <p class="lede rv" style="--d:260ms">AI가 작동하는 과정은 크게 <b>구조(신경망) → 학습(가중치 조정) → 추론(학습된 모델 사용)</b>의 세 단계로 볼 수 있습니다. 이 흐름을 따라가며 꼭 알아야 할 용어를 정리했습니다.</p>
-    <div class="meta rv" style="--d:380ms"><span>📄 5개 장 · 36개 용어</span><span>⏱ 약 10분 읽기</span><span>🖱 도해를 직접 움직여 볼 수 있어요</span></div>
+    <div class="meta rv" style="--d:380ms"><span>📄 5개 장 · 38개 용어</span><span>⏱ 약 12분 읽기</span><span>🖱 도해와 용어 카드를 직접 움직여 볼 수 있어요</span></div>
 
     <div class="shift rv" style="--d:480ms" aria-label="AI 작동 3단계">
       <div class="rail"><i></i></div><div class="glow"></div>
@@ -537,7 +647,7 @@ footer.site a { color: var(--ink-2); }
     </div>
 
     <div class="stats rv" style="--d:640ms">
-      <a href="#index"><b data-count="36" data-suf="개">0</b><span>이 페이지에 담은 필수 용어</span></a>
+      <a href="#index"><b data-count="38" data-suf="개">0</b><span>이 페이지에 담은 필수 용어</span></a>
       <a href="#structure"><b data-count="700" data-suf="억">0</b><span>“70B 모델”이 학습으로 조정하는 숫자의 개수</span></a>
       <a href="#llm"><b>2017</b><span>트랜스포머를 제안한 논문이 나온 해</span></a>
       <a href="#inference"><b data-count="1" data-suf="토큰">0</b><span>LLM이 한 번에 예측하는 양</span></a>
@@ -565,6 +675,7 @@ footer.site a { color: var(--ink-2); }
         <figcaption>은닉층이 여러 겹 쌓인 신경망을 쓰는 방식이 <b>딥러닝</b>입니다. 그림의 가중치는 예시 값입니다.</figcaption>
       </div>
 
+      <p class="terms-hint"><span class="pi">▶</span> 용어 카드 오른쪽의 작은 그림은 마우스를 올리거나 누르면 움직입니다. 한 번 더 누르면 멈춥니다.</p>
       <dl class="terms">
         <div class="tc wide" id="t-nn" data-k="신경망" data-e="Neural Network"><dt><span class="ko">신경망</span><span class="enn">Neural Network</span></dt><dd>뇌의 뉴런 연결에서 착안한 수학적 모델입니다. 실제로는 숫자를 곱하고 더하는 연산이 층층이 쌓인 함수입니다.</dd></div>
         <div class="tc" id="t-neuron" data-k="뉴런 / 노드" data-e="Neuron, Node"><dt><span class="ko">뉴런 / 노드</span><span class="enn">Neuron, Node</span></dt><dd>입력값들을 받아 가중합을 계산하고 결과를 다음 층으로 넘기는 가장 작은 계산 단위입니다.</dd></div>
@@ -680,7 +791,34 @@ footer.site a { color: var(--ink-2); }
         <div class="tc wide" id="t-cutoff" data-k="지식 컷오프" data-e="Knowledge Cutoff"><dt><span class="ko">지식 컷오프</span><span class="enn">Knowledge Cutoff</span></dt><dd>학습 데이터가 끝나는 시점입니다. 그 이후의 정보는 모델이 알지 못합니다. 최신 정보가 필요하면 검색 같은 외부 도구를 함께 써야 합니다.</dd></div>
       </dl>
 
-      <h3><span class="hn">3.1</span>어텐션: 각 토큰이 어디를 보는가</h3>
+      <h3><span class="hn">3.1</span>Attention Is All You Need: 트랜스포머를 낳은 논문</h3>
+      <p>2017년 구글 연구진 8명이 발표한 논문입니다. 제목 그대로 <strong>“어텐션만 있으면 된다”</strong>는 주장을 담았고, 이 논문이 제안한 <mark>트랜스포머</mark> 구조가 지금의 LLM 거의 모두의 뼈대가 되었습니다.</p>
+
+      <div class="fig" data-fig="paper">
+        <div class="paper">
+          <div class="ph"><span>arXiv:1706.03762</span><span>NeurIPS 2017</span></div>
+          <div class="pt">Attention Is All You Need</div>
+          <div class="pa">Ashish Vaswani, Noam Shazeer, Niki Parmar, Jakob Uszkoreit, Llion Jones, Aidan N. Gomez, Łukasz Kaiser, Illia Polosukhin</div>
+          <dl class="pd">
+            <div class="rv" style="--d:100ms"><dt>문제</dt><dd>당시 번역 모델의 주류였던 <b>RNN</b>(순환 신경망)은 단어를 앞에서부터 하나씩 차례로 처리했습니다. 앞 단어 계산이 끝나야 다음 단어로 넘어갈 수 있어 GPU로 한꺼번에 계산하기 어렵고, 문장이 길면 앞부분 정보가 흐려졌습니다.</dd></div>
+            <div class="rv" style="--d:250ms"><dt>제안</dt><dd>순환 구조를 아예 버리고 <b>어텐션만으로</b> 모델을 만들었습니다. 모든 토큰이 다른 모든 토큰을 한 번에 참고하므로, 문장 전체를 병렬로 계산할 수 있습니다.</dd></div>
+            <div class="rv" style="--d:400ms"><dt>핵심 장치</dt><dd><b>셀프 어텐션</b>(토큰끼리 서로 참고), <b>멀티헤드 어텐션</b>(여러 관점의 어텐션을 동시에), <b>위치 인코딩</b>(순서 정보를 숫자로 더해 줌), 그리고 입력을 읽는 인코더와 출력을 만드는 디코더.</dd></div>
+            <div class="rv" style="--d:550ms"><dt>결과</dt><dd>영어→독일어 번역(WMT 2014)에서 BLEU 28.4로 당시 최고 기록을 냈고, 큰 모델도 GPU 8장으로 3.5일 만에 학습했습니다. 기존 모델보다 학습 비용이 훨씬 적었습니다.</dd></div>
+            <div class="rv" style="--d:700ms"><dt>영향</dt><dd>인코더 쪽을 쓴 <b>BERT</b>, 디코더 쪽을 쓴 <b>GPT</b> 계열을 거쳐 오늘날 대부분의 LLM이 이 구조를 기반으로 합니다.</dd></div>
+          </dl>
+        </div>
+      </div>
+
+      <div class="fig" data-fig="rnn">
+        <div class="fig-h"><span class="t">RNN은 차례로, 트랜스포머는 한꺼번에</span><button class="replay" type="button" data-replay>다시 재생</button></div>
+        <div class="lanes2">
+          <div class="ln2" id="laneR"><div class="lh2"><b>RNN</b><span>이전 방식 · 한 단어씩</span><em id="stepR">0 / 6 단계</em></div><div class="row2"></div></div>
+          <div class="ln2 tfm" id="laneT"><div class="lh2"><b>트랜스포머</b><span>어텐션만 사용 · 모든 단어를 동시에</span><em id="stepT">0 / 1 단계</em></div><div class="row2"></div><svg class="arcs" id="arcsT" viewBox="0 0 600 40" preserveAspectRatio="none" aria-hidden="true"></svg></div>
+        </div>
+        <figcaption>학습할 때를 기준으로 그린 그림입니다. 트랜스포머도 답을 <b>생성</b>할 때는 4장에서 보듯 한 토큰씩 만들지만, 이미 주어진 문장은 한꺼번에 계산합니다.</figcaption>
+      </div>
+
+      <h3><span class="hn">3.2</span>어텐션: 각 토큰이 어디를 보는가</h3>
       <p>“그것은”이라는 토큰만 봐서는 무엇을 가리키는지 알 수 없습니다. 셀프 어텐션은 문장 안의 다른 토큰들에 점수를 매겨, 이 토큰을 이해할 때 어디를 얼마나 참고할지 정합니다. 토큰을 눌러 보세요.</p>
 
       <div class="fig" data-fig="attn">
@@ -693,7 +831,7 @@ footer.site a { color: var(--ink-2); }
         <figcaption><b>예시 값입니다.</b> 실제 모델은 어텐션을 여러 층, 여러 “헤드”에서 동시에 계산하고, 헤드마다 보는 관계가 다릅니다.</figcaption>
       </div>
 
-      <h3><span class="hn">3.2</span>컨텍스트 윈도우: 한 번에 볼 수 있는 범위</h3>
+      <h3><span class="hn">3.3</span>컨텍스트 윈도우: 한 번에 볼 수 있는 범위</h3>
       <p>대화가 길어지면 앞부분부터 창 밖으로 밀려납니다. 창 밖으로 나간 내용은 모델에게 더 이상 보이지 않습니다.</p>
       <div class="fig" data-fig="ctx">
         <div class="fig-h"><span class="t">대화가 길어질 때</span><button class="replay" type="button" data-replay>다시 재생</button></div>
@@ -726,6 +864,8 @@ footer.site a { color: var(--ink-2); }
         <div class="tc" id="t-ar" data-k="자기회귀 생성" data-e="Autoregressive Generation"><dt><span class="ko">자기회귀 생성</span><span class="enn">Autoregressive Generation</span></dt><dd>LLM은 토큰을 하나씩 예측하고, 방금 예측한 토큰을 다시 입력에 붙여 다음 토큰을 예측하는 과정을 반복하며 문장을 만듭니다.</dd></div>
         <div class="tc" id="t-logit" data-k="로짓 / 소프트맥스" data-e="Logits / Softmax"><dt><span class="ko">로짓 / 소프트맥스</span><span class="enn">Logits / Softmax</span></dt><dd>모델은 모든 후보 토큰에 점수(로짓)를 매기고, 소프트맥스 함수로 이 점수를 확률로 바꿉니다.</dd></div>
         <div class="tc" id="t-temp" data-k="샘플링 / 온도" data-e="Sampling / Temperature"><dt><span class="ko">샘플링 / 온도</span><span class="enn">Sampling / Temperature</span></dt><dd>확률에 따라 다음 토큰을 고르는 방식입니다. 온도가 낮으면 무난하고 일관된 답이, 높으면 다양하고 창의적인 답이 나옵니다. <b>Top-p</b>와 <b>Top-k</b>는 후보 범위를 제한하는 방법입니다.</dd></div>
+        <div class="tc" id="t-topk" data-k="Top-k 샘플링" data-e="Top-k Sampling"><dt><span class="ko">Top-k 샘플링</span><span class="enn">Top-k Sampling</span></dt><dd>확률이 높은 순서로 <b>k개</b>의 후보만 남기고 나머지는 버린 뒤, 남은 후보 안에서 뽑습니다. k=1이면 늘 가장 확률 높은 토큰만 고르게 됩니다(그리디 디코딩).</dd></div>
+        <div class="tc" id="t-topp" data-k="Top-p 샘플링" data-e="Top-p (Nucleus) Sampling"><dt><span class="ko">Top-p 샘플링</span><span class="enn">Top-p (Nucleus) Sampling</span></dt><dd>확률이 높은 순서로 더해 가다가 <b>누적 확률이 p에 닿을 때까지</b>의 후보만 남깁니다. 모델이 확신할 때는 후보가 적게, 애매할 때는 많이 남아 후보 수가 상황에 맞게 달라집니다.</dd></div>
         <div class="tc" id="t-hall" data-k="환각" data-e="Hallucination"><dt><span class="ko">환각</span><span class="enn">Hallucination</span></dt><dd>모델이 그럴듯하지만 사실이 아닌 내용을 생성하는 현상입니다. 모델이 사실을 검색하는 것이 아니라 확률적으로 그럴듯한 다음 토큰을 만들어 내기 때문에 생깁니다.</dd></div>
         <div class="tc" id="t-kv" data-k="KV 캐시" data-e="KV Cache"><dt><span class="ko">KV 캐시</span><span class="enn">KV Cache</span></dt><dd>앞에서 계산한 어텐션 값을 저장해 두고 재사용하여 생성 속도를 높이는 기법입니다.</dd></div>
       </dl>
@@ -745,6 +885,31 @@ footer.site a { color: var(--ink-2); }
           </div>
           <div class="verdict" id="genVerdict">온도 1.0: 로짓을 그대로 확률로 바꾼 기본 상태입니다.</div>
         </div>
+      </div>
+
+      <h3><span class="hn">4.2</span>Top-k와 Top-p: 뽑을 후보를 미리 잘라 내기</h3>
+      <p>온도를 높이면 다양한 답이 나오지만, 확률이 아주 낮은 엉뚱한 토큰(“바나나”)까지 뽑힐 수 있습니다. 그래서 뽑기 전에 후보 범위를 잘라 냅니다.</p>
+      <ul class="dots">
+        <li><strong>Top-k</strong>: 확률 순으로 상위 <b>k개</b>만 남깁니다. 상황과 상관없이 후보 수가 고정됩니다.</li>
+        <li><strong>Top-p</strong>(뉴클리어스 샘플링): 확률을 높은 순으로 더해 <b>누적 p</b>에 닿을 때까지만 남깁니다. 모델이 확신하면 후보가 1~2개로 줄고, 애매하면 여러 개가 남습니다.</li>
+      </ul>
+      <p>아래에서 두 상황을 오가며 같은 설정을 적용해 보세요. Top-p는 상황에 따라 후보 수가 바뀌지만 Top-k는 그대로입니다.</p>
+
+      <div class="fig" data-fig="kp">
+        <div class="fig-h"><span class="t">후보 자르기 실험실</span><span class="s">온도 1.0 · 후보와 점수는 예시</span></div>
+        <div class="seg" role="group" aria-label="상황 선택">
+          <button type="button" class="on" data-sc="0">애매한 상황</button><button type="button" data-sc="1">확신하는 상황</button>
+        </div>
+        <div class="kp-prompt" id="kpPrompt"></div>
+        <div class="kp-head"><span>후보</span><span>원래 확률</span><span>누적</span><span>최종</span></div>
+        <div class="kp" id="kpRows"></div>
+        <div class="kp-ctl">
+          <label><span>Top-k <b id="kV">제한 없음</b></span><input type="range" id="kIn" min="1" max="6" step="1" value="6"></label>
+          <label><span>Top-p <b id="pV">1.00 (제한 없음)</b></span><input type="range" id="pIn" min="0.5" max="1" step="0.05" value="1"></label>
+        </div>
+        <div class="presets" id="kpPre"><button type="button" data-k="3" data-p="1">Top-k 3</button><button type="button" data-k="6" data-p="0.8">Top-p 0.8</button><button type="button" data-k="1" data-p="1">k=1 (그리디)</button><button type="button" data-k="6" data-p="1">초기화</button></div>
+        <div class="verdict" id="kpVerdict"></div>
+        <figcaption>Top-k를 먼저 적용하고, 남은 후보의 확률을 다시 100%로 맞춘 뒤 Top-p를 적용했습니다. 실제 서비스마다 적용 순서와 세부 방식은 조금씩 다릅니다. 줄이 그어진 후보는 뽑힐 수 없습니다.</figcaption>
       </div>
 
       <div class="callout warn"><span class="tag">환각은 왜 생길까</span><p>위 그림에서 모델은 “사실인지”를 따지지 않고 “다음에 오기 그럴듯한지”로만 토큰을 고릅니다. 그럴듯하지만 틀린 내용이 자연스럽게 이어질 수 있는 이유입니다. 중요한 사실은 출처로 확인하는 습관이 필요합니다.</p></div>
@@ -841,7 +1006,7 @@ footer.site a { color: var(--ink-2); }
     <section id="index" data-n="※" data-t="용어 색인">
       <span class="sec-label"><span class="num">※</span> · 부록</span>
       <h2>용어 색인</h2>
-      <p>36개 용어를 장별로 모았습니다. 누르면 해당 설명으로 이동합니다.</p>
+      <p>38개 용어를 장별로 모았습니다. 누르면 해당 설명으로 이동합니다.</p>
       <div class="tindex" id="tindex"></div>
       <p class="endnote">이 페이지는 2026년 6월까지 알려진 일반적인 지식을 바탕으로 정리했습니다. 도해와 데모는 이해를 돕기 위해 새로 만든 것이며, “예시”라고 적힌 수치는 실제 모델의 값이 아닙니다.</p>
     </section>
@@ -1137,6 +1302,150 @@ footer.site a { color: var(--ink-2); }
   HOOKS.quote = (fig, tk) => typeInto($('#quoteTxt'), ['“공부하는 동안 고친 이해는 ', ['가중치', 'em-q'], '에 남고, 시험장에서는 그 가중치만으로 답을 계산한다.”'], 55, tk);
   const st = document.createElement('style'); st.textContent = '.quote .em-q{color:#d5a844}'; document.head.appendChild(st);
 
+
+  /* ---------- 03 RNN vs Transformer ---------- */
+  const RW = ['나는', '어제', '산', '사과를', '오늘', '먹었다'];
+  ['#laneR', '#laneT'].forEach(id => $(id + ' .row2').innerHTML = RW.map(w => `<span>${w}</span>`).join(''));
+  (() => {
+    const arcs = $('#arcsT'), cx = i => (i + .5) * 100;
+    let d = '';
+    for (let i = 0; i < 6; i++) for (let j = i + 1; j < 6; j++) d += `<path d="M${cx(i)} 40 Q${(cx(i) + cx(j)) / 2} ${40 - (j - i) * 9} ${cx(j)} 40"/>`;
+    arcs.innerHTML = d;
+  })();
+  HOOKS.rnn = async (fig, tk) => {
+    const r = $$('#laneR .row2 span'), t = $$('#laneT .row2 span'), arcs = $('#arcsT');
+    r.concat(t).forEach(x => x.className = ''); arcs.classList.remove('on');
+    $('#stepR').textContent = '0 / 6 단계'; $('#stepT').textContent = '0 / 1 단계';
+    await wait(500); if (tk.dead) return;
+    t.forEach(x => x.classList.add('on')); arcs.classList.add('on'); $('#stepT').textContent = '1 / 1 단계 · 끝';
+    for (let i = 0; i < 6; i++) {
+      if (i) await wait(600); if (tk.dead) return;
+      r.forEach((x, k) => x.className = k < i ? 'done' : k === i ? 'on' : '');
+      $('#stepR').textContent = `${i + 1} / 6 단계` + (i === 5 ? ' · 끝' : '');
+    }
+  };
+
+  /* ---------- 04 top-k / top-p ---------- */
+  const SC = [
+    { q: '오늘 날씨가 정말', c: [['좋네요', 3.0], ['맑아요', 2.4], ['덥네요', 1.9], ['춥네요', 1.3], ['흐려요', .9], ['바나나', -1.2]] },
+    { q: '대한민국의 수도는', c: [['서울', 6.0], ['세종', 2.6], ['부산', 1.9], ['한양', 1.4], ['평양', .4], ['바나나', -2.0]] },
+  ];
+  let sc = 0;
+  function drawKP() {
+    const k = +$('#kIn').value, pT = +$('#pIn').value, S = SC[sc];
+    const e = S.c.map(([, l]) => Math.exp(l)), sum = e.reduce((a, b) => a + b, 0), p = e.map(v => v / sum);
+    const kSum = p.slice(0, k).reduce((a, b) => a + b, 0);
+    let cum = 0, keepP = 0;
+    const rows = S.c.map(([w], i) => {
+      const inK = i < k, rp = inK ? p[i] / kSum : 0, before = cum;
+      if (inK) cum += rp;
+      const inP = inK && (pT >= .999 || before < pT - 1e-9);
+      if (inP) keepP += rp;
+      return { w, p: p[i], inK, rp, cum: inK ? cum : null, keep: inP };
+    });
+    const fin = rows.map(r => r.keep ? r.rp / keepP : 0), kept = rows.filter(r => r.keep);
+    $('#kpPrompt').innerHTML = `${S.q} <span class="blank"></span>`;
+    $('#kpRows').innerHTML = rows.map((r, i) => `<div class="${r.keep ? '' : 'cut'}"><span class="w">${r.w}</span><span class="tr"><i style="width:${(r.p * 100).toFixed(1)}%"></i></span><span class="pc">${(r.p * 100).toFixed(1)}%</span><span class="cu">${r.cum === null ? '—' : Math.min(100, r.cum * 100).toFixed(0) + '%'}</span><span class="fi">${r.keep ? (fin[i] * 100).toFixed(1) + '%' : '제외'}</span></div>`).join('');
+    $('#kV').textContent = k >= 6 ? '제한 없음' : `k = ${k}`;
+    $('#pV').textContent = pT >= .999 ? '1.00 (제한 없음)' : `p = ${pT.toFixed(2)}`;
+    const why = [];
+    if (k < 6) why.push(`Top-k ${k}로 상위 ${k}개만 남김`);
+    if (pT < .999) why.push(`Top-p ${pT.toFixed(2)}로 누적 ${Math.round(pT * 100)}%에 닿을 때까지만 남김`);
+    const names = kept.map(r => `“${r.w}”`).join(', ');
+    $('#kpVerdict').className = 'verdict ' + (kept.length === 1 ? 'mid' : 'ok');
+    $('#kpVerdict').innerHTML = (why.length ? why.join(' → ') + '. ' : '제한 없이 6개 후보 모두에서 뽑습니다. 아주 낮은 확률이지만 “바나나”도 뽑힐 수 있습니다. ') +
+      (why.length ? `남은 후보 <b>${kept.length}개</b>: ${names}.` : '') +
+      (pT < .999 && k >= 6 ? ` <span style="color:var(--ink-3)">상황을 바꿔 보세요. 같은 p라도 후보 수가 달라집니다.</span>` : '') +
+      (k < 6 && pT >= .999 ? ` <span style="color:var(--ink-3)">상황을 바꿔도 후보는 늘 ${k}개입니다.</span>` : '');
+  }
+  $$('.seg button').forEach(b => b.onclick = () => { sc = +b.dataset.sc; $$('.seg button').forEach(x => x.classList.toggle('on', x === b)); drawKP(); });
+  $('#kIn').addEventListener('input', drawKP); $('#pIn').addEventListener('input', drawKP);
+  $$('#kpPre button').forEach(b => b.onclick = () => { $('#kIn').value = b.dataset.k; $('#pIn').value = b.dataset.p; drawKP(); });
+  drawKP();
+
+  /* ---------- term-card mini animations ---------- */
+  const sv = o => o ? ` style="${o}"` : '';
+  const C = (x, y, r, cl, o) => `<circle cx="${x}" cy="${y}" r="${r}" class="${cl}"${sv(o)}/>`;
+  const R = (x, y, w, h, cl, o, rx = 2) => `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="${rx}" class="${cl}"${sv(o)}/>`;
+  const L = (x1, y1, x2, y2, cl, o) => `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" class="${cl}"${sv(o)}/>`;
+  const P = (d, cl, o) => `<path d="${d}" class="${cl}"${sv(o)}/>`;
+  const Tx = (x, y, s, cl = 'mt') => `<text x="${x}" y="${y}" class="${cl}">${s}</text>`;
+  const rng = n => { let h = n * 7919; return () => ((h = Math.imul(h ^ (h >>> 15), 2246822507) + 3266489917 >>> 0) / 4294967296); };
+  const range = n => Array.from({ length: n }, (_, i) => i);
+  const bars = (hs, cl, x0 = 8, step = 11, w = 8, base = 48, extra = () => '') => hs.map((h, i) => R(x0 + i * step, base - h, w, h, cl(i), extra(i), 1.5)).join('');
+  const MINI = {
+    'nn': () => { const cols = [[18, 38], [12, 28, 44], [20, 36]], xs = [14, 40, 66]; let s = '';
+      cols.slice(0, -1).forEach((ys, c) => ys.forEach(y => cols[c + 1].forEach(y2 => s += L(xs[c], y, xs[c + 1], y2, 's-l'))));
+      cols.forEach((ys, c) => ys.forEach(y => s += C(xs[c], y, 4.5, 'f-g a-pulse', `--t:${c * .4}s`))); return s; },
+    'neuron': () => [12, 28, 44].map((y, i) => L(12, y, 58, 28, 's-l') + C(12, y, 4, 'f-b') + C(12, y, 2.5, 'f-g a-move', `--dx:46px;--dy:${28 - y}px;--t:${i * .12}s`)).join('') + C(60, 28, 8, 'f-c a-pop', '--t:.9s'),
+    'layer': () => [10, 34, 58].map((x, i) => R(x, 8, 12, 40, 'f-b a-pulse', `--t:${i * .45}s`, 4)).join(''),
+    'weight': () => L(14, 16, 64, 28, 's-g a-pulse', 'stroke-width:5') + L(14, 40, 64, 28, 's-b a-pulse', 'stroke-width:1.5;--t:1.2s') + C(14, 16, 5, 'f-k') + C(14, 40, 5, 'f-k') + C(66, 28, 6, 'f-k'),
+    'bias': () => L(8, 48, 74, 48, 's-k') + L(8, 6, 8, 48, 's-k') + P('M10 46 L72 22', 's-l', 'stroke-dasharray:3 3') + P('M10 46 L72 22', 's-c a-shift', '--dy:-12px') + Tx(58, 54, '+b'),
+    'param': () => { const r = rng(3); let s = ''; for (let y = 0; y < 4; y++) for (let x = 0; x < 7; x++) s += R(6 + x * 10, 8 + y * 11, 8, 8, 'f-b a-pulse', `--t:${(r() * 2.2).toFixed(2)}s`, 1.5); return s; },
+    'act': () => L(8, 38, 74, 38, 's-l') + L(40, 6, 40, 50, 's-l') + P('M8 38 L40 38 L72 8', 's-g a-draw', '--len:80;stroke-width:3') + Tx(6, 52, 'ReLU'),
+    'data': () => [0, 1, 2].map(i => `<g class="a-shift" style="--dx:${10 + i * 10}px;--t:${i * .2}s">${R(8 + i * 4, 10 + i * 4, 26, 32, 'f-p s-l', '', 3)}${R(13 + i * 4, 17 + i * 4, 16, 2.5, 'f-k', '', 1)}${R(13 + i * 4, 23 + i * 4, 12, 2.5, 'f-k', '', 1)}</g>`).join(''),
+    'fwd': () => L(12, 28, 68, 28, 's-l') + [12, 40, 68].map(x => C(x, 28, 6, 'f-l')) .join('') + C(12, 28, 4, 'f-g a-move', '--dx:56px;--dy:0px') + Tx(56, 50, '→'),
+    'loss': () => L(10, 12, 72, 12, 's-c', 'stroke-dasharray:3 3') + Tx(52, 9, '정답', 'mt') + R(22, 12, 16, 36, 'f-b a-gy', '--s0:.35', 2) + R(46, 12, 16, 36, 'f-l', '', 2),
+    'bp': () => L(12, 28, 68, 28, 's-l') + [12, 40, 68].map(x => C(x, 28, 6, 'f-l')).join('') + C(68, 28, 4, 'f-c a-move', '--dx:-56px;--dy:0px') + Tx(14, 50, '←'),
+    'gd': () => P('M6 8 Q40 70 74 8', 's-k') + C(40, 39, 2.5, 'f-gr') + C(14, 17, 4.5, 'f-c a-move', '--dx:26px;--dy:18px'),
+    'lr': () => [8, 15, 22, 29, 36].map((x, i) => C(x, 18, 3, 'f-b a-pop', `--t:${i * .25}s`)).join('') + [8, 40, 72].map((x, i) => C(x, 40, 3, 'f-c a-pop', `--t:${i * .25}s`)).join('') + Tx(46, 21, '작게') + Tx(30, 54, '크게'),
+    'batch': () => [6, 30, 54].map((x0, g) => range(4).map(i => R(x0 + (i % 2) * 10, 12 + Math.floor(i / 2) * 10, 8, 8, 'f-b a-pulse', `--t:${g * .55}s`, 1.5)).join('')).join('') + Tx(6, 51, '3묶음 = 1에폭'),
+    'over': () => { const pts = [[10, 40], [20, 30], [30, 36], [40, 22], [50, 28], [60, 14], [70, 20]];
+      return P('M8 42 L72 14', 's-g', 'stroke-dasharray:4 3') + P('M' + pts.map(p => p.join(' ')).join(' L'), 's-c a-draw', '--len:120') + pts.map(([x, y]) => C(x, y, 2.5, 'f-k')).join(''); },
+    'hyper': () => [[24, 28, 130], [56, 28, -110]].map(([x, y, r], i) => C(x, y, 13, 'f-p s-l') + L(x, y, x, y - 10, 's-g a-spin', `stroke-width:3;stroke-linecap:round;transform-origin:${x}px ${y}px;--r:${r}deg;--t:${i * .3}s`)).join(''),
+    'token': () => [[8, -5], [31, 0], [54, 5]].map(([x, dx], i) => R(x, 20, 21, 16, 'f-gs s-g a-shift', `--dx:${dx}px;--t:${i * .05}s`, 3)).join('') + Tx(10, 52, '인공지능은'),
+    'emb': () => R(4, 20, 18, 16, 'f-gs s-g', '', 3) + L(25, 28, 33, 28, 's-k') + bars([20, 10, 30, 14, 24, 8], i => (i % 2 ? 'f-c' : 'f-b') + ' a-gy', 37, 7, 5, 46, i => `--s0:.1;--t:${i * .1}s`),
+    'tf': () => [42, 31, 20, 9].map((y, i) => R(14, y, 52, 9, (i % 2 ? 'f-g' : 'f-b') + ' a-pop', `--t:${i * .25}s`, 3)).join(''),
+    'attn': () => { const xs = [10, 26, 42, 58, 74], w = [1, 1.5, 4, 0, 1]; let s = '';
+      xs.forEach((x, i) => { if (i !== 3) s += P(`M58 40 Q${(58 + x) / 2} ${40 - Math.abs(58 - x) * .75} ${x} 40`, 's-g a-draw', `--len:90;stroke-width:${w[i]}`); });
+      return s + xs.map((x, i) => R(x - 6, 40, 12, 8, i === 3 ? 'f-c' : 'f-l', '', 2)).join(''); },
+    'ctx': () => range(10).map(i => R(4 + i * 7.4, 22, 6, 12, 'f-b', '', 1.5)).join('') + R(2, 18, 40, 20, 's-c a-shift', '--dx:35px;fill:none', 4),
+    'pre': () => { const r = rng(9); return range(6).map(i => R(8, 8 + i * 7.5, 30 + Math.round(r() * 34), 3, 'f-k a-gx', `--t:${i * .15}s`, 1.5)).join(''); },
+    'ft': () => C(40, 28, 21, 'f-l') + C(40, 28, 13, 'f-p') + C(40, 28, 6, 'f-g a-pop') + Tx(4, 53, '사전학습 → 특화'),
+    'rlhf': () => R(6, 8, 30, 34, 'f-p s-l', '', 4) + R(44, 8, 30, 34, 'f-p s-g a-pulse', '', 4) + Tx(17, 29, 'A') + Tx(55, 29, 'B') + P('M51 48 l5 5 l12 -12', 's-g a-draw', '--len:30;stroke-width:3;stroke-linecap:round'),
+    'cutoff': () => L(4, 30, 52, 30, 's-k') + L(52, 30, 78, 30, 's-l', 'stroke-dasharray:3 3') + [10, 21, 32, 43].map((x, i) => C(x, 30, 3.5, 'f-g a-pop', `--t:${i * .2}s`)).join('') + L(52, 12, 52, 46, 's-c') + Tx(62, 26, '?', 'mt c a-pulse'),
+    'inf': () => R(8, 26, 22, 18, 'f-b', '', 3) + P('M13 26 v-5 a6 6 0 0 1 12 0 v5', 's-b') + L(34, 35, 74, 35, 's-l') + C(36, 35, 4, 'f-g a-move', '--dx:34px;--dy:0px'),
+    'ar': () => range(4).map(i => R(4 + i * 19, 22, 16, 13, 'f-gs s-g a-pop', `--t:${i * .45}s`, 3)).join('') + Tx(4, 50, '→ 한 토큰씩'),
+    'logit': () => L(4, 30, 34, 30, 's-k') + R(6, 12, 6, 18, 'f-k', '', 1) + R(14, 20, 6, 10, 'f-k', '', 1) + R(22, 30, 6, 8, 'f-k', '', 1) + Tx(38, 33, '→') + bars([30, 12, 4], i => 'f-b a-gy', 50, 9, 7, 48, i => `--s0:0;--t:${i * .12}s`),
+    'temp': () => bars([36, 14, 8, 5, 3, 2], () => 'f-b a-sy', 8, 11, 8, 48, i => `--s1:${([16, 14, 12, 10, 8, 6][i] / [36, 14, 8, 5, 3, 2][i]).toFixed(2)}`) + Tx(52, 12, 'T↑'),
+    'topk': () => bars([40, 30, 22, 14, 9, 5], i => 'f-b' + (i >= 3 ? ' a-fade' : ''), 6, 12, 9) + L(40, 4, 40, 52, 's-c a-pop', 'stroke-dasharray:3 2') + Tx(44, 12, 'k=3'),
+    'topp': () => bars([40, 30, 22, 14, 9, 5], i => 'f-b' + (i >= 2 ? ' a-fade' : ''), 6, 12, 9) + R(4, 2, 72, 3, 'f-l', '', 1.5) + R(4, 2, 58, 3, 'f-c a-gx', '', 1.5) + Tx(46, 16, 'p=.8'),
+    'hall': () => R(8, 10, 54, 4, 'f-k', '', 2) + R(8, 20, 46, 4, 'f-k', '', 2) + R(8, 30, 50, 4, 'f-c a-pulse', '', 2) + R(8, 40, 38, 4, 'f-k', '', 2) + Tx(66, 40, '?', 'mt c a-pulse'),
+    'kv': () => range(4).map(i => R(6 + i * 13, 20, 10, 16, 'f-l', '', 2)).join('') + R(60, 20, 12, 16, 'f-g a-pop', '', 2) + Tx(6, 50, 'cache') + Tx(58, 50, 'new'),
+    'scaling': () => L(8, 48, 74, 48, 's-k') + L(8, 6, 8, 48, 's-k') + P('M10 44 C30 22 50 14 72 9', 's-g a-draw', '--len:80;stroke-width:2.5') + [[22, 31], [40, 19], [60, 12]].map(([x, y], i) => C(x, y, 3, 'f-c a-pop', `--t:${.4 + i * .3}s`)).join(''),
+    'gpu': () => { let s = ''; for (let y = 0; y < 5; y++) for (let x = 0; x < 8; x++) s += R(6 + x * 9, 6 + y * 9.5, 7, 7, 'f-b a-pulse', '', 1.5); return s; },
+    'quant': () => R(6, 12, 68, 12, 'f-v a-sx', '--s1:.125', 2) + range(8).map(i => L(6 + i * 8.5, 12, 6 + i * 8.5, 24, 's-l', 'stroke-width:1')).join('') + Tx(6, 42, '32bit → 4bit'),
+    'distill': () => C(18, 28, 14, 'f-k') + C(64, 28, 7, 'f-g a-pulse') + [-6, 0, 6].map((dy, i) => C(32, 28 + dy, 2.5, 'f-k a-move', `--dx:24px;--dy:${-dy * .6}px;--t:${i * .3}s`)).join(''),
+    'moe': () => C(40, 9, 5, 'f-k') + range(4).map(i => L(40, 14, 11.5 + i * 19, 34, 's-l') + R(4 + i * 19, 34, 15, 14, 'f-l', '', 3) + ([1, 3].includes(i) ? R(4 + i * 19, 34, 15, 14, 'f-g a-pulse', `--t:${i === 3 ? .1 : 0}s`, 3) : '')).join(''),
+  };
+  const MAP = { 't-nn': 'nn', 't-neuron': 'neuron', 't-layer': 'layer', 't-weight': 'weight', 't-bias': 'bias', 't-param': 'param', 't-act': 'act',
+    't-data': 'data', 't-fwd': 'fwd', 't-loss': 'loss', 't-bp': 'bp', 't-gd': 'gd', 't-lr': 'lr', 't-batch': 'batch', 't-over': 'over', 't-hyper': 'hyper',
+    't-token': 'token', 't-emb': 'emb', 't-tf': 'tf', 't-attn': 'attn', 't-ctx': 'ctx', 't-pre': 'pre', 't-ft': 'ft', 't-rlhf': 'rlhf', 't-cutoff': 'cutoff',
+    't-inf': 'inf', 't-ar': 'ar', 't-logit': 'logit', 't-temp': 'temp', 't-topk': 'topk', 't-topp': 'topp', 't-hall': 'hall', 't-kv': 'kv',
+    't-scaling': 'scaling', 't-gpu': 'gpu', 't-quant': 'quant', 't-distill': 'distill', 't-moe': 'moe' };
+  const cards = $$('.terms .tc');
+  const hoverable = matchMedia('(hover: hover)').matches;
+  cards.forEach(tc => {
+    const f = MINI[MAP[tc.id]]; if (!f) return;
+    const m = document.createElement('span'); m.className = 'mini'; m.setAttribute('aria-hidden', 'true');
+    m.innerHTML = `<svg viewBox="0 0 80 56">${f()}</svg>`;
+    tc.querySelector('dt').appendChild(m);
+    tc.tabIndex = 0; tc.setAttribute('aria-pressed', 'false');
+    const pin = v => { tc.classList.toggle('pin', v); tc.classList.toggle('on', v || (hoverable && tc.matches(':hover'))); tc.setAttribute('aria-pressed', String(v)); };
+    if (hoverable) {
+      tc.addEventListener('mouseenter', () => tc.classList.add('on'));
+      tc.addEventListener('mouseleave', () => { if (!tc.classList.contains('pin')) tc.classList.remove('on'); });
+    }
+    tc.addEventListener('click', e => { if (e.target.closest('a')) return; pin(!tc.classList.contains('pin')); });
+    tc.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); pin(!tc.classList.contains('pin')); } });
+  });
+  // play each card once when its grid scrolls in
+  const demoOnce = (tc, delay) => setTimeout(() => {
+    if (tc.classList.contains('pin')) return;
+    tc.classList.add('on');
+    setTimeout(() => { if (!tc.classList.contains('pin') && !(hoverable && tc.matches(':hover'))) tc.classList.remove('on'); }, 2400);
+  }, delay);
+
   /* ---------- index from term cards ---------- */
   $('#tindex').innerHTML = $$('article section').filter(s => s.querySelector('.terms')).map(s =>
     `<div><h6><span class="num">${s.dataset.n}</span>${s.dataset.t}</h6><div class="ch">${$$('.tc', s).map(tc => `<a href="#${tc.id}">${tc.dataset.k}<small>${tc.dataset.e}</small></a>`).join('')}</div></div>`).join('');
@@ -1149,10 +1458,11 @@ footer.site a { color: var(--ink-2); }
   }), { threshold: .3, rootMargin: '0px 0px -8% 0px' }) : null;
   figs.forEach(f => io ? io.observe(f) : play(f));
   $$('[data-replay]').forEach(b => b.addEventListener('click', () => play(b.closest('[data-fig]'))));
-  const rio = 'IntersectionObserver' in window ? new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); rio.unobserve(e.target); } }), { threshold: .1 }) : null;
-  $$('.concl, .terms').forEach(el => rio ? rio.observe(el) : el.classList.add('in'));
+  const reveal = el => { el.classList.add('in'); if (el.matches('.terms') && !reduce) $$('.tc', el).forEach((tc, i) => demoOnce(tc, 500 + i * 140)); };
+  const rio = 'IntersectionObserver' in window ? new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { reveal(e.target); rio.unobserve(e.target); } }), { threshold: .1 }) : null;
+  $$('.concl, .terms').forEach(el => rio ? rio.observe(el) : reveal(el));
   // a card opened by #hash must be visible even before its grid scrolls in
-  const showHash = () => { const t = location.hash && document.getElementById(location.hash.slice(1)); if (t && t.closest('.terms')) t.closest('.terms').classList.add('in'); };
+  const showHash = () => { const t = location.hash && document.getElementById(location.hash.slice(1)); if (t && t.closest('.terms')) { t.closest('.terms').classList.add('in'); demoOnce(t, 300); } };
   addEventListener('hashchange', showHash); showHash();
 
   const hero = $('#hero');
