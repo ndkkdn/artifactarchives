@@ -9,6 +9,9 @@
  *   #bg-land   sky gradient, texture, stars, sun/moon — redrawn about once a minute
  *   #bg-sea    the sea, one canvas pixel per cell, masked into a dot grid by CSS; animated
  *   #bg-cloud  pixel clouds that drift and stream away from the mouse; animated
+ * Seasons (:root[data-season], set by the page; ?season=winter to preview) tint the palette, move
+ * sunrise and sunset, thicken or thin the clouds, and drop petals, leaves or snow over the scene.
+ *
  * The body gets .sky-light / .sky-dark so the top bar can keep its text readable, and --hl / --hl-text
  * on :root so the title highlight changes colour with the sky.
  * Animation pauses when the cover view is hidden, the tab is in the background, or the viewer prefers
@@ -37,12 +40,39 @@
   const KEYS = [[0, NIGHT], [4.6, NIGHT], [6, DAWN], [8, DAY], [16.2, DAY], [18, SUNSET], [19.4, DUSK], [20.8, NIGHT], [24, NIGHT]];
   const SUNRISE = 6, SUNSET_H = 19;
 
+  /* ── seasons: daylight tint (colour, strength), day length, cloud cover, falling particles ── */
+  const T = (o) => Object.fromEntries(Object.entries(o).map(([k, [c, a]]) => [k, [hex(c), a]]));
+  const SEASONS = {
+    spring: { rise: 6, set: 19, cloud: 0, tint: T({ hl: ['#e0517a', 1], skyTop: ['#9fb2f2', .45], skyBot: ['#fcd9e6', .75], glow: ['#ffe2ee', .5], seaDeep: ['#123a78', .3], seaMid: ['#2f74bc', .45], seaLight: ['#8cc8ee', .55], foam: ['#fff0f6', .6], cloud: ['#fff4f8', .6], cloud2: ['#f8d4e2', .7], cloudEdge: ['#f2c8da', .7] }),
+      fall: { per: 420, speed: .2, sway: .7, drift: .18, shape: 'pair', colors: ['#fbc4d6', '#f49dbb', '#fde4ec', '#ec8aae'] } },
+    summer: { rise: 5.3, set: 19.8, cloud: .045, glint: 1.35, tint: T({ hl: ['#ff6a1a', .8], skyTop: ['#2f86f0', .7], skyBot: ['#aee0ff', .65], glow: ['#fffbe8', .4], seaDeep: ['#023f66', .6], seaMid: ['#0482b8', .7], seaLight: ['#22cbd6', .8], foam: ['#ffffff', .5], cloud: ['#ffffff', .6] }),
+      fall: null },
+    autumn: { rise: 6.7, set: 17.8, cloud: .02, tint: T({ hl: ['#d9541e', 1], skyTop: ['#8a9fcf', .35], skyBot: ['#f6cf9e', .7], glow: ['#ffc890', .5], seaDeep: ['#0b1f40', .5], seaMid: ['#1d3f72', .45], seaLight: ['#6a87ad', .4], cloud: ['#fbeedd', .6], cloud2: ['#ecd0b0', .65], cloudEdge: ['#e2c09c', .65] }),
+      fall: { per: 520, speed: .32, sway: 1.2, drift: .24, shape: 'pair', colors: ['#d9622b', '#eaa23a', '#b8432a', '#cf7c2c', '#9a4a24'] } },
+    winter: { rise: 7.4, set: 17.4, cloud: -.07, glint: .75, tint: T({ hl: ['#3a6fd8', 1], skyTop: ['#9fb0c8', .7], skyBot: ['#eef1f5', .8], glow: ['#f6f7fa', .5], seaDeep: ['#152638', .7], seaMid: ['#324a66', .7], seaLight: ['#8aa2bc', .65], foam: ['#ffffff', .7], cloud: ['#f6f7fa', .5], cloud2: ['#d4dae3', .7], cloudEdge: ['#c4ccd8', .7] }),
+      fall: { per: 200, speed: .24, sway: .5, drift: .05, shape: 'flake', colors: ['#ffffff', '#f2f6ff', '#e2eaf6'] } },
+  };
+  const MONTH_SEASON = ['winter', 'winter', 'spring', 'spring', 'spring', 'summer', 'summer', 'summer', 'autumn', 'autumn', 'autumn', 'winter'];
+  const seasonKey = () => SEASONS[params.get('season')] ? params.get('season') : SEASONS[root.dataset.season] ? root.dataset.season : MONTH_SEASON[new Date().getMonth()];
+  const season = () => SEASONS[seasonKey()];
+  // stretch the clock so the season's sunrise/sunset land on the palette's 6:00 / 19:00
+  function seasonHour(h) {
+    const { rise, set } = season();
+    if (h >= rise && h < set) return SUNRISE + (h - rise) / (set - rise) * (SUNSET_H - SUNRISE);
+    const nl = 24 - (set - rise), p = ((h - set + 24) % 24) / nl;
+    return (SUNSET_H + p * (24 - (SUNSET_H - SUNRISE))) % 24;
+  }
+
   function paletteAt(h) {
     let k = 0; while (k < KEYS.length - 2 && h >= KEYS[k + 1][0]) k++;
     const [h0, a] = KEYS[k], [h1, b] = KEYS[k + 1];
     const t = h1 === h0 ? 0 : (h - h0) / (h1 - h0), s = t * t * (3 - 2 * t);
     const out = {};
     for (const key in a) out[key] = Array.isArray(a[key]) ? a[key].map((v, i) => v + (b[key][i] - v) * s) : a[key] + (b[key] - a[key]) * s;
+    // season tint, strongest in daylight so nights stay night
+    const daylight = Math.min(1, Math.max(0, (lum(out.skyBot) - .25) / .5));
+    const tint = season().tint;
+    for (const key in tint) out[key] = mix(out[key], tint[key][0], tint[key][1] * (key === 'hl' ? 1 : .35 + .65 * daylight));
     if (isDark()) for (const key in out) if (Array.isArray(out[key]) && key !== 'hl') out[key] = out[key].map((v, i) => v * .55 + [14, 16, 40][i] * .3);
     return out;
   }
@@ -92,6 +122,7 @@
   }
 
   function drawSky(h) {
+    h = seasonHour(h);
     pal = paletteAt(h);
     sunPos = arc(h, SUNRISE, SUNSET_H);
     moonPos = arc(h, SUNSET_H + .3, SUNRISE + .4);
@@ -174,7 +205,7 @@
     const cDeep = pack(deep), cMid = pack(mid), cLight = pack(light), cFoam = pack(pal.foam), cGlint = pack(pal.glint);
     const cHaze = pack(mix(light, pal.skyBot, .55));
     const glintX = sunPos ? sunPos.x : moonPos ? moonPos.x : null;
-    const glintStrength = sunPos ? Math.sin(Math.PI * sunPos.p) * .6 + .4 : moonPos ? .55 : 0;
+    const glintStrength = (sunPos ? Math.sin(Math.PI * sunPos.p) * .6 + .4 : moonPos ? .55 : 0) * (season().glint || 1);
     while (ripples.length && now - ripples[0].t0 > 2600) ripples.shift();
     for (let j = seaRow0; j < rows; j++) {
       const depth = (j - seaRow0) / Math.max(1, rows - seaRow0);   // 0 at the horizon, 1 at the bottom
@@ -213,7 +244,7 @@
     while (gusts.length && gusts[0].life < .05) gusts.shift();
     cloudBuf.fill(0);
     const C0 = pack(pal.cloud), C1 = pack(pal.cloud2), CE = pack(pal.cloudEdge, 230);
-    const lastRow = Math.floor(rows * (HZ - .02));
+    const lastRow = Math.floor(rows * (HZ - .02)), cv = season().cloud;
     for (let j = 0; j < lastRow; j++) {
       const y = j / rows, band = 1 - Math.abs(y - .22) / .16;
       for (let i = 0; i < cols; i++) {
@@ -227,11 +258,52 @@
         if (band <= -.5) continue;
         const v = fbm((x - ox) * 3 - t * .018 + 31, (y - oy) * 5 + 7, 4) + band * .38;
         const bay = BAYER[(j & 3) * 4 + (i & 3)];
-        if (v > .86 - bay * .06) cloudBuf[k] = v > .95 ? C0 : C1;
-        else if (v > .8 - bay * .05) cloudBuf[k] = CE;
+        if (v > .86 + cv - bay * .06) cloudBuf[k] = v > .95 + cv ? C0 : C1;
+        else if (v > .8 + cv - bay * .05) cloudBuf[k] = CE;
       }
     }
+    drawFall(t);
     gc.putImageData(cloudImg, 0, 0);
+  }
+
+  /* ── falling petals / leaves / snow, drawn into the cloud layer so they share its dot grid ── */
+  let flakes = [], flakeKey = '';
+  function seedFall() {
+    const f = season().fall; flakeKey = seasonKey() + cols + 'x' + rows;
+    flakes = [];
+    if (!f) return;
+    const n = Math.round(cols * rows / f.per);
+    for (let k = 0; k < n; k++) flakes.push(newFlake(f, Math.random() * rows));
+  }
+  function newFlake(f, y) {
+    return { x: Math.random() * cols, y, ph: Math.random() * 6.28, sp: f.speed * (.6 + Math.random() * .8),
+      c: Math.floor(Math.random() * f.colors.length), land: seaRow0 + Math.random() * (rows - seaRow0) * .9, tw: Math.random() < .5 };
+  }
+  function drawFall(t) {
+    if (flakeKey !== seasonKey() + cols + 'x' + rows) seedFall();
+    const f = season().fall; if (!f) return;
+    const dim = isDark() ? .72 : 1;
+    const cols8 = f.colors.map(c => pack(hex(c).map(v => v * dim)));
+    const aspect = W / H, R = .16, R2 = R * R;
+    for (const p of flakes) {
+      if (!reducedMq.matches) {
+        let wx = 0, wy = 0;
+        for (const g of gusts) { const ex = (p.x / cols - g.x) * aspect, ey = p.y / rows - g.y, d2 = ex * ex + ey * ey;
+          if (d2 < R2) { const s = (1 - d2 / R2) * g.life; wx += g.vx * s * cols * .4; wy += g.vy * s * rows * .4; } }
+        p.y += p.sp + wy;
+        p.x += f.drift + Math.sin(t * 1.3 + p.ph) * f.sway * .12 + wx;
+        if (p.y > p.land || p.y > rows) Object.assign(p, newFlake(f, -2));
+        if (p.x > cols + 2) p.x -= cols + 4; else if (p.x < -2) p.x += cols + 4;
+      }
+      const i = Math.round(p.x), j = Math.round(p.y);
+      if (j < 0 || j >= rows || i < 0 || i >= cols) continue;
+      const c = cols8[p.c];
+      cloudBuf[j * cols + i] = c;
+      const put = (di, dj) => { const ii = i + di, jj = j + dj; if (ii >= 0 && ii < cols && jj >= 0 && jj < rows) cloudBuf[jj * cols + ii] = c; };
+      // petals and leaves are two cells, tumbling between flat and upright; some snowflakes are a small plus
+      if (f.shape === 'pair') { if (Math.sin(t * 2.2 + p.ph) > 0) put(0, 1); else put(1, 0); }
+      else if (p.tw) { put(1, 0); put(-1, 0); put(0, 1); put(0, -1); }
+    }
   }
 
   /* ── loop ── */
@@ -258,7 +330,7 @@
   document.addEventListener('visibilitychange', () => { lastSky = -1e9; wake(); });
   darkMq.addEventListener('change', redraw);
   reducedMq.addEventListener('change', wake);
-  new MutationObserver(() => { lastSky = -1e9; frame(performance.now()); }).observe(root, { attributes: true, attributeFilter: ['data-theme'] });
+  new MutationObserver(() => { lastSky = -1e9; frame(performance.now()); }).observe(root, { attributes: true, attributeFilter: ['data-theme', 'data-season'] });
   new MutationObserver(wake).observe(body, { attributes: true, attributeFilter: ['class'] });
   // reduced motion still gets the right time of day
   setInterval(() => { if (reducedMq.matches && visible()) frame(performance.now()); }, 60000);

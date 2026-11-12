@@ -127,6 +127,9 @@
   .tg-btn:hover { background: var(--btn-hover); color: var(--text); }
   .tg-btn[aria-pressed="true"] { background: var(--text); color: var(--bg); }
   .tg-sep { width: 1px; height: 16px; background: var(--line); margin: 0 3px; }
+  .season-btn.spin svg { animation: seasonSpin .5s var(--ease, cubic-bezier(.2,.8,.2,1)); }
+  @keyframes seasonSpin { from { transform: rotate(-90deg) scale(.6); opacity: 0; } to { transform: none; opacity: 1; } }
+  @media (prefers-reduced-motion: reduce) { .season-btn.spin svg { animation: none; } }
   .round {
     appearance: none; border: 0; background: var(--btn); width: 36px; height: 36px; border-radius: 50%;
     display: grid; place-items: center; cursor: pointer; text-decoration: none; transition: background .3s;
@@ -456,6 +459,9 @@
         <button type="button" class="tg-btn" id="themeBtn" aria-label="테마 전환" title="테마 전환">
           <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="8" cy="8" r="6"/><path d="M8 2a6 6 0 000 12z" fill="currentColor"/></svg>
         </button>
+        <button type="button" class="tg-btn season-btn" id="seasonBtn" aria-label="계절 전환" title="계절 전환">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" width="16" height="16" aria-hidden="true"></svg>
+        </button>
       </div>
     </div>
   </div>
@@ -751,6 +757,37 @@
     const dark = root.dataset.theme ? root.dataset.theme === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
     root.dataset.theme = dark ? 'light' : 'dark';
     try { localStorage.setItem('archive-theme', root.dataset.theme); } catch (_) {}
+  };
+
+  /* ── season (spring → summer → autumn → winter); bg.js reads data-season ── */
+  const SEASONS = [
+    ['spring', '봄', '<circle cx="8" cy="4.7" r="2.2"/><circle cx="11.1" cy="7" r="2.2"/><circle cx="9.9" cy="10.6" r="2.2"/><circle cx="6.1" cy="10.6" r="2.2"/><circle cx="4.9" cy="7" r="2.2"/><circle cx="8" cy="8" r="1.1" fill="currentColor" stroke="none"/>'],
+    ['summer', '여름', '<circle cx="8" cy="8" r="2.9"/><path d="M8 1.6v1.6M8 12.8v1.6M1.6 8h1.6M12.8 8h1.6M3.5 3.5l1.1 1.1M11.4 11.4l1.1 1.1M3.5 12.5l1.1-1.1M11.4 4.6l1.1-1.1"/>'],
+    ['autumn', '가을', '<path d="M3.2 12.8C2.6 7.4 6.4 3 13.2 2.8c.3 6.6-4 10.6-10 10z"/><path d="M2.4 13.6l7.4-7.4M6.2 9.8V7.4M7.9 8.1l2.3.1"/>'],
+    ['winter', '겨울', '<path d="M8 1.6v12.8M2.5 4.8l11 6.4M2.5 11.2l11-6.4M6.5 2.9L8 4.2l1.5-1.3M6.5 13.1L8 11.8l1.5 1.3M2.9 7.1l1.9.5-.5 1.9M13.1 7.1l-1.9.5.5 1.9" />'],
+  ];
+  const autoSeason = () => ['winter', 'winter', 'spring', 'spring', 'spring', 'summer', 'summer', 'summer', 'autumn', 'autumn', 'autumn', 'winter'][new Date().getMonth()];
+  const applySeason = (key) => {
+    const k = SEASONS.find(s => s[0] === key) ? key : autoSeason();
+    const [, name, icon] = SEASONS.find(s => s[0] === k);
+    const next = SEASONS[(SEASONS.findIndex(s => s[0] === k) + 1) % 4][1];
+    root.dataset.season = k;
+    const b = $('seasonBtn');
+    b.querySelector('svg').innerHTML = icon;
+    b.title = `계절: ${name} · 눌러서 ${next}(으)로`;
+    b.setAttribute('aria-label', `계절 전환, 현재 ${name}`);
+  };
+  {
+    let saved = null;
+    try { saved = new URLSearchParams(location.search).get('season') || localStorage.getItem('archive-season'); } catch (_) {}
+    applySeason(saved);
+  }
+  $('seasonBtn').onclick = () => {
+    const i = SEASONS.findIndex(s => s[0] === root.dataset.season);
+    const k = SEASONS[(i + 1) % 4][0];
+    applySeason(k);
+    try { localStorage.setItem('archive-season', k); } catch (_) {}
+    const b = $('seasonBtn'); b.classList.remove('spin'); void b.offsetWidth; b.classList.add('spin');
   };
 
   /* ── public hooks for admin.js ─────────── */
