@@ -703,6 +703,7 @@
       frame.onload = () => requestAnimationFrame(() => requestAnimationFrame(() => { ready = true; img.style.opacity = '0'; }));
       card.appendChild(frame);
     }
+    if (live) img.style.height = 'auto';   // window-shaped card: show the cover at the top, unstretched
     card.appendChild(img);
     const rad0 = parseFloat(getComputedStyle(fromEl).borderTopLeftRadius) || 6;
     const k = .03, r1 = { x: r.left + r.width * k / 2, y: r.top + r.height * k / 2, w: r.width * (1 - k), h: r.height * (1 - k) };
@@ -721,13 +722,18 @@
       if (live) try { sessionStorage.setItem('archive-launch', new URL(href, location.href).pathname); } catch (_) {}
       location.href = href;
     };
-    // a quick press-in, then the card swells out to the edges of the screen
-    const DUR = 640, PRESS = .14, t0 = performance.now();
+    // scroll-type: no press-in; the page keeps window proportions and rises to the top while scaling up slightly
+    const s0 = Math.min(1, r.width / W), lx = r.left + r.width / 2 - W * s0 / 2;
+    const outCubic = t => 1 - Math.pow(1 - t, 3);
+    if (live) place(lx, r.top, W * s0, H * s0, rad0);
+    // others: a quick press-in, then the card swells out to the edges of the screen
+    const DUR = live ? 700 : 640, PRESS = .14, t0 = performance.now();
     const step = now => {
       const p = Math.min(1, (now - t0) / DUR);
-      if (p < PRESS) { const q = 1 - Math.pow(1 - p / PRESS, 2); place(lerp(r.left, r1.x, q), lerp(r.top, r1.y, q), lerp(r.width, r1.w, q), lerp(r.height, r1.h, q), rad0); }
+      if (live) { const q = outCubic(p), sc = lerp(s0, 1, q); place(lerp(lx, 0, q), lerp(r.top, 0, q), W * sc, H * sc, lerp(rad0, 0, q)); }
+      else if (p < PRESS) { const q = 1 - Math.pow(1 - p / PRESS, 2); place(lerp(r.left, r1.x, q), lerp(r.top, r1.y, q), lerp(r.width, r1.w, q), lerp(r.height, r1.h, q), rad0); }
       else { const q = inOut((p - PRESS) / (1 - PRESS)); place(lerp(r1.x, 0, q), lerp(r1.y, 0, q), lerp(r1.w, W, q), lerp(r1.h, H, q), lerp(rad0, 0, q)); }
-      bg.style.opacity = Math.max(0, Math.min(1, (p - .3) / .6));
+      bg.style.opacity = live ? Math.min(1, p / .5) : Math.max(0, Math.min(1, (p - .3) / .6));
       if (p < 1) { requestAnimationFrame(step); return; }
       // wait for the live page to be on screen (or give up after a moment) before switching to it for real
       const waitStart = now;
