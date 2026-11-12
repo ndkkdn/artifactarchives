@@ -630,8 +630,12 @@ footer.site a { color: var(--ink-2); }
   .ii li { grid-template-columns: 18px minmax(0, 1fr) 26px; grid-template-areas: "rk nm b" ". tr tr"; gap: 2px 8px; min-height: 0; padding: 3px 0; }
   .ii .rk { grid-area: rk; } .ii .nm { grid-area: nm; } .ii b { grid-area: b; } .ii .tr { grid-area: tr; height: 10px; }
 }
+
+/* opened from the archive's launch zoom: the hero is already on screen, so skip its intro */
+.launched .hero .rv { animation: none !important; opacity: 1 !important; transform: none !important; }
+.launched .hero .shift .rail i { animation: none !important; transform: none !important; }
 </style>
-<script>document.documentElement.classList.add('js');try{var t=localStorage.getItem('archive-theme');if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+<script>document.documentElement.classList.add('js');try{var t=localStorage.getItem('archive-theme');if(t)document.documentElement.dataset.theme=t;}catch(e){}try{var lq=/[?&]launch\b/.test(location.search),ls=sessionStorage.getItem('archive-launch');if(lq||ls===location.pathname){document.documentElement.classList.add('launched');if(!lq)sessionStorage.removeItem('archive-launch');}}catch(e){}</script>
 </head>
 <body>
 
@@ -1105,7 +1109,7 @@ footer.site a { color: var(--ink-2); }
   function countUp(el, dur = 1400) {
     const to = parseFloat(el.dataset.count), dec = +(el.dataset.dec || 0), pre = el.dataset.pre || '', suf = el.dataset.suf || '';
     const fmt = v => pre + v.toLocaleString('en-US', { minimumFractionDigits: dec, maximumFractionDigits: dec }) + suf;
-    if (reduce) { el.textContent = fmt(to); return; }
+    if (reduce || !dur) { el.textContent = fmt(to); return; }
     const t0 = performance.now();
     const step = now => { const t = Math.min(1, (now - t0) / dur); el.textContent = fmt(to * ease(t)); if (t < 1) requestAnimationFrame(step); };
     requestAnimationFrame(step);
@@ -1346,7 +1350,8 @@ footer.site a { color: var(--ink-2); }
 
   // hero
   const hero = $('#hero');
-  requestAnimationFrame(() => { hero.classList.add('in'); setTimeout(() => $$('[data-count]', hero).forEach(el => countUp(el, 1600)), reduce ? 0 : 700); });
+  const launched = root.classList.contains('launched');
+  requestAnimationFrame(() => { hero.classList.add('in'); setTimeout(() => $$('[data-count]', hero).forEach(el => countUp(el, launched ? 0 : 1600)), reduce || launched ? 0 : 700); });
 
   /* ---------- abbreviations: first mention per section becomes a tappable term ---------- */
   const GLOSS = {"METR": ["Model Evaluation and Threat Research", "AI의 위험과 역량을 평가하는 비영리 연구기관."], "R&D": ["Research and Development", "연구개발."], "AECI": ["앤트로픽 내부 지표", "엔지니어링·벤치마크 진척을 재는 내부 지표 이름. 보고서에 풀네임은 나오지 않습니다."], "GPT": ["Generative Pre-trained Transformer", "OpenAI 모델 계열의 이름. 대량의 글로 미리 학습한 생성형 모델."], "API": ["Application Programming Interface", "다른 서비스가 모델 기능을 코드로 불러 쓰는 창구."], "GIF": ["Graphics Interchange Format", "짧게 반복 재생되는 애니메이션 이미지 형식."], "1K": ["해상도 표기", "가로 약 1,000픽셀. 2K는 약 2,000픽셀."], "2K": ["해상도 표기", "가로 약 2,000픽셀. 1K보다 두 배 가까이 세밀합니다."], "MIT CSAIL": ["MIT Computer Science and Artificial Intelligence Laboratory", "MIT 컴퓨터과학·인공지능 연구소."], "LLM": ["Large Language Model", "대규모 언어 모델. 방대한 글을 학습해 다음 단어를 예측하는 AI."], "PPO": ["Proximal Policy Optimization", "시행착오로 행동 정책을 조금씩 고쳐 배우는 강화학습 알고리즘."], "MATH-500": ["수학 벤치마크", "경시대회 수준 수학 문제 500개로 정답률을 재는 시험."], "GSM8K": ["Grade School Math 8K", "초등 수준 수학 서술형 문제 약 8,500개로 이뤄진 벤치마크."], "OS": ["Operating System", "운영체제. Windows·macOS처럼 컴퓨터를 움직이는 기본 소프트웨어."], "A/B": ["A/B Testing", "사용자를 두 무리로 나눠 서로 다른 버전을 비교하는 실험."], "CAPTCHA": ["Completely Automated Public Turing test to tell Computers and Humans Apart", "사람인지 봇인지 가려내는 확인 문제."], "PC": ["Personal Computer", "개인용 컴퓨터."], "Intelligence Index": ["Artificial Analysis Intelligence Index", "평가 9종(AA-Briefcase, Terminal-Bench 4.0, HLE-Diamond 등)을 묶은 AI 모델 종합 점수."], "max·high·xhigh": ["추론 노력(effort) 설정", "같은 모델도 더 오래 생각하게 할수록 점수가 오릅니다. 6장의 effort와 같은 개념."]};

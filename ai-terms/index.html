@@ -698,8 +698,12 @@ footer.site a { color: var(--ink-2); }
   .crumb b { font-size: 13.5px; }
 }
 @media (max-width: 480px) { .stats a:last-child { grid-column: 1 / -1; } }
+
+/* opened from the archive's launch zoom: the hero is already on screen, so skip its intro */
+.launched .hero .rv { animation: none !important; opacity: 1 !important; transform: none !important; }
+.launched .hero .shift .rail i { animation: none !important; transform: none !important; }
 </style>
-<script>document.documentElement.classList.add('js');try{var t=localStorage.getItem('archive-theme');if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+<script>document.documentElement.classList.add('js');try{var t=localStorage.getItem('archive-theme');if(t)document.documentElement.dataset.theme=t;}catch(e){}try{var lq=/[?&]launch\b/.test(location.search),ls=sessionStorage.getItem('archive-launch');if(lq||ls===location.pathname){document.documentElement.classList.add('launched');if(!lq)sessionStorage.removeItem('archive-launch');}}catch(e){}</script>
 </head>
 <body>
 
@@ -1171,7 +1175,7 @@ footer.site a { color: var(--ink-2); }
   function countUp(el, dur = 1400) {
     const to = parseFloat(el.dataset.count), dec = +(el.dataset.dec || 0), pre = el.dataset.pre || '', suf = el.dataset.suf || '';
     const f = v => pre + v.toLocaleString('en-US', { minimumFractionDigits: dec, maximumFractionDigits: dec }) + suf;
-    if (reduce) { el.textContent = f(to); return; }
+    if (reduce || !dur) { el.textContent = f(to); return; }
     const t0 = performance.now();
     const step = now => { const t = Math.min(1, (now - t0) / dur); el.textContent = f(to * ease(t)); if (t < 1) requestAnimationFrame(step); };
     requestAnimationFrame(step);
@@ -1761,7 +1765,8 @@ footer.site a { color: var(--ink-2); }
   addEventListener('hashchange', showHash); showHash();
 
   const hero = $('#hero');
-  requestAnimationFrame(() => { hero.classList.add('in'); setTimeout(() => $$('[data-count]', hero).forEach(el => countUp(el, 1600)), reduce ? 0 : 700); });
+  const launched = root.classList.contains('launched');
+  requestAnimationFrame(() => { hero.classList.add('in'); setTimeout(() => $$('[data-count]', hero).forEach(el => countUp(el, launched ? 0 : 1600)), reduce || launched ? 0 : 700); });
 
   /* ---------- TOC, scroll spy, progress ---------- */
   const secs = $$('article section');
