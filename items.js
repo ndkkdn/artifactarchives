@@ -82,6 +82,7 @@ window.ITEMS = [
     "type": "설명서",
     "tags": ["AI 품질", "ISO/IEC 25059"],
     "date": "2026-09-04",
-    "thumb": "thumbs/ai-quality-report-card.jpg"
+    "thumb": "thumbs/ai-quality-report-card.jpg",
+    "hidden": true
   }
 ];
