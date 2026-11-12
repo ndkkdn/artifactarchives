@@ -1,0 +1,2020 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>AI 작동 원리 용어</title>
+<meta name="description" content="신경망 구조, 학습, LLM, 추론, 규모와 효율까지. AI가 작동하는 과정을 따라 필수 용어 42개를 슬라이드로 정리">
+<link rel="icon" href="../favicon.ico">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&family=Noto+Serif+KR:wght@600;700&display=swap" rel="stylesheet">
+<script>try{var t=localStorage.getItem('archive-theme');if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+<style>
+  /* Engine and chrome follow ai-trends-2026-11 (fixed 1600×900 stage); colors and type follow ai-terms (cream paper, dark hero, gold accent). */
+  :root {
+    --bg: #f6f2e8; --paper: #fffdf7; --paper-2: #efe9da; --ink: #101a2c; --ink-2: #4a5263; --ink-3: #7d8494;
+    --line: #e2dac6; --gold: #a87a12; --gold-soft: #f4e8c8; --coral: #d8461c; --coral-soft: #fbe3d8;
+    --blue: #2a63d4; --blue-soft: #e2ebfb; --green: #13865a; --green-soft: #dcf1e7; --violet: #6b4fd0; --violet-soft: #ebe5fb;
+    --shadow: 0 1px 2px rgba(40, 30, 10, .05), 0 12px 32px rgba(40, 30, 10, .07);
+    --hud: rgba(16, 26, 44, .07); --hud-h: rgba(16, 26, 44, .14); --notes: rgba(255, 253, 247, .97);
+    --sans: "Pretendard Variable", Pretendard, Inter, -apple-system, system-ui, sans-serif;
+    --serif: "Noto Serif KR", "Pretendard Variable", serif;
+    --en: Inter, "Pretendard Variable", sans-serif;
+    --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+    --ease: cubic-bezier(.2, .8, .2, 1);
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0b1322; --paper: #111b2e; --paper-2: #17233a; --ink: #f1ede2; --ink-2: #b9bccb; --ink-3: #868ca0;
+      --line: #233150; --gold: #e0b450; --gold-soft: #2b2512; --coral: #ff7a4f; --coral-soft: #351a12;
+      --blue: #79a8ff; --blue-soft: #15223f; --green: #4fd09a; --green-soft: #0f2a20; --violet: #a993ff; --violet-soft: #1f1a3a;
+      --shadow: 0 1px 2px rgba(0,0,0,.4), 0 12px 32px rgba(0,0,0,.35);
+      --hud: rgba(243, 239, 228, .08); --hud-h: rgba(243, 239, 228, .16); --notes: rgba(8, 14, 26, .94);
+      color-scheme: dark;
+    }
+  }
+  /* dark theme, and the always-dark slides (cover, chapter openers, quote) with the hud on top of them */
+  :root[data-theme="dark"], .slide.dk, html.dk-on .hud, html.dk-on .notes {
+    --bg: #0b1322; --paper: #111b2e; --paper-2: #17233a; --ink: #f1ede2; --ink-2: #b9bccb; --ink-3: #868ca0;
+    --line: #233150; --gold: #e0b450; --gold-soft: #2b2512; --coral: #ff7a4f; --coral-soft: #351a12;
+    --blue: #79a8ff; --blue-soft: #15223f; --green: #4fd09a; --green-soft: #0f2a20; --violet: #a993ff; --violet-soft: #1f1a3a;
+    --shadow: 0 1px 2px rgba(0,0,0,.4), 0 12px 32px rgba(0,0,0,.35);
+    --hud: rgba(243, 239, 228, .08); --hud-h: rgba(243, 239, 228, .16); --notes: rgba(8, 14, 26, .94);
+  }
+  :root[data-theme="dark"] { color-scheme: dark; }
+  .slide.dk { --bg: #0c1524; --gold: #d5a844; --line: rgba(243, 239, 228, .12); }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; background: var(--bg); color: var(--ink); overflow: hidden; }
+  body { font-family: var(--sans); -webkit-font-smoothing: antialiased; word-break: keep-all; transition: background .5s var(--ease); }
+  html.dk-on body { background: #0c1524; }
+  .mono { font-family: var(--mono); }
+  .en { font-family: var(--en); }
+  #bgfx { position: fixed; inset: 0; width: 100%; height: 100%; }
+
+  /* ── fixed 1600×900 stage, scaled to fit ── */
+  .deck { position: fixed; left: 50%; top: 50%; width: 1600px; height: 900px; transform-origin: 0 0; }
+  .slide {
+    position: absolute; inset: 0; padding: 92px 110px 96px; display: flex; flex-direction: column; color: var(--ink);
+    opacity: 0; visibility: hidden; transform: translateX(40px); transition: opacity .5s var(--ease), transform .6s var(--ease), visibility 0s .6s;
+  }
+  .slide.is-active { opacity: 1; visibility: visible; transform: none; transition: opacity .5s var(--ease), transform .6s var(--ease); }
+  .slide.is-past { transform: translateX(-40px); }
+
+  /* entrance choreography: every [data-a] child plays when its slide becomes active */
+  .slide [data-a] { opacity: 0; }
+  .slide.is-active [data-a] { animation: var(--anim, rise) .8s var(--ease) both; animation-delay: calc(140ms + var(--d, 0) * 110ms); }
+  [data-a="fade"] { --anim: fade; } [data-a="left"] { --anim: fromLeft; } [data-a="right"] { --anim: fromRight; } [data-a="pop"] { --anim: pop; }
+  @keyframes rise { from { opacity: 0; transform: translateY(28px); } to { opacity: 1; transform: none; } }
+  @keyframes fade { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes fromLeft { from { opacity: 0; transform: translateX(-40px); } to { opacity: 1; transform: none; } }
+  @keyframes fromRight { from { opacity: 0; transform: translateX(40px); } to { opacity: 1; transform: none; } }
+  @keyframes pop { 0% { opacity: 0; transform: scale(.55); } 70% { opacity: 1; transform: scale(1.06); } 100% { opacity: 1; transform: none; } }
+  @keyframes growX { from { transform: scaleX(0); } to { transform: none; } }
+  @keyframes growY { from { transform: scaleY(0); } to { transform: none; } }
+  @keyframes slideIn { from { opacity: 0; transform: translateX(-18px); } to { opacity: 1; transform: none; } }
+  @keyframes dash { to { stroke-dashoffset: -24; } }
+  @keyframes blink { 50% { opacity: 0; } }
+
+  /* ── type ── */
+  .kicker { display: inline-flex; align-items: center; gap: 10px; font: 600 18px/1 var(--en); letter-spacing: .1em; text-transform: uppercase; color: var(--gold); }
+  .kicker::before { content: ""; width: 28px; height: 2px; background: currentColor; }
+  h1, h2, h3 { margin: 0; font-weight: 700; letter-spacing: -.035em; }
+  /* slide titles: Paperlogy (SIL OFL, via jsDelivr/project noonnu) */
+  @font-face { font-family: "Paperlogy"; font-weight: 700; font-style: normal; font-display: swap; src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/2408-3@1.0/Paperlogy-7Bold.woff2") format("woff2"); }
+  @font-face { font-family: "Paperlogy"; font-weight: 800; font-style: normal; font-display: swap; src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/2408-3@1.0/Paperlogy-8ExtraBold.woff2") format("woff2"); }
+  h1, h2 { font-family: "Paperlogy", var(--sans); letter-spacing: -.03em; }
+  h2 { font-size: 54px; line-height: 1.18; margin-top: 18px; }
+  .s-demo h2 { font-size: 46px; margin-top: 16px; }
+  h2 em, h1 em { font-style: normal; color: var(--gold); }
+  .lead { font-size: 24px; line-height: 1.6; color: var(--ink-2); margin: 18px 0 0; max-width: 1240px; }
+  .lead b, .side b { color: var(--ink); font-weight: 650; }
+  mark { background: linear-gradient(transparent 58%, var(--gold-soft) 58%); color: inherit; padding: 0 2px; }
+  .chip { display: inline-flex; align-items: center; gap: 8px; padding: 8px 16px; border-radius: 999px; background: var(--hud); border: 1px solid var(--line); font-size: 18px; color: var(--ink-2); white-space: nowrap; }
+  .chip.gold { color: #1b1606; background: var(--gold); border-color: transparent; font-weight: 600; }
+  .chip small { font: 500 14px var(--en); color: var(--ink-3); }
+  button.chip { cursor: pointer; font-family: inherit; }
+  button.chip:hover { border-color: var(--gold); color: var(--ink); }
+  .cols { display: grid; grid-template-columns: var(--cl, 1fr 1fr); gap: 44px; margin-top: 30px; align-items: start; min-height: 0; }
+  .side p { font-size: 21px; line-height: 1.72; color: var(--ink-2); margin: 0 0 18px; }
+  .side strong { color: var(--ink); }
+  .cap { font-size: 16.5px !important; line-height: 1.65 !important; color: var(--ink-3) !important; }
+  .cap b { color: var(--ink-2); }
+  ul.dots { margin: 0 0 18px; padding: 0; list-style: none; }
+  ul.dots li { position: relative; padding-left: 24px; margin: 8px 0; font-size: 20px; line-height: 1.65; color: var(--ink-2); }
+  ul.dots li::before { content: ""; position: absolute; left: 5px; top: .72em; width: 8px; height: 8px; border-radius: 50%; background: var(--gold); }
+  ul.dots strong, ul.dots b { color: var(--ink); }
+  .callout { border: 1px solid var(--line); border-left: 4px solid var(--gold); background: var(--paper); border-radius: 6px 18px 18px 6px; padding: 20px 24px; font-size: 18.5px; line-height: 1.7; color: var(--ink-2); }
+  .callout.warn { border-left-color: var(--coral); }
+  .callout .tag { display: block; font: 700 15px/1 var(--en); letter-spacing: .06em; text-transform: uppercase; color: var(--gold); margin-bottom: 10px; }
+  .callout.warn .tag { color: var(--coral); }
+  .callout p { margin: 0; }
+
+  /* ── chrome ── */
+  .progress { position: fixed; left: 0; top: 0; height: 3px; background: var(--gold); width: 0; transition: width .5s var(--ease); z-index: 5; }
+  html.dk-on .progress { background: #d5a844; }
+  .hud { position: fixed; right: max(18px, env(safe-area-inset-right)); bottom: max(16px, env(safe-area-inset-bottom)); display: flex; gap: 8px; align-items: center; z-index: 5; }
+  .hud button, .hud a { appearance: none; border: 0; height: 38px; min-width: 38px; padding: 0 12px; border-radius: 999px; background: var(--hud); color: var(--ink-2);
+    font: 500 14px var(--en); cursor: pointer; display: inline-grid; place-items: center; text-decoration: none; white-space: nowrap; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); transition: background .3s, color .3s; }
+  .hud button:hover, .hud a:hover { background: var(--hud-h); color: var(--ink); }
+  .hud .count { font: 500 14px var(--mono); color: var(--ink-3); padding: 0 6px; white-space: nowrap; }
+  .notes { position: fixed; left: 50%; bottom: 70px; transform: translateX(-50%); width: min(920px, calc(100vw - 32px)); z-index: 6; display: none;
+    background: var(--notes); border: 1px solid var(--line); border-radius: 16px; padding: 18px 22px; font-size: 16px; line-height: 1.65; color: var(--ink-2); box-shadow: var(--shadow); }
+  .notes.show { display: block; }
+  .notes b { color: var(--gold); font-weight: 600; margin-right: 6px; }
+  :focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
+
+  /* ── cover ── */
+  .s-title { justify-content: center; }
+  .s-title h1 { font-weight: 800; font-size: 104px; line-height: 1.12; letter-spacing: -.035em; margin-top: 26px; }
+  .s-title .lead { font-size: 27px; margin-top: 30px; max-width: 1080px; color: rgba(243,239,228,.78); }
+  .s-title .lead b { color: #f3efe4; }
+  .tchips { display: flex; gap: 12px; margin-top: 50px; flex-wrap: wrap; }
+
+  /* ── three stages + stats ── */
+  .shift3 { margin-top: 80px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); position: relative; }
+  .shift3 .st { position: relative; padding: 42px 46px 0 0; }
+  .shift3 .st .n { font: 700 17px/1 var(--mono); color: rgba(243,239,228,.45); letter-spacing: .04em; }
+  .shift3 .st h3 { margin: 16px 0 12px; font-size: 36px; line-height: 1.3; letter-spacing: -.02em; }
+  .shift3 .st p { margin: 0; font-size: 21px; color: rgba(243,239,228,.66); line-height: 1.6; }
+  .shift3 .st.old h3 { color: rgba(243,239,228,.6); }
+  .shift3 .st.new h3 { color: #d5a844; }
+  .shift3 .rail { position: absolute; left: 0; right: 0; top: 0; height: 3px; background: rgba(243,239,228,.14); }
+  .shift3 .rail i { position: absolute; inset: 0; background: linear-gradient(90deg, rgba(243,239,228,.4), #d5a844 60%, #f0542a); transform-origin: left; transform: scaleX(0); }
+  .is-active .shift3 .rail i { animation: growX 2.4s var(--ease) .5s both; }
+  .shift3 .st::before { content: ""; position: absolute; top: -8px; left: 0; width: 18px; height: 18px; border-radius: 50%; background: #0c1524; border: 3px solid rgba(243,239,228,.4); }
+  .shift3 .st.new::before { border-color: #d5a844; background: #d5a844; box-shadow: 0 0 0 8px rgba(213,168,68,.18); }
+  .shift3 .glow { position: absolute; top: -7px; width: 16px; height: 16px; border-radius: 50%; background: #fff; box-shadow: 0 0 18px 6px rgba(213,168,68,.8); left: 0; opacity: 0; }
+  .is-active .shift3 .glow { animation: travel 3.6s var(--ease) 1.2s infinite; }
+  @keyframes travel { 0% { left: 0; opacity: 0; } 10% { opacity: 1; } 80% { opacity: 1; } 100% { left: calc(100% - 16px); opacity: 0; } }
+  .stats5 { margin-top: 74px; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); border-top: 1px solid rgba(243,239,228,.12); }
+  .stats5 button { display: flex; flex-direction: column; justify-content: flex-start; appearance: none; background: none; border: 0; border-right: 1px solid rgba(243,239,228,.08); color: inherit; font: inherit; text-align: left; padding: 26px 20px 4px; cursor: pointer; }
+  .stats5 button:first-child { padding-left: 0; }
+  .stats5 button:last-child { border-right: 0; }
+  .stats5 b { display: block; font: 800 52px/1.1 var(--en); letter-spacing: -.02em; color: #f3efe4; font-variant-numeric: tabular-nums; }
+  .stats5 span { display: block; margin-top: 10px; font-size: 18px; line-height: 1.45; color: rgba(243,239,228,.58); }
+  .stats5 button:hover b { color: #d5a844; }
+
+  /* ── agenda ── */
+  .agenda { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 56px; margin: 44px 0 0; padding: 0; }
+  .agenda li { list-style: none; }
+  .agenda button { appearance: none; background: none; border: 0; border-bottom: 1px solid var(--line); color: inherit; font: inherit; text-align: left; width: 100%; display: flex; gap: 24px; align-items: baseline; padding: 22px 0; cursor: pointer; }
+  .agenda button:hover .t { color: var(--gold); }
+  .agenda .n { font: 700 22px var(--mono); color: var(--gold); width: 40px; flex: none; }
+  .agenda .t { font-size: 29px; font-weight: 650; letter-spacing: -.02em; transition: color .2s; }
+  .agenda .d { font-size: 18.5px; color: var(--ink-3); margin-top: 6px; }
+
+  /* ── chapter openers ── */
+  .s-div { justify-content: center; }
+  .s-div .bignum { position: absolute; right: 80px; top: 50%; transform: translateY(-54%); font: 800 440px/1 var(--en); letter-spacing: -.06em; color: transparent; -webkit-text-stroke: 2px rgba(213,168,68,.32); pointer-events: none; }
+  .s-div h2 { font-size: 84px; margin-top: 24px; position: relative; }
+  .s-div .lead { font-size: 28px; max-width: 1020px; margin-top: 26px; position: relative; color: rgba(243,239,228,.78); }
+  .s-div .lead b { color: #f3efe4; }
+  .s-div .tchips { max-width: 1120px; margin-top: 46px; position: relative; }
+  .s-div .tchips .chip { font-size: 17px; padding: 7px 14px; }
+
+  /* ── term cards ── */
+  .terms { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 22px; margin: 36px 0 0; padding: 0; }
+  .terms .tc { position: relative; border: 1px solid var(--line); background: var(--paper); border-radius: 22px; padding: 26px 30px 28px; min-width: 0; box-shadow: var(--shadow); transition: border-color .3s, box-shadow .3s; }
+  .terms .tc.wide { grid-column: 1 / -1; }
+  .terms dt { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 14px; }
+  .terms dt .ko { font-weight: 800; font-size: 33px; letter-spacing: -.02em; }
+  .terms dt .enn { font: 600 18.5px/1.4 var(--en); color: var(--gold); }
+  .terms dd { margin: 12px 0 0; font-size: 22px; color: var(--ink-2); line-height: 1.66; }
+  .terms dd b { color: var(--ink); }
+  .terms.big { grid-template-columns: minmax(0, 1fr); gap: 26px; margin-top: 44px; }
+  .terms.big .tc { padding: 34px 40px 36px; }
+  .terms.big dt .ko { font-size: 42px; } .terms.big dt .enn { font-size: 21px; } .terms.big dd { font-size: 26px; margin-top: 16px; }
+  .terms.big .mini { width: 200px; height: 140px; }
+  .terms .tc.flash { border-color: var(--gold); box-shadow: 0 0 0 5px var(--gold-soft), var(--shadow); }
+  .mini { float: right; margin: 0 0 10px 22px; width: 160px; height: 112px; border-radius: 16px; background: var(--bg); border: 1px solid var(--line); overflow: hidden; position: relative; }
+  .mini svg { width: 100%; height: 100%; display: block; }
+  .mini svg * { transform-box: fill-box; }
+  .mini .f-g { fill: var(--gold); } .mini .f-b { fill: var(--blue); } .mini .f-c { fill: var(--coral); } .mini .f-k { fill: var(--ink-3); }
+  .mini .f-l { fill: var(--line); } .mini .f-p { fill: var(--paper-2); } .mini .f-gs { fill: var(--gold-soft); } .mini .f-v { fill: var(--violet); } .mini .f-gr { fill: var(--green); }
+  .mini line, .mini path { fill: none; }
+  .mini .s-g { stroke: var(--gold); stroke-width: 2; } .mini .s-b { stroke: var(--blue); stroke-width: 2; } .mini .s-c { stroke: var(--coral); stroke-width: 2; }
+  .mini .s-k { stroke: var(--ink-3); stroke-width: 1.5; } .mini .s-l { stroke: var(--line); stroke-width: 1.5; }
+  .mini .s-gr { stroke: var(--green); stroke-width: 2; } .mini .s-v { stroke: var(--violet); stroke-width: 2; }
+  .mini .mt { font: 700 9px var(--mono); fill: var(--ink-2); }
+  .mini .mt.c { fill: var(--coral); font-size: 16px; }
+  @keyframes mPulse { 0%, 100% { opacity: .22; } 35%, 65% { opacity: 1; } }
+  @keyframes mPop { 0% { opacity: 0; transform: scale(.3); } 20%, 85% { opacity: 1; transform: scale(1); } 100% { opacity: 0; transform: scale(1); } }
+  @keyframes mMove { 0% { opacity: 0; transform: translate(0, 0); } 12% { opacity: 1; } 70% { opacity: 1; transform: translate(var(--dx, 0px), var(--dy, 0px)); } 85%, 100% { opacity: 0; transform: translate(var(--dx, 0px), var(--dy, 0px)); } }
+  @keyframes mShift { 0%, 15% { transform: translate(0, 0); } 50%, 85% { transform: translate(var(--dx, 0px), var(--dy, 0px)); } 100% { transform: translate(0, 0); } }
+  @keyframes mGx { 0% { transform: scaleX(var(--s0, 0)); } 55%, 85% { transform: scaleX(1); } 100% { transform: scaleX(var(--s0, 0)); } }
+  @keyframes mGy { 0% { transform: scaleY(var(--s0, 0)); } 55%, 85% { transform: scaleY(1); } 100% { transform: scaleY(var(--s0, 0)); } }
+  @keyframes mSy { 0%, 15% { transform: scaleY(1); } 50%, 80% { transform: scaleY(var(--s1, 1)); } 100% { transform: scaleY(1); } }
+  @keyframes mSx { 0%, 15% { transform: scaleX(1); } 50%, 80% { transform: scaleX(var(--s1, 1)); } 100% { transform: scaleX(1); } }
+  @keyframes mDraw { 0% { stroke-dashoffset: var(--len, 100); opacity: 1; } 60%, 85% { stroke-dashoffset: 0; opacity: 1; } 100% { stroke-dashoffset: 0; opacity: 0; } }
+  @keyframes mSpin { 0%, 10% { transform: rotate(0deg); } 50%, 80% { transform: rotate(var(--r, 90deg)); } 100% { transform: rotate(0deg); } }
+  @keyframes mFade { 0%, 25% { opacity: 1; } 50%, 85% { opacity: .12; } 100% { opacity: 1; } }
+  .in .tc .a-pulse { animation: mPulse 2.4s var(--t, 0s) infinite ease-in-out both; }
+  .in .tc .a-pop { animation: mPop 2.4s var(--t, 0s) infinite var(--ease) both; transform-origin: center; }
+  .in .tc .a-move { animation: mMove 2.4s var(--t, 0s) infinite ease-in-out both; }
+  .in .tc .a-shift { animation: mShift 2.4s var(--t, 0s) infinite ease-in-out both; }
+  .in .tc .a-gx { animation: mGx 2.4s var(--t, 0s) infinite var(--ease) both; transform-origin: 0 50%; }
+  .in .tc .a-gy { animation: mGy 2.4s var(--t, 0s) infinite var(--ease) both; transform-origin: 50% 100%; }
+  .in .tc .a-sy { animation: mSy 2.4s var(--t, 0s) infinite ease-in-out both; transform-origin: 50% 100%; }
+  .in .tc .a-sx { animation: mSx 2.4s var(--t, 0s) infinite ease-in-out both; transform-origin: 0 50%; }
+  .in .tc .a-draw { stroke-dasharray: var(--len, 100); animation: mDraw 2.4s var(--t, 0s) infinite ease-in-out both; }
+  .in .tc .a-spin { transform-box: view-box; animation: mSpin 2.4s var(--t, 0s) infinite ease-in-out both; }
+  .in .tc .a-fade { animation: mFade 2.4s var(--t, 0s) infinite ease-in-out both; }
+
+  /* ── figure shell (ported from ai-terms, then zoomed up for the 1600-wide stage) ── */
+  .fig { zoom: var(--z, 1.4); background: var(--paper); border: 1px solid var(--line); border-radius: 18px; box-shadow: var(--shadow); padding: 20px 22px; min-width: 0; line-height: 1.6; }
+  .fig-h { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; margin-bottom: 14px; flex-wrap: wrap; }
+  .fig-h .t { font-weight: 700; font-size: 15px; }
+  .fig-h .s { font-size: 12.5px; color: var(--ink-3); }
+  .replay { appearance: none; border: 1px solid var(--line); background: transparent; color: var(--ink-2); font: 600 12px/1 var(--sans); padding: 6px 10px; border-radius: 999px; cursor: pointer; }
+  .replay:hover { color: var(--ink); border-color: var(--gold); }
+  .fig figcaption { font-size: 12.5px; color: var(--ink-3); margin-top: 12px; line-height: 1.6; }
+  .caret { display: inline-block; width: 3px; height: 1em; background: currentColor; vertical-align: -4px; margin-left: 2px; animation: blink 1s steps(1) infinite; }
+  .legend { display: flex; gap: 14px; flex-wrap: wrap; font-size: 12.5px; color: var(--ink-3); margin-top: 12px; }
+  .legend span { display: inline-flex; align-items: center; gap: 6px; }
+  .legend i { width: 10px; height: 10px; border-radius: 3px; display: inline-block; }
+  .slide .rv, .slide .si, .slide .ar .r { opacity: 0; }
+  .slide .gx { transform: scaleX(0); }
+  .in .rv { animation: rise .7s var(--ease) both; animation-delay: var(--d, 0ms); }
+  .in .si { animation: slideIn .55s var(--ease) both; animation-delay: var(--d, 0ms); }
+  .in .gx { transform-origin: left center; animation: growX .9s var(--ease) both; animation-delay: calc(500ms + var(--d, 0ms)); }
+
+  /* 01 network */
+  .net { width: 100%; height: auto; display: block; }
+  .net .e { stroke: var(--line); stroke-width: var(--w); transition: stroke .35s; }
+  .net .e.on { stroke: var(--gold); stroke-dasharray: 5 5; animation: dash 1s linear infinite; }
+  .net .e.neg.on { stroke: var(--blue); }
+  .net .nd { fill: var(--bg); stroke: var(--ink-3); stroke-width: 2; transition: fill .35s, stroke .35s; }
+  .net .nd.on { fill: var(--gold); stroke: var(--gold); }
+  .net .nd.out.on { fill: var(--coral); stroke: var(--coral); }
+  .net text { fill: var(--ink-2); font: 600 12.5px var(--sans); text-anchor: middle; }
+  .net text.v { fill: #fff; font: 700 10px var(--mono); opacity: 0; transition: opacity .3s; }
+  .net .on + text.v { opacity: 1; }
+  .net-lg { display: flex; gap: 16px; flex-wrap: wrap; font-size: 12.5px; color: var(--ink-3); margin-top: 6px; }
+  .net-lg span { display: inline-flex; align-items: center; gap: 6px; }
+  .net-lg i { width: 18px; height: 3px; border-radius: 2px; display: inline-block; }
+
+  .neuron { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 18px 24px; }
+  .neuron .ins { display: grid; gap: 10px; align-content: start; }
+  .neuron label { display: grid; grid-template-columns: 74px minmax(0, 1fr) 46px; align-items: center; gap: 10px; font-size: 13.5px; color: var(--ink-2); }
+  .neuron label b { font: 700 13px var(--mono); color: var(--ink); text-align: right; }
+  .neuron label .x { font: 600 12px var(--mono); color: var(--ink-3); }
+  .neuron input[type=range] { width: 100%; accent-color: var(--gold); }
+  .neuron .sw-row { display: flex; align-items: center; gap: 10px; font-size: 13.5px; color: var(--ink-2); cursor: pointer; margin-top: 4px; }
+  .neuron .sw-row input { position: absolute; opacity: 0; pointer-events: none; }
+  .neuron .sw-row input:focus-visible + .sw { outline: 2px solid var(--gold); outline-offset: 2px; }
+  .neuron .sw-row input:checked + .sw { background: var(--green); }
+  .neuron .sw-row input:checked + .sw::after { transform: translateX(20px); }
+  .sw { width: 46px; height: 26px; border-radius: 999px; background: var(--line); position: relative; transition: background .3s; flex: none; }
+  .sw::after { content: ""; position: absolute; top: 3px; left: 3px; width: 20px; height: 20px; border-radius: 50%; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,.25); transition: transform .3s var(--ease); }
+  .neuron .calc { border-radius: 14px; background: var(--bg); border: 1px solid var(--line); padding: 16px; display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+  .neuron .eq { font: 500 13px/1.8 var(--mono); color: var(--ink-2); overflow-wrap: anywhere; }
+  .neuron .eq b { color: var(--ink); }
+  .neuron .out { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+  .neuron .out b { font: 800 36px/1 var(--en); font-variant-numeric: tabular-nums; color: var(--coral); }
+  .neuron .out span { font-size: 13px; color: var(--ink-3); }
+  .neuron .meter2 { height: 12px; border-radius: 6px; background: var(--paper-2); position: relative; overflow: hidden; }
+  .neuron .meter2 i { position: absolute; top: 0; bottom: 0; left: 50%; background: var(--coral); transition: all .3s var(--ease); }
+  .neuron .meter2::after { content: ""; position: absolute; left: 50%; top: -2px; bottom: -2px; width: 1px; background: var(--ink-3); }
+
+  /* 02 training loop */
+  .loop { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; position: relative; }
+  .loop .stp { border: 1.5px solid var(--line); border-radius: 14px; padding: 12px; background: var(--bg); transition: border-color .25s, background .25s, transform .25s; min-width: 0; }
+  .loop .stp .k { font: 700 11.5px/1 var(--mono); color: var(--ink-3); }
+  .loop .stp h6 { margin: 8px 0 4px; font-size: 15px; line-height: 1.3; }
+  .loop .stp p { margin: 0; font-size: 12.5px; color: var(--ink-2); line-height: 1.5; }
+  .loop .stp.on { border-color: var(--gold); background: var(--gold-soft); transform: translateY(-3px); }
+  .loop .stp.on .k { color: var(--gold); }
+  .loop .stp.back.on { border-color: var(--coral); background: var(--coral-soft); }
+  .loop .stp.back.on .k { color: var(--coral); }
+  .loop-back { height: 24px; margin: 4px 0 0; position: relative; }
+  .loop-back svg { width: 100%; height: 100%; display: block; overflow: visible; }
+  .loop-back path { fill: none; stroke: var(--ink-3); stroke-width: 1.5; stroke-dasharray: 4 4; vector-effect: non-scaling-stroke; }
+  .in .loop-back path { animation: dash 1s linear infinite; }
+  .lossbox { margin-top: 12px; display: grid; grid-template-columns: minmax(0, 1fr) 150px; gap: 16px; align-items: center; }
+  .lossbox svg { width: 100%; height: 150px; display: block; }
+  .lossbox .ax { stroke: var(--line); stroke-width: 1; }
+  .lossbox .curve { fill: none; stroke: var(--coral); stroke-width: 2.5; stroke-linejoin: round; stroke-linecap: round; }
+  .lossbox .pt { fill: var(--coral); }
+  .lossbox .lbl { fill: var(--ink-3); font: 500 11px var(--mono); }
+  .lossbox .read b { display: block; font: 800 32px/1 var(--en); font-variant-numeric: tabular-nums; color: var(--coral); }
+  .lossbox .read span { display: block; font-size: 12.5px; color: var(--ink-3); margin-top: 4px; }
+  .lossbox .read .ep { font: 700 13px var(--mono); color: var(--ink-2); margin-top: 10px; }
+
+  .gd svg { width: 100%; max-width: 480px; height: auto; display: block; margin: 0 auto; }
+  .gd .curve { fill: none; stroke: var(--ink-3); stroke-width: 2; }
+  .gd .trail { fill: none; stroke: var(--gold); stroke-width: 1.5; stroke-dasharray: 3 4; }
+  .gd .ball { fill: var(--coral); stroke: var(--paper); stroke-width: 2; }
+  .gd .ghost { fill: var(--gold); opacity: .45; }
+  .gd .min { fill: var(--green); }
+  .gd text { fill: var(--ink-3); font: 500 11.5px var(--sans); }
+  .gd-ctl { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 12px 16px; align-items: center; margin-top: 10px; }
+  .gd-ctl label { display: grid; gap: 6px; font-size: 13.5px; color: var(--ink-2); }
+  .gd-ctl label span { display: flex; justify-content: space-between; }
+  .gd-ctl label b { font-family: var(--mono); color: var(--ink); }
+  .gd-ctl input { width: 100%; accent-color: var(--gold); }
+  .go-btn { appearance: none; border: 0; background: var(--ink); color: var(--bg); font: 700 13.5px/1 var(--sans); padding: 11px 16px; border-radius: 999px; cursor: pointer; white-space: nowrap; min-height: 40px; }
+  .go-btn:hover { background: var(--gold); color: #1b1606; }
+  .verdict { margin-top: 12px; padding: 11px 14px; border-radius: 12px; font-size: 14px; line-height: 1.55; background: var(--paper-2); color: var(--ink); }
+  .verdict.ok { background: var(--green-soft); }
+  .verdict.bad { background: var(--coral-soft); }
+  .verdict.mid { background: var(--gold-soft); }
+  .verdict b { font-weight: 800; }
+  .presets { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 10px; }
+  .presets button { appearance: none; border: 1px solid var(--line); background: var(--bg); color: var(--ink-2); font: 600 12.5px/1 var(--sans); padding: 8px 11px; border-radius: 999px; cursor: pointer; }
+  .presets button:hover { border-color: var(--gold); color: var(--ink); }
+
+  /* 03 tokens & attention */
+  .tok-in { width: 100%; font: 500 15px/1.5 var(--sans); color: var(--ink); background: var(--bg); border: 1px solid var(--line); border-radius: 12px; padding: 11px 14px; }
+  .tok-in:focus { outline: none; border-color: var(--gold); box-shadow: 0 0 0 3px var(--gold-soft); }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 14px; min-height: 40px; }
+  .chips .tk { display: inline-flex; flex-direction: column; align-items: center; gap: 3px; padding: 6px 9px 5px; border-radius: 9px; font: 600 14px/1.2 var(--sans); white-space: pre; }
+  .chips .tk small { font: 500 10px/1 var(--mono); opacity: .7; }
+  .chips .tk:nth-child(5n+1) { background: var(--blue-soft); color: var(--blue); }
+  .chips .tk:nth-child(5n+2) { background: var(--gold-soft); color: var(--gold); }
+  .chips .tk:nth-child(5n+3) { background: var(--green-soft); color: var(--green); }
+  .chips .tk:nth-child(5n+4) { background: var(--violet-soft); color: var(--violet); }
+  .chips .tk:nth-child(5n+5) { background: var(--coral-soft); color: var(--coral); }
+  .in .chips .tk { animation: pop .4s var(--ease) both; animation-delay: var(--d, 0ms); }
+  .tok-stat { display: flex; gap: 18px; flex-wrap: wrap; margin-top: 14px; padding-top: 12px; border-top: 1px dashed var(--line); font-size: 13.5px; color: var(--ink-2); }
+  .tok-stat b { font: 800 22px/1 var(--en); color: var(--ink); margin-right: 4px; font-variant-numeric: tabular-nums; }
+  .emb { margin-top: 12px; display: grid; grid-template-columns: repeat(16, minmax(0, 1fr)); gap: 3px; max-width: 480px; }
+  .emb i { aspect-ratio: 1; border-radius: 3px; display: block; }
+  .emb-lbl { font-size: 12.5px; color: var(--ink-3); margin-top: 6px; }
+
+  .attn .row { display: flex; flex-wrap: wrap; gap: 6px; }
+  .attn button.q { appearance: none; border: 1.5px solid var(--line); color: var(--ink); font: 700 15px/1.2 var(--sans); padding: 10px 12px 8px; border-radius: 10px; cursor: pointer; display: inline-flex; flex-direction: column; align-items: center; gap: 4px; min-width: 58px;
+    background: color-mix(in srgb, var(--gold) calc(var(--a, 0) * 100%), var(--bg)); transition: background .35s, border-color .2s; }
+  .attn button.q small { font: 600 10.5px/1 var(--mono); color: var(--ink-2); }
+  .attn button.q.sel { border-color: var(--coral); box-shadow: 0 0 0 3px var(--coral-soft); background: var(--bg); }
+  .attn button.q.sel small { color: var(--coral); }
+  .attn .hint { font-size: 13.5px; color: var(--ink-2); margin: 14px 0 0; }
+  .attn .hint b { color: var(--ink); }
+  .attn .bars { margin-top: 12px; display: grid; gap: 5px; }
+  .attn .bars div { display: grid; grid-template-columns: 72px minmax(0, 1fr) 40px; gap: 10px; align-items: center; font-size: 13px; color: var(--ink-2); }
+  .attn .bars .tr { height: 10px; border-radius: 5px; background: var(--paper-2); overflow: hidden; }
+  .attn .bars .tr i { display: block; height: 100%; background: var(--gold); border-radius: 5px; transition: width .45s var(--ease); }
+  .attn .bars b { font: 700 12px var(--mono); text-align: right; color: var(--ink); }
+
+  .ctx { display: grid; grid-template-columns: repeat(40, minmax(0, 1fr)); gap: 2px; margin-top: 4px; }
+  .ctx i { height: 22px; border-radius: 2px; background: var(--paper-2); display: block; transition: background .2s; }
+  .ctx i.in-w { background: var(--blue); }
+  .ctx i.out-w { background: var(--ink-3); opacity: .35; }
+  .ctx-lbl { display: flex; justify-content: space-between; font-size: 12.5px; color: var(--ink-3); margin-top: 8px; gap: 10px; flex-wrap: wrap; }
+
+  /* 04 generation */
+  .ar { display: grid; gap: 10px; }
+  .ar .r { display: flex; flex-wrap: wrap; gap: 5px; align-items: center; }
+  .ar .r .s { font: 700 11px/1 var(--mono); color: var(--ink-3); width: 44px; flex: none; }
+  .ar .t { padding: 6px 9px; border-radius: 8px; font-size: 14px; font-weight: 600; border: 1.5px solid transparent; }
+  .ar .t.c { background: var(--paper-2); color: var(--ink-3); }
+  .ar .t.n { background: var(--gold-soft); color: var(--ink); border-color: var(--gold); }
+  .ar .t.p { background: var(--coral); color: #fff; }
+  .ar .arrow { color: var(--ink-3); font-size: 14px; margin: 0 2px; }
+  .in .ar .r { animation: slideIn .5s var(--ease) both; animation-delay: calc(600ms + var(--d)); }
+
+  .gen .prompt { font: 700 21px/1.5 var(--sans); margin-bottom: 12px; }
+  .gen .prompt .blank { display: inline-block; min-width: 3.4em; padding: 0 8px; border-bottom: 2px solid var(--coral); color: var(--coral); text-align: center; }
+  .gen .cand { display: grid; gap: 6px; }
+  .gen .cand div { display: grid; grid-template-columns: 64px minmax(0, 1fr) 52px 34px; gap: 10px; align-items: center; font-size: 14px; }
+  .gen .cand .w { font-weight: 700; }
+  .gen .cand .tr { height: 18px; border-radius: 5px; background: var(--paper-2); overflow: hidden; }
+  .gen .cand .tr i { display: block; height: 100%; background: var(--blue); border-radius: 5px; transition: width .35s var(--ease); }
+  .gen .cand .p { font: 700 12.5px var(--mono); text-align: right; font-variant-numeric: tabular-nums; }
+  .gen .cand .cnt { font: 700 12px var(--mono); color: var(--coral); text-align: right; }
+  .gen .cand div.hit .tr i { background: var(--coral); }
+  .gen .lg-row { display: flex; justify-content: space-between; font-size: 12px; color: var(--ink-3); margin: 0 0 6px; gap: 10px; }
+  .gen-ctl { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 12px 16px; align-items: end; margin-top: 14px; }
+  .gen-ctl label { display: grid; gap: 6px; font-size: 13.5px; color: var(--ink-2); }
+  .gen-ctl label span { display: flex; justify-content: space-between; }
+  .gen-ctl label b { font-family: var(--mono); color: var(--ink); }
+  .gen-ctl input { width: 100%; accent-color: var(--coral); }
+
+  /* 05 scale */
+  .qz { display: grid; gap: 10px; }
+  .qz .row { display: grid; grid-template-columns: 96px minmax(0, 1fr) 62px; gap: 12px; align-items: center; font-size: 13.5px; }
+  .qz .row .nm b { display: block; font: 700 13px var(--en); color: var(--ink); }
+  .qz .row .nm small { color: var(--ink-3); font-size: 12px; }
+  .qz .trk { position: relative; height: 26px; }
+  .qz .trk .bar { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 6px; background: var(--violet); width: var(--w); }
+  .qz .row.fit .trk .bar { background: var(--green); }
+  .qz .gb { font: 700 14px var(--mono); text-align: right; font-variant-numeric: tabular-nums; }
+  .qz .row.fit .gb { color: var(--green); }
+  .qz .lim { position: absolute; top: -6px; bottom: -6px; width: 0; border-left: 2px dashed var(--coral); left: var(--x); }
+  .qz .lim-lbl { position: relative; height: 18px; margin-left: 108px; margin-right: 74px; font: 600 11.5px/1 var(--sans); color: var(--coral); }
+  .qz .lim-lbl span { position: absolute; left: var(--x); transform: translateX(-50%); white-space: nowrap; }
+
+  .moe { display: grid; gap: 14px; }
+  .moe .tokq { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; font-size: 13px; color: var(--ink-3); }
+  .moe .tokq span { padding: 6px 10px; border-radius: 8px; background: var(--paper-2); color: var(--ink-3); font-weight: 600; font-size: 14px; transition: all .25s; }
+  .moe .tokq span.cur { background: var(--coral); color: #fff; transform: translateY(-2px); }
+  .moe .tokq span.done { background: var(--coral-soft); color: var(--coral); }
+  .moe .router { justify-self: center; padding: 8px 16px; border-radius: 999px; border: 1.5px dashed var(--ink-3); font: 700 13px var(--sans); color: var(--ink-2); }
+  .moe .exps { display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); gap: 6px; }
+  .moe .ex { border: 1.5px solid var(--line); border-radius: 10px; padding: 10px 4px; text-align: center; font: 700 12px/1.2 var(--mono); color: var(--ink-3); background: var(--bg); transition: all .25s; }
+  .moe .ex.on { border-color: var(--gold); background: var(--gold); color: #1b1606; transform: translateY(-3px); box-shadow: 0 6px 16px color-mix(in srgb, var(--gold) 35%, transparent); }
+  .moe .read { display: flex; gap: 18px; flex-wrap: wrap; font-size: 13.5px; color: var(--ink-2); border-top: 1px dashed var(--line); padding-top: 12px; }
+  .moe .read b { font: 800 22px/1 var(--en); color: var(--ink); margin-right: 4px; font-variant-numeric: tabular-nums; }
+
+  /* flow */
+  .study { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 14px; }
+  .study .col { border-radius: 16px; padding: 16px; border: 1px solid var(--line); background: var(--bg); min-width: 0; }
+  .study .col h6 { margin: 0 0 2px; font: 800 17px/1.3 var(--sans); }
+  .study .col .sub { font-size: 12.5px; color: var(--ink-3); margin-bottom: 12px; }
+  .study .tr h6 { color: var(--gold); }
+  .study .inf h6 { color: var(--blue); }
+  .study ol { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+  .study li { display: grid; grid-template-columns: 26px minmax(0, 1fr); gap: 10px; align-items: start; font-size: 14px; line-height: 1.5; }
+  .study li .b { width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center; font: 800 12px/1 var(--en); background: var(--gold-soft); color: var(--gold); border: 1.5px solid var(--gold); }
+  .study li small { display: block; color: var(--ink-3); font-size: 12.5px; }
+  .study .inf li .b { background: var(--blue-soft); color: var(--blue); border-color: var(--blue); }
+  .study .repeat { margin-top: 12px; font: 600 12.5px var(--mono); color: var(--gold); display: flex; align-items: center; gap: 6px; }
+  .study .lock { margin-top: 12px; display: flex; align-items: center; gap: 8px; padding: 10px 12px; border-radius: 10px; background: var(--blue-soft); color: var(--blue); font-size: 13px; font-weight: 700; }
+  .study .lock svg { width: 18px; height: 18px; flex: none; }
+
+  /* paper card */
+  .paper { background: #fbfaf5; color: #1b2233; border-radius: 12px; padding: 18px 22px; border: 1px solid #e6e0cf; }
+  :root[data-theme="dark"] .paper { background: #e9e5d9; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .paper { background: #e9e5d9; } }
+  .paper .ph { display: flex; justify-content: space-between; gap: 10px; font: 700 11px/1 var(--mono); letter-spacing: .06em; color: #7b7766; }
+  .paper .pt { font: 700 26px/1.25 var(--serif); margin: 12px 0 6px; letter-spacing: -.01em; }
+  .paper .pa { font-size: 12.5px; color: #5b5848; line-height: 1.55; padding-bottom: 12px; border-bottom: 1px solid #ddd6c2; }
+  .paper .pd { margin: 12px 0 0; display: grid; gap: 9px; }
+  .paper .pd div { display: grid; grid-template-columns: 74px minmax(0, 1fr); gap: 12px; }
+  .paper .pd dt { font: 800 12.5px/1.6 var(--sans); color: #a87a12; }
+  .paper .pd dd { margin: 0; font-size: 14px; line-height: 1.6; color: #2c3344; }
+  .paper .pd dd b { color: #101a2c; }
+
+  .lanes2 { display: grid; gap: 18px; }
+  .ln2 { position: relative; }
+  .lh2 { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; margin-bottom: 8px; font-size: 13px; color: var(--ink-3); }
+  .lh2 b { font-size: 14.5px; color: var(--ink); }
+  .lh2 em { margin-left: auto; font: 700 12.5px var(--mono); font-style: normal; color: var(--ink-2); }
+  .tfm .lh2 b { color: var(--gold); }
+  .row2 { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 6px; position: relative; z-index: 1; }
+  .row2 span { text-align: center; padding: 9px 2px; border-radius: 9px; border: 1.5px solid var(--line); background: var(--bg); font-size: 14px; font-weight: 700; color: var(--ink-3); transition: all .3s; position: relative; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .row2 span.on { color: var(--ink); border-color: var(--blue); background: var(--blue-soft); }
+  .row2 span.done { color: var(--ink-2); border-color: var(--line); background: var(--paper-2); }
+  .tfm .row2 span.on { border-color: var(--gold); background: var(--gold-soft); }
+  .rowwrap { position: relative; padding-top: 42px; }
+  .arcs { position: absolute; left: 0; right: 0; top: 0; width: 100%; height: 54px; pointer-events: none; overflow: visible; }
+  .arcs path { fill: none; stroke: var(--gold); stroke-width: 1.4; opacity: 0; vector-effect: non-scaling-stroke; transition: opacity .4s; }
+  .arcs.on path { opacity: .55; }
+
+  /* top-k / top-p lab */
+  .seg { display: inline-flex; padding: 3px; border-radius: 999px; background: var(--paper-2); gap: 2px; margin-bottom: 12px; flex-wrap: wrap; }
+  .seg button { appearance: none; border: 0; background: transparent; color: var(--ink-2); font: 700 13px/1 var(--sans); padding: 9px 14px; border-radius: 999px; cursor: pointer; }
+  .seg button.on { background: var(--paper); color: var(--ink); box-shadow: 0 1px 3px rgba(0,0,0,.12); }
+  .kp-prompt { font: 700 20px/1.5 var(--sans); margin-bottom: 10px; }
+  .kp-prompt .blank { display: inline-block; min-width: 3em; border-bottom: 2px solid var(--coral); }
+  .kp-head, .kp > div { display: grid; grid-template-columns: 70px minmax(0, 1fr) 48px 48px 52px; gap: 8px; align-items: center; }
+  .kp-head { font-size: 11.5px; color: var(--ink-3); margin-bottom: 6px; }
+  .kp-head span:nth-child(2) { grid-column: 2 / 4; }
+  .kp-head span:nth-child(3), .kp-head span:nth-child(4) { text-align: right; }
+  .kp { display: grid; gap: 6px; }
+  .kp > div { font-size: 14px; transition: opacity .3s; }
+  .kp .w { font-weight: 700; position: relative; }
+  .kp .tr { height: 18px; border-radius: 5px; background: var(--paper-2); overflow: hidden; position: relative; }
+  .kp .tr i { display: block; height: 100%; border-radius: 5px; background: var(--blue); transition: width .35s var(--ease), background .3s; }
+  .kp .pc, .kp .cu, .kp .fi { font: 700 12.5px var(--mono); text-align: right; font-variant-numeric: tabular-nums; }
+  .kp .cu { color: var(--ink-3); }
+  .kp .fi { color: var(--green); }
+  .kp > div.cut { opacity: .5; }
+  .kp > div.cut .w { text-decoration: line-through; text-decoration-color: var(--coral); text-decoration-thickness: 2px; }
+  .kp > div.cut .tr i { background: repeating-linear-gradient(135deg, var(--ink-3) 0 4px, transparent 4px 7px); }
+  .kp > div.cut .fi { color: var(--coral); }
+  .kp-ctl { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 22px; }
+  .kp-ctl label { display: grid; gap: 6px; font-size: 13.5px; color: var(--ink-2); }
+  .kp-ctl label span { display: flex; justify-content: space-between; gap: 8px; }
+  .kp-ctl label b { font-family: var(--mono); color: var(--ink); font-size: 12.5px; }
+  .kp-ctl input { width: 100%; accent-color: var(--gold); }
+
+  /* transformer architecture (drawn at stage size, not zoomed) */
+  .archs { display: grid; grid-template-columns: 360px minmax(0, 1fr) 390px; gap: 34px; margin-top: 22px; align-items: start; transition: grid-template-columns .4s var(--ease); }
+  .archs .side p { font-size: 19px; line-height: 1.7; margin-bottom: 14px; }
+  .s-arch.ed .archs { grid-template-columns: 0 minmax(0, 1fr) 390px; gap: 0 34px; }
+  .s-arch.ed .archs .side { visibility: hidden; overflow: hidden; height: 0; }
+  .s-arch { padding-top: 70px; }
+  .arch-top { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; zoom: 1.2; }
+  .arch-top .seg { margin: 0; }
+  .arch { display: grid; grid-template-columns: repeat(var(--cols, 1), minmax(0, 1fr)); gap: 26px; align-items: start; }
+  .acol { display: flex; flex-direction: column; align-items: stretch; min-width: 0; }
+  .ach { font: 700 14px/1 var(--en); letter-spacing: .12em; text-transform: uppercase; color: var(--ink-3); text-align: center; margin-bottom: 9px; }
+  .ar2 { display: block; height: 11px; position: relative; }
+  .ar2::before { content: ""; position: absolute; left: 50%; top: 1px; bottom: 4px; width: 2px; margin-left: -1px; background: var(--ink-3); }
+  .ar2::after { content: ""; position: absolute; left: 50%; bottom: 0; margin-left: -4.5px; border: 4.5px solid transparent; border-top: 5px solid var(--ink-3); border-bottom: 0; width: 0; }
+  .nd2 { appearance: none; width: 100%; min-height: 32px; border: 1.5px solid var(--line); border-radius: 10px; padding: 3px 12px; background: var(--bg); color: var(--ink); font: 700 16.5px/1.25 var(--sans); cursor: pointer;
+    display: flex; align-items: baseline; justify-content: center; gap: 9px; white-space: nowrap; transition: transform .2s, box-shadow .2s, background .2s; }
+  .nd2 small { font: 500 12.5px/1.25 var(--en); color: var(--ink-3); overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+  .nd2:hover { transform: translateY(-1px); }
+  .nd2.io { background: var(--paper-2); }
+  .nd2.prep { background: var(--violet-soft); border-color: color-mix(in srgb, var(--violet) 55%, transparent); }
+  .nd2.att { background: var(--gold-soft); border-color: color-mix(in srgb, var(--gold) 65%, transparent); }
+  .nd2.ffn { background: var(--blue-soft); border-color: color-mix(in srgb, var(--blue) 55%, transparent); }
+  .nd2.norm { background: var(--green-soft); border-color: color-mix(in srgb, var(--green) 50%, transparent); min-height: 24px; padding: 1px 8px; font-size: 13.5px; }
+  .nd2.norm small { display: none; }
+  .nd2.head { background: var(--coral-soft); border-color: color-mix(in srgb, var(--coral) 50%, transparent); }
+  .nd2.hot { box-shadow: 0 0 0 3px color-mix(in srgb, var(--gold) 55%, transparent), 0 6px 18px color-mix(in srgb, var(--gold) 30%, transparent); transform: scale(1.03); }
+  .nd2.sel { outline: 2px solid var(--ink); outline-offset: 2px; }
+  .nd2 .xin { font: 700 12.5px var(--sans); color: var(--coral); }
+  .blk2 { position: relative; border: 1.5px dashed var(--ink-3); border-radius: 14px; padding: 34px 12px 12px 30px; background: color-mix(in srgb, var(--paper-2) 45%, transparent); }
+  .blk2 .rep { position: absolute; top: 7px; left: 10px; right: 10px; appearance: none; border: 0; background: none; cursor: pointer; display: flex; justify-content: space-between; align-items: baseline; gap: 6px; font: 800 15px/1.2 var(--en); color: var(--ink); padding: 2px 5px; border-radius: 6px; }
+  .blk2 .rep small { font: 500 13px var(--sans); color: var(--ink-3); }
+  .blk2 .rep.hot, .blk2 .rep.sel { background: var(--gold-soft); }
+  .sub2 { position: relative; }
+  .sub2::before { content: ""; position: absolute; left: -19px; top: 14px; bottom: 11px; width: 11px; border: 2px solid var(--green); border-right: 0; border-radius: 8px 0 0 8px; }
+  .sub2::after { content: ""; position: absolute; left: -9px; bottom: 7px; border: 4.5px solid transparent; border-left: 6px solid var(--green); border-right: 0; }
+  .apanel { border: 1px solid var(--line); background: var(--paper); border-radius: 18px; padding: 22px 24px; min-height: 240px; box-shadow: var(--shadow); }
+  .apanel .k { font: 700 13px/1 var(--en); letter-spacing: .12em; text-transform: uppercase; color: var(--gold); }
+  .apanel h6 { margin: 10px 0 2px; font-size: 26px; line-height: 1.3; letter-spacing: -.02em; }
+  .apanel .en2 { font: 500 15px var(--en); color: var(--ink-3); }
+  .apanel p { margin: 12px 0 0; font-size: 18px; line-height: 1.68; color: var(--ink-2); }
+  .apanel p b { color: var(--ink); }
+  .apanel .num { display: inline-block; margin-top: 14px; font: 600 14.5px/1.5 var(--mono); padding: 6px 10px; border-radius: 8px; background: var(--paper-2); color: var(--ink-2); }
+  .apanel .step { margin-top: 12px; font: 700 14px var(--mono); color: var(--ink-3); }
+  .apanel .tag3 { display: inline-block; font: 600 16px/1.4 var(--mono); padding: 5px 10px; border-radius: 7px; background: var(--paper-2); color: var(--ink); margin-top: 8px; }
+  .apanel .eq3 { margin-top: 10px; font-size: 17px; color: var(--ink-2); }
+  .apanel .eq3 b { color: var(--ink); }
+  .apanel .note3 { margin-top: 12px; padding: 12px 14px; border-radius: 12px; background: var(--gold-soft); font-size: 16.5px; line-height: 1.65; color: var(--ink); }
+  .apanel .goto { margin-top: 14px; appearance: none; border: 1px solid var(--line); background: var(--bg); color: var(--ink); font: 700 15px/1 var(--sans); padding: 11px 15px; border-radius: 999px; cursor: pointer; }
+  .apanel .goto:hover { border-color: var(--gold); }
+  .s-arch .legend { font-size: 15px; gap: 8px 16px; margin-top: 16px; }
+  .s-arch .legend i { width: 13px; height: 13px; }
+
+  .mgrid { display: grid; grid-template-columns: 62px repeat(5, minmax(0, 1fr)); gap: 4px; margin-top: 4px; }
+  .mgrid .hd { font-size: 12.5px; font-weight: 700; color: var(--ink-2); text-align: center; padding: 4px 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .mgrid .rl { appearance: none; border: 1.5px solid var(--line); background: var(--bg); color: var(--ink); font: 700 12.5px var(--sans); border-radius: 8px; cursor: pointer; padding: 0 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .mgrid .rl.sel { border-color: var(--coral); background: var(--coral-soft); }
+  .mgrid .mc { height: 36px; border-radius: 7px; display: grid; place-items: center; font: 700 11px var(--mono); color: var(--ink); background: color-mix(in srgb, var(--gold) calc(var(--a) * 100%), var(--paper-2)); transition: background .3s, opacity .3s; }
+  .mgrid .mc.x { background: repeating-linear-gradient(135deg, var(--paper-2) 0 5px, var(--line) 5px 7px); color: var(--ink-3); font-size: 13px; }
+  .mgrid .mc.dim { opacity: .35; }
+  .slide .mgrid .mc { opacity: 0; }
+  .in .mgrid .mc { animation: pop .4s var(--ease) both; animation-delay: var(--d); }
+  .in .mgrid .mc.dim { animation-name: popDim; }
+  @keyframes popDim { 0% { opacity: 0; transform: scale(.55); } 100% { opacity: .35; transform: none; } }
+
+  /* paper Figure 1 */
+  .pfig { display: grid; grid-template-columns: 420px auto minmax(0, 1fr); gap: 36px; margin-top: 22px; align-items: start; }
+  .pfig .side p { font-size: 19px; line-height: 1.7; margin-bottom: 14px; }
+  .pfig .seg { zoom: 1.25; }
+  .pimg { background: #fff; border: 1px solid var(--line); border-radius: 14px; padding: 10px; box-shadow: var(--shadow); }
+  .pin { position: relative; }
+  .pin img { display: block; height: 560px; width: auto; }
+  .hs { position: absolute; appearance: none; padding: 0; margin: 0; border: 2px solid transparent; border-radius: 6px; background: transparent; cursor: pointer; z-index: 1; transition: border-color .2s, background .2s, box-shadow .2s; }
+  .hs.frame { z-index: 0; border-radius: 12px; }
+  .hs:hover, .hs:focus-visible { border-color: rgba(168, 122, 18, .85); background: rgba(244, 232, 200, .28); outline: none; }
+  .hs.lit { border-color: #a87a12; background: rgba(213, 168, 68, .26); animation: hsPulse 1.1s ease-in-out 2; }
+  .hs.on { border-color: #d8461c; background: rgba(216, 70, 28, .1); box-shadow: 0 0 0 3px rgba(216, 70, 28, .22); }
+  .hs.frame.lit, .hs.frame.on { background: rgba(213, 168, 68, .1); }
+  @keyframes hsPulse { 50% { box-shadow: 0 0 0 5px rgba(213, 168, 68, .35); } }
+  .dimz { position: absolute; background: rgba(255, 255, 255, .84); z-index: 2; pointer-events: none; border-radius: 8px; opacity: 0; transition: opacity .35s; display: grid; place-items: center; }
+  .dimz span { font: 700 12px/1.35 var(--sans); color: #d8461c; text-align: center; padding: 4px 6px; }
+  .pin.llm .dimz { opacity: 1; }
+  .pin.llm .hs.gone { pointer-events: none; }
+
+  /* notation cards */
+  .ncards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; margin-top: 34px; }
+  .ncards .card { background: var(--paper); border: 1px solid var(--line); border-radius: 20px; padding: 20px 26px; box-shadow: var(--shadow); }
+  .ncards h3 { font-family: var(--sans); font-size: 21px; letter-spacing: -.015em; color: var(--ink); display: flex; gap: 12px; align-items: baseline; }
+  .ncards h3 .i { font: 700 15px var(--mono); color: var(--gold); }
+  .ncards p { margin: 8px 0 0; font-size: 18px; line-height: 1.66; color: var(--ink-2); }
+  .ncards p b { color: var(--ink); }
+
+  /* quote */
+  .s-quote { justify-content: center; }
+  .s-quote .qmark { position: absolute; right: 110px; top: 60px; font: 700 420px/1 var(--serif); color: rgba(213,168,68,.12); pointer-events: none; }
+  .bigq { position: relative; font: 700 62px/1.5 var(--serif); letter-spacing: -.02em; margin-top: 34px; min-height: 280px; max-width: 1300px; }
+  .bigq .em-q { color: #d5a844; }
+  .s-quote .by { margin-top: 26px; font-size: 20px; color: rgba(243,239,228,.55); }
+
+  /* conclusion */
+  .concl { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 18px; margin-top: 50px; }
+  .concl button { appearance: none; text-align: left; font: inherit; color: inherit; cursor: pointer; display: flex; flex-direction: column; gap: 14px; padding: 30px 26px; min-height: 330px; background: var(--paper); border: 1px solid var(--line); border-radius: 22px; box-shadow: var(--shadow); transition: border-color .2s, transform .2s; }
+  .concl button:hover { border-color: var(--gold); transform: translateY(-3px); }
+  .concl .ix { font: 800 46px/1 var(--en); color: var(--gold); letter-spacing: -.03em; }
+  .concl h3 { font-size: 27px; line-height: 1.3; letter-spacing: -.02em; }
+  .concl p { margin: 0; font-size: 20px; line-height: 1.65; color: var(--ink-2); }
+
+  /* index */
+  .tindex { display: grid; gap: 12px; margin-top: 20px; }
+  .tindex h6 { margin: 0 0 7px; font: 700 15px/1 var(--en); letter-spacing: .12em; text-transform: uppercase; color: var(--ink-3); display: flex; gap: 10px; }
+  .tindex h6 .num { color: var(--gold); font-family: var(--mono); }
+  .tindex .ch { display: flex; flex-wrap: wrap; gap: 6px 7px; }
+  .tindex button { appearance: none; display: inline-flex; gap: 7px; align-items: baseline; padding: 5px 12px; border-radius: 999px; border: 1px solid var(--line); background: var(--paper); color: var(--ink); cursor: pointer; font: 600 16px/1.3 var(--sans); }
+  .tindex button small { font: 500 12.5px var(--en); color: var(--ink-3); }
+  .tindex button:hover { border-color: var(--gold); background: var(--gold-soft); }
+  .endnote { margin-top: 18px; font-size: 15.5px; color: var(--ink-3); line-height: 1.7; }
+
+  /* ── phone held sideways: controls get their own lane under the stage ── */
+  .hud .alt { gap: 6px; display: inline-flex; align-items: center; }
+  .hud .alt .ico { font-size: 13px; }
+  html.portrait .hud .alt .lbl, html.short .hud .alt .lbl { display: none; }
+  html.portrait .hud #fsBtn { display: none; }
+  html.short .hud { bottom: max(8px, env(safe-area-inset-bottom)); gap: 6px; }
+  html.short .hud button, html.short .hud a { height: 34px; min-width: 34px; }
+  html.short .notes { bottom: 52px; }
+
+  /* ── phone held upright: 640-wide stage, one column, slides scroll ── */
+  html.portrait .hud { left: max(10px, env(safe-area-inset-left)); right: max(10px, env(safe-area-inset-right)); justify-content: center; gap: 6px; }
+  html.portrait .hud { gap: 5px; }
+  html.portrait .hud button, html.portrait .hud a { height: 40px; min-width: 40px; padding: 0 9px; }
+  html.portrait .hud .count { padding: 0 2px; font-size: 13px; }
+  html.portrait .slide { padding: 64px 36px 140px; overflow-y: auto; overflow-x: hidden; overscroll-behavior: contain; scrollbar-width: none; justify-content: flex-start; }
+  html.portrait .slide::-webkit-scrollbar { display: none; }
+  html.portrait .s-title, html.portrait .s-div, html.portrait .s-quote { justify-content: center; }
+  html.portrait .kicker { font-size: 15px; }
+  html.portrait h2, html.portrait .s-demo h2 { font-size: 38px; line-height: 1.24; margin-top: 14px; }
+  html.portrait .lead { font-size: 20px; margin-top: 14px; }
+  html.portrait .chip { font-size: 15px; padding: 6px 12px; }
+  html.portrait .cols, html.portrait .archs, html.portrait .s-arch.ed .archs, html.portrait .pfig { grid-template-columns: minmax(0, 1fr); gap: 22px; margin-top: 22px; }
+  html.portrait .side p, html.portrait .archs .side p, html.portrait .pfig .side p, html.portrait ul.dots li { font-size: 20px; }
+  html.portrait .s-arch.ed .archs .side { visibility: visible; height: auto; }
+  html.portrait .fig { zoom: var(--zp, 1.1); }
+  html.portrait .callout { font-size: 17px; padding: 16px 18px; }
+  html.portrait .s-title h1 { font-size: 64px; }
+  html.portrait .s-title .lead { font-size: 21px; margin-top: 22px; }
+  html.portrait .tchips { gap: 8px; margin-top: 30px; }
+  html.portrait .shift3 { grid-template-columns: minmax(0, 1fr); margin-top: 34px; padding-left: 30px; }
+  html.portrait .shift3 .rail { left: 7px; right: auto; top: 0; bottom: 0; width: 3px; height: auto; }
+  html.portrait .shift3 .rail i { transform-origin: top; }
+  html.portrait .is-active .shift3 .rail i { animation-name: growY; }
+  html.portrait .shift3 .st { padding: 0 0 26px; }
+  html.portrait .shift3 .st::before { left: -30px; top: 2px; }
+  html.portrait .shift3 .glow { display: none; }
+  html.portrait .shift3 .st h3 { font-size: 27px; margin: 10px 0 6px; }
+  html.portrait .shift3 .st p { font-size: 18px; }
+  html.portrait .stats5 { grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 20px; }
+  html.portrait .stats5 button { border-right: 0; padding: 18px 12px 4px 0; }
+  html.portrait .stats5 button:last-child { grid-column: 1 / -1; }
+  html.portrait .stats5 b { font-size: 40px; }
+  html.portrait .stats5 span { font-size: 15.5px; }
+  html.portrait .agenda { grid-template-columns: minmax(0, 1fr); gap: 0; margin-top: 26px; }
+  html.portrait .agenda button { padding: 14px 0; gap: 16px; }
+  html.portrait .agenda .n { font-size: 17px; width: 30px; }
+  html.portrait .agenda .t { font-size: 23px; }
+  html.portrait .agenda .d { font-size: 16px; }
+  html.portrait .s-div .bignum { font-size: 260px; right: 20px; top: 70px; transform: none; }
+  html.portrait .s-div h2 { font-size: 56px; }
+  html.portrait .s-div .lead { font-size: 21px; }
+  html.portrait .s-div .tchips { margin-top: 30px; }
+  html.portrait .s-div .tchips .chip { font-size: 15px; }
+  html.portrait .terms { grid-template-columns: minmax(0, 1fr); gap: 14px; margin-top: 24px; }
+  html.portrait .terms .tc { padding: 20px 22px; }
+  html.portrait .terms dt .ko, html.portrait .terms.big dt .ko { font-size: 28px; }
+  html.portrait .terms dd, html.portrait .terms.big dd { font-size: 20px; }
+  html.portrait .mini { width: 112px; height: 78px; }
+  html.portrait .s-arch { padding-top: 64px; }
+  html.portrait .arch-top { zoom: 1; flex-wrap: wrap; }
+  html.portrait .nd2 { font-size: 15px; }
+  html.portrait .nd2 small { display: none; }
+  html.portrait .pin img { height: auto; width: 100%; }
+  html.portrait .pimg { max-width: 420px; }
+  html.portrait .ncards { grid-template-columns: minmax(0, 1fr); gap: 12px; margin-top: 22px; }
+  html.portrait .ncards p { font-size: 17px; }
+  html.portrait .bigq { font-size: 38px; min-height: 0; }
+  html.portrait .s-quote .qmark { font-size: 240px; right: 20px; top: 40px; }
+  html.portrait .concl { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-top: 26px; }
+  html.portrait .concl button { min-height: 0; padding: 18px; gap: 8px; }
+  html.portrait .concl button:last-child { grid-column: 1 / -1; }
+  html.portrait .concl .ix { font-size: 30px; }
+  html.portrait .concl h3 { font-size: 20px; }
+  html.portrait .concl p { font-size: 15.5px; }
+  html.portrait .tindex button { font-size: 15px; padding: 6px 11px; }
+  html.portrait .tindex button small { display: none; }
+  html.portrait .endnote { margin-top: 24px; font-size: 14px; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .slide, .slide [data-a], .slide.is-active [data-a] { animation: none !important; transition: none !important; opacity: 1; transform: none; }
+    .slide:not(.is-active) { opacity: 0; }
+    .slide .rv, .slide .si, .slide .ar .r, .slide .mgrid .mc { opacity: 1; } .slide .gx { transform: none; }
+    *, *::before, *::after { animation-duration: .001s !important; animation-delay: 0s !important; transition-duration: .001s !important; transition-delay: 0s !important; }
+  }
+</style>
+</head>
+<body>
+<canvas id="bgfx" aria-hidden="true"></canvas>
+<div class="progress" id="progress"></div>
+
+<main class="deck" id="deck">
+
+  <!-- 01 cover -->
+  <section class="slide s-title dk" data-notes="AI가 작동하는 과정을 구조, 학습, 추론의 세 단계로 나누고, 그 흐름을 따라 꼭 알아야 할 용어 42개를 다섯 장에 나눠 살펴봅니다. 장마다 직접 움직여 볼 수 있는 도해가 들어 있습니다.">
+    <div class="kicker" data-a="left">AI Basics · Glossary</div>
+    <h1 data-a style="--d:1">AI는 어떻게 작동할까<br><em>필수 용어 42개</em></h1>
+    <p class="lead" data-a style="--d:2">AI가 작동하는 과정은 크게 <b>구조(신경망) → 학습(가중치 조정) → 추론(학습된 모델 사용)</b>의 세 단계로 볼 수 있습니다. 이 흐름을 따라가며 꼭 알아야 할 용어를 정리했습니다.</p>
+    <div class="tchips">
+      <span class="chip" data-a="pop" style="--d:4">01 신경망 구조</span>
+      <span class="chip" data-a="pop" style="--d:5">02 학습</span>
+      <span class="chip" data-a="pop" style="--d:6">03 LLM</span>
+      <span class="chip" data-a="pop" style="--d:7">04 추론</span>
+      <span class="chip" data-a="pop" style="--d:8">05 규모와 효율</span>
+      <span class="chip gold" data-a="pop" style="--d:9">5개 장 · 42개 용어</span>
+    </div>
+  </section>
+
+  <!-- 02 three stages -->
+  <section class="slide dk" data-notes="세 단계를 먼저 잡아 두면 용어가 어디에 속하는지 헷갈리지 않습니다. 구조는 숫자를 곱하고 더하는 함수이고, 학습은 그 숫자를 고치는 과정이며, 추론은 고정된 숫자로 답을 계산하는 일입니다. 아래 숫자를 누르면 관련 슬라이드로 이동합니다.">
+    <div class="kicker" data-a="left">Three Stages</div>
+    <h2 data-a style="--d:1">구조 → 학습 → 추론, <em>세 단계</em>로 보기</h2>
+    <div class="shift3" data-a="fade" style="--d:2" aria-label="AI 작동 3단계">
+      <div class="rail"><i></i></div><div class="glow"></div>
+      <div class="st old"><div class="n">01 STRUCTURE</div><h3>구조 · 신경망</h3><p>숫자를 곱하고 더하는 층을 쌓아 만든 함수.</p></div>
+      <div class="st"><div class="n">02 TRAINING</div><h3>학습 · 가중치 조정</h3><p>틀린 만큼 거슬러 올라가 가중치를 조금씩 고친다.</p></div>
+      <div class="st new"><div class="n">03 INFERENCE</div><h3>추론 · 학습된 모델 사용</h3><p>고정된 가중치로 새 입력에 답을 계산한다.</p></div>
+    </div>
+    <div class="stats5" data-a style="--d:5">
+      <button type="button" data-go="s-index"><b data-count="42" data-suf="개">0</b><span>이 덱에 담은 필수 용어</span></button>
+      <button type="button" data-go="s-structure"><b data-count="700" data-suf="억">0</b><span>“70B 모델”이 학습으로 조정하는 숫자의 개수</span></button>
+      <button type="button" data-go="s-paper"><b>2017</b><span>트랜스포머를 제안한 논문이 나온 해</span></button>
+      <button type="button" data-go="s-ar"><b data-count="1" data-suf="토큰">0</b><span>LLM이 한 번에 예측하는 양</span></button>
+      <button type="button" data-go="s-quant"><b data-count="35" data-suf="GB">0</b><span>70B 모델 가중치를 4비트로 줄였을 때</span></button>
+    </div>
+  </section>
+
+  <!-- 03 agenda -->
+  <section class="slide" data-notes="다섯 장과 정리, 색인 순서로 진행합니다. 각 장은 여는 슬라이드, 도해, 용어 카드로 구성되어 있습니다. 항목을 누르면 해당 장으로 바로 이동합니다.">
+    <div class="kicker" data-a="left">Contents</div>
+    <h2 data-a style="--d:1">목차</h2>
+    <ul class="agenda">
+      <li data-a style="--d:2"><button type="button" data-go="s-structure"><span class="n">01</span><div><div class="t">기본 구조: 신경망</div><div class="d">용어 7개 · 신경망 도해 · 뉴런 계산기</div></div></button></li>
+      <li data-a style="--d:3"><button type="button" data-go="s-training"><span class="n">02</span><div><div class="t">학습: 가중치를 맞추는 과정</div><div class="d">용어 9개 · 학습 루프 · 경사하강법 시뮬레이터</div></div></button></li>
+      <li data-a style="--d:4"><button type="button" data-go="s-llm"><span class="n">03</span><div><div class="t">대규모 언어 모델(LLM)</div><div class="d">용어 13개 · 토크나이저 · 트랜스포머 구조도 · 어텐션</div></div></button></li>
+      <li data-a style="--d:5"><button type="button" data-go="s-inference"><span class="n">04</span><div><div class="t">추론: 학습된 모델을 쓰는 과정</div><div class="d">용어 8개 · 자기회귀 생성 · 온도 · Top-k와 Top-p</div></div></button></li>
+      <li data-a style="--d:6"><button type="button" data-go="s-scale"><span class="n">05</span><div><div class="t">규모와 효율</div><div class="d">용어 5개 · 양자화 · MoE</div></div></button></li>
+      <li data-a style="--d:7"><button type="button" data-go="s-flow"><span class="n">◎</span><div><div class="t">한눈에 보는 흐름</div><div class="d">시험 공부와 시험 치르기 · 장별 핵심 정리</div></div></button></li>
+      <li data-a style="--d:8"><button type="button" data-go="s-index"><span class="n">※</span><div><div class="t">용어 색인</div><div class="d">42개 용어를 장별로</div></div></button></li>
+    </ul>
+  </section>
+
+  <!-- ================= 01 STRUCTURE ================= -->
+  <section class="slide s-div dk" id="s-structure" data-notes="첫 장은 AI의 뼈대인 신경망입니다. 이름은 뇌에서 왔지만, 실제로는 숫자를 곱하고 더하는 계산을 층층이 쌓은 함수라는 점을 먼저 기억해 두면 됩니다.">
+    <div class="bignum" data-a="fade">01</div>
+    <div class="kicker" data-a="left">Chapter 01 · Structure</div>
+    <h2 data-a style="--d:1">기본 구조: 신경망</h2>
+    <p class="lead" data-a style="--d:2">AI의 뼈대는 <b>신경망</b>입니다. 이름은 뇌에서 따왔지만, 실제로는 <b>숫자를 곱하고 더하는 연산이 층층이 쌓인 함수</b>입니다.</p>
+    <div class="tchips" data-terms-of="01" data-a style="--d:4"></div>
+  </section>
+
+  <section class="slide s-demo" data-hook="net" data-notes="왼쪽 입력층에서 오른쪽 출력층으로 신호가 층을 하나씩 지나갑니다. 선의 색은 가중치의 부호, 굵기는 크기를 뜻합니다. 모델이 안다고 하는 모든 것은 이 연결마다 붙은 숫자에 들어 있습니다.">
+    <div class="kicker" data-a="left">01 · Structure</div>
+    <h2 data-a style="--d:1">입력이 층을 통과하는 모습</h2>
+    <div class="cols" style="--cl: 400px minmax(0, 1fr)">
+      <div class="side" data-a style="--d:2">
+        <p>입력이 들어오면 층을 하나씩 지나며 계산되고, 마지막 층에서 결과가 나옵니다. 모델이 “안다”고 말하는 모든 것은 결국 연결마다 붙은 숫자, 즉 <mark>가중치</mark>에 담겨 있습니다.</p>
+        <p class="cap">은닉층이 여러 겹 쌓인 신경망을 쓰는 방식이 <b>딥러닝</b>입니다. 그림의 가중치는 예시 값입니다.</p>
+      </div>
+      <div class="fig" data-a style="--d:3; --z:1.32">
+        <div class="fig-h"><span class="s">입력층 3 · 은닉층 4 × 2 · 출력층 2</span><button class="replay" type="button" data-replay>다시 재생</button></div>
+        <svg class="net" id="net" viewBox="0 0 640 270" role="img" aria-label="입력층 3개, 은닉층 4개씩 두 층, 출력층 2개로 이루어진 신경망. 신호가 왼쪽에서 오른쪽으로 층을 차례로 지나간다."></svg>
+        <div class="net-lg"><span><i style="background:var(--gold)"></i>양(+)의 가중치</span><span><i style="background:var(--blue)"></i>음(−)의 가중치</span><span>선 굵기 = 가중치 크기</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide" data-ch="01" data-notes="신경망을 이루는 기본 단위입니다. 뉴런은 가중합을 계산하는 가장 작은 단위이고, 뉴런이 모여 층이 되며, 뉴런 사이의 연결 강도가 가중치입니다. 모델이 배운 지식은 결국 가중치에 저장됩니다.">
+    <div class="kicker" data-a="left">01 · 용어 1 / 2</div>
+    <h2 data-a style="--d:1">신경망의 뼈대: 뉴런, 층, 가중치</h2>
+    <dl class="terms">
+      <div class="tc" id="t-nn" data-m="nn" data-k="신경망" data-e="Neural Network" data-a style="--d:2"><dt><span class="ko">신경망</span><span class="enn">Neural Network</span></dt><dd>뇌의 뉴런 연결에서 착안한 수학적 모델입니다. 실제로는 숫자를 곱하고 더하는 연산이 층층이 쌓인 함수입니다.</dd></div>
+      <div class="tc" id="t-neuron" data-m="neuron" data-k="뉴런 / 노드" data-e="Neuron, Node" data-a style="--d:3"><dt><span class="ko">뉴런 / 노드</span><span class="enn">Neuron, Node</span></dt><dd>입력값들을 받아 가중합을 계산하고 결과를 다음 층으로 넘기는 가장 작은 계산 단위입니다.</dd></div>
+      <div class="tc" id="t-layer" data-m="layer" data-k="층" data-e="Layer" data-a style="--d:4"><dt><span class="ko">층</span><span class="enn">Layer</span></dt><dd>입력층, 은닉층, 출력층으로 나뉩니다. 은닉층이 많이 쌓인 신경망을 쓰는 방식을 <b>딥러닝</b>이라고 부릅니다.</dd></div>
+      <div class="tc" id="t-weight" data-m="weight" data-k="가중치" data-e="Weight" data-a style="--d:5"><dt><span class="ko">가중치</span><span class="enn">Weight</span></dt><dd>뉴런 사이 연결의 강도를 나타내는 숫자입니다. 어떤 입력을 얼마나 중요하게 볼지 정하며, 모델이 배운 “지식”은 결국 이 숫자들에 저장됩니다.</dd></div>
+    </dl>
+  </section>
+
+  <section class="slide" data-ch="01" data-notes="편향은 기준점을 옮기는 보정값이고, 가중치와 편향을 합쳐 파라미터라고 부릅니다. 활성화 함수가 없으면 층을 아무리 쌓아도 직선 계산에 머문다는 점이 핵심입니다.">
+    <div class="kicker" data-a="left">01 · 용어 2 / 2</div>
+    <h2 data-a style="--d:1">계산을 완성하는 편향과 활성화 함수</h2>
+    <dl class="terms">
+      <div class="tc" id="t-bias" data-m="bias" data-k="편향" data-e="Bias" data-a style="--d:2"><dt><span class="ko">편향</span><span class="enn">Bias</span></dt><dd>가중합에 더하는 보정값입니다. 입력이 0이어도 출력이 나올 수 있도록 기준점을 옮겨 줍니다.</dd></div>
+      <div class="tc" id="t-param" data-m="param" data-k="파라미터" data-e="Parameter" data-a style="--d:3"><dt><span class="ko">파라미터</span><span class="enn">Parameter</span></dt><dd>가중치와 편향을 합쳐 부르는 말입니다. “700억 파라미터 모델”이라고 하면 학습으로 조정되는 숫자가 700억 개라는 뜻입니다.</dd></div>
+      <div class="tc wide" id="t-act" data-m="act" data-k="활성화 함수" data-e="Activation Function" data-a style="--d:4"><dt><span class="ko">활성화 함수</span><span class="enn">Activation Function</span></dt><dd>ReLU, GELU 같은 비선형 함수입니다. 이것이 없으면 층을 아무리 쌓아도 단순한 직선 계산에 머물러 복잡한 패턴을 표현할 수 없습니다.</dd></div>
+    </dl>
+  </section>
+
+  <section class="slide s-demo" data-notes="뉴런 하나는 입력에 가중치를 곱해 더하고, 편향을 더한 뒤, 활성화 함수에 통과시킵니다. 가중치를 음수로 내려 가중합이 0보다 작아지면 ReLU가 출력을 0으로 자릅니다. 700억 파라미터는 이런 w와 b가 700억 개라는 뜻입니다.">
+    <div class="kicker" data-a="left">1.1 · 뉴런 계산기</div>
+    <h2 data-a style="--d:1">뉴런 하나를 직접 계산해 보기</h2>
+    <div class="cols" style="--cl: 470px minmax(0, 1fr)">
+      <div class="side" data-a style="--d:2">
+        <p>뉴런 하나가 하는 일은 단순합니다. 입력마다 가중치를 곱해 더하고(가중합), 편향을 더한 뒤, 활성화 함수에 통과시킵니다. 슬라이더로 가중치와 편향을 바꿔 보세요. <strong>ReLU</strong>는 음수를 0으로 잘라 내는 가장 흔한 활성화 함수입니다.</p>
+        <div class="callout"><span class="tag">숫자로 보는 파라미터</span><p>“700억 파라미터”는 이 계산기의 w와 b 같은 숫자가 700억 개 있다는 뜻입니다. 학습은 이 숫자 전부를 조금씩 맞춰 가는 과정이고, 다음 장에서 그 방법을 봅니다.</p></div>
+      </div>
+      <div class="fig" data-a style="--d:3; --z:1.36">
+        <div class="fig-h"><span class="t">뉴런 계산기</span><span class="s">입력값은 예시로 고정</span></div>
+        <div class="neuron">
+          <div class="ins">
+            <label><span>w₁ <span class="x">× 1.0</span></span><input type="range" id="w1" min="-1" max="1" step="0.1" value="0.6"><b id="w1v">0.6</b></label>
+            <label><span>w₂ <span class="x">× 0.5</span></span><input type="range" id="w2" min="-1" max="1" step="0.1" value="-0.4"><b id="w2v">-0.4</b></label>
+            <label><span>w₃ <span class="x">× −0.8</span></span><input type="range" id="w3" min="-1" max="1" step="0.1" value="0.3"><b id="w3v">0.3</b></label>
+            <label><span>편향 b</span><input type="range" id="bb" min="-1" max="1" step="0.1" value="0.2"><b id="bbv">0.2</b></label>
+            <label class="sw-row"><input type="checkbox" id="relu" checked><span class="sw"></span><span>활성화 함수 ReLU 적용</span></label>
+          </div>
+          <div class="calc">
+            <div class="eq" id="eq"></div>
+            <div class="out"><b id="nout">0</b><span id="nnote">다음 층으로 전달되는 값</span></div>
+            <div class="meter2"><i id="nbar"></i></div>
+          </div>
+        </div>
+        <figcaption>가중치를 음수로 내려 가중합이 0보다 작아지면, ReLU를 켠 상태에서는 출력이 0이 됩니다. 이 “꺾임”이 쌓여서 신경망이 직선이 아닌 복잡한 패턴을 그릴 수 있게 됩니다.</figcaption>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= 02 TRAINING ================= -->
+  <section class="slide s-div dk" id="s-training" data-notes="두 번째 장은 학습입니다. 처음 만든 신경망은 가중치가 무작위라 엉뚱한 답을 냅니다. 학습은 틀린 만큼 가중치를 고치는 일을 수없이 반복하는 과정입니다.">
+    <div class="bignum" data-a="fade">02</div>
+    <div class="kicker" data-a="left">Chapter 02 · Training</div>
+    <h2 data-a style="--d:1">학습: 가중치를 맞추는 과정</h2>
+    <p class="lead" data-a style="--d:2">처음 만들어진 신경망의 가중치는 무작위 숫자라서 엉뚱한 답을 냅니다. <b>학습</b>은 예시 데이터를 보여 주고, 틀린 만큼 가중치를 고치는 일을 수없이 반복하는 과정입니다.</p>
+    <div class="tchips" data-terms-of="02" data-a style="--d:4"></div>
+  </section>
+
+  <section class="slide s-demo" data-hook="loop" data-notes="학습 한 바퀴는 네 단계입니다. 순전파로 예측하고, 손실로 틀린 정도를 숫자 하나로 만들고, 역전파로 각 가중치의 책임을 계산한 뒤, 그 반대 방향으로 가중치를 조금 옮깁니다. 반복할수록 오른쪽 아래 손실이 줄어듭니다.">
+    <div class="kicker" data-a="left">02 · Training</div>
+    <h2 data-a style="--d:1">학습 한 바퀴: 네 단계의 반복</h2>
+    <div class="fig" data-a style="--d:2; --z:1.26; margin-top:28px">
+      <div class="fig-h"><span class="s">순전파 → 손실 계산 → 역전파 → 가중치 업데이트</span><button class="replay" type="button" data-replay>다시 재생</button></div>
+      <div class="loop" id="loopSteps">
+        <div class="stp"><span class="k">STEP 1</span><h6>순전파</h6><p>입력을 넣어 예측값을 계산</p></div>
+        <div class="stp"><span class="k">STEP 2</span><h6>손실 계산</h6><p>예측과 정답의 차이를 숫자 하나로</p></div>
+        <div class="stp back"><span class="k">STEP 3</span><h6>역전파</h6><p>각 가중치의 책임(기울기)을 거꾸로 계산</p></div>
+        <div class="stp"><span class="k">STEP 4</span><h6>가중치 업데이트</h6><p>기울기 반대 방향으로 조금 이동</p></div>
+      </div>
+      <div class="loop-back" aria-hidden="true"><svg viewBox="0 0 100 24" preserveAspectRatio="none"><path d="M87.5 0 V16 H12.5 V0"/></svg></div>
+      <div class="lossbox">
+        <svg id="lossSvg" viewBox="0 0 700 120" preserveAspectRatio="none" aria-label="반복할수록 손실이 줄어드는 그래프"></svg>
+        <div class="read"><b id="lossV">2.55</b><span>현재 손실</span><div class="ep" id="lossEp">반복 0회</div></div>
+      </div>
+      <figcaption>네 단계를 한 번 도는 것이 한 번의 업데이트입니다. 반복할수록 손실이 줄어듭니다. 그래프 수치는 예시입니다.</figcaption>
+    </div>
+  </section>
+
+  <section class="slide" data-ch="02" data-notes="학습 루프를 이루는 용어입니다. 학습 데이터를 넣어 순전파로 예측하고, 손실 함수로 오차를 재고, 역전파로 오차를 거꾸로 전달하며 각 가중치의 기울기를 구합니다.">
+    <div class="kicker" data-a="left">02 · 용어 1 / 3</div>
+    <h2 data-a style="--d:1">학습 한 바퀴를 이루는 용어</h2>
+    <dl class="terms">
+      <div class="tc" id="t-data" data-m="data" data-k="학습 데이터" data-e="Training Data" data-a style="--d:2"><dt><span class="ko">학습 데이터</span><span class="enn">Training Data</span></dt><dd>모델이 보고 배우는 예시들입니다. 언어 모델의 경우 방대한 텍스트가 여기에 해당합니다.</dd></div>
+      <div class="tc" id="t-fwd" data-m="fwd" data-k="순전파" data-e="Forward Pass" data-a style="--d:3"><dt><span class="ko">순전파</span><span class="enn">Forward Pass</span></dt><dd>입력을 넣어 층을 차례로 통과시키며 예측값을 계산하는 단계입니다.</dd></div>
+      <div class="tc" id="t-loss" data-m="loss" data-k="손실 함수" data-e="Loss Function" data-a style="--d:4"><dt><span class="ko">손실 함수</span><span class="enn">Loss Function</span></dt><dd>예측이 정답과 얼마나 다른지를 숫자 하나로 나타냅니다. 학습의 목표는 이 값을 줄이는 것입니다.</dd></div>
+      <div class="tc" id="t-bp" data-m="bp" data-k="역전파" data-e="Backpropagation" data-a style="--d:5"><dt><span class="ko">역전파</span><span class="enn">Backpropagation</span></dt><dd>손실을 출력층에서 입력층 방향으로 거꾸로 전달하면서, 각 가중치가 오차에 얼마나 책임이 있는지(기울기)를 계산합니다.</dd></div>
+    </dl>
+  </section>
+
+  <section class="slide" data-ch="02" data-notes="기울기를 구했으면 이제 얼마나 고칠지 정해야 합니다. 경사하강법은 기울기 반대 방향으로 움직이는 방법이고, 학습률은 한 걸음의 크기입니다. 배치와 에폭은 데이터를 어떤 단위로 몇 번 보는지를 뜻합니다.">
+    <div class="kicker" data-a="left">02 · 용어 2 / 3</div>
+    <h2 data-a style="--d:1">얼마나, 얼마씩 고칠까</h2>
+    <dl class="terms">
+      <div class="tc" id="t-gd" data-m="gd" data-k="경사하강법" data-e="Gradient Descent" data-a style="--d:2"><dt><span class="ko">경사하강법</span><span class="enn">Gradient Descent</span></dt><dd>계산된 기울기의 반대 방향으로 가중치를 조금씩 움직여 손실을 줄이는 방법입니다. Adam 같은 <b>옵티마이저</b>가 이 방법을 개선한 것입니다.</dd></div>
+      <div class="tc" id="t-lr" data-m="lr" data-k="학습률" data-e="Learning Rate" data-a style="--d:3"><dt><span class="ko">학습률</span><span class="enn">Learning Rate</span></dt><dd>가중치를 한 번에 얼마나 크게 바꿀지 정하는 값입니다. 너무 크면 학습이 불안정해지고, 너무 작으면 느려집니다.</dd></div>
+      <div class="tc wide" id="t-batch" data-m="batch" data-k="배치 / 에폭" data-e="Batch / Epoch" data-a style="--d:4"><dt><span class="ko">배치 / 에폭</span><span class="enn">Batch / Epoch</span></dt><dd>배치는 한 번에 처리하는 데이터 묶음이고, 에폭은 전체 데이터를 한 바퀴 다 학습한 횟수입니다.</dd></div>
+    </dl>
+  </section>
+
+  <section class="slide s-demo" data-hook="gd" data-notes="경사하강법은 안개 낀 언덕을 발밑 기울기만 보고 내려가는 것과 같습니다. 학습률을 0.04로 두면 한참 못 내려가고, 0.2면 몇 걸음 만에 바닥에 닿고, 1을 넘으면 오히려 튀어 오릅니다. 프리셋 버튼으로 차이를 보여 주면 됩니다.">
+    <div class="kicker" data-a="left">2.1 · 경사하강법 시뮬레이터</div>
+    <h2 data-a style="--d:1">학습률을 바꿔 언덕을 내려가 보기</h2>
+    <div class="cols" style="--cl: 420px minmax(0, 1fr)">
+      <div class="side" data-a style="--d:2">
+        <p>경사하강법은 안개 낀 언덕에서 발밑의 기울기만 보고 가장 낮은 곳을 찾아 내려가는 것과 같습니다. 한 걸음의 크기가 <strong>학습률</strong>입니다. 걸음이 너무 작으면 한참 걸리고, 너무 크면 골짜기를 지나쳐 반대편으로 튀어 오릅니다.</p>
+      </div>
+      <div class="fig" data-a style="--d:3; --z:1.2">
+        <div class="fig-h"><span class="t">경사하강법 시뮬레이터</span><span class="s">손실 = w² (예시 함수)</span></div>
+        <div class="gd"><svg id="gdSvg" viewBox="0 0 420 220" role="img" aria-label="포물선 모양의 손실 곡선 위에서 공이 학습률에 따라 바닥으로 내려가는 모습"></svg></div>
+        <div class="gd-ctl">
+          <label><span>학습률 <b id="lrV">0.20</b></span><input type="range" id="lr" min="0.02" max="1.1" step="0.02" value="0.2"></label>
+          <button class="go-btn" type="button" id="gdGo">▶ 12걸음 내려가기</button>
+        </div>
+        <div class="presets" id="gdPre"><button type="button" data-lr="0.04">너무 작게 0.04</button><button type="button" data-lr="0.2">적당히 0.2</button><button type="button" data-lr="0.8">크게 0.8</button><button type="button" data-lr="1.04">너무 크게 1.04</button></div>
+        <div class="verdict" id="gdVerdict">학습률을 고르고 실행해 보세요.</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide" data-ch="02" data-notes="학습 데이터에서 손실을 0으로 만드는 것이 목표가 아닙니다. 문제집만 외운 학생처럼 새 문제에서 무너지는 것이 과적합입니다. 그래서 학습에 쓰지 않은 데이터로 따로 확인합니다. 학습률 같은 설정값은 사람이 정하는 하이퍼파라미터입니다.">
+    <div class="kicker" data-a="left">02 · 용어 3 / 3</div>
+    <h2 data-a style="--d:1">외우지 말고 일반화하기</h2>
+    <dl class="terms">
+      <div class="tc" id="t-over" data-m="over" data-k="과적합" data-e="Overfitting" data-a style="--d:2"><dt><span class="ko">과적합</span><span class="enn">Overfitting</span></dt><dd>학습 데이터를 외워 버려서 새로운 데이터에서는 성능이 떨어지는 현상입니다. 반대로 처음 보는 데이터에도 잘 작동하는 능력을 <b>일반화</b>라고 합니다.</dd></div>
+      <div class="tc" id="t-hyper" data-m="hyper" data-k="하이퍼파라미터" data-e="Hyperparameter" data-a style="--d:3"><dt><span class="ko">하이퍼파라미터</span><span class="enn">Hyperparameter</span></dt><dd>학습률이나 층의 수처럼, 학습으로 정해지지 않고 사람이 미리 정하는 설정값입니다. 파라미터는 모델이 배우고, 하이퍼파라미터는 사람이 정합니다.</dd></div>
+    </dl>
+    <div class="callout warn" data-a style="--d:5; margin-top:24px"><span class="tag">과적합 주의</span><p>학습 데이터에서 손실을 0에 가깝게 줄이는 것이 끝이 아닙니다. 시험 범위 문제집만 통째로 외운 학생이 새 문제를 못 푸는 것처럼, 모델도 학습 데이터만 외우면 처음 보는 입력에서 무너집니다. 그래서 학습에 쓰지 않은 데이터로 따로 성능을 확인합니다.</p></div>
+  </section>
+
+  <!-- ================= 03 LLM ================= -->
+  <section class="slide s-div dk" id="s-llm" data-notes="세 번째 장은 대규모 언어 모델입니다. ChatGPT나 Claude도 앞에서 본 신경망과 학습 원리 위에 있고, 글을 다루기 위한 장치가 몇 가지 더 붙습니다. 용어가 가장 많은 장입니다.">
+    <div class="bignum" data-a="fade">03</div>
+    <div class="kicker" data-a="left">Chapter 03 · LLM</div>
+    <h2 data-a style="--d:1">대규모 언어 모델(LLM) 관련 용어</h2>
+    <p class="lead" data-a style="--d:2">ChatGPT나 Claude 같은 <b>대규모 언어 모델(LLM)</b>도 앞의 신경망과 학습 원리 위에 있습니다. 다만 글을 다루기 위한 장치가 몇 가지 더 붙습니다.</p>
+    <div class="tchips" data-terms-of="03" data-a style="--d:4"></div>
+  </section>
+
+  <section class="slide s-demo" data-hook="tok" data-notes="글자는 그대로 계산할 수 없으니 먼저 토큰으로 쪼개고, 각 토큰을 숫자 벡터로 바꿉니다. 입력창에 다른 문장을 넣어 보면 한국어 단어가 여러 토큰으로 나뉘는 모습을 볼 수 있습니다. 예시 토크나이저라 실제 모델과 쪼개는 위치는 다릅니다.">
+    <div class="kicker" data-a="left">03 · LLM</div>
+    <h2 data-a style="--d:1">문장이 토큰으로 쪼개지는 모습</h2>
+    <p class="lead" data-a style="--d:2; font-size:22px">글자는 그대로 계산할 수 없으니 먼저 <mark>토큰</mark>으로 쪼개고, 각 토큰을 숫자 벡터(<mark>임베딩</mark>)로 바꿉니다. 그다음 <mark>트랜스포머</mark>가 어텐션으로 토큰 사이의 관계를 계산합니다.</p>
+    <div class="fig" data-a style="--d:3; --z:1.36; margin-top:24px">
+      <div class="fig-h"><span class="t">토크나이저와 임베딩</span><span class="s">직접 입력해 보세요</span></div>
+      <input class="tok-in" id="tokIn" type="text" value="인공지능은 다음 토큰을 예측합니다" aria-label="토큰으로 쪼갤 문장">
+      <div class="chips" id="tokOut" aria-live="polite"></div>
+      <div class="tok-stat"><span><b id="tokChars">0</b>글자</span><span><b id="tokN">0</b>토큰</span></div>
+      <div class="emb" id="emb" aria-hidden="true"></div>
+      <div class="emb-lbl" id="embLbl">첫 토큰의 임베딩 (16차원만 표시, 실제로는 수백~수천 차원)</div>
+      <figcaption><b>예시 토크나이저입니다.</b> 실제 모델은 학습으로 만든 어휘표를 써서 쪼개는 위치와 토큰 번호가 다릅니다. 한국어는 보통 한 단어가 여러 토큰으로 나뉜다는 점만 보여 줍니다.</figcaption>
+    </div>
+  </section>
+
+  <section class="slide" data-ch="03" data-notes="글을 숫자로 바꾸고, 숫자 사이의 관계를 계산하는 흐름입니다. 토큰과 임베딩이 입력을 준비하고, 트랜스포머의 어텐션이 토큰끼리 서로 참고하게 합니다.">
+    <div class="kicker" data-a="left">03 · 용어 1 / 4</div>
+    <h2 data-a style="--d:1">글을 숫자로, 숫자를 관계로</h2>
+    <dl class="terms">
+      <div class="tc" id="t-token" data-m="token" data-k="토큰 / 토크나이저" data-e="Token / Tokenizer" data-a style="--d:2"><dt><span class="ko">토큰 / 토크나이저</span><span class="enn">Token / Tokenizer</span></dt><dd>텍스트를 모델이 처리하는 단위로 쪼갠 조각이 토큰이고, 쪼개는 도구가 토크나이저입니다. 한국어는 보통 한 단어가 여러 토큰으로 나뉩니다.</dd></div>
+      <div class="tc" id="t-emb" data-m="emb" data-k="임베딩" data-e="Embedding" data-a style="--d:3"><dt><span class="ko">임베딩</span><span class="enn">Embedding</span></dt><dd>토큰을 수백에서 수천 차원의 숫자 벡터로 바꾼 것입니다. 의미가 비슷한 단어는 벡터 공간에서 가까운 위치에 놓입니다.</dd></div>
+      <div class="tc" id="t-tf" data-m="tf" data-k="트랜스포머" data-e="Transformer" data-a style="--d:4"><dt><span class="ko">트랜스포머</span><span class="enn">Transformer</span></dt><dd>2017년 논문 “Attention Is All You Need”에서 제안된 구조로, 현재 대부분의 LLM이 이 구조를 기반으로 합니다.</dd></div>
+      <div class="tc" id="t-attn" data-m="attn" data-k="어텐션 / 셀프 어텐션" data-e="Attention / Self-Attention" data-a style="--d:5"><dt><span class="ko">어텐션 / 셀프 어텐션</span><span class="enn">Attention / Self-Attention</span></dt><dd>문장 안의 각 토큰이 다른 토큰들 중 어디를 얼마나 참고할지 계산하는 메커니즘입니다. 예를 들어 “그것”이 앞의 어떤 명사를 가리키는지 파악하는 데 쓰입니다.</dd></div>
+    </dl>
+  </section>
+
+  <section class="slide" data-ch="03" data-notes="트랜스포머 블록 안에 들어 있는 장치들입니다. 위치 인코딩이 순서를 알려 주고, 멀티헤드 어텐션이 여러 관계를 동시에 보며, 피드포워드가 토큰마다 정보를 가공하고, 잔차 연결과 층 정규화가 깊은 층에서도 학습을 안정시킵니다.">
+    <div class="kicker" data-a="left">03 · 용어 2 / 4</div>
+    <h2 data-a style="--d:1">트랜스포머 블록 안의 장치</h2>
+    <dl class="terms">
+      <div class="tc" id="t-pos" data-m="pos" data-k="위치 인코딩" data-e="Positional Encoding" data-a style="--d:2"><dt><span class="ko">위치 인코딩</span><span class="enn">Positional Encoding</span></dt><dd>어텐션은 토큰의 순서를 스스로 알지 못합니다. 그래서 각 토큰이 몇 번째 자리인지 나타내는 값을 임베딩에 더해 주는 장치입니다.</dd></div>
+      <div class="tc" id="t-mha" data-m="mha" data-k="멀티헤드 어텐션" data-e="Multi-Head Attention" data-a style="--d:3"><dt><span class="ko">멀티헤드 어텐션</span><span class="enn">Multi-Head Attention</span></dt><dd>어텐션을 여러 개(헤드) 나란히 돌려, 문법 관계·지시 대상·주제처럼 서로 다른 관계를 동시에 보게 하는 구조입니다. 원 논문은 헤드 8개를 썼습니다.</dd></div>
+      <div class="tc" id="t-ffn" data-m="ffn" data-k="피드포워드 신경망" data-e="Feed-Forward Network" data-a style="--d:4"><dt><span class="ko">피드포워드 신경망</span><span class="enn">Feed-Forward Network</span></dt><dd>트랜스포머 블록 안에서 토큰 벡터 하나하나를 따로 가공하는 2층 신경망입니다. 모델 파라미터의 큰 몫을 차지합니다.</dd></div>
+      <div class="tc" id="t-res" data-m="res" data-k="잔차 연결 / 층 정규화" data-e="Residual Connection / Layer Norm" data-a style="--d:5"><dt><span class="ko">잔차 연결 / 층 정규화</span><span class="enn">Residual Connection / Layer Norm</span></dt><dd>각 단계의 입력을 출력에 그대로 더하고(잔차 연결), 값의 범위를 고르게 맞추는(층 정규화) 장치입니다. 층을 깊게 쌓아도 학습이 안정되게 해 줍니다.</dd></div>
+    </dl>
+  </section>
+
+  <section class="slide" data-ch="03" data-notes="LLM을 길러 내는 단계입니다. 사전학습으로 일반 지식을 익히고, 파인튜닝으로 목적에 맞게 다듬고, RLHF로 사람이 선호하는 방향에 맞춥니다. 비용은 사전학습이 압도적으로 큽니다.">
+    <div class="kicker" data-a="left">03 · 용어 3 / 4</div>
+    <h2 data-a style="--d:1">LLM을 길러 내는 단계</h2>
+    <dl class="terms">
+      <div class="tc" id="t-pre" data-m="pre" data-k="사전학습" data-e="Pre-training" data-a style="--d:2"><dt><span class="ko">사전학습</span><span class="enn">Pre-training</span></dt><dd>방대한 텍스트로 “다음 토큰 맞히기”를 반복하며 언어와 세상에 대한 일반 지식을 익히는 단계입니다. 비용이 가장 많이 드는 단계이기도 합니다.</dd></div>
+      <div class="tc" id="t-ft" data-m="ft" data-k="파인튜닝" data-e="Fine-tuning" data-a style="--d:3"><dt><span class="ko">파인튜닝</span><span class="enn">Fine-tuning</span></dt><dd>사전학습된 모델을 특정 목적에 맞는 데이터로 추가 학습시키는 것입니다.</dd></div>
+      <div class="tc wide" id="t-rlhf" data-m="rlhf" data-k="RLHF" data-e="Reinforcement Learning from Human Feedback" data-a style="--d:4"><dt><span class="ko">RLHF</span><span class="enn">인간 피드백 기반 강화학습</span></dt><dd>사람이 여러 답변을 비교 평가한 결과로 보상 모델을 만들고, 그 보상을 기준으로 모델을 조정하는 기법입니다. 모델을 더 유용하고 안전하게 다듬는 데 쓰입니다.</dd></div>
+    </dl>
+  </section>
+
+  <section class="slide s-demo" id="s-paper" data-notes="2017년 구글 연구진 8명이 낸 논문으로, 제목 그대로 어텐션만으로 모델을 만들었습니다. 핵심은 순서대로 처리하던 RNN을 버리고 문장 전체를 한꺼번에 계산하게 했다는 점이고, 이 구조가 BERT와 GPT를 거쳐 오늘날 LLM의 뼈대가 되었습니다.">
+    <div class="kicker" data-a="left">3.1 · 트랜스포머를 낳은 논문</div>
+    <h2 data-a style="--d:1">Attention Is All You Need</h2>
+    <p class="lead" data-a style="--d:2; font-size:21px;margin-top:12px">2017년 구글 연구진 8명이 발표한 논문입니다. 제목 그대로 <b>“어텐션만 있으면 된다”</b>는 주장을 담았고, 이 논문이 제안한 <mark>트랜스포머</mark> 구조가 지금의 LLM 거의 모두의 뼈대가 되었습니다.</p>
+    <div class="fig" data-a style="--d:3; --z:1.2; margin-top:20px; padding:0; border:0; background:none; box-shadow:none">
+      <div class="paper">
+        <div class="ph"><span>arXiv:1706.03762</span><span>NeurIPS 2017</span></div>
+        <div class="pt">Attention Is All You Need</div>
+        <div class="pa">Ashish Vaswani, Noam Shazeer, Niki Parmar, Jakob Uszkoreit, Llion Jones, Aidan N. Gomez, Łukasz Kaiser, Illia Polosukhin</div>
+        <dl class="pd">
+          <div class="rv" style="--d:400ms"><dt>문제</dt><dd>당시 번역 모델의 주류였던 <b>RNN</b>(순환 신경망)은 단어를 앞에서부터 하나씩 차례로 처리했습니다. 앞 단어 계산이 끝나야 다음 단어로 넘어갈 수 있어 GPU로 한꺼번에 계산하기 어렵고, 문장이 길면 앞부분 정보가 흐려졌습니다.</dd></div>
+          <div class="rv" style="--d:550ms"><dt>제안</dt><dd>순환 구조를 아예 버리고 <b>어텐션만으로</b> 모델을 만들었습니다. 모든 토큰이 다른 모든 토큰을 한 번에 참고하므로, 문장 전체를 병렬로 계산할 수 있습니다.</dd></div>
+          <div class="rv" style="--d:700ms"><dt>핵심 장치</dt><dd><b>셀프 어텐션</b>(토큰끼리 서로 참고), <b>멀티헤드 어텐션</b>(여러 관점의 어텐션을 동시에), <b>위치 인코딩</b>(순서 정보를 숫자로 더해 줌), 그리고 입력을 읽는 인코더와 출력을 만드는 디코더.</dd></div>
+          <div class="rv" style="--d:850ms"><dt>결과</dt><dd>영어→독일어 번역(WMT 2014)에서 BLEU 28.4로 당시 최고 기록을 냈고, 큰 모델도 GPU 8장으로 3.5일 만에 학습했습니다. 기존 모델보다 학습 비용이 훨씬 적었습니다.</dd></div>
+          <div class="rv" style="--d:1000ms"><dt>영향</dt><dd>인코더 쪽을 쓴 <b>BERT</b>, 디코더 쪽을 쓴 <b>GPT</b> 계열을 거쳐 오늘날 대부분의 LLM이 이 구조를 기반으로 합니다.</dd></div>
+        </dl>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide s-demo" data-hook="rnn" data-notes="같은 여섯 단어를 처리하는 방식의 차이입니다. RNN은 앞 단어가 끝나야 다음 단어로 넘어가 여섯 단계가 걸리고, 트랜스포머는 모든 단어가 서로를 한 번에 참고해 한 단계로 끝납니다. 학습할 때를 기준으로 한 그림입니다.">
+    <div class="kicker" data-a="left">3.1 · RNN vs 트랜스포머</div>
+    <h2 data-a style="--d:1">RNN은 차례로, 트랜스포머는 한꺼번에</h2>
+    <div class="fig" data-a style="--d:2; --z:1.62; margin-top:40px">
+      <div class="fig-h"><span class="s">같은 문장을 처리하는 데 걸리는 단계</span><button class="replay" type="button" data-replay>다시 재생</button></div>
+      <div class="lanes2">
+        <div class="ln2" id="laneR"><div class="lh2"><b>RNN</b><span>이전 방식 · 한 단어씩</span><em id="stepR">0 / 6 단계</em></div><div class="row2"></div></div>
+        <div class="ln2 tfm" id="laneT"><div class="lh2"><b>트랜스포머</b><span>어텐션만 사용 · 모든 단어를 동시에</span><em id="stepT">0 / 1 단계</em></div><div class="rowwrap"><svg class="arcs" id="arcsT" viewBox="0 0 600 40" preserveAspectRatio="none" aria-hidden="true"></svg><div class="row2"></div></div></div>
+      </div>
+      <figcaption>학습할 때를 기준으로 그린 그림입니다. 트랜스포머도 답을 <b>생성</b>할 때는 4장에서 보듯 한 토큰씩 만들지만, 이미 주어진 문장은 한꺼번에 계산합니다.</figcaption>
+    </div>
+  </section>
+
+  <section class="slide s-demo s-arch" id="s-arch" data-hook="arch" data-notes="트랜스포머는 임베딩, 같은 구조의 블록 여러 층, 출력층으로 이루어집니다. 블록 하나는 어텐션과 피드포워드 두 부분이고 각각 뒤에 더하기와 정규화가 붙습니다. 흐름 재생으로 위에서 아래로 따라가고, 인코더-디코더로 바꾸면 2017년 원 논문 구조가 나옵니다.">
+    <div class="kicker" data-a="left">3.2 · 트랜스포머 아키텍처</div>
+    <h2 data-a style="--d:1">같은 블록을 층층이 쌓은 구조</h2>
+    <div class="archs">
+      <div class="side" data-a style="--d:2">
+        <p>트랜스포머는 <strong>임베딩 → 같은 구조의 블록 여러 층 → 출력층</strong>으로 이루어집니다. 블록 하나는 토큰끼리 정보를 주고받는 <mark>어텐션</mark>과 토큰 하나하나를 따로 가공하는 <mark>피드포워드 신경망</mark>, 두 부분으로 되어 있고, 각 부분 뒤에는 <strong>더하기 &amp; 정규화</strong>가 붙습니다.</p>
+        <p>원 논문은 번역을 위해 원문을 읽는 <b>인코더</b>와 번역문을 쓰는 <b>디코더</b>를 짝지었습니다. GPT 계열을 비롯한 오늘날 대부분의 LLM은 이 중 <b>디코더만</b> 여러 층 쌓은 구조를 씁니다. 블록을 눌러 각 부분이 하는 일을 확인해 보세요.</p>
+      </div>
+      <div data-a style="--d:3; min-width:0">
+        <div class="arch-top">
+          <div class="seg" role="group" aria-label="구조 선택" id="archSeg"><button type="button" class="on" data-m="dec">디코더 전용 · 오늘날 LLM</button><button type="button" data-m="ed">인코더-디코더 · 2017 원 논문</button></div>
+          <button class="replay" type="button" id="archPlay">▶ 흐름 재생</button>
+        </div>
+        <div class="arch" id="arch"></div>
+      </div>
+      <div data-a style="--d:4">
+        <div class="apanel" id="apanel" aria-live="polite"></div>
+        <div class="legend"><span><i style="background:var(--violet-soft);border:1px solid var(--violet)"></i>입력 준비</span><span><i style="background:var(--gold-soft);border:1px solid var(--gold)"></i>어텐션</span><span><i style="background:var(--blue-soft);border:1px solid var(--blue)"></i>피드포워드</span><span><i style="background:var(--green-soft);border:1px solid var(--green)"></i>더하기 &amp; 정규화 · 초록 선은 잔차 연결</span><span><i style="background:var(--coral-soft);border:1px solid var(--coral)"></i>출력</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide s-demo" id="s-fig1" data-notes="원 논문의 Figure 1입니다. 앞 장 구조도의 인코더-디코더 모드와 같은 내용을 논문은 이렇게 그렸습니다. 상자를 누르면 설명이 나오고, 오늘날 LLM이 쓰는 부분 버튼을 누르면 디코더 전용 모델에서 빠지는 인코더와 크로스 어텐션이 가려집니다.">
+    <div class="kicker" data-a="left">3.2 · 원 논문 그림과 나란히 보기</div>
+    <h2 data-a style="--d:1">Figure 1: The Transformer - model architecture</h2>
+    <div class="pfig">
+      <div class="side" data-a style="--d:2">
+        <p>원 논문의 <strong>Figure 1</strong>입니다. 앞 장 구조도의 “인코더-디코더” 모드와 같은 내용을 논문은 이렇게 그렸습니다. 그림의 각 부분을 누르면 여기서 무엇이라 부르는지와 하는 일이 나오고, <b>“구조도에서 보기”</b>로 구조도의 같은 블록으로 이동합니다. 반대로 구조도의 블록을 누르면 이 그림에서 같은 부분이 빛납니다.</p>
+        <div class="seg" role="group" aria-label="보기 선택" id="pfSeg"><button type="button" class="on" data-m="all">원 논문 전체</button><button type="button" data-m="llm">오늘날 LLM이 쓰는 부분</button></div>
+        <p class="cap" style="margin-top:14px">출처: Ashish Vaswani 외, “Attention Is All You Need”(NeurIPS 2017), Figure 1. 원 그림 위에 누를 수 있는 영역만 덧붙였습니다.</p>
+      </div>
+      <div class="pimg" data-a style="--d:3"><div class="pin" id="pin"><img src="../ai-terms/transformer-figure1.png" width="538" height="782" alt="Attention Is All You Need 논문 Figure 1. 왼쪽 인코더 열과 오른쪽 디코더 열이 각각 N번 반복되는 블록으로 그려져 있다. 인코더 블록은 Multi-Head Attention, Add &amp; Norm, Feed Forward, Add &amp; Norm, 디코더 블록은 Masked Multi-Head Attention, Add &amp; Norm, Multi-Head Attention, Add &amp; Norm, Feed Forward, Add &amp; Norm으로 이루어지고, 맨 위에 Linear와 Softmax가 있다."></div></div>
+      <div class="apanel" id="ppanel" aria-live="polite" data-a style="--d:4"></div>
+    </div>
+  </section>
+
+  <section class="slide s-demo" data-notes="논문 그림과 우리 구조도를 비교할 때 헷갈리기 쉬운 표기 여섯 가지입니다. 특히 어텐션 아래 세 갈래 화살표가 쿼리, 키, 값이라는 점과, 오늘날 디코더 전용 LLM은 오른쪽 열에서 가운데 어텐션을 뺀 구조라는 점을 짚어 주면 됩니다.">
+    <div class="kicker" data-a="left">3.2 · 두 그림 비교</div>
+    <h2 data-a style="--d:1">논문 그림을 읽을 때 알아 둘 표기 차이</h2>
+    <div class="ncards">
+      <div class="card" data-a style="--d:2"><h3><span class="i">01</span>방향</h3><p>논문 그림은 아래(입력)에서 위(출력)로, 이 덱의 구조도는 위에서 아래로 흐릅니다.</p></div>
+      <div class="card" data-a style="--d:3"><h3><span class="i">02</span>⊕와 물결 기호</h3><p>임베딩에 위치 인코딩(사인·코사인 함수)을 <b>더한다</b>는 뜻입니다.</p></div>
+      <div class="card" data-a style="--d:4"><h3><span class="i">03</span>블록을 돌아 Add &amp; Norm으로 들어가는 화살표</h3><p>잔차 연결입니다. 구조도에서는 초록 선으로 그렸습니다.</p></div>
+      <div class="card" data-a style="--d:5"><h3><span class="i">04</span>N×</h3><p>같은 블록을 N번 쌓는다는 뜻입니다. 원 논문은 N=6입니다.</p></div>
+      <div class="card" data-a style="--d:6"><h3><span class="i">05</span>어텐션 아래에서 세 갈래로 갈라지는 화살표</h3><p>어텐션에 들어가는 <b>쿼리(Q)·키(K)·값(V)</b>입니다. “무엇을 찾는지(Q)”를 “각 토큰의 꼬리표(K)”와 맞춰 보고, 잘 맞는 토큰의 “내용(V)”을 많이 가져옵니다. 디코더 가운데 어텐션은 K·V를 인코더에서, Q를 디코더에서 받습니다.</p></div>
+      <div class="card" data-a style="--d:7"><h3><span class="i">06</span>오늘날 디코더 전용 LLM</h3><p>오른쪽 열에서 가운데 Multi-Head Attention과 그 Add &amp; Norm을 뺀 구조를 수십 층 쌓은 것입니다. 앞 장의 “오늘날 LLM이 쓰는 부분” 버튼으로 확인해 보세요.</p></div>
+    </div>
+  </section>
+
+  <section class="slide s-demo" data-notes="디코더의 어텐션은 자기보다 뒤에 있는 토큰을 볼 수 없게 가립니다. 다음 토큰을 맞히도록 학습하는데 뒤를 보면 정답을 미리 보는 셈이기 때문입니다. 행을 눌러 보고, 인코더로 바꾸면 가림이 사라지는 것을 보여 주면 됩니다.">
+    <div class="kicker" data-a="left">3.2 · 마스크드 어텐션</div>
+    <h2 data-a style="--d:1">앞만 보게 가리기</h2>
+    <div class="cols" style="--cl: 470px minmax(0, 1fr)">
+      <div class="side" data-a style="--d:2">
+        <p>디코더의 어텐션에는 <strong>마스크</strong>가 붙습니다. 다음 토큰을 맞히도록 학습하는데, 각 위치가 자기보다 뒤에 있는 토큰(곧 정답)을 미리 보면 시험지를 보고 답을 쓰는 셈이 되기 때문입니다. 그래서 어텐션 점수표의 오른쪽 위 절반을 가립니다.</p>
+        <p class="cap">행은 “지금 이해하려는 토큰”, 열은 “참고할 수 있는 토큰”입니다. 색이 진할수록 많이 참고합니다.</p>
+      </div>
+      <div class="fig" data-a style="--d:3; --z:1.3">
+        <div class="fig-h"><span class="t">마스크드 어텐션</span><span class="s">행을 눌러 보세요 · 값은 예시</span></div>
+        <div class="seg" role="group" aria-label="마스크 선택" id="maskSeg"><button type="button" class="on" data-m="1">디코더 · 마스크 있음</button><button type="button" data-m="0">인코더 · 마스크 없음</button></div>
+        <div class="mgrid" id="mgrid"></div>
+        <div class="verdict" id="maskNote"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide s-demo" data-notes="그것은이라는 토큰만 봐서는 무엇을 가리키는지 알 수 없습니다. 셀프 어텐션은 문장 안 다른 토큰에 점수를 매겨 어디를 얼마나 참고할지 정합니다. 그것은을 누르면 사과를에 가장 높은 점수가 가는 것을 볼 수 있습니다.">
+    <div class="kicker" data-a="left">3.3 · 셀프 어텐션</div>
+    <h2 data-a style="--d:1">어텐션: 각 토큰이 어디를 보는가</h2>
+    <div class="cols" style="--cl: 430px minmax(0, 1fr)">
+      <div class="side" data-a style="--d:2">
+        <p>“그것은”이라는 토큰만 봐서는 무엇을 가리키는지 알 수 없습니다. 셀프 어텐션은 문장 안의 다른 토큰들에 점수를 매겨, 이 토큰을 이해할 때 어디를 얼마나 참고할지 정합니다. 토큰을 눌러 보세요.</p>
+        <p class="cap"><b>예시 값입니다.</b> 실제 모델은 어텐션을 여러 층, 여러 “헤드”에서 동시에 계산하고, 헤드마다 보는 관계가 다릅니다.</p>
+      </div>
+      <div class="fig" data-a style="--d:3; --z:1.3">
+        <div class="fig-h"><span class="t">셀프 어텐션 들여다보기</span><span class="s">색이 진할수록 많이 참고</span></div>
+        <div class="attn">
+          <div class="row" id="attnRow"></div>
+          <p class="hint" id="attnHint"></p>
+          <div class="bars" id="attnBars"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide s-demo" data-ch="03" data-hook="ctx" data-notes="모델이 한 번에 볼 수 있는 토큰 수에는 한계가 있습니다. 대화가 길어지면 앞부분부터 창 밖으로 밀려나 모델에게 보이지 않게 됩니다. 아래 지식 컷오프는 시간 쪽의 한계로, 학습 데이터 이후의 일은 모델이 모릅니다.">
+    <div class="kicker" data-a="left">3.4 · 용어 4 / 4</div>
+    <h2 data-a style="--d:1">컨텍스트 윈도우: 한 번에 볼 수 있는 범위</h2>
+    <p class="lead" data-a style="--d:2; font-size:21px;margin-top:12px">대화가 길어지면 앞부분부터 창 밖으로 밀려납니다. 창 밖으로 나간 내용은 모델에게 더 이상 보이지 않습니다.</p>
+    <div class="fig" data-a style="--d:3; --z:1.32; margin-top:18px">
+      <div class="fig-h"><span class="t">대화가 길어질 때</span><button class="replay" type="button" data-replay>다시 재생</button></div>
+      <div class="ctx" id="ctx" aria-hidden="true"></div>
+      <div class="ctx-lbl"><span id="ctxL">토큰 0개</span><span><span style="color:var(--blue)">■</span> 창 안 (모델이 보는 부분) · <span style="color:var(--ink-3)">■</span> 창 밖으로 밀려난 부분</span></div>
+      <figcaption>칸 하나를 토큰 묶음으로 단순화한 그림입니다. 창 크기는 모델마다 다릅니다.</figcaption>
+    </div>
+    <dl class="terms" style="margin-top:22px">
+      <div class="tc" id="t-ctx" data-m="ctx" data-k="컨텍스트 윈도우" data-e="Context Window" data-a style="--d:4"><dt><span class="ko">컨텍스트 윈도우</span><span class="enn">Context Window</span></dt><dd>모델이 한 번에 읽고 고려할 수 있는 최대 토큰 수입니다.</dd></div>
+      <div class="tc" id="t-cutoff" data-m="cutoff" data-k="지식 컷오프" data-e="Knowledge Cutoff" data-a style="--d:5"><dt><span class="ko">지식 컷오프</span><span class="enn">Knowledge Cutoff</span></dt><dd>학습 데이터가 끝나는 시점입니다. 그 이후의 정보는 모델이 알지 못합니다. 최신 정보가 필요하면 검색 같은 외부 도구를 함께 써야 합니다.</dd></div>
+    </dl>
+  </section>
+
+  <!-- ================= 04 INFERENCE ================= -->
+  <section class="slide s-div dk" id="s-inference" data-notes="네 번째 장은 추론입니다. 학습이 끝나면 가중치는 고정되고, 우리가 AI와 대화하는 순간은 모두 추론입니다. 이때 모델은 아무것도 새로 배우지 않는다는 점을 강조합니다.">
+    <div class="bignum" data-a="fade">04</div>
+    <div class="kicker" data-a="left">Chapter 04 · Inference</div>
+    <h2 data-a style="--d:1">추론: 학습된 모델을 쓰는 과정</h2>
+    <p class="lead" data-a style="--d:2">학습이 끝나면 가중치는 고정됩니다. 사용자가 AI와 대화하는 순간은 모두 <b>추론</b>이고, 이때 모델은 아무것도 새로 배우지 않습니다.</p>
+    <div class="tchips" data-terms-of="04" data-a style="--d:4"></div>
+  </section>
+
+  <section class="slide s-demo" id="s-ar" data-notes="LLM은 답을 한 번에 만들지 않습니다. 다음 토큰 하나를 예측하고, 그 토큰을 입력 끝에 붙여 다시 예측합니다. 앞 토큰의 계산값은 KV 캐시에 저장해 재사용하므로 매 단계 새 토큰 하나만 계산하면 됩니다.">
+    <div class="kicker" data-a="left">04 · Inference</div>
+    <h2 data-a style="--d:1">한 토큰씩 이어 붙이는 자기회귀 생성</h2>
+    <p class="lead" data-a style="--d:2; font-size:22px">LLM은 답을 한 번에 만들지 않습니다. <mark>다음 토큰 하나</mark>를 예측하고, 그 토큰을 입력 끝에 붙여 다시 다음 토큰을 예측하는 일을 반복합니다.</p>
+    <div class="fig" data-a style="--d:3; --z:1.7; margin-top:28px">
+      <div class="fig-h"><span class="s">“오늘 날씨가”에서 시작</span><button class="replay" type="button" data-replay>다시 재생</button></div>
+      <div class="ar">
+        <div class="r" style="--d:0ms"><span class="s">STEP 1</span><span class="t n">오늘</span><span class="t n">날씨가</span><span class="arrow">→</span><span class="t p">정말</span></div>
+        <div class="r" style="--d:700ms"><span class="s">STEP 2</span><span class="t c">오늘</span><span class="t c">날씨가</span><span class="t n">정말</span><span class="arrow">→</span><span class="t p">좋네요</span></div>
+        <div class="r" style="--d:1400ms"><span class="s">STEP 3</span><span class="t c">오늘</span><span class="t c">날씨가</span><span class="t c">정말</span><span class="t n">좋네요</span><span class="arrow">→</span><span class="t p">.</span></div>
+      </div>
+      <div class="legend"><span><i style="background:var(--paper-2);border:1px solid var(--line)"></i>KV 캐시에서 재사용</span><span><i style="background:var(--gold-soft);border:1px solid var(--gold)"></i>이번에 새로 계산</span><span><i style="background:var(--coral)"></i>예측한 다음 토큰</span></div>
+      <figcaption>방금 예측한 토큰이 다음 단계의 입력이 됩니다. 앞 토큰들의 어텐션 계산값은 <b>KV 캐시</b>에 저장해 두고 재사용하므로, 매 단계 새 토큰 하나만 계산하면 됩니다.</figcaption>
+    </div>
+  </section>
+
+  <section class="slide" data-ch="04" data-notes="추론에서 다음 토큰이 나오는 과정입니다. 모든 후보에 점수인 로짓을 매기고, 소프트맥스로 확률로 바꾼 뒤, 온도에 따라 샘플링합니다. 이 과정을 한 토큰씩 반복하는 것이 자기회귀 생성입니다.">
+    <div class="kicker" data-a="left">04 · 용어 1 / 2</div>
+    <h2 data-a style="--d:1">다음 토큰을 고르는 과정</h2>
+    <dl class="terms">
+      <div class="tc" id="t-inf" data-m="inf" data-k="추론" data-e="Inference" data-a style="--d:2"><dt><span class="ko">추론</span><span class="enn">Inference</span></dt><dd>학습이 끝나 고정된 가중치로 새 입력에 대한 출력을 계산하는 것입니다. 이때 가중치는 바뀌지 않습니다. 사용자가 AI와 대화하는 순간이 바로 추론입니다.</dd></div>
+      <div class="tc" id="t-ar" data-m="ar" data-k="자기회귀 생성" data-e="Autoregressive Generation" data-a style="--d:3"><dt><span class="ko">자기회귀 생성</span><span class="enn">Autoregressive Generation</span></dt><dd>LLM은 토큰을 하나씩 예측하고, 방금 예측한 토큰을 다시 입력에 붙여 다음 토큰을 예측하는 과정을 반복하며 문장을 만듭니다.</dd></div>
+      <div class="tc" id="t-logit" data-m="logit" data-k="로짓 / 소프트맥스" data-e="Logits / Softmax" data-a style="--d:4"><dt><span class="ko">로짓 / 소프트맥스</span><span class="enn">Logits / Softmax</span></dt><dd>모델은 모든 후보 토큰에 점수(로짓)를 매기고, 소프트맥스 함수로 이 점수를 확률로 바꿉니다.</dd></div>
+      <div class="tc" id="t-temp" data-m="temp" data-k="샘플링 / 온도" data-e="Sampling / Temperature" data-a style="--d:5"><dt><span class="ko">샘플링 / 온도</span><span class="enn">Sampling / Temperature</span></dt><dd>확률에 따라 다음 토큰을 고르는 방식입니다. 온도가 낮으면 무난하고 일관된 답이, 높으면 다양하고 창의적인 답이 나옵니다. <b>Top-p</b>와 <b>Top-k</b>는 후보 범위를 제한하는 방법입니다.</dd></div>
+    </dl>
+  </section>
+
+  <section class="slide" data-ch="04" data-notes="Top-k와 Top-p는 뽑기 전에 후보를 잘라 내는 방법입니다. 환각은 모델이 사실을 찾는 게 아니라 그럴듯한 다음 토큰을 만들기 때문에 생깁니다. KV 캐시는 앞 계산을 재사용해 생성을 빠르게 합니다.">
+    <div class="kicker" data-a="left">04 · 용어 2 / 2</div>
+    <h2 data-a style="--d:1">후보 자르기, 환각, KV 캐시</h2>
+    <dl class="terms">
+      <div class="tc" id="t-topk" data-m="topk" data-k="Top-k 샘플링" data-e="Top-k Sampling" data-a style="--d:2"><dt><span class="ko">Top-k 샘플링</span><span class="enn">Top-k Sampling</span></dt><dd>확률이 높은 순서로 <b>k개</b>의 후보만 남기고 나머지는 버린 뒤, 남은 후보 안에서 뽑습니다. k=1이면 늘 가장 확률 높은 토큰만 고르게 됩니다(그리디 디코딩).</dd></div>
+      <div class="tc" id="t-topp" data-m="topp" data-k="Top-p 샘플링" data-e="Top-p (Nucleus) Sampling" data-a style="--d:3"><dt><span class="ko">Top-p 샘플링</span><span class="enn">Top-p (Nucleus) Sampling</span></dt><dd>확률이 높은 순서로 더해 가다가 <b>누적 확률이 p에 닿을 때까지</b>의 후보만 남깁니다. 모델이 확신할 때는 후보가 적게, 애매할 때는 많이 남아 후보 수가 상황에 맞게 달라집니다.</dd></div>
+      <div class="tc" id="t-hall" data-m="hall" data-k="환각" data-e="Hallucination" data-a style="--d:4"><dt><span class="ko">환각</span><span class="enn">Hallucination</span></dt><dd>모델이 그럴듯하지만 사실이 아닌 내용을 생성하는 현상입니다. 모델이 사실을 검색하는 것이 아니라 확률적으로 그럴듯한 다음 토큰을 만들어 내기 때문에 생깁니다.</dd></div>
+      <div class="tc" id="t-kv" data-m="kv" data-k="KV 캐시" data-e="KV Cache" data-a style="--d:5"><dt><span class="ko">KV 캐시</span><span class="enn">KV Cache</span></dt><dd>앞에서 계산한 어텐션 값을 저장해 두고 재사용하여 생성 속도를 높이는 기법입니다.</dd></div>
+    </dl>
+  </section>
+
+  <section class="slide s-demo" data-notes="온도는 확률 분포를 뾰족하게 또는 평평하게 만드는 손잡이입니다. 0.3쯤에서 20번 뽑으면 거의 좋네요만 나오고, 1.8쯤에서는 바나나도 가끔 나옵니다. 모델은 사실 여부가 아니라 그럴듯함으로 고른다는 점이 환각의 이유입니다.">
+    <div class="kicker" data-a="left">4.1 · 샘플링과 온도</div>
+    <h2 data-a style="--d:1">온도를 바꿔 다음 토큰을 뽑아 보기</h2>
+    <div class="cols" style="--cl: 500px minmax(0, 1fr)">
+      <div class="side" data-a style="--d:2">
+        <p>모델은 후보마다 점수(로짓)를 매기고, 소프트맥스로 확률을 만든 뒤 그 확률대로 하나를 뽑습니다. <strong>온도</strong>는 이 확률 분포를 뾰족하게 또는 평평하게 만드는 손잡이입니다. 온도를 바꾸고 20번 뽑아 보세요.</p>
+        <div class="callout warn"><span class="tag">환각은 왜 생길까</span><p>이 그림에서 모델은 “사실인지”를 따지지 않고 “다음에 오기 그럴듯한지”로만 토큰을 고릅니다. 그럴듯하지만 틀린 내용이 자연스럽게 이어질 수 있는 이유입니다. 중요한 사실은 출처로 확인하는 습관이 필요합니다.</p></div>
+      </div>
+      <div class="fig" data-a style="--d:3; --z:1.3">
+        <div class="fig-h"><span class="t">다음 토큰 확률과 샘플링</span><span class="s">후보와 점수는 예시</span></div>
+        <div class="gen">
+          <div class="prompt">오늘 날씨가 정말 <span class="blank" id="genPick">?</span></div>
+          <div class="lg-row"><span>후보 토큰</span><span>확률 · 뽑힌 횟수</span></div>
+          <div class="cand" id="cand"></div>
+          <div class="gen-ctl">
+            <label><span>온도 <b id="tV">1.0</b></span><input type="range" id="temp" min="0.1" max="2" step="0.1" value="1"></label>
+            <button class="go-btn" type="button" id="genGo">🎲 20번 뽑기</button>
+          </div>
+          <div class="verdict" id="genVerdict">온도 1.0: 로짓을 그대로 확률로 바꾼 기본 상태입니다.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide s-demo" data-notes="온도를 높이면 바나나 같은 엉뚱한 후보까지 뽑힐 수 있어서, 뽑기 전에 후보를 잘라 냅니다. Top-k는 늘 k개를 남기고, Top-p는 누적 확률 기준이라 상황에 따라 후보 수가 바뀝니다. 확신하는 상황으로 바꿔 Top-p 0.8을 적용하면 서울 하나만 남습니다.">
+    <div class="kicker" data-a="left">4.2 · Top-k와 Top-p</div>
+    <h2 data-a style="--d:1">뽑을 후보를 미리 잘라 내기</h2>
+    <div class="cols" style="--cl: 560px minmax(0, 1fr)">
+      <div class="side" data-a style="--d:2">
+        <p>온도를 높이면 다양한 답이 나오지만, 확률이 아주 낮은 엉뚱한 토큰(“바나나”)까지 뽑힐 수 있습니다. 그래서 뽑기 전에 후보 범위를 잘라 냅니다.</p>
+        <ul class="dots">
+          <li><strong>Top-k</strong>: 확률 순으로 상위 <b>k개</b>만 남깁니다. 상황과 상관없이 후보 수가 고정됩니다.</li>
+          <li><strong>Top-p</strong>(뉴클리어스 샘플링): 확률을 높은 순으로 더해 <b>누적 p</b>에 닿을 때까지만 남깁니다. 모델이 확신하면 후보가 1~2개로 줄고, 애매하면 여러 개가 남습니다.</li>
+        </ul>
+        <div class="fig" style="--z:1.2">
+          <div class="kp-ctl">
+            <label><span>Top-k <b id="kV">제한 없음</b></span><input type="range" id="kIn" min="1" max="6" step="1" value="6"></label>
+            <label><span>Top-p <b id="pV">1.00 (제한 없음)</b></span><input type="range" id="pIn" min="0.5" max="1" step="0.05" value="1"></label>
+          </div>
+          <div class="presets" id="kpPre"><button type="button" data-k="3" data-p="1">Top-k 3</button><button type="button" data-k="6" data-p="0.8">Top-p 0.8</button><button type="button" data-k="1" data-p="1">k=1 (그리디)</button><button type="button" data-k="6" data-p="1">초기화</button></div>
+        </div>
+      </div>
+      <div class="fig" data-a style="--d:3; --z:1.24">
+        <div class="fig-h"><span class="t">후보 자르기 실험실</span><span class="s">온도 1.0 · 후보와 점수는 예시</span></div>
+        <div class="seg" role="group" aria-label="상황 선택" id="kpSeg"><button type="button" class="on" data-sc="0">애매한 상황</button><button type="button" data-sc="1">확신하는 상황</button></div>
+        <div class="kp-prompt" id="kpPrompt"></div>
+        <div class="kp-head"><span>후보</span><span>원래 확률</span><span>누적</span><span>최종</span></div>
+        <div class="kp" id="kpRows"></div>
+        <div class="verdict" id="kpVerdict"></div>
+        <figcaption>Top-k를 먼저 적용하고, 남은 후보의 확률을 다시 100%로 맞춘 뒤 Top-p를 적용했습니다. 실제 서비스마다 적용 순서와 세부 방식은 조금씩 다릅니다. 줄이 그어진 후보는 뽑힐 수 없습니다.</figcaption>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= 05 SCALE ================= -->
+  <section class="slide s-div dk" id="s-scale" data-notes="마지막 장은 규모와 효율입니다. 모델은 키울수록 좋아지는 경향이 있지만 비싸고 무거워집니다. 그래서 키우는 기술과 가볍게 만드는 기술이 함께 발전해 왔습니다.">
+    <div class="bignum" data-a="fade">05</div>
+    <div class="kicker" data-a="left">Chapter 05 · Scale &amp; Efficiency</div>
+    <h2 data-a style="--d:1">규모와 효율 관련 용어</h2>
+    <p class="lead" data-a style="--d:2">모델은 키울수록 똑똑해지는 경향이 있지만, 그만큼 비싸고 무거워집니다. 그래서 <b>키우는 기술</b>과 <b>가볍게 만드는 기술</b>이 함께 발전해 왔습니다.</p>
+    <div class="tchips" data-terms-of="05" data-a style="--d:4"></div>
+  </section>
+
+  <section class="slide" data-ch="05" data-notes="키우는 쪽의 용어입니다. 스케일링 법칙은 파라미터, 데이터, 연산량을 늘리면 성능이 예측 가능하게 오른다는 경험적 법칙이고, 그 연산을 감당하는 하드웨어가 GPU와 TPU입니다.">
+    <div class="kicker" data-a="left">05 · 용어 1 / 2</div>
+    <h2 data-a style="--d:1">키우는 기술</h2>
+    <dl class="terms big">
+      <div class="tc" id="t-scaling" data-m="scaling" data-k="스케일링 법칙" data-e="Scaling Laws" data-a style="--d:2"><dt><span class="ko">스케일링 법칙</span><span class="enn">Scaling Laws</span></dt><dd>파라미터 수, 데이터 양, 연산량을 늘리면 성능이 예측 가능한 패턴으로 향상된다는 경험적 법칙입니다.</dd></div>
+      <div class="tc" id="t-gpu" data-m="gpu" data-k="GPU / TPU" data-e="Graphics / Tensor Processing Unit" data-a style="--d:3"><dt><span class="ko">GPU / TPU</span><span class="enn">Graphics / Tensor Processing Unit</span></dt><dd>행렬 곱셈을 대량으로 병렬 처리하는 칩입니다. 학습과 추론 모두의 핵심 하드웨어입니다.</dd></div>
+    </dl>
+  </section>
+
+  <section class="slide" data-ch="05" data-notes="가볍게 만드는 쪽의 용어입니다. 양자화는 숫자를 적은 비트로 저장하고, 지식 증류는 큰 모델을 작은 모델이 따라 배우게 하며, MoE는 전체는 크지만 입력마다 일부 전문가만 계산합니다.">
+    <div class="kicker" data-a="left">05 · 용어 2 / 2</div>
+    <h2 data-a style="--d:1">가볍게 만드는 기술</h2>
+    <dl class="terms">
+      <div class="tc" id="t-quant" data-m="quant" data-k="양자화" data-e="Quantization" data-a style="--d:2"><dt><span class="ko">양자화</span><span class="enn">Quantization</span></dt><dd>가중치를 더 적은 비트로 표현해 모델을 가볍고 빠르게 만드는 기법입니다. 정확도는 약간 손해를 볼 수 있습니다.</dd></div>
+      <div class="tc" id="t-distill" data-m="distill" data-k="지식 증류" data-e="Distillation" data-a style="--d:3"><dt><span class="ko">지식 증류</span><span class="enn">Distillation</span></dt><dd>큰 모델(교사)의 출력을 작은 모델(학생)이 따라 배우게 해서 작지만 성능 좋은 모델을 만드는 방법입니다.</dd></div>
+      <div class="tc wide" id="t-moe" data-m="moe" data-k="MoE" data-e="Mixture of Experts" data-a style="--d:4"><dt><span class="ko">MoE</span><span class="enn">Mixture of Experts</span></dt><dd>여러 “전문가” 하위 네트워크 중 입력마다 일부만 활성화해서, 전체 규모는 크지만 계산은 효율적으로 하는 구조입니다.</dd></div>
+    </dl>
+  </section>
+
+  <section class="slide s-demo" id="s-quant" data-notes="같은 70B 모델도 숫자 하나를 몇 비트로 저장하느냐에 따라 280GB에서 35GB까지 줄어듭니다. 점선은 80GB GPU 한 장 기준선으로, 8비트부터 한 장 안에 들어갑니다. 실제로는 KV 캐시 등 추가 메모리가 더 필요합니다.">
+    <div class="kicker" data-a="left">5.1 · 양자화</div>
+    <h2 data-a style="--d:1">같은 모델을 더 적은 비트로</h2>
+    <div class="cols" style="--cl: 420px minmax(0, 1fr)">
+      <div class="side" data-a style="--d:2">
+        <p>700억(70B) 파라미터 모델의 가중치를 숫자 하나당 몇 비트로 저장하느냐에 따라 필요한 메모리가 크게 달라집니다. 비트를 절반으로 줄이면 메모리도 절반이 됩니다.</p>
+        <p class="cap">가중치만 계산한 값입니다(700억 × 4·2·1·0.5바이트). 실제로 돌릴 때는 KV 캐시 등 추가 메모리가 더 필요합니다. 점선은 메모리 80GB짜리 GPU 한 장을 기준으로 그은 선입니다.</p>
+      </div>
+      <div class="fig" data-a style="--d:3; --z:1.5">
+        <div class="fig-h"><span class="t">70B 모델 가중치 크기</span><span class="s">파라미터 수 × 숫자 하나의 크기</span></div>
+        <div class="qz">
+          <div class="qz lim-lbl" style="--x:28.57%"><span>GPU 메모리 80GB</span></div>
+          <div class="row"><div class="nm"><b>32비트</b><small>FP32</small></div><div class="trk"><div class="bar gx" style="--w:100%"></div><span class="lim" style="--x:28.57%"></span></div><span class="gb">280GB</span></div>
+          <div class="row"><div class="nm"><b>16비트</b><small>FP16 · BF16</small></div><div class="trk"><div class="bar gx" style="--w:50%;--d:150ms"></div><span class="lim" style="--x:28.57%"></span></div><span class="gb">140GB</span></div>
+          <div class="row fit"><div class="nm"><b>8비트</b><small>INT8</small></div><div class="trk"><div class="bar gx" style="--w:25%;--d:300ms"></div><span class="lim" style="--x:28.57%"></span></div><span class="gb">70GB</span></div>
+          <div class="row fit"><div class="nm"><b>4비트</b><small>INT4</small></div><div class="trk"><div class="bar gx" style="--w:12.5%;--d:450ms"></div><span class="lim" style="--x:28.57%"></span></div><span class="gb">35GB</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide s-demo" data-hook="moe" data-notes="MoE 모델은 토큰마다 라우터가 전문가를 고릅니다. 여기서는 전문가 여덟 개 중 두 개만 깨우므로 전문가 층의 계산량은 약 4분의 1입니다. 전체 파라미터는 크지만 토큰 하나에 드는 계산은 작습니다.">
+    <div class="kicker" data-a="left">5.2 · MoE</div>
+    <h2 data-a style="--d:1">MoE: 전문가 중 일부만 깨우기</h2>
+    <div class="cols" style="--cl: 420px minmax(0, 1fr)">
+      <div class="side" data-a style="--d:2">
+        <p>MoE 모델은 토큰마다 <strong>라우터</strong>가 어떤 전문가에게 맡길지 고릅니다. 전체 파라미터는 크지만, 토큰 하나를 처리할 때는 고른 전문가만 계산합니다.</p>
+        <p class="cap">전문가 8개 중 2개를 고르는 구성은 예시입니다. 전문가 수와 선택 개수는 모델마다 다르고, 어텐션 등 공통 부분은 매번 계산합니다.</p>
+      </div>
+      <div class="fig" data-a style="--d:3; --z:1.55">
+        <div class="fig-h"><span class="t">토큰마다 전문가 2개만 활성화</span><button class="replay" type="button" data-replay>다시 재생</button></div>
+        <div class="moe">
+          <div class="tokq" id="moeQ"></div>
+          <div class="router">라우터 · 전문가 2개 선택</div>
+          <div class="exps" id="moeE"></div>
+          <div class="read"><span><b id="moeOn">0</b>/ 8 전문가 활성</span><span><b>약 1/4</b>전문가 층 계산량</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= FLOW ================= -->
+  <section class="slide s-demo" id="s-flow" data-notes="전체 흐름을 시험에 비유해 정리합니다. 학습은 문제를 풀고 채점하고 원인을 찾아 이해를 고치는 시험 공부이고, 그 결과가 가중치에 남습니다. 추론은 공부를 멈추고 저장된 가중치만으로 새 문제를 푸는 시험 치르기입니다.">
+    <div class="kicker" data-a="left">◎ · 정리</div>
+    <h2 data-a style="--d:1">한눈에 보는 흐름</h2>
+    <p class="lead" data-a style="--d:2">학습은 <b>시험 공부</b>, 추론은 <b>시험 치르기</b>에 비유할 수 있습니다.</p>
+    <div class="fig" data-a style="--d:3; --z:1.42; margin-top:26px">
+      <div class="study">
+        <div class="col tr">
+          <h6>학습 = 시험 공부</h6><div class="sub">가중치가 계속 바뀐다</div>
+          <ol>
+            <li class="si" style="--d:600ms"><span class="b">1</span><div>문제를 푼다<small>순전파</small></div></li>
+            <li class="si" style="--d:750ms"><span class="b">2</span><div>채점한다<small>손실 함수</small></div></li>
+            <li class="si" style="--d:900ms"><span class="b">3</span><div>틀린 원인을 거슬러 찾는다<small>역전파</small></div></li>
+            <li class="si" style="--d:1050ms"><span class="b">4</span><div>이해를 고친다<small>경사하강법으로 가중치 업데이트</small></div></li>
+          </ol>
+          <div class="repeat">↻ 수조 번 반복 → 결과가 가중치에 저장</div>
+        </div>
+        <div class="col inf">
+          <h6>추론 = 시험 치르기</h6><div class="sub">더 이상 공부하지 않는다</div>
+          <ol>
+            <li class="si" style="--d:1200ms"><span class="b">1</span><div>새 문제를 받는다<small>사용자 입력</small></div></li>
+            <li class="si" style="--d:1350ms"><span class="b">2</span><div>저장된 가중치만으로 답을 계산한다<small>순전파 + 자기회귀 생성</small></div></li>
+          </ol>
+          <div class="lock"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>가중치 고정</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide s-quote dk" data-hook="quote" data-notes="이 덱 전체를 한 문장으로 줄이면 이렇습니다. 공부하는 동안 고친 이해는 가중치에 남고, 시험장에서는 그 가중치만으로 답을 계산합니다.">
+    <div class="qmark" aria-hidden="true">“</div>
+    <div class="kicker" data-a="left">◎ · Key Takeaway</div>
+    <div class="bigq" id="quoteTxt" aria-label="공부하는 동안 고친 이해는 가중치에 남고, 시험장에서는 그 가중치만으로 답을 계산한다."></div>
+    <div class="by" data-a="fade" style="--d:4">💡 핵심 요약</div>
+  </section>
+
+  <section class="slide" data-notes="다섯 장을 한 줄씩 정리했습니다. 구조, 학습, LLM, 추론, 규모와 효율 순서이며, 카드를 누르면 해당 장의 첫 슬라이드로 돌아갑니다.">
+    <div class="kicker" data-a="left">◎ · 정리</div>
+    <h2 data-a style="--d:1">장별 핵심 정리</h2>
+    <div class="concl">
+      <button type="button" data-go="s-structure" data-a style="--d:2"><span class="ix">01</span><h3>구조</h3><p>신경망은 곱하고 더하는 층을 쌓은 함수이고, 모델이 배운 지식은 가중치(파라미터)에 담깁니다.</p></button>
+      <button type="button" data-go="s-training" data-a style="--d:3"><span class="ix">02</span><h3>학습</h3><p>순전파 → 손실 → 역전파 → 경사하강법을 반복해 손실을 줄이는 방향으로 가중치를 고칩니다.</p></button>
+      <button type="button" data-go="s-llm" data-a style="--d:4"><span class="ix">03</span><h3>LLM</h3><p>글을 토큰과 임베딩으로 바꾸고, 트랜스포머의 어텐션으로 토큰 사이 관계를 계산합니다.</p></button>
+      <button type="button" data-go="s-inference" data-a style="--d:5"><span class="ix">04</span><h3>추론</h3><p>고정된 가중치로 다음 토큰을 하나씩 확률적으로 뽑아 문장을 만듭니다. 환각도 여기서 생깁니다.</p></button>
+      <button type="button" data-go="s-scale" data-a style="--d:6"><span class="ix">05</span><h3>규모와 효율</h3><p>키우면 좋아지지만(스케일링 법칙), 양자화·증류·MoE로 같은 성능을 더 가볍게 냅니다.</p></button>
+    </div>
+  </section>
+
+  <section class="slide" id="s-index" data-notes="42개 용어를 장별로 모았습니다. 용어를 누르면 그 용어 카드가 있는 슬라이드로 이동하고 카드가 강조됩니다. 질의응답 때 다시 찾아갈 때 쓰면 편합니다.">
+    <div class="kicker" data-a="left">※ · 부록</div>
+    <h2 data-a style="--d:1">용어 색인</h2>
+    <p class="lead" data-a style="--d:2; font-size:21px;margin-top:12px">42개 용어를 장별로 모았습니다. 누르면 해당 설명으로 이동합니다.</p>
+    <div class="tindex" id="tindex" data-a style="--d:3"></div>
+    <p class="endnote" data-a="fade" style="--d:5">이 덱은 2026년 6월까지 알려진 일반적인 지식을 바탕으로 정리했습니다. 도해와 데모는 이해를 돕기 위해 새로 만든 것이며, “예시”라고 적힌 수치는 실제 모델의 값이 아닙니다.</p>
+  </section>
+
+</main>
+
+<div class="notes" id="notes" role="note"></div>
+<nav class="hud" aria-label="슬라이드 이동">
+  <a href="../" title="아카이브로">← Archive</a>
+  <button type="button" id="prev" aria-label="이전 슬라이드">‹</button>
+  <span class="count" id="count">1 / 42</span>
+  <button type="button" id="next" aria-label="다음 슬라이드">›</button>
+  <button type="button" id="notesBtn" title="발표자 노트 (N)">N</button>
+  <button type="button" id="themeBtn" title="테마 전환" aria-label="테마 전환">◐</button>
+  <button type="button" id="fsBtn" title="전체 화면 (F)">⛶</button>
+  <a class="alt" href="../ai-terms/" title="같은 내용을 위아래로 스크롤해 읽는 스크롤형"><span class="ico" aria-hidden="true">☰</span><span class="lbl">스크롤형으로 보기</span></a>
+</nav>
+
+<script>
+(() => {
+  const root = document.documentElement;
+  const deck = document.getElementById('deck');
+  const slides = [...deck.querySelectorAll('.slide')];
+  const N = slides.length;
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const $ = s => document.querySelector(s), $$ = (s, el = document) => [...el.querySelectorAll(s)];
+  const NS = 'http://www.w3.org/2000/svg';
+  const svgEl = (tag, attrs, parent) => { const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); if (parent) parent.appendChild(e); return e; };
+  const ease = t => 1 - Math.pow(1 - t, 3);
+  const fmt = (v, d = 1) => (Math.abs(v) < 1e-9 ? 0 : v).toFixed(d).replace('-', '−');
+  let cur = -1, timers = [], rafs = [], tk = { dead: false };
+
+  /* ── fit the 1600×900 stage to the window ── */
+  // Landscape: the 1600×900 stage. Phone held upright: a 640-wide stage whose height follows the
+  // screen, and every slide re-flows to one column (html.portrait rules in the CSS).
+  function fit() {
+    const W = innerWidth, H = innerHeight;
+    const portrait = H > W * 1.15 && W < 900;
+    const short = !portrait && H < 560;                     // phone sideways: leave a lane for the controls
+    root.classList.toggle('portrait', portrait);
+    root.classList.toggle('short', short);
+    const dw = portrait ? 640 : 1600;
+    const dh = portrait ? Math.round(Math.max(1000, Math.min(1500, 640 * H / W))) : 900;
+    const availH = short ? H - 54 : H;
+    const s = Math.min(W / dw, availH / dh);
+    deck.style.width = dw + 'px'; deck.style.height = dh + 'px';
+    deck.style.top = short ? (availH / 2) + 'px' : '50%';
+    deck.style.transform = `scale(${s}) translate(${-dw / 2}px, ${-dh / 2}px)`;
+  }
+  addEventListener('resize', fit); addEventListener('orientationchange', () => setTimeout(fit, 200)); fit();
+
+  /* ── per-slide timers that are cleared when the slide is left ── */
+  const later = (fn, ms) => timers.push(setTimeout(fn, reduced ? 0 : ms));
+  const frame = fn => { let id; const loop = t => { if (fn(t) !== false) { id = requestAnimationFrame(loop); rafs.push(id); } }; id = requestAnimationFrame(loop); rafs.push(id); };
+  const wait = ms => new Promise(r => timers.push(setTimeout(r, reduced ? 0 : ms)));
+  let gdRun = 0, genRun = 0, archRun = 0;
+  function clearAll() {
+    timers.forEach(t => { clearTimeout(t); clearInterval(t); }); rafs.forEach(cancelAnimationFrame); timers = []; rafs = [];
+    tk.dead = true; tk = { dead: false }; gdRun++; genRun++; archRun++;
+  }
+
+  function countUp(el, dur = 1400) {
+    const to = parseFloat(el.dataset.count), dec = +(el.dataset.dec || 0), pre = el.dataset.pre || '', suf = el.dataset.suf || '';
+    const f = v => pre + v.toLocaleString('en-US', { minimumFractionDigits: dec, maximumFractionDigits: dec }) + suf;
+    if (reduced) { el.textContent = f(to); return; }
+    el.textContent = f(0);
+    later(() => { const t0 = performance.now(); frame(now => { const t = Math.min(1, (now - t0) / dur); el.textContent = f(to * ease(t)); return t < 1; }); }, 900);
+  }
+  async function typeInto(el, parts, speed, token) {
+    el.innerHTML = '';
+    const caret = document.createElement('span'); caret.className = 'caret';
+    for (const p of parts) {
+      const [txt, cls] = Array.isArray(p) ? p : [p, null];
+      const span = cls ? Object.assign(document.createElement('span'), { className: cls }) : document.createTextNode('');
+      el.appendChild(span); el.appendChild(caret);
+      if (reduced) { span.textContent = txt; continue; }
+      for (const ch of txt) { if (token.dead) return; span.textContent += ch; await wait(speed); }
+    }
+    if (!reduced) later(() => caret.remove(), 1800); else caret.remove();
+  }
+
+  const HOOKS = {};
+
+  /* ---------- 01 network ---------- */
+  const LAYERS = [3, 4, 4, 2], LX = [70, 240, 410, 570], LBL = ['입력층', '은닉층 1', '은닉층 2', '출력층'];
+  const net = $('#net'), nodes = [], edges = [];
+  let ns = 11; const nrnd = () => (ns = (Math.imul(ns, 1103515245) + 12345) >>> 0) / 4294967296;
+  const ny = (L, i) => 120 + (i - (LAYERS[L] - 1) / 2) * 58;
+  const eg = svgEl('g', {}, net), ngp = svgEl('g', {}, net);
+  for (let L = 0; L < LAYERS.length - 1; L++) for (let i = 0; i < LAYERS[L]; i++) for (let j = 0; j < LAYERS[L + 1]; j++) {
+    const w = nrnd() * 2 - 1;
+    const e = svgEl('line', { x1: LX[L], y1: ny(L, i), x2: LX[L + 1], y2: ny(L + 1, j), class: 'e' + (w < 0 ? ' neg' : '') }, eg);
+    e.style.setProperty('--w', (0.6 + Math.abs(w) * 3.2).toFixed(2)); e.dataset.l = L; edges.push(e);
+  }
+  LAYERS.forEach((n, L) => {
+    for (let i = 0; i < n; i++) {
+      const c = svgEl('circle', { cx: LX[L], cy: ny(L, i), r: 15, class: 'nd' + (L === LAYERS.length - 1 ? ' out' : '') }, ngp);
+      c.dataset.l = L; nodes.push(c);
+      const v = svgEl('text', { x: LX[L], y: ny(L, i) + 3.5, class: 'v' }, ngp); v.textContent = (nrnd()).toFixed(1).replace(/^0/, '');
+    }
+    svgEl('text', { x: LX[L], y: 258 }, net).textContent = LBL[L];
+  });
+  HOOKS.net = async t => {
+    nodes.concat(edges).forEach(x => x.classList.remove('on'));
+    await wait(500); if (t.dead) return;
+    for (let L = 0; L < LAYERS.length; L++) {
+      await wait(L ? 650 : 250); if (t.dead) return;
+      nodes.filter(n => +n.dataset.l === L).forEach(n => n.classList.add('on'));
+      if (L > 0) edges.filter(e => +e.dataset.l === L - 1).forEach(e => e.classList.remove('on'));
+      if (L < LAYERS.length - 1) edges.filter(e => +e.dataset.l === L).forEach(e => e.classList.add('on'));
+    }
+  };
+
+  /* neuron calculator */
+  const X = [1.0, 0.5, -0.8];
+  function neuron() {
+    const w = ['w1', 'w2', 'w3'].map(id => +$('#' + id).value), b = +$('#bb').value, relu = $('#relu').checked;
+    ['w1', 'w2', 'w3', 'bb'].forEach(id => $('#' + id + 'v').textContent = fmt(+$('#' + id).value));
+    const z = X.reduce((s, x, i) => s + x * w[i], 0) + b, out = relu ? Math.max(0, z) : z;
+    const par = v => v < 0 ? '(' + fmt(v) + ')' : fmt(v), term = (x, wi) => `${par(x)}×${par(wi)}`;
+    $('#eq').innerHTML = `가중합 = ${X.map((x, i) => term(x, w[i])).join(' + ')} + ${b < 0 ? '(' + fmt(b) + ')' : fmt(b)}<br>= <b>${fmt(z, 2)}</b>` +
+      (relu ? `<br>ReLU(${fmt(z, 2)}) = max(0, ${fmt(z, 2)}) = <b>${fmt(out, 2)}</b>` : '<br>활성화 함수 없음 → 가중합 그대로');
+    $('#nout').textContent = fmt(out, 2);
+    $('#nnote').textContent = relu && z < 0 ? '음수라서 0으로 잘림' : '다음 층으로 전달되는 값';
+    const bar = $('#nbar'), pct = Math.min(50, Math.abs(out) / 3 * 50);
+    bar.style.left = (out >= 0 ? 50 : 50 - pct) + '%'; bar.style.width = pct + '%';
+  }
+  $$('.neuron input').forEach(i => i.addEventListener('input', neuron)); neuron();
+
+  /* ---------- 02 training loop ---------- */
+  const lossSvg = $('#lossSvg');
+  const LOSS = Array.from({ length: 11 }, (_, k) => 2.4 * Math.exp(-k * .38) + .15 + (k ? (Math.sin(k * 2.3) * .06) : 0));
+  const lx = k => 30 + k * 64, ly = v => 104 - v / 2.6 * 92;
+  function drawLoss(n) {
+    lossSvg.innerHTML = '';
+    svgEl('line', { x1: 30, y1: 104, x2: 696, y2: 104, class: 'ax' }, lossSvg); svgEl('line', { x1: 30, y1: 8, x2: 30, y2: 104, class: 'ax' }, lossSvg);
+    svgEl('text', { x: 4, y: 16, class: 'lbl' }, lossSvg).textContent = '손실';
+    svgEl('text', { x: 630, y: 118, class: 'lbl' }, lossSvg).textContent = '반복 →';
+    if (n < 1) return;
+    svgEl('polyline', { points: LOSS.slice(0, n).map((v, k) => lx(k) + ',' + ly(v)).join(' '), class: 'curve' }, lossSvg);
+    svgEl('circle', { cx: lx(n - 1), cy: ly(LOSS[n - 1]), r: 4, class: 'pt' }, lossSvg);
+  }
+  drawLoss(1); $('#lossV').textContent = LOSS[0].toFixed(2);
+  HOOKS.loop = async t => {
+    const st = $$('#loopSteps .stp');
+    st.forEach(x => x.classList.remove('on'));
+    drawLoss(1); $('#lossV').textContent = LOSS[0].toFixed(2); $('#lossEp').textContent = '반복 0회';
+    await wait(600); if (t.dead) return;
+    for (let k = 1; k < LOSS.length; k++) {
+      for (let s = 0; s < 4; s++) {
+        await wait(k < 3 ? 420 : 140); if (t.dead) return;
+        st.forEach((x, i) => x.classList.toggle('on', i === s));
+      }
+      drawLoss(k + 1); $('#lossV').textContent = LOSS[k].toFixed(2); $('#lossEp').textContent = `반복 ${k}회`;
+    }
+    await wait(300); if (t.dead) return; st.forEach(x => x.classList.remove('on'));
+  };
+
+  /* gradient descent */
+  const gdSvg = $('#gdSvg'), W0 = -2.6, gx = w => 210 + w * 62, gy = l => 196 - l * 22;
+  function gdBase() {
+    gdSvg.innerHTML = '';
+    let d = ''; for (let w = -3.3; w <= 3.31; w += .05) d += (d ? 'L' : 'M') + gx(w).toFixed(1) + ' ' + gy(w * w).toFixed(1);
+    svgEl('path', { d, class: 'curve' }, gdSvg);
+    svgEl('circle', { cx: gx(0), cy: gy(0), r: 5, class: 'min' }, gdSvg);
+    svgEl('text', { x: gx(0) + 10, y: gy(0) + 4 }, gdSvg).textContent = '최저점 (손실 0)';
+    svgEl('text', { x: 8, y: 16 }, gdSvg).textContent = '손실 ↑';
+    svgEl('text', { x: 360, y: 214 }, gdSvg).textContent = '가중치 w →';
+  }
+  const clampW = w => Math.max(-3.3, Math.min(3.3, w));
+  function verdict(lr) {
+    if (lr >= 1) return ['bad', `<b>발산.</b> 학습률 ${lr.toFixed(2)}은 너무 커서 걸음마다 골짜기를 넘어 더 높은 곳에 떨어집니다. 손실이 오히려 커집니다.`];
+    if (lr > .5) return ['mid', `<b>진동하며 수렴.</b> 좌우로 튀면서도 바닥에 다가가지만 불안정합니다. 실제 학습에서는 손실이 출렁입니다.`];
+    if (lr < .08) return ['mid', `<b>너무 느림.</b> 방향은 맞지만 걸음이 작아 12걸음으로는 바닥에 한참 못 미칩니다.`];
+    return ['ok', `<b>적당함.</b> 걸음마다 바닥에 성큼 다가가 몇 걸음 만에 손실이 거의 0이 됩니다.`];
+  }
+  async function gdGo() {
+    const id = ++gdRun, lr = +$('#lr').value; gdBase();
+    const trail = svgEl('path', { d: '', class: 'trail' }, gdSvg);
+    const ball = svgEl('circle', { r: 8, class: 'ball' }, gdSvg);
+    let w = W0, d = `M${gx(w)} ${gy(w * w)}`;
+    const vEl = $('#gdVerdict'); vEl.className = 'verdict'; vEl.textContent = '내려가는 중…';
+    for (let k = 0; k <= 12; k++) {
+      const cw = clampW(w);
+      ball.setAttribute('cx', gx(cw)); ball.setAttribute('cy', Math.max(10, gy(cw * cw)));
+      if (k) { d += ` L${gx(cw)} ${Math.max(10, gy(cw * cw))}`; trail.setAttribute('d', d); svgEl('circle', { cx: gx(cw), cy: Math.max(10, gy(cw * cw)), r: 3, class: 'ghost' }, gdSvg); }
+      gdSvg.appendChild(ball);
+      vEl.textContent = `${k}걸음 · w = ${fmt(w, 2)} · 손실 = ${(w * w).toFixed(3)}`;
+      if (Math.abs(w) > 3.3) break;
+      await wait(260); if (id !== gdRun) return;
+      w = w - lr * 2 * w;
+    }
+    const [cls, msg] = verdict(lr); vEl.className = 'verdict ' + cls; vEl.innerHTML = msg + ` <span style="color:var(--ink-3)">(마지막 손실 ${(Math.min(99, w * w)).toFixed(3)})</span>`;
+  }
+  $('#lr').addEventListener('input', () => $('#lrV').textContent = (+$('#lr').value).toFixed(2));
+  $('#gdGo').onclick = gdGo;
+  $$('#gdPre button').forEach(b => b.onclick = () => { $('#lr').value = b.dataset.lr; $('#lrV').textContent = (+b.dataset.lr).toFixed(2); gdGo(); });
+  gdBase();
+  HOOKS.gd = () => later(gdGo, 900);
+
+  /* ---------- 03 tokenizer (illustrative) ---------- */
+  const PART = ['에서', '으로', '합니다', '습니다', '입니다', '니다', '은', '는', '이', '가', '을', '를', '에', '의', '도', '로', '와', '과'];
+  function tokenize(s) {
+    const out = [];
+    for (const m of s.matchAll(/(\s*)([가-힣]+|[A-Za-z]+|\d+|[^\s가-힣A-Za-z\d])/g)) {
+      const sp = m[1] ? '▁' : '', w = m[2];
+      const pieces = [];
+      if (/^[가-힣]+$/.test(w)) {
+        let stem = w, tail = [];
+        for (let g = 0; g < 2; g++) { const p = PART.find(p => stem.length > p.length && stem.endsWith(p)); if (!p) break; tail.unshift(p); stem = stem.slice(0, -p.length); }
+        for (let i = 0; i < stem.length; i += 2) pieces.push(stem.slice(i, i + 2));
+        pieces.push(...tail);
+      } else if (/^[A-Za-z]+$/.test(w)) { for (let i = 0; i < w.length; i += 4) pieces.push(w.slice(i, i + 4)); }
+      else if (/^\d+$/.test(w)) { for (let i = 0; i < w.length; i += 3) pieces.push(w.slice(i, i + 3)); }
+      else pieces.push(w);
+      pieces.forEach((p, i) => out.push((i === 0 ? sp : '') + p));
+    }
+    return out;
+  }
+  const hid = s => { let h = 2166136261; for (const c of s) h = Math.imul(h ^ c.codePointAt(0), 16777619); return (h >>> 0) % 50000 + 100; };
+  let firstTok = '';
+  function paintEmb() {
+    const s = getComputedStyle($('#emb')), pos = s.getPropertyValue('--blue').trim(), neg = s.getPropertyValue('--coral').trim();
+    let h = hid(firstTok || 'x');
+    $('#emb').innerHTML = Array.from({ length: 16 }, () => { h = Math.imul(h ^ (h >>> 13), 1274126177) >>> 0; const v = h / 4294967296 * 2 - 1;
+      return `<i style="background:${v < 0 ? neg : pos};opacity:${(.18 + Math.abs(v) * .82).toFixed(2)}" title="${v.toFixed(2)}"></i>`; }).join('');
+    $('#embLbl').textContent = `“${firstTok.replace('▁', '')}”의 임베딩 예시 (16차원만 표시, 실제로는 수백~수천 차원)`;
+  }
+  function runTok(animate) {
+    const s = $('#tokIn').value, toks = tokenize(s);
+    $('#tokOut').innerHTML = toks.map((t, i) => `<span class="tk" style="--d:${animate ? 500 + i * 70 : 0}ms">${t.replace(/&/g, '&amp;').replace(/</g, '&lt;')}<small>#${hid(t)}</small></span>`).join('');
+    $('#tokChars').textContent = [...s.replace(/\s/g, '')].length; $('#tokN').textContent = toks.length;
+    firstTok = toks[0] || ''; paintEmb();
+  }
+  $('#tokIn').addEventListener('input', () => runTok(false));
+  runTok(false);
+  HOOKS.tok = () => runTok(true);
+
+  /* attention (illustrative weights) */
+  const AT = ['철수가', '가게에서', '사과를', '샀다.', '그것은', '아주', '달았다.'];
+  const AW = {
+    '그것은': [.07, .06, .58, .09, .1, .04, .06],
+    '달았다.': [.04, .03, .3, .05, .38, .14, .06],
+    '샀다.': [.32, .2, .3, .1, .02, .02, .04],
+    '사과를': [.12, .1, .44, .26, .03, .02, .03],
+    '아주': [.02, .02, .1, .03, .16, .22, .45],
+  };
+  const awFor = q => AW[q] || AT.map((t, i) => { const d = Math.abs(i - AT.indexOf(q)); return d === 0 ? .4 : d === 1 ? .2 : .04; });
+  const ATXT = { '그것은': '“그것은”이 가장 많이 참고하는 토큰은 <b>“사과를”</b>입니다. “그것”이 사과를 가리킨다는 것을 어텐션이 잡아냅니다.', '달았다.': '“달았다.”는 무엇이 달았는지 알기 위해 <b>“그것은”</b>과 <b>“사과를”</b>을 함께 봅니다.', '샀다.': '“샀다.”는 누가(<b>철수가</b>) 무엇을(<b>사과를</b>) 샀는지에 주목합니다.', '아주': '“아주”는 꾸며 줄 말인 <b>“달았다.”</b>를 가장 많이 봅니다.' };
+  let attnQ = '그것은';
+  function drawAttn() {
+    const w = awFor(attnQ), sum = w.reduce((a, b) => a + b, 0), p = w.map(v => v / sum), mx = Math.max(...p);
+    $('#attnRow').innerHTML = AT.map((t, i) => `<button type="button" class="q${t === attnQ ? ' sel' : ''}" style="--a:${t === attnQ ? 0 : (p[i] / mx * .75).toFixed(2)}" aria-pressed="${t === attnQ}">${t}<small>${Math.round(p[i] * 100)}%</small></button>`).join('');
+    $('#attnHint').innerHTML = ATXT[attnQ] || `“${attnQ}”는 주로 자기 자신과 바로 옆 토큰을 참고합니다. 다른 토큰도 눌러 보세요.`;
+    $('#attnBars').innerHTML = AT.map((t, i) => `<div><span>${t}</span><span class="tr"><i style="width:${(p[i] / mx * 100).toFixed(1)}%"></i></span><b>${Math.round(p[i] * 100)}%</b></div>`).join('');
+    $$('#attnRow .q').forEach(b => b.onclick = () => { attnQ = b.firstChild.textContent; drawAttn(); });
+  }
+  drawAttn();
+
+  /* context window */
+  const ctxEl = $('#ctx'), CN = 40, WIN = 24;
+  ctxEl.innerHTML = '<i></i>'.repeat(CN);
+  HOOKS.ctx = async t => {
+    const cells = $$('i', ctxEl); cells.forEach(c => c.className = ''); $('#ctxL').textContent = '토큰 0개';
+    await wait(700); if (t.dead) return;
+    for (let n = 1; n <= CN; n++) {
+      await wait(70); if (t.dead) return;
+      cells.forEach((c, i) => c.className = i >= n ? '' : i < n - WIN ? 'out-w' : 'in-w');
+      $('#ctxL').textContent = n > WIN ? `대화 ${n}칸 중 앞 ${n - WIN}칸은 더 이상 보이지 않음` : `대화 ${n}칸 · 모두 창 안`;
+    }
+  };
+
+  /* ---------- 04 sampling ---------- */
+  const CAND = [['좋네요', 3.0], ['맑아요', 2.4], ['덥네요', 1.9], ['춥네요', 1.3], ['흐려요', .9], ['바나나', -1.2]];
+  let counts = CAND.map(() => 0);
+  const probs = T => { const e = CAND.map(([, l]) => Math.exp(l / T)), s = e.reduce((a, b) => a + b, 0); return e.map(v => v / s); };
+  function drawCand(hit = -1) {
+    const T = +$('#temp').value, p = probs(T);
+    $('#cand').innerHTML = CAND.map(([w], i) => `<div class="${i === hit ? 'hit' : ''}"><span class="w">${w}</span><span class="tr"><i style="width:${(p[i] * 100).toFixed(1)}%"></i></span><span class="p">${(p[i] * 100).toFixed(1)}%</span><span class="cnt">${counts[i] ? counts[i] : ''}</span></div>`).join('');
+  }
+  function tempNote(T) {
+    if (T <= .4) return `온도 ${T.toFixed(1)}: 분포가 뾰족해져 <b>거의 항상 “좋네요”</b>만 나옵니다. 무난하고 일관되지만 단조롭습니다.`;
+    if (T >= 1.5) return `온도 ${T.toFixed(1)}: 분포가 평평해져 <b>엉뚱한 후보(“바나나”)도 가끔</b> 뽑힙니다. 다양하지만 이상한 답이 섞일 수 있습니다.`;
+    return `온도 ${T.toFixed(1)}: 높은 점수의 후보가 자주 나오지만 <b>다른 후보도 섞여</b> 나옵니다.`;
+  }
+  $('#temp').addEventListener('input', () => { genRun++; const T = +$('#temp').value; $('#tV').textContent = T.toFixed(1); counts = CAND.map(() => 0); $('#genPick').textContent = '?'; drawCand(); $('#genVerdict').innerHTML = tempNote(T); });
+  async function sample20() {
+    const id = ++genRun, T = +$('#temp').value, p = probs(T);
+    counts = CAND.map(() => 0);
+    for (let k = 0; k < 20; k++) {
+      let r = Math.random(), i = 0; while (i < p.length - 1 && (r -= p[i]) > 0) i++;
+      counts[i]++; $('#genPick').textContent = CAND[i][0]; drawCand(i);
+      await wait(90); if (id !== genRun) return;
+    }
+    const kinds = counts.filter(Boolean).length;
+    $('#genVerdict').innerHTML = tempNote(T) + ` 이번 20번에서는 <b>${kinds}종류</b>의 토큰이 나왔습니다.`;
+  }
+  $('#genGo').onclick = sample20;
+  drawCand();
+
+  /* ---------- 05 MoE ---------- */
+  const MQ = ['고양이가', '수학', '문제를', '풀었다', '.'], MP = [[1, 5], [3, 6], [3, 0], [6, 2], [7, 4]];
+  $('#moeQ').innerHTML = MQ.map(t => `<span>${t}</span>`).join('');
+  $('#moeE').innerHTML = Array.from({ length: 8 }, (_, i) => `<div class="ex">E${i + 1}</div>`).join('');
+  HOOKS.moe = async t => {
+    const qs = $$('#moeQ span'), ex = $$('#moeE .ex');
+    while (!t.dead) {
+      qs.forEach(q => q.className = ''); ex.forEach(e => e.classList.remove('on')); $('#moeOn').textContent = '0';
+      for (let k = 0; k < MQ.length; k++) {
+        await wait(k ? 1000 : 700); if (t.dead) return;
+        qs.forEach((q, i) => q.className = i < k ? 'done' : i === k ? 'cur' : '');
+        ex.forEach((e, i) => e.classList.toggle('on', MP[k].includes(i)));
+        $('#moeOn').textContent = '2';
+      }
+      await wait(1000); if (t.dead) return;
+      qs.forEach(q => q.className = 'done'); ex.forEach(e => e.classList.remove('on')); $('#moeOn').textContent = '0';
+      await wait(1600);
+    }
+  };
+
+  /* quote */
+  HOOKS.quote = t => typeInto($('#quoteTxt'), ['“공부하는 동안 고친 이해는 ', ['가중치', 'em-q'], '에 남고, 시험장에서는 그 가중치만으로 답을 계산한다.”'], 55, t);
+
+  /* ---------- 03 RNN vs Transformer ---------- */
+  const RW = ['나는', '어제', '산', '사과를', '오늘', '먹었다'];
+  ['#laneR', '#laneT'].forEach(id => $(id + ' .row2').innerHTML = RW.map(w => `<span>${w}</span>`).join(''));
+  (() => {
+    const arcs = $('#arcsT'), cx = i => (i + .5) * 100;
+    let d = '';
+    for (let i = 0; i < 6; i++) for (let j = i + 1; j < 6; j++) d += `<path d="M${cx(i)} 40 Q${(cx(i) + cx(j)) / 2} ${40 - (j - i) * 9} ${cx(j)} 40"/>`;
+    arcs.innerHTML = d;
+  })();
+  HOOKS.rnn = async t => {
+    const r = $$('#laneR .row2 span'), tt = $$('#laneT .row2 span'), arcs = $('#arcsT');
+    r.concat(tt).forEach(x => x.className = ''); arcs.classList.remove('on');
+    $('#stepR').textContent = '0 / 6 단계'; $('#stepT').textContent = '0 / 1 단계';
+    await wait(1000); if (t.dead) return;
+    tt.forEach(x => x.classList.add('on')); arcs.classList.add('on'); $('#stepT').textContent = '1 / 1 단계 · 끝';
+    for (let i = 0; i < 6; i++) {
+      if (i) await wait(600); if (t.dead) return;
+      r.forEach((x, k) => x.className = k < i ? 'done' : k === i ? 'on' : '');
+      $('#stepR').textContent = `${i + 1} / 6 단계` + (i === 5 ? ' · 끝' : '');
+    }
+  };
+
+  /* ---------- 03 transformer architecture ---------- */
+  const PARTS = {
+    tok: ['입력 토큰', 'Input Tokens', '문장을 토큰으로 쪼갠 뒤 각 토큰을 어휘표의 번호로 바꾼 목록입니다. 예: “오늘 날씨가 정말” → [번호, 번호, 번호].'],
+    tok_src: ['입력 문장 (원문)', 'Source Tokens', '번역할 원문입니다. 원 논문의 번역 과제에서는 영어 문장이 여기에 들어갑니다.'],
+    tok_tgt: ['지금까지 만든 출력', 'Output So Far', '디코더는 지금까지 만든 번역문을 입력으로 받아 다음 단어를 예측합니다. 처음에는 시작 기호 하나만 들어갑니다.'],
+    emb: ['토큰 임베딩', 'Token Embedding', '토큰 번호를 수백~수천 차원의 숫자 벡터로 바꿉니다. 이 벡터가 블록을 하나씩 지나며 문맥을 담도록 계속 다듬어집니다.', '원 논문: 512차원'],
+    pos: ['+ 위치 인코딩', 'Positional Encoding', '어텐션은 그 자체로는 토큰의 순서를 모릅니다. “몇 번째 자리인지”를 나타내는 값을 임베딩에 더해, “개가 사람을 물었다”와 “사람이 개를 물었다”를 구별하게 합니다.', '원 논문: 사인·코사인 함수 · 요즘은 RoPE 같은 방식도 많이 씀'],
+    mattn: ['마스크드 멀티헤드 셀프 어텐션', 'Masked Multi-Head Self-Attention', '각 토큰이 문맥 속 다른 토큰을 참고해 자기 벡터를 고칩니다. 다음 토큰을 미리 보면 안 되므로 <b>자기보다 앞쪽 토큰만</b> 보도록 뒤쪽을 가립니다(마스크드 어텐션 슬라이드). 여러 헤드가 서로 다른 관계를 동시에 봅니다.', '원 논문: 헤드 8개'],
+    sattn: ['멀티헤드 셀프 어텐션', 'Multi-Head Self-Attention', '인코더에서는 가림 없이 모든 토큰이 앞뒤를 다 봅니다. 원문 전체의 뜻을 파악하는 단계입니다.', '원 논문: 헤드 8개'],
+    cross: ['크로스 어텐션', 'Encoder–Decoder Attention', '디코더가 <b>인코더가 만든 원문 표현</b>을 참고하는 어텐션입니다. 번역할 때 “지금 원문의 어느 단어를 옮길 차례인지” 찾는 역할을 합니다. 디코더 전용 모델에는 이 층이 없습니다.'],
+    addnorm: ['더하기 & 정규화', 'Add & Norm', '바로 앞 단계의 입력을 출력에 그대로 더하고(<b>잔차 연결</b>, 초록 선), 값의 범위를 고르게 맞춥니다(<b>층 정규화</b>). 층을 깊게 쌓아도 정보가 사라지지 않고 학습이 안정됩니다.'],
+    ffn: ['피드포워드 신경망', 'Feed-Forward Network', '토큰 벡터 하나하나를 따로 통과시키는 작은 2층 신경망입니다. 어텐션이 “다른 토큰에서 정보 모으기”라면, 피드포워드는 “모은 정보를 각자 가공하기”입니다. 모델 파라미터의 상당 부분이 여기에 있습니다.', '원 논문: 내부 2048차원'],
+    block: ['트랜스포머 블록', 'Transformer Block', '어텐션과 피드포워드로 이루어진 같은 구조의 블록을 여러 층 쌓습니다. 층을 지날수록 토큰 벡터가 문맥을 더 많이 담게 됩니다. 1장의 “은닉층”이 여기에 해당합니다.'],
+    linear: ['출력 선형층', 'Linear · LM Head', '마지막 위치의 벡터를 어휘표 크기만큼의 점수(로짓)로 바꿉니다. 어휘가 5만 개라면 점수도 5만 개가 나옵니다.'],
+    softmax: ['소프트맥스', 'Softmax', '로짓을 모두 더하면 1이 되는 확률로 바꿉니다. 여기서 나온 확률로 4장의 샘플링(온도, Top-k, Top-p)을 합니다.'],
+    out: ['다음 토큰', 'Next Token', '확률에 따라 고른 토큰을 입력 끝에 붙이고 처음부터 다시 계산합니다. 4장의 자기회귀 생성이 바로 이 반복입니다.'],
+  };
+  const PTYPE = { tok: 'io', tok_src: 'io', tok_tgt: 'io', out: 'head', emb: 'prep', pos: 'prep', mattn: 'att', sattn: 'att', cross: 'att', addnorm: 'norm', ffn: 'ffn', linear: 'head', softmax: 'head' };
+  const ARCHS = {
+    dec: [{ title: '디코더 전용', items: ['tok', 'emb', 'pos', { rep: '× N층', note: '모델마다 수십 층', subs: [['mattn', 'addnorm'], ['ffn', 'addnorm']] }, 'linear', 'softmax', 'out'] }],
+    ed: [
+      { title: '인코더 · 원문 읽기', items: ['tok_src', 'emb', 'pos', { rep: '× 6층', note: '원 논문', subs: [['sattn', 'addnorm'], ['ffn', 'addnorm']] }] },
+      { title: '디코더 · 번역문 쓰기', items: ['tok_tgt', 'emb', 'pos', { rep: '× 6층', note: '원 논문', subs: [['mattn', 'addnorm'], ['cross', 'addnorm'], ['ffn', 'addnorm']] }, 'linear', 'softmax', 'out'] },
+    ],
+  };
+  let archMode = 'dec', pendingArch = null;
+  const archSlide = $('#s-arch');
+  const AR = '<i class="ar2" aria-hidden="true"></i>';
+  const nodeH = k => `<button type="button" class="nd2 ${PTYPE[k]}" data-k="${k}">${PARTS[k][0]}${k === 'cross' ? '<span class="xin">← 인코더 출력</span>' : `<small>${PARTS[k][1]}</small>`}</button>`;
+  function renderArch() {
+    const cols = ARCHS[archMode];
+    archSlide.classList.toggle('ed', archMode === 'ed');
+    $$('#archSeg button').forEach(x => x.classList.toggle('on', x.dataset.m === archMode));
+    $('#arch').style.setProperty('--cols', cols.length);
+    $('#arch').innerHTML = cols.map(c => `<div class="acol"><div class="ach">${c.title}</div>${c.items.map(it => typeof it === 'string' ? nodeH(it) :
+      `<div class="blk2"><button type="button" class="rep" data-k="block">${it.rep}<small>${it.note}</small></button>${it.subs.map(sb => `<div class="sub2">${sb.map(nodeH).join(AR)}</div>`).join(AR)}</div>`).join(AR)}</div>`).join('');
+    $$('#arch [data-k]').forEach(b => b.onclick = () => { archRun++; $$('#arch .hot').forEach(x => x.classList.remove('hot')); showPart(b); });
+    showPart($('#arch [data-k="' + (archMode === 'ed' ? 'cross' : 'mattn') + '"]'));
+  }
+  function showPart(el, step) {
+    const k = el.dataset.k, [t, en, d, n] = PARTS[k];
+    litPaper(k, el.closest('.acol'));
+    $$('#arch [data-k]').forEach(x => x.classList.toggle('sel', x === el));
+    const num = k === 'block' ? (archMode === 'ed' ? '원 논문: 인코더 6층 + 디코더 6층' : '모델 규모에 따라 수십 층 이상') : n;
+    $('#apanel').innerHTML = `<span class="k">${{ io: '입출력', prep: '입력 준비', att: '어텐션', ffn: '피드포워드', norm: '잔차 연결 · 정규화', head: '출력' }[PTYPE[k]] || '블록'}</span><h6>${t.replace(/^\+ /, '')}</h6><div class="en2">${en}</div><p>${d}</p>${num ? `<span class="num">${num}</span>` : ''}${step ? `<div class="step">흐름 ${step}</div>` : ''}`;
+  }
+  async function flowArch() {
+    const id = ++archRun, seq = $$('#arch [data-k]');
+    for (let i = 0; i < seq.length; i++) {
+      seq.forEach(x => x.classList.remove('hot'));
+      seq[i].classList.add('hot'); showPart(seq[i], `${i + 1} / ${seq.length}`);
+      await wait(1300); if (id !== archRun) { seq.forEach(x => x.classList.remove('hot')); return; }
+    }
+    seq.forEach(x => x.classList.remove('hot'));
+  }
+  $$('#archSeg button').forEach(b => b.onclick = () => { archRun++; archMode = b.dataset.m; renderArch(); });
+  $('#archPlay').onclick = flowArch;
+  HOOKS.arch = () => {
+    if (pendingArch) {
+      const { k, side } = pendingArch; pendingArch = null;
+      const cols = $$('#arch .acol'), col = side === 'enc' ? cols[0] : cols[1] || cols[0];
+      const node = (col && col.querySelector(`[data-k="${k}"]`)) || $(`#arch [data-k="${k}"]`);
+      if (!node) return;
+      showPart(node); node.classList.add('hot'); later(() => node.classList.remove('hot'), 2400);
+    } else later(flowArch, 1100);
+  };
+
+  /* ---------- 03 paper Figure 1 comparison ---------- */
+  let paperReady = false;
+  const PW = 538, PH = 782;
+  // [label, PARTS key, side, x0, y0, x1, y1, note, extra]
+  const HS = [
+    ['N× (인코더)', 'block', 'enc', 66, 290, 256, 562, '같은 블록을 N번 쌓는다는 뜻입니다. 원 논문은 인코더를 6층 쌓았습니다.', 'frame'],
+    ['N× (디코더)', 'block', 'dec', 283, 166, 466, 564, '디코더 블록도 N번(원 논문 6층) 쌓습니다.', 'frame'],
+    ['Inputs', 'tok_src', 'enc', 142, 716, 216, 752, '번역할 원문 토큰입니다.'],
+    ['Input Embedding', 'emb', 'enc', 114, 625, 239, 678],
+    ['Positional Encoding', 'pos', 'enc', 0, 566, 198, 624, '물결 모양은 사인·코사인 함수, ⊕는 임베딩에 위치 값을 <b>더한다</b>는 뜻입니다.'],
+    ['Multi-Head Attention', 'sattn', 'enc', 114, 461, 240, 514, '아래에서 세 갈래로 갈라져 들어가는 화살표가 쿼리(Q)·키(K)·값(V)입니다. 인코더에서는 셋 모두 같은 입력에서 나오므로 <b>셀프</b> 어텐션입니다.'],
+    ['Add & Norm', 'addnorm', 'enc', 114, 431, 239, 458, '블록 왼쪽을 돌아 들어오는 화살표가 잔차 연결입니다.'],
+    ['Feed Forward', 'ffn', 'enc', 114, 336, 239, 389],
+    ['Add & Norm', 'addnorm', 'enc', 114, 306, 239, 332, '블록 왼쪽을 돌아 들어오는 화살표가 잔차 연결입니다.'],
+    ['N×', 'block', 'enc', 14, 418, 62, 454, '같은 블록을 N번 쌓는다는 뜻입니다. 원 논문은 N=6입니다.'],
+    ['Outputs (shifted right)', 'tok_tgt', 'dec', 310, 716, 428, 780, '정답 번역문을 <b>한 칸 오른쪽으로 민 것</b>입니다. 맨 앞에 시작 기호를 넣어, 각 위치가 “바로 앞 단어까지”만 보고 다음 단어를 맞히도록 합니다.'],
+    ['Output Embedding', 'emb', 'dec', 297, 625, 423, 678],
+    ['Positional Encoding', 'pos', 'dec', 340, 566, 538, 624, '물결 모양은 사인·코사인 함수, ⊕는 임베딩에 위치 값을 <b>더한다</b>는 뜻입니다.'],
+    ['Masked Multi-Head Attention', 'mattn', 'dec', 297, 441, 423, 514, '이름의 <b>Masked</b>가 마스크드 어텐션 슬라이드의 가림을 뜻합니다.'],
+    ['Add & Norm', 'addnorm', 'dec', 297, 411, 423, 437, '블록 오른쪽을 돌아 들어오는 화살표가 잔차 연결입니다.'],
+    ['Multi-Head Attention (디코더 가운데)', 'cross', 'dec', 297, 317, 423, 370, '이름은 같은 Multi-Head Attention이지만 역할은 <b>크로스 어텐션</b>입니다. 왼쪽 인코더에서 넘어온 두 화살표가 키(K)·값(V), 아래 디코더에서 올라온 화살표가 쿼리(Q)입니다.', 'gone'],
+    ['Add & Norm', 'addnorm', 'dec', 297, 286, 423, 313, '크로스 어텐션 뒤의 더하기 & 정규화입니다.', 'gone'],
+    ['Feed Forward', 'ffn', 'dec', 297, 211, 423, 264],
+    ['Add & Norm', 'addnorm', 'dec', 297, 180, 423, 206, '블록 오른쪽을 돌아 들어오는 화살표가 잔차 연결입니다.'],
+    ['N×', 'block', 'dec', 470, 356, 516, 394, '디코더 블록도 N번(원 논문 6층) 쌓습니다.'],
+    ['인코더 출력 → K, V', 'cross', 'kv', 168, 274, 296, 394, '인코더 마지막 층의 출력이 디코더 <b>모든 층</b>의 크로스 어텐션으로 전달되는 길입니다. 여기서 키(K)와 값(V)이 만들어집니다.', 'gone'],
+    ['Linear', 'linear', 'dec', 297, 127, 422, 156],
+    ['Softmax', 'softmax', 'dec', 297, 80, 422, 105],
+    ['Output Probabilities', 'out', 'dec', 312, 0, 424, 58, '어휘 전체에 대한 다음 토큰 확률입니다. 여기서 하나를 골라 오른쪽 아래 “Outputs” 끝에 붙이고 다시 계산합니다.'],
+  ];
+  const pc = (v, t) => (v / t * 100).toFixed(2) + '%';
+  const pin = $('#pin');
+  pin.insertAdjacentHTML('beforeend', HS.map(([lb, k, side, x0, y0, x1, y1, , ex], i) =>
+    `<button type="button" class="hs${ex ? ' ' + ex : ''}${side === 'enc' ? ' gone' : ''}" data-i="${i}" data-k="${k}" data-side="${side}" aria-label="${lb.replace(/&/g, '&amp;')}" style="left:${pc(x0, PW)};top:${pc(y0, PH)};width:${pc(x1 - x0, PW)};height:${pc(y1 - y0, PH)}"></button>`).join('') +
+    [[0, 270, 262, 782, '디코더 전용 LLM에는<br>인코더가 없습니다'], [168, 272, 300, 396, ''], [293, 282, 427, 373, '크로스 어텐션 없음']].map(([x0, y0, x1, y1, t]) =>
+      `<div class="dimz" style="left:${pc(x0, PW)};top:${pc(y0, PH)};width:${pc(x1 - x0, PW)};height:${pc(y1 - y0, PH)}">${t ? `<span>${t}</span>` : ''}</div>`).join(''));
+  const hsEls = $$('#pin .hs');
+  function showHS(i) {
+    const [lb, k, , , , , , note] = HS[i], [t, , d] = PARTS[k];
+    hsEls.forEach((h, j) => { h.classList.toggle('on', j === i); h.classList.remove('lit'); });
+    $('#ppanel').innerHTML = `<span class="k">논문 표기</span><div><span class="tag3">${lb.replace(/&/g, '&amp;')}</span></div>
+      <div class="eq3">여기서는 → <b>${t.replace(/^\+ /, '')}</b></div><p>${d}</p>${note ? `<div class="note3">${note}</div>` : ''}
+      <button type="button" class="goto" data-i="${i}">← 구조도에서 보기</button>`;
+    $('#ppanel .goto').onclick = () => gotoArch(i);
+  }
+  function gotoArch(i) {
+    const [, k, side] = HS[i];
+    archRun++; archMode = 'ed'; renderArch();
+    pendingArch = { k, side };
+    go(slides.indexOf(archSlide));
+  }
+  function litPaper(k, col) {
+    if (!paperReady) return;
+    const side = archMode === 'ed' && col ? ($$('#arch .acol').indexOf(col) === 0 ? 'enc' : 'dec') : 'dec';
+    const key = k === 'tok' ? 'tok_tgt' : k;
+    hsEls.forEach(h => { h.classList.remove('on'); h.classList.toggle('lit', h.dataset.k === key && (h.dataset.side === side || (key === 'cross' && h.dataset.side === 'kv'))); });
+  }
+  hsEls.forEach(h => h.onclick = () => showHS(+h.dataset.i));
+  $$('#pfSeg button').forEach(b => b.onclick = () => {
+    $$('#pfSeg button').forEach(x => x.classList.toggle('on', x === b));
+    pin.classList.toggle('llm', b.dataset.m === 'llm');
+    if (b.dataset.m === 'llm' && $('#pin .hs.on.gone')) showHS(13);
+  });
+  renderArch();
+  paperReady = true;
+  showHS(13);
+
+  /* masked attention grid */
+  const idx = n => [...Array(n).keys()];
+  const MT = ['오늘', '날씨가', '정말', '좋네요', '.'];
+  let maskOn = true, mrow = 2;
+  function drawMask(first) {
+    const n = MT.length;
+    let h = '<span></span>' + MT.map(t => `<span class="hd">${t}</span>`).join('');
+    for (let i = 0; i < n; i++) {
+      const vis = idx(n).map(j => maskOn ? j <= i : true), raw = idx(n).map(j => vis[j] ? (j === i ? 1.4 : 0.4 + ((i * 7 + j * 3) % 5) / 4) : 0);
+      const sum = raw.reduce((a, b) => a + b, 0), d = j => (first ? 500 : 0) + (i * 5 + j) * 30;
+      h += `<button type="button" class="rl${i === mrow ? ' sel' : ''}" data-r="${i}" aria-pressed="${i === mrow}">${MT[i]}</button>`;
+      h += idx(n).map(j => vis[j] ? `<span class="mc${i === mrow ? '' : ' dim'}" style="--a:${(raw[j] / sum * .9).toFixed(2)};--d:${d(j)}ms">${Math.round(raw[j] / sum * 100)}%</span>`
+        : `<span class="mc x${i === mrow ? '' : ' dim'}" style="--d:${d(j)}ms" aria-label="가림">✕</span>`).join('');
+    }
+    $('#mgrid').innerHTML = h;
+    $$('#mgrid .rl').forEach(b => b.onclick = () => { mrow = +b.dataset.r; drawMask(); });
+    const seen = MT.slice(0, mrow + 1).map(t => `“${t}”`).join(', '), hidden = MT.slice(mrow + 1).map(t => `“${t}”`).join(', ');
+    $('#maskNote').className = 'verdict ' + (maskOn ? 'ok' : 'mid');
+    $('#maskNote').innerHTML = maskOn
+      ? `<b>“${MT[mrow]}” 자리</b>는 ${seen}만 볼 수 있습니다.${hidden ? ` 뒤에 오는 ${hidden}은(는) 가려져 있어, 다음 토큰을 미리 보지 못합니다.` : ' 마지막 자리라 모든 토큰을 봅니다.'}`
+      : `가림이 없으면 <b>“${MT[mrow]}” 자리</b>도 뒤에 오는 토큰까지 모두 봅니다. 원문 전체를 읽는 인코더에서는 이렇게 하지만, 다음 토큰을 맞혀야 하는 디코더에서는 정답을 미리 보는 셈이 됩니다.`;
+  }
+  $$('#maskSeg button').forEach(b => b.onclick = () => { maskOn = b.dataset.m === '1'; $$('#maskSeg button').forEach(x => x.classList.toggle('on', x === b)); drawMask(); });
+  drawMask(true);
+
+  /* ---------- 04 top-k / top-p ---------- */
+  const SC = [
+    { q: '오늘 날씨가 정말', c: [['좋네요', 3.0], ['맑아요', 2.4], ['덥네요', 1.9], ['춥네요', 1.3], ['흐려요', .9], ['바나나', -1.2]] },
+    { q: '대한민국의 수도는', c: [['서울', 6.0], ['세종', 2.6], ['부산', 1.9], ['한양', 1.4], ['평양', .4], ['바나나', -2.0]] },
+  ];
+  let sc = 0;
+  function drawKP() {
+    const k = +$('#kIn').value, pT = +$('#pIn').value, S = SC[sc];
+    const e = S.c.map(([, l]) => Math.exp(l)), sum = e.reduce((a, b) => a + b, 0), p = e.map(v => v / sum);
+    const kSum = p.slice(0, k).reduce((a, b) => a + b, 0);
+    let cum = 0, keepP = 0;
+    const rows = S.c.map(([w], i) => {
+      const inK = i < k, rp = inK ? p[i] / kSum : 0, before = cum;
+      if (inK) cum += rp;
+      const inP = inK && (pT >= .999 || before < pT - 1e-9);
+      if (inP) keepP += rp;
+      return { w, p: p[i], inK, rp, cum: inK ? cum : null, keep: inP };
+    });
+    const fin = rows.map(r => r.keep ? r.rp / keepP : 0), kept = rows.filter(r => r.keep);
+    $('#kpPrompt').innerHTML = `${S.q} <span class="blank"></span>`;
+    $('#kpRows').innerHTML = rows.map((r, i) => `<div class="${r.keep ? '' : 'cut'}"><span class="w">${r.w}</span><span class="tr"><i style="width:${(r.p * 100).toFixed(1)}%"></i></span><span class="pc">${(r.p * 100).toFixed(1)}%</span><span class="cu">${r.cum === null ? '—' : Math.min(100, r.cum * 100).toFixed(0) + '%'}</span><span class="fi">${r.keep ? (fin[i] * 100).toFixed(1) + '%' : '제외'}</span></div>`).join('');
+    $('#kV').textContent = k >= 6 ? '제한 없음' : `k = ${k}`;
+    $('#pV').textContent = pT >= .999 ? '1.00 (제한 없음)' : `p = ${pT.toFixed(2)}`;
+    const why = [];
+    if (k < 6) why.push(`Top-k ${k}로 상위 ${k}개만 남김`);
+    if (pT < .999) why.push(`Top-p ${pT.toFixed(2)}로 누적 ${Math.round(pT * 100)}%에 닿을 때까지만 남김`);
+    const names = kept.map(r => `“${r.w}”`).join(', ');
+    $('#kpVerdict').className = 'verdict ' + (kept.length === 1 ? 'mid' : 'ok');
+    $('#kpVerdict').innerHTML = (why.length ? why.join(' → ') + '. ' : '제한 없이 6개 후보 모두에서 뽑습니다. 아주 낮은 확률이지만 “바나나”도 뽑힐 수 있습니다. ') +
+      (why.length ? `남은 후보 <b>${kept.length}개</b>: ${names}.` : '') +
+      (pT < .999 && k >= 6 ? ` <span style="color:var(--ink-3)">상황을 바꿔 보세요. 같은 p라도 후보 수가 달라집니다.</span>` : '') +
+      (k < 6 && pT >= .999 ? ` <span style="color:var(--ink-3)">상황을 바꿔도 후보는 늘 ${k}개입니다.</span>` : '');
+  }
+  $$('#kpSeg button').forEach(b => b.onclick = () => { sc = +b.dataset.sc; $$('#kpSeg button').forEach(x => x.classList.toggle('on', x === b)); drawKP(); });
+  $('#kIn').addEventListener('input', drawKP); $('#pIn').addEventListener('input', drawKP);
+  $$('#kpPre button').forEach(b => b.onclick = () => { $('#kIn').value = b.dataset.k; $('#pIn').value = b.dataset.p; drawKP(); });
+  drawKP();
+
+  /* ---------- term-card mini animations ---------- */
+  const sv = o => o ? ` style="${o}"` : '';
+  const C = (x, y, r, cl, o) => `<circle cx="${x}" cy="${y}" r="${r}" class="${cl}"${sv(o)}/>`;
+  const R = (x, y, w, h, cl, o, rx = 2) => `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="${rx}" class="${cl}"${sv(o)}/>`;
+  const L = (x1, y1, x2, y2, cl, o) => `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" class="${cl}"${sv(o)}/>`;
+  const P = (d, cl, o) => `<path d="${d}" class="${cl}"${sv(o)}/>`;
+  const Tx = (x, y, s, cl = 'mt') => `<text x="${x}" y="${y}" class="${cl}">${s}</text>`;
+  const rng = n => { let h = n * 7919; return () => ((h = Math.imul(h ^ (h >>> 15), 2246822507) + 3266489917 >>> 0) / 4294967296); };
+  const range = n => Array.from({ length: n }, (_, i) => i);
+  const bars = (hs, cl, x0 = 8, step = 11, w = 8, base = 48, extra = () => '') => hs.map((h, i) => R(x0 + i * step, base - h, w, h, cl(i), extra(i), 1.5)).join('');
+  const MINI = {
+    'nn': () => { const cols = [[18, 38], [12, 28, 44], [20, 36]], xs = [14, 40, 66]; let s = '';
+      cols.slice(0, -1).forEach((ys, c) => ys.forEach(y => cols[c + 1].forEach(y2 => s += L(xs[c], y, xs[c + 1], y2, 's-l'))));
+      cols.forEach((ys, c) => ys.forEach(y => s += C(xs[c], y, 4.5, 'f-g a-pulse', `--t:${c * .4}s`))); return s; },
+    'neuron': () => [12, 28, 44].map((y, i) => L(12, y, 58, 28, 's-l') + C(12, y, 4, 'f-b') + C(12, y, 2.5, 'f-g a-move', `--dx:46px;--dy:${28 - y}px;--t:${i * .12}s`)).join('') + C(60, 28, 8, 'f-c a-pop', '--t:.9s'),
+    'layer': () => [10, 34, 58].map((x, i) => R(x, 8, 12, 40, 'f-b a-pulse', `--t:${i * .45}s`, 4)).join(''),
+    'weight': () => L(14, 16, 64, 28, 's-g a-pulse', 'stroke-width:5') + L(14, 40, 64, 28, 's-b a-pulse', 'stroke-width:1.5;--t:1.2s') + C(14, 16, 5, 'f-k') + C(14, 40, 5, 'f-k') + C(66, 28, 6, 'f-k'),
+    'bias': () => L(8, 48, 74, 48, 's-k') + L(8, 6, 8, 48, 's-k') + P('M10 46 L72 22', 's-l', 'stroke-dasharray:3 3') + P('M10 46 L72 22', 's-c a-shift', '--dy:-12px') + Tx(58, 54, '+b'),
+    'param': () => { const r = rng(3); let s = ''; for (let y = 0; y < 4; y++) for (let x = 0; x < 7; x++) s += R(6 + x * 10, 8 + y * 11, 8, 8, 'f-b a-pulse', `--t:${(r() * 2.2).toFixed(2)}s`, 1.5); return s; },
+    'act': () => L(8, 38, 74, 38, 's-l') + L(40, 6, 40, 50, 's-l') + P('M8 38 L40 38 L72 8', 's-g a-draw', '--len:80;stroke-width:3') + Tx(6, 52, 'ReLU'),
+    'data': () => [0, 1, 2].map(i => `<g class="a-shift" style="--dx:${10 + i * 10}px;--t:${i * .2}s">${R(8 + i * 4, 10 + i * 4, 26, 32, 'f-p s-l', '', 3)}${R(13 + i * 4, 17 + i * 4, 16, 2.5, 'f-k', '', 1)}${R(13 + i * 4, 23 + i * 4, 12, 2.5, 'f-k', '', 1)}</g>`).join(''),
+    'fwd': () => L(12, 28, 68, 28, 's-l') + [12, 40, 68].map(x => C(x, 28, 6, 'f-l')) .join('') + C(12, 28, 4, 'f-g a-move', '--dx:56px;--dy:0px') + Tx(56, 50, '→'),
+    'loss': () => L(10, 12, 72, 12, 's-c', 'stroke-dasharray:3 3') + Tx(52, 9, '정답', 'mt') + R(22, 12, 16, 36, 'f-b a-gy', '--s0:.35', 2) + R(46, 12, 16, 36, 'f-l', '', 2),
+    'bp': () => L(12, 28, 68, 28, 's-l') + [12, 40, 68].map(x => C(x, 28, 6, 'f-l')).join('') + C(68, 28, 4, 'f-c a-move', '--dx:-56px;--dy:0px') + Tx(14, 50, '←'),
+    'gd': () => P('M6 8 Q40 70 74 8', 's-k') + C(40, 39, 2.5, 'f-gr') + C(14, 17, 4.5, 'f-c a-move', '--dx:26px;--dy:18px'),
+    'lr': () => [8, 15, 22, 29, 36].map((x, i) => C(x, 18, 3, 'f-b a-pop', `--t:${i * .25}s`)).join('') + [8, 40, 72].map((x, i) => C(x, 40, 3, 'f-c a-pop', `--t:${i * .25}s`)).join('') + Tx(46, 21, '작게') + Tx(30, 54, '크게'),
+    'batch': () => [6, 30, 54].map((x0, g) => range(4).map(i => R(x0 + (i % 2) * 10, 12 + Math.floor(i / 2) * 10, 8, 8, 'f-b a-pulse', `--t:${g * .55}s`, 1.5)).join('')).join('') + Tx(6, 51, '3묶음 = 1에폭'),
+    'over': () => { const pts = [[10, 40], [20, 30], [30, 36], [40, 22], [50, 28], [60, 14], [70, 20]];
+      return P('M8 42 L72 14', 's-g', 'stroke-dasharray:4 3') + P('M' + pts.map(p => p.join(' ')).join(' L'), 's-c a-draw', '--len:120') + pts.map(([x, y]) => C(x, y, 2.5, 'f-k')).join(''); },
+    'hyper': () => [[24, 28, 130], [56, 28, -110]].map(([x, y, r], i) => C(x, y, 13, 'f-p s-l') + L(x, y, x, y - 10, 's-g a-spin', `stroke-width:3;stroke-linecap:round;transform-origin:${x}px ${y}px;--r:${r}deg;--t:${i * .3}s`)).join(''),
+    'token': () => [[8, -5], [31, 0], [54, 5]].map(([x, dx], i) => R(x, 20, 21, 16, 'f-gs s-g a-shift', `--dx:${dx}px;--t:${i * .05}s`, 3)).join('') + Tx(10, 52, '인공지능은'),
+    'emb': () => R(4, 20, 18, 16, 'f-gs s-g', '', 3) + L(25, 28, 33, 28, 's-k') + bars([20, 10, 30, 14, 24, 8], i => (i % 2 ? 'f-c' : 'f-b') + ' a-gy', 37, 7, 5, 46, i => `--s0:.1;--t:${i * .1}s`),
+    'tf': () => [42, 31, 20, 9].map((y, i) => R(14, y, 52, 9, (i % 2 ? 'f-g' : 'f-b') + ' a-pop', `--t:${i * .25}s`, 3)).join(''),
+    'attn': () => { const xs = [10, 26, 42, 58, 74], w = [1, 1.5, 4, 0, 1]; let s = '';
+      xs.forEach((x, i) => { if (i !== 3) s += P(`M58 40 Q${(58 + x) / 2} ${40 - Math.abs(58 - x) * .75} ${x} 40`, 's-g a-draw', `--len:90;stroke-width:${w[i]}`); });
+      return s + xs.map((x, i) => R(x - 6, 40, 12, 8, i === 3 ? 'f-c' : 'f-l', '', 2)).join(''); },
+    'ctx': () => range(10).map(i => R(4 + i * 7.4, 22, 6, 12, 'f-b', '', 1.5)).join('') + R(2, 18, 40, 20, 's-c a-shift', '--dx:35px;fill:none', 4),
+    'pre': () => { const r = rng(9); return range(6).map(i => R(8, 8 + i * 7.5, 30 + Math.round(r() * 34), 3, 'f-k a-gx', `--t:${i * .15}s`, 1.5)).join(''); },
+    'ft': () => C(40, 28, 21, 'f-l') + C(40, 28, 13, 'f-p') + C(40, 28, 6, 'f-g a-pop') + Tx(4, 53, '사전학습 → 특화'),
+    'rlhf': () => R(6, 8, 30, 34, 'f-p s-l', '', 4) + R(44, 8, 30, 34, 'f-p s-g a-pulse', '', 4) + Tx(17, 29, 'A') + Tx(55, 29, 'B') + P('M51 48 l5 5 l12 -12', 's-g a-draw', '--len:30;stroke-width:3;stroke-linecap:round'),
+    'cutoff': () => L(4, 30, 52, 30, 's-k') + L(52, 30, 78, 30, 's-l', 'stroke-dasharray:3 3') + [10, 21, 32, 43].map((x, i) => C(x, 30, 3.5, 'f-g a-pop', `--t:${i * .2}s`)).join('') + L(52, 12, 52, 46, 's-c') + Tx(62, 26, '?', 'mt c a-pulse'),
+    'inf': () => R(8, 26, 22, 18, 'f-b', '', 3) + P('M13 26 v-5 a6 6 0 0 1 12 0 v5', 's-b') + L(34, 35, 74, 35, 's-l') + C(36, 35, 4, 'f-g a-move', '--dx:34px;--dy:0px'),
+    'ar': () => range(4).map(i => R(4 + i * 19, 22, 16, 13, 'f-gs s-g a-pop', `--t:${i * .45}s`, 3)).join('') + Tx(4, 50, '→ 한 토큰씩'),
+    'logit': () => L(4, 30, 34, 30, 's-k') + R(6, 12, 6, 18, 'f-k', '', 1) + R(14, 20, 6, 10, 'f-k', '', 1) + R(22, 30, 6, 8, 'f-k', '', 1) + Tx(38, 33, '→') + bars([30, 12, 4], i => 'f-b a-gy', 50, 9, 7, 48, i => `--s0:0;--t:${i * .12}s`),
+    'temp': () => bars([36, 14, 8, 5, 3, 2], () => 'f-b a-sy', 8, 11, 8, 48, i => `--s1:${([16, 14, 12, 10, 8, 6][i] / [36, 14, 8, 5, 3, 2][i]).toFixed(2)}`) + Tx(52, 12, 'T↑'),
+    'topk': () => bars([40, 30, 22, 14, 9, 5], i => 'f-b' + (i >= 3 ? ' a-fade' : ''), 6, 12, 9) + L(40, 4, 40, 52, 's-c a-pop', 'stroke-dasharray:3 2') + Tx(44, 12, 'k=3'),
+    'topp': () => bars([40, 30, 22, 14, 9, 5], i => 'f-b' + (i >= 2 ? ' a-fade' : ''), 6, 12, 9) + R(4, 2, 72, 3, 'f-l', '', 1.5) + R(4, 2, 58, 3, 'f-c a-gx', '', 1.5) + Tx(46, 16, 'p=.8'),
+    'hall': () => R(8, 10, 54, 4, 'f-k', '', 2) + R(8, 20, 46, 4, 'f-k', '', 2) + R(8, 30, 50, 4, 'f-c a-pulse', '', 2) + R(8, 40, 38, 4, 'f-k', '', 2) + Tx(66, 40, '?', 'mt c a-pulse'),
+    'kv': () => range(4).map(i => R(6 + i * 13, 20, 10, 16, 'f-l', '', 2)).join('') + R(60, 20, 12, 16, 'f-g a-pop', '', 2) + Tx(6, 50, 'cache') + Tx(58, 50, 'new'),
+    'scaling': () => L(8, 48, 74, 48, 's-k') + L(8, 6, 8, 48, 's-k') + P('M10 44 C30 22 50 14 72 9', 's-g a-draw', '--len:80;stroke-width:2.5') + [[22, 31], [40, 19], [60, 12]].map(([x, y], i) => C(x, y, 3, 'f-c a-pop', `--t:${.4 + i * .3}s`)).join(''),
+    'gpu': () => { let s = ''; for (let y = 0; y < 5; y++) for (let x = 0; x < 8; x++) s += R(6 + x * 9, 6 + y * 9.5, 7, 7, 'f-b a-pulse', '', 1.5); return s; },
+    'quant': () => R(6, 12, 68, 12, 'f-v a-sx', '--s1:.125', 2) + range(8).map(i => L(6 + i * 8.5, 12, 6 + i * 8.5, 24, 's-l', 'stroke-width:1')).join('') + Tx(6, 42, '32bit → 4bit'),
+    'distill': () => C(18, 28, 14, 'f-k') + C(64, 28, 7, 'f-g a-pulse') + [-6, 0, 6].map((dy, i) => C(32, 28 + dy, 2.5, 'f-k a-move', `--dx:24px;--dy:${-dy * .6}px;--t:${i * .3}s`)).join(''),
+    'pos': () => P('M4 16 Q12 4 20 16 T36 16 T52 16 T68 16', 's-v a-draw', '--len:120') + range(4).map(i => R(6 + i * 18, 30, 14, 12, 'f-l', '', 2) + Tx(10 + i * 18, 52, i + 1, 'mt a-pop').replace('class="mt a-pop"', `class="mt a-pop" style="--t:${.3 + i * .2}s"`)).join(''),
+    'mha': () => { const xs = [10, 26, 42, 58, 74]; const arc = (a, b, cl, t) => P(`M${xs[a]} 42 Q${(xs[a] + xs[b]) / 2} ${42 - Math.abs(xs[a] - xs[b]) * .7} ${xs[b]} 42`, cl + ' a-draw', `--len:90;--t:${t}s`);
+      return arc(3, 1, 's-g', 0) + arc(3, 0, 's-b', .35) + arc(3, 4, 's-c', .7) + xs.map((x, i) => R(x - 6, 42, 12, 8, i === 3 ? 'f-k' : 'f-l', '', 2)).join(''); },
+    'ffn': () => bars([10, 14, 8, 12], () => 'f-b', 4, 6, 4, 40) + bars([18, 26, 12, 30, 22, 8, 28, 16], i => 'f-g a-gy', 28, 5, 3.5, 44, i => `--s0:.15;--t:${i * .06}s`) + bars([12, 9, 16, 10], () => 'f-c a-pop', 70, 2.5, 1.8, 40, () => '--t:1s') + Tx(4, 54, '확장 → 압축'),
+    'res': () => L(4, 32, 28, 32, 's-k') + R(28, 22, 26, 20, 'f-b', '', 3) + L(54, 32, 64, 32, 's-k') + P('M14 32 V10 H69 V26', 's-gr a-draw', '--len:90;stroke-width:2') + C(69, 32, 5.5, 'f-gr') + Tx(66, 35.5, '+', 'mt') + L(75, 32, 79, 32, 's-k'),
+    'moe': () => C(40, 9, 5, 'f-k') + range(4).map(i => L(40, 14, 11.5 + i * 19, 34, 's-l') + R(4 + i * 19, 34, 15, 14, 'f-l', '', 3) + ([1, 3].includes(i) ? R(4 + i * 19, 34, 15, 14, 'f-g a-pulse', `--t:${i === 3 ? .1 : 0}s`, 3) : '')).join(''),
+  };
+  const cards = $$('.terms .tc');
+  cards.forEach(tc => {
+    const f = MINI[tc.dataset.m]; if (!f) return;
+    const m = document.createElement('span'); m.className = 'mini'; m.setAttribute('aria-hidden', 'true');
+    m.innerHTML = `<svg viewBox="0 0 80 56">${f()}</svg>`;
+    tc.insertBefore(m, tc.firstChild);
+  });
+
+  /* ---------- chapter chips and index, built from the term cards ---------- */
+  const CH = { '01': '기본 구조: 신경망', '02': '학습: 가중치 맞추기', '03': '대규모 언어 모델(LLM)', '04': '추론: 학습된 모델 쓰기', '05': '규모와 효율' };
+  const termsOf = ch => $$(`.slide[data-ch="${ch}"] .tc`);
+  $$('[data-terms-of]').forEach(el => { el.innerHTML = termsOf(el.dataset.termsOf).map(tc => `<button type="button" class="chip" data-term="${tc.id}">${tc.dataset.k}</button>`).join(''); });
+  $('#tindex').innerHTML = Object.keys(CH).map(ch => `<div><h6><span class="num">${ch}</span>${CH[ch]}</h6><div class="ch">${termsOf(ch).map(tc =>
+    `<button type="button" data-term="${tc.id}">${tc.dataset.k}<small>${tc.dataset.e}</small></button>`).join('')}</div></div>`).join('');
+  function gotoTerm(id) {
+    const tc = document.getElementById(id); if (!tc) return;
+    go(slides.indexOf(tc.closest('.slide')));
+    later(() => tc.classList.add('flash'), 700); later(() => tc.classList.remove('flash'), 3200);
+  }
+
+  /* ── navigation ── */
+  function restart(s) { s.classList.remove('in'); void s.offsetWidth; s.classList.add('in'); }
+  function runHook(s) { if (s.dataset.hook && HOOKS[s.dataset.hook]) HOOKS[s.dataset.hook](tk); }
+  function go(n, fromHash) {
+    n = Math.max(0, Math.min(N - 1, n));
+    if (n === cur) return;
+    clearAll();
+    $$('.tc.flash').forEach(x => x.classList.remove('flash'));
+    slides.forEach((s, k) => { s.classList.toggle('is-active', k === n); s.classList.toggle('in', k === n); s.classList.toggle('is-past', k < n); s.setAttribute('aria-hidden', k !== n); s.inert = k !== n; });
+    cur = n;
+    const s = slides[n]; s.scrollTop = 0;
+    root.classList.toggle('dk-on', s.classList.contains('dk'));
+    s.querySelectorAll('[data-count]').forEach(el => countUp(el));
+    runHook(s);
+    $('#progress').style.width = ((n + 1) / N * 100) + '%';
+    $('#count').textContent = `${n + 1} / ${N}`;
+    $('#notes').innerHTML = `<b>${n + 1}</b>${s.dataset.notes || ''}`;
+    if (!fromHash) history.replaceState(null, '', '#' + (n + 1));
+    if (reduced) drawBg(performance.now(), true);
+  }
+  slides.forEach((s, k) => { s.setAttribute('role', 'group'); s.setAttribute('aria-roledescription', 'slide'); s.setAttribute('aria-label', `${k + 1} / ${N}`); });
+  deck.addEventListener('click', e => {
+    const g = e.target.closest('[data-go]'); if (g) { go(slides.indexOf(document.getElementById(g.dataset.go))); return; }
+    const t = e.target.closest('[data-term]'); if (t) { gotoTerm(t.dataset.term); return; }
+    const r = e.target.closest('[data-replay]'); if (r) { const s = slides[cur]; clearAll(); restart(s); runHook(s); }
+  });
+  $('#prev').onclick = () => go(cur - 1);
+  $('#next').onclick = () => go(cur + 1);
+  $('#notesBtn').onclick = () => $('#notes').classList.toggle('show');
+  const fs = () => { try { document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen?.().catch(() => {}); } catch (e) {} };
+  $('#fsBtn').onclick = fs;
+  const isDark = () => root.dataset.theme ? root.dataset.theme === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
+  $('#themeBtn').onclick = () => {
+    root.dataset.theme = isDark() ? 'light' : 'dark';
+    try { localStorage.setItem('archive-theme', root.dataset.theme); } catch (e) {}
+    paintEmb(); drawBg(performance.now(), true);
+  };
+  addEventListener('keydown', e => {
+    if (e.metaKey || e.ctrlKey || e.altKey) return;
+    if (e.target.closest && e.target.closest('input, textarea, select')) return;   // sliders and the tokenizer box keep their keys
+    if (['ArrowRight', 'ArrowDown', 'PageDown', ' '].includes(e.key)) { e.preventDefault(); go(cur + 1); }
+    else if (['ArrowLeft', 'ArrowUp', 'PageUp'].includes(e.key)) { e.preventDefault(); go(cur - 1); }
+    else if (e.key === 'Home') go(0);
+    else if (e.key === 'End') go(N - 1);
+    else if (e.key === 'n' || e.key === 'N') $('#notes').classList.toggle('show');
+    else if (e.key === 'f' || e.key === 'F') fs();
+  });
+  let tx = null, ty = 0;
+  addEventListener('touchstart', e => { if (e.target.closest('input')) { tx = null; return; } tx = e.touches[0].clientX; ty = e.touches[0].clientY; }, { passive: true });
+  addEventListener('touchend', e => {
+    if (tx === null) return;
+    const d = e.changedTouches[0].clientX - tx, dy = e.changedTouches[0].clientY - ty; tx = null;
+    if (Math.abs(d) > 50 && Math.abs(d) > Math.abs(dy) * 1.3) go(cur + (d < 0 ? 1 : -1));
+  });
+  const fromHashN = () => (parseInt(location.hash.slice(1), 10) || 1) - 1;
+  addEventListener('hashchange', () => go(fromHashN(), true));
+
+  /* ── background: a slow field of dots, brighter where a wave passes ── */
+  const cv = $('#bgfx'), g = cv.getContext('2d');
+  let W, H, dpr;
+  const size = () => { dpr = Math.min(2, devicePixelRatio || 1); W = innerWidth; H = innerHeight; cv.width = W * dpr; cv.height = H * dpr; g.setTransform(dpr, 0, 0, dpr, 0, 0); };
+  size(); addEventListener('resize', () => { size(); drawBg(performance.now(), true); });
+  let last = 0;
+  function drawBg(t, force) {
+    if (!force && t - last < 50) return; last = t;
+    g.clearRect(0, 0, W, H);
+    const dk = root.classList.contains('dk-on') || isDark(), col = dk ? '213,168,68' : '168,122,18', k = dk ? 1 : .75;
+    const step = 26, s = t / 1000;
+    for (let y = step / 2; y < H; y += step) for (let x = step / 2; x < W; x += step) {
+      const w = Math.sin(x * .006 + s * .6) + Math.sin(y * .008 - s * .4) + Math.sin((x + y) * .004 + s * .3);
+      g.fillStyle = `rgba(${col},${((.05 + Math.max(0, w) * .045) * k).toFixed(3)})`; g.fillRect(x - 1, y - 1, 2, 2);
+    }
+  }
+  const loopBg = t => { requestAnimationFrame(loopBg); drawBg(t); };
+  if (reduced) drawBg(0, true); else requestAnimationFrame(loopBg);
+
+  go(fromHashN(), true);
+})();
+</script>
+</body>
+</html>

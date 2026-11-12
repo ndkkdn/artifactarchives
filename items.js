@@ -12,6 +12,16 @@ window.ITEMS = [
     "hidden": true
   },
   {
+    "href": "ai-terms-slides/",
+    "title": "AI 작동 원리 필수 용어 (슬라이드형)",
+    "desc": "구조 → 학습 → 추론의 흐름을 따라 필수 용어 42개를 정리한 42장 슬라이드. 용어 카드마다 미니 도해, 트랜스포머 구조도와 논문 Figure 1, 뉴런 계산기·학습률·온도·Top-k/Top-p 실험을 슬라이드 안에서 직접 조작할 수 있고, 폰 세로 화면 대응. Speaker Notes(N), Fullscreen(F).",
+    "type": "슬라이드",
+    "tags": ["기본기", "용어", "LLM"],
+    "date": "2026-11-12",
+    "thumb": "thumbs/ai-terms-slides.jpg",
+    "hidden": true
+  },
+  {
     "href": "ai-trends-2026-11-report/",
     "title": "최신 AI 핵심 동향 심층 분석 (스크롤형)",
     "desc": "같은 보고서를 위아래로 스크롤해 읽는 상세 리포트. METR 가속 경주, 가중치 교정 애니메이션, 바둑판 코드 타이핑, dots 구조도, 직접 조절하는 Low-First 비용 시뮬레이터.",
