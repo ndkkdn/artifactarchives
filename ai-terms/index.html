@@ -1,0 +1,1186 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="신경망 구조, 학습, LLM, 추론, 규모와 효율까지. AI가 작동하는 과정을 따라 필수 용어 36개를 스크롤로 읽는 리포트">
+<title>AI 작동 원리 용어</title>
+<link rel="icon" href="../favicon.ico" sizes="any">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&family=Noto+Serif+KR:wght@600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<style>
+/* Layout and tokens follow ai-trends-2026-11-report (editorial long-read, dark hero, TOC rail, 760px column). */
+:root {
+  --bg: #f6f2e8; --paper: #fffdf7; --paper-2: #efe9da; --ink: #101a2c; --ink-2: #4a5263; --ink-3: #7d8494;
+  --line: #e2dac6; --gold: #a87a12; --gold-soft: #f4e8c8; --coral: #d8461c; --coral-soft: #fbe3d8;
+  --blue: #2a63d4; --blue-soft: #e2ebfb; --green: #13865a; --green-soft: #dcf1e7; --violet: #6b4fd0; --violet-soft: #ebe5fb;
+  --redact: #101a2c; --code: #f0ebde;
+  --shadow: 0 1px 2px rgba(40, 30, 10, .05), 0 12px 32px rgba(40, 30, 10, .07);
+  --sans: "Pretendard Variable", Pretendard, Inter, -apple-system, system-ui, sans-serif;
+  --serif: "Noto Serif KR", "Pretendard Variable", serif;
+  --en: Inter, "Pretendard Variable", sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  --ease: cubic-bezier(.2, .8, .2, 1);
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0b1322; --paper: #111b2e; --paper-2: #17233a; --ink: #f1ede2; --ink-2: #b9bccb; --ink-3: #868ca0;
+    --line: #233150; --gold: #e0b450; --gold-soft: #2b2512; --coral: #ff7a4f; --coral-soft: #351a12;
+    --blue: #79a8ff; --blue-soft: #15223f; --green: #4fd09a; --green-soft: #0f2a20; --violet: #a993ff; --violet-soft: #1f1a3a;
+    --redact: #000; --code: #0d1626; --shadow: 0 1px 2px rgba(0,0,0,.4), 0 12px 32px rgba(0,0,0,.35);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0b1322; --paper: #111b2e; --paper-2: #17233a; --ink: #f1ede2; --ink-2: #b9bccb; --ink-3: #868ca0;
+  --line: #233150; --gold: #e0b450; --gold-soft: #2b2512; --coral: #ff7a4f; --coral-soft: #351a12;
+  --blue: #79a8ff; --blue-soft: #15223f; --green: #4fd09a; --green-soft: #0f2a20; --violet: #a993ff; --violet-soft: #1f1a3a;
+  --redact: #000; --code: #0d1626; --shadow: 0 1px 2px rgba(0,0,0,.4), 0 12px 32px rgba(0,0,0,.35);
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 76px; -webkit-text-size-adjust: 100%; }
+body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--sans); font-size: 17px; line-height: 1.82;
+  -webkit-font-smoothing: antialiased; word-break: keep-all; overflow-wrap: break-word; }
+a { color: var(--blue); text-underline-offset: 3px; }
+:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; border-radius: 4px; }
+.gutter { padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+@media (min-width: 640px) { .gutter { padding-left: max(28px, env(safe-area-inset-left, 0px)); padding-right: max(28px, env(safe-area-inset-right, 0px)); } }
+.mono { font-family: var(--mono); }
+.en { font-family: var(--en); }
+
+/* ---------- motion primitives: an ancestor gets .in when scrolled into view ---------- */
+@keyframes rise { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
+@keyframes pop { 0% { opacity: 0; transform: scale(.55); } 70% { transform: scale(1.06); } 100% { opacity: 1; transform: none; } }
+@keyframes growX { from { transform: scaleX(0); } to { transform: none; } }
+@keyframes growY { from { transform: scaleY(0); } to { transform: none; } }
+@keyframes slideIn { from { opacity: 0; transform: translateX(-18px); } to { opacity: 1; transform: none; } }
+@keyframes strike { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+@keyframes dash { to { stroke-dashoffset: -24; } }
+@keyframes blink { 50% { opacity: 0; } }
+@keyframes stamp { 0% { opacity: 0; transform: rotate(-14deg) scale(2.2); } 60% { opacity: 1; transform: rotate(-14deg) scale(.94); } 100% { opacity: 1; transform: rotate(-14deg) scale(1); } }
+@keyframes pulse { 0%, 100% { opacity: .35; } 50% { opacity: 1; } }
+.rv, .pop, .gx, .gy, .si { opacity: 1; }
+.js .rv, .js .pop, .js .si { opacity: 0; }
+.js .gx, .js .gy { transform: scaleX(0); }
+.js .gy { transform: scaleY(0); }
+.in .rv, .rv.in { animation: rise .7s var(--ease) both; animation-delay: var(--d, 0ms); }
+.in .pop { animation: pop .55s var(--ease) both; animation-delay: var(--d, 0ms); }
+.in .si { animation: slideIn .55s var(--ease) both; animation-delay: var(--d, 0ms); }
+.in .gx { transform-origin: left center; animation: growX .9s var(--ease) both; animation-delay: var(--d, 0ms); }
+.in .gy { transform-origin: bottom; animation: growY .8s var(--ease) both; animation-delay: var(--d, 0ms); }
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .js .rv, .js .pop, .js .si { opacity: 1; }
+  .js .gx, .js .gy { transform: none; }
+  *, *::before, *::after { animation-duration: .001ms !important; animation-delay: 0ms !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important; }
+}
+
+/* ---------- top bar ---------- */
+.topbar { position: sticky; top: 0; z-index: 20; background: color-mix(in srgb, var(--bg) 86%, transparent);
+  backdrop-filter: saturate(1.4) blur(14px); -webkit-backdrop-filter: saturate(1.4) blur(14px); border-bottom: 1px solid var(--line); }
+.topbar-in { max-width: 1180px; margin: 0 auto; height: 58px; display: flex; align-items: center; gap: 10px; }
+.crumb { display: flex; align-items: center; gap: 8px; min-width: 0; font-size: 14px; color: var(--ink-2); text-decoration: none; }
+.crumb b { color: var(--ink); font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.crumb .arch { font-family: var(--en); font-weight: 600; letter-spacing: .02em; white-space: nowrap; }
+.crumb .sep { color: var(--ink-3); }
+.topbar .sp { flex: 1; }
+.btn { appearance: none; border: 1px solid var(--line); background: var(--paper); color: var(--ink); height: 36px; padding: 0 13px;
+  border-radius: 999px; font: 600 13px/1 var(--sans); display: inline-flex; align-items: center; gap: 6px; cursor: pointer; text-decoration: none; white-space: nowrap; }
+.btn:hover { border-color: var(--gold); }
+.btn svg { width: 16px; height: 16px; }
+.progress { position: absolute; left: 0; bottom: -1px; height: 2px; width: 100%; background: var(--gold); transform-origin: left; transform: scaleX(0); }
+@media (max-width: 560px) { .crumb .arch, .crumb .sep { display: none; } .btn .lbl { display: none; } .btn { padding: 0 10px; } }
+
+/* ---------- hero ---------- */
+.hero { position: relative; overflow: hidden; background: #0c1524; color: #f3efe4; }
+.hero::before { content: ""; position: absolute; inset: -40px; opacity: .5;
+  background-image: radial-gradient(rgba(243,239,228,.16) 1.2px, transparent 1.4px); background-size: 22px 22px;
+  -webkit-mask-image: radial-gradient(ellipse 70% 80% at 70% 20%, #000 10%, transparent 75%); mask-image: radial-gradient(ellipse 70% 80% at 70% 20%, #000 10%, transparent 75%);
+  animation: drift 40s linear infinite; }
+@keyframes drift { to { transform: translate(22px, 22px); } }
+.hero-in { position: relative; max-width: 1180px; margin: 0 auto; padding: 72px 0 56px; }
+.kicker { font: 600 12.5px/1 var(--en); letter-spacing: .18em; text-transform: uppercase; color: #d5a844; display: flex; gap: 10px; align-items: center; }
+.kicker::before { content: ""; width: 26px; height: 1px; background: currentColor; }
+/* cover title: Paperlogy ExtraBold (SIL OFL, via jsDelivr/project noonnu) */
+@font-face { font-family: "Paperlogy"; font-weight: 800; font-style: normal; font-display: swap; src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/2408-3@1.0/Paperlogy-8ExtraBold.woff2") format("woff2"); }
+.hero h1 { font-family: "Paperlogy", var(--sans); font-weight: 800; font-size: clamp(34px, 5.6vw, 64px); line-height: 1.2; letter-spacing: -.02em; margin: 20px 0 18px; max-width: 15em; }
+.hero h1 em { font-style: normal; color: #d5a844; }
+.hero .lede { max-width: 640px; font-size: clamp(16px, 1.7vw, 19px); color: rgba(243,239,228,.78); margin: 0; }
+.hero .lede b { color: #f3efe4; }
+.meta { margin-top: 22px; display: flex; flex-wrap: wrap; gap: 8px 18px; font-size: 13.5px; color: rgba(243,239,228,.55); }
+.meta span { display: inline-flex; gap: 6px; align-items: center; }
+
+.shift { margin-top: 44px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0; position: relative; }
+.shift .st { position: relative; padding: 18px 18px 18px 0; }
+.shift .st .n { font: 700 12px/1 var(--mono); color: rgba(243,239,228,.45); }
+.shift .st h3 { margin: 10px 0 6px; font-size: clamp(16px, 2vw, 21px); line-height: 1.35; }
+.shift .st p { margin: 0; font-size: 14px; color: rgba(243,239,228,.62); line-height: 1.6; }
+.shift .st.old h3 { color: rgba(243,239,228,.55); }
+.shift .st.new h3 { color: #d5a844; }
+.shift .rail { position: absolute; left: 0; right: 0; top: 0; height: 2px; background: rgba(243,239,228,.14); }
+.shift .rail i { position: absolute; inset: 0; background: linear-gradient(90deg, rgba(243,239,228,.4), #d5a844 60%, #f0542a); transform-origin: left; transform: scaleX(0); }
+.in .shift .rail i { animation: growX 2.4s var(--ease) .5s both; }
+.shift .st::before { content: ""; position: absolute; top: -6px; left: 0; width: 12px; height: 12px; border-radius: 50%; background: #0c1524; border: 2px solid rgba(243,239,228,.4); }
+.shift .st.new::before { border-color: #d5a844; background: #d5a844; box-shadow: 0 0 0 6px rgba(213,168,68,.18); }
+.shift .glow { position: absolute; top: -5px; width: 10px; height: 10px; border-radius: 50%; background: #fff; box-shadow: 0 0 14px 4px rgba(213,168,68,.8); left: 0; opacity: 0; }
+.in .shift .glow { animation: travel 3.6s var(--ease) 1s infinite; }
+@keyframes travel { 0% { left: 0; opacity: 0; } 10% { opacity: 1; } 80% { opacity: 1; } 100% { left: calc(100% - 10px); opacity: 0; } }
+@media (max-width: 720px) {
+  .shift { grid-template-columns: minmax(0, 1fr); padding-left: 22px; }
+  .shift .rail { left: 5px; right: auto; top: 0; bottom: 0; width: 2px; height: auto; }
+  .shift .rail i { transform-origin: top; }
+  .in .shift .rail i { animation-name: growY; }
+  .shift .st { padding: 0 0 22px; }
+  .shift .st::before { left: -22px; top: 4px; }
+  .shift .glow { display: none; }
+}
+
+.stats { margin-top: 40px; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); border-top: 1px solid rgba(243,239,228,.12); }
+.stats a { padding: 18px 14px 4px 0; color: inherit; text-decoration: none; border-right: 1px solid rgba(243,239,228,.08); padding-left: 14px; }
+.stats a:first-child { padding-left: 0; }
+.stats a:last-child { border-right: 0; }
+.stats b { display: block; font: 800 clamp(24px, 3.2vw, 36px)/1.1 var(--en); letter-spacing: -.02em; color: #f3efe4; font-variant-numeric: tabular-nums; }
+.stats span { display: block; margin-top: 6px; font-size: 12.5px; line-height: 1.45; color: rgba(243,239,228,.55); }
+.stats a:hover b { color: #d5a844; }
+@media (max-width: 820px) { .stats { grid-template-columns: repeat(3, minmax(0, 1fr)); } .stats a:nth-child(3) { border-right: 0; } .stats a:nth-child(4) { padding-left: 0; } }
+@media (max-width: 480px) { .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); } .stats a { border-right: 0 !important; padding-left: 0 !important; } }
+
+/* ---------- shell ---------- */
+.shell { max-width: 1180px; margin: 0 auto; display: grid; grid-template-columns: 220px minmax(0, 1fr); gap: 56px; padding-top: 48px; }
+.toc { position: sticky; top: 82px; align-self: start; max-height: calc(100vh - 100px); overflow: auto; }
+.toc h4 { margin: 0 0 12px; font: 700 11.5px/1 var(--en); letter-spacing: .16em; color: var(--ink-3); }
+.toc ol { list-style: none; margin: 0; padding: 0; border-left: 1px solid var(--line); }
+.toc a { display: flex; gap: 10px; padding: 7px 0 7px 14px; margin-left: -1px; border-left: 2px solid transparent; font-size: 14px; line-height: 1.45; color: var(--ink-2); text-decoration: none; }
+.toc a .n { font: 600 11.5px/1.9 var(--mono); color: var(--ink-3); min-width: 18px; }
+.toc a:hover { color: var(--ink); }
+.toc a.on { border-left-color: var(--gold); color: var(--ink); font-weight: 650; }
+.toc a.on .n { color: var(--gold); }
+.toc-mobile { display: none; }
+article { max-width: 760px; min-width: 0; padding-bottom: 40px; }
+@media (max-width: 1000px) {
+  .shell { grid-template-columns: minmax(0, 1fr); gap: 0; padding-top: 28px; }
+  .toc { display: none; }
+  .toc-mobile { display: block; margin: 0 auto 8px; max-width: 760px; border: 1px solid var(--line); background: var(--paper); border-radius: 14px; }
+  .toc-mobile summary { cursor: pointer; padding: 12px 16px; font-weight: 700; font-size: 14px; list-style: none; display: flex; justify-content: space-between; }
+  .toc-mobile summary::after { content: "+"; color: var(--ink-3); }
+  .toc-mobile[open] summary::after { content: "−"; }
+  .toc-mobile ol { list-style: none; margin: 0; padding: 0 16px 12px; }
+  .toc-mobile a { display: flex; gap: 10px; padding: 6px 0; font-size: 14.5px; color: var(--ink-2); text-decoration: none; }
+  .toc-mobile a .n { font: 600 12px/1.9 var(--mono); color: var(--ink-3); min-width: 20px; }
+  article { margin: 0 auto; width: 100%; }
+}
+
+/* ---------- article typography ---------- */
+section { padding: 40px 0 28px; border-bottom: 1px solid var(--line); }
+section:last-of-type { border-bottom: 0; }
+.sec-label { display: inline-flex; gap: 8px; align-items: center; font: 700 12px/1 var(--en); letter-spacing: .14em; text-transform: uppercase; color: var(--gold); }
+.sec-label .num { font-family: var(--mono); }
+/* section titles: Paperlogy Bold (SIL OFL, via jsDelivr/project noonnu) */
+@font-face { font-family: "Paperlogy"; font-weight: 700; font-style: normal; font-display: swap; src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/2408-3@1.0/Paperlogy-7Bold.woff2") format("woff2"); }
+h2 { font-family: "Paperlogy", var(--sans); font-weight: 700; font-size: clamp(26px, 3.4vw, 36px); line-height: 1.32; letter-spacing: -.02em; margin: 12px 0 18px; }
+h3 { font-family: "Paperlogy", var(--sans); font-weight: 700; font-size: 20px; line-height: 1.45; letter-spacing: -.015em; margin: 34px 0 10px; }
+h3 .hn { font: 700 13px/1 var(--mono); color: var(--gold); margin-right: 8px; vertical-align: 2px; }
+p { margin: 0 0 16px; }
+strong { font-weight: 700; }
+mark { background: linear-gradient(transparent 58%, var(--gold-soft) 58%); color: inherit; padding: 0 1px; }
+.standfirst { font-size: 19px; line-height: 1.72; color: var(--ink-2); }
+.standfirst b { color: var(--ink); }
+ul.dots { margin: 0 0 18px; padding: 0; list-style: none; }
+ul.dots li { position: relative; padding-left: 20px; margin: 6px 0; }
+ul.dots li::before { content: ""; position: absolute; left: 4px; top: .78em; width: 6px; height: 6px; border-radius: 50%; background: var(--gold); }
+code { font-family: var(--mono); font-size: .86em; background: var(--code); padding: 2px 6px; border-radius: 6px; }
+.note { font-size: 13.5px; color: var(--ink-3); line-height: 1.6; margin: 10px 2px 0; }
+.note b { color: var(--ink-2); }
+.callout { border: 1px solid var(--line); border-left: 3px solid var(--gold); background: var(--paper); border-radius: 4px 14px 14px 4px; padding: 16px 20px; margin: 22px 0; font-size: 16px; }
+.callout.warn { border-left-color: var(--coral); }
+.callout .tag { display: inline-block; font: 700 11.5px/1 var(--en); letter-spacing: .12em; text-transform: uppercase; color: var(--gold); margin-bottom: 8px; }
+.callout.warn .tag { color: var(--coral); }
+.callout p:last-child { margin-bottom: 0; }
+
+/* ---------- figure shell ---------- */
+.fig { margin: 26px 0 30px; background: var(--paper); border: 1px solid var(--line); border-radius: 18px; box-shadow: var(--shadow); padding: 22px; overflow: hidden; }
+.fig-h { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; }
+.fig-h .t { font-weight: 700; font-size: 15px; }
+.fig-h .s { font-size: 12.5px; color: var(--ink-3); }
+.replay { appearance: none; border: 1px solid var(--line); background: transparent; color: var(--ink-2); font: 600 12px/1 var(--sans); padding: 6px 10px; border-radius: 999px; cursor: pointer; }
+.replay:hover { color: var(--ink); border-color: var(--gold); }
+figcaption { font-size: 13.5px; color: var(--ink-3); margin-top: 14px; line-height: 1.6; }
+@media (max-width: 560px) { .fig { padding: 16px; border-radius: 14px; margin-left: -4px; margin-right: -4px; } }
+/* typing caret, legend */
+.caret { display: inline-block; width: 2px; height: 1em; background: currentColor; vertical-align: -2px; margin-left: 1px; animation: blink 1s steps(1) infinite; }
+.legend { display: flex; gap: 14px; flex-wrap: wrap; font-size: 12.5px; color: var(--ink-3); margin-top: 12px; }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.legend i { width: 10px; height: 10px; border-radius: 3px; display: inline-block; }
+
+/* quote */
+.quote { margin: 30px 0; padding: 34px 28px; border-radius: 20px; background: #0c1524; border: 1px solid var(--line); color: #f3efe4; position: relative; overflow: hidden; }
+.quote::before { content: "\201C"; position: absolute; left: 18px; top: -18px; font: 700 120px/1 var(--serif); color: rgba(213,168,68,.22); }
+.quote .q { position: relative; font: 700 clamp(20px, 2.8vw, 27px)/1.6 var(--serif); min-height: 3.3em; }
+.quote .q em { font-style: normal; color: #d5a844; }
+.quote .by { margin-top: 12px; font-size: 13px; color: rgba(243,239,228,.5); }
+@media (max-width: 560px) { .quote { padding: 26px 20px; } .quote .q { min-height: 6.4em; } }
+
+/* conclusion */
+.concl { display: grid; gap: 12px; counter-reset: c; margin-top: 8px; }
+.concl .cc { display: grid; grid-template-columns: 52px minmax(0, 1fr); gap: 16px; padding: 18px; border-radius: 16px; background: var(--paper); border: 1px solid var(--line); text-decoration: none; color: inherit; transition: border-color .2s, transform .2s; }
+.concl .cc:hover { border-color: var(--gold); transform: translateY(-2px); }
+.concl .cc .ix { font: 800 30px/1 var(--en); color: var(--gold); letter-spacing: -.03em; }
+.concl .cc h6 { margin: 2px 0 4px; font-size: 16.5px; }
+.concl .cc p { margin: 0; font-size: 14.5px; color: var(--ink-2); line-height: 1.65; }
+
+.endnote { margin-top: 26px; font-size: 13.5px; color: var(--ink-3); line-height: 1.7; }
+footer.site { border-top: 1px solid var(--line); margin-top: 24px; }
+footer.site .in-wrap { max-width: 1180px; margin: 0 auto; padding: 22px 0 40px; display: flex; flex-wrap: wrap; gap: 10px 22px; font-size: 13.5px; color: var(--ink-3); }
+footer.site a { color: var(--ink-2); }
+.totop { position: fixed; right: max(16px, env(safe-area-inset-right, 0px)); bottom: max(16px, env(safe-area-inset-bottom, 0px)); z-index: 15; width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--line); background: var(--paper); color: var(--ink); box-shadow: var(--shadow); display: grid; place-items: center; cursor: pointer; opacity: 0; pointer-events: none; transition: opacity .3s, transform .3s; transform: translateY(8px); }
+.totop.show { opacity: 1; pointer-events: auto; transform: none; }
+
+/* ---------- mobile tuning ---------- */
+.toc-btn { display: none; max-width: 52vw; }
+.toc-btn span { overflow: hidden; text-overflow: ellipsis; }
+.sheet { border: 0; padding: 0; margin: auto auto 0; width: 100%; max-width: 560px; max-height: 78vh; border-radius: 20px 20px 0 0;
+  background: var(--paper); color: var(--ink); box-shadow: 0 -10px 40px rgba(0,0,0,.25); padding-bottom: env(safe-area-inset-bottom, 0px); }
+.sheet[open] { animation: sheetUp .32s var(--ease); }
+@keyframes sheetUp { from { transform: translateY(100%); } to { transform: none; } }
+.sheet::backdrop { background: rgba(8, 12, 22, .45); }
+.sheet-h { display: flex; justify-content: space-between; align-items: center; padding: 18px 18px 8px; position: sticky; top: 0; background: var(--paper); }
+.sheet-h::before { content: ""; position: absolute; left: 50%; top: 7px; width: 38px; height: 4px; margin-left: -19px; border-radius: 2px; background: var(--line); }
+.sheet-x { appearance: none; border: 0; background: var(--paper-2); color: var(--ink-2); width: 36px; height: 36px; border-radius: 50%; font-size: 14px; cursor: pointer; }
+.sheet ol { list-style: none; margin: 0; padding: 4px 10px 18px; }
+.sheet a { display: flex; gap: 12px; align-items: center; min-height: 48px; padding: 6px 10px; border-radius: 12px; color: var(--ink-2); text-decoration: none; font-size: 16px; line-height: 1.4; }
+.sheet a .n { font: 600 12.5px/1 var(--mono); color: var(--ink-3); min-width: 22px; }
+.sheet a.on { background: var(--gold-soft); color: var(--ink); font-weight: 700; }
+.sheet a.on .n { color: var(--gold); }
+.crumb .back { display: none; font-size: 18px; color: var(--ink); }
+@media (hover: none) { .concl .cc:hover { transform: none; } }
+@media (max-width: 1000px) { .toc-btn { display: inline-flex; } }
+
+/* ---------- term cards ---------- */
+.terms { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin: 22px 0 8px; }
+.terms .tc { border: 1px solid var(--line); background: var(--paper); border-radius: 14px; padding: 15px 17px; min-width: 0; scroll-margin-top: 90px; }
+.terms .tc.wide { grid-column: 1 / -1; }
+.terms .tc:target { border-color: var(--gold); box-shadow: 0 0 0 3px var(--gold-soft); }
+.terms dt { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 8px; }
+.terms dt .ko { font-weight: 800; font-size: 16px; }
+.terms dt .enn { font: 600 12.5px/1.4 var(--en); color: var(--gold); }
+.terms dd { margin: 6px 0 0; font-size: 14.5px; color: var(--ink-2); line-height: 1.68; }
+.terms dd b { color: var(--ink); }
+@media (max-width: 640px) { .terms { grid-template-columns: minmax(0, 1fr); } }
+.terms .tc { opacity: 1; }
+.js .terms .tc { opacity: 0; }
+.terms.in .tc { animation: rise .6s var(--ease) both; animation-delay: var(--d, 0ms); }
+
+/* ---------- 01 network ---------- */
+.net { width: 100%; height: auto; display: block; }
+.net .e { stroke: var(--line); stroke-width: var(--w); transition: stroke .35s; }
+.net .e.on { stroke: var(--gold); stroke-dasharray: 5 5; animation: dash 1s linear infinite; }
+.net .e.neg.on { stroke: var(--blue); }
+.net .nd { fill: var(--bg); stroke: var(--ink-3); stroke-width: 2; transition: fill .35s, stroke .35s; }
+.net .nd.on { fill: var(--gold); stroke: var(--gold); }
+.net .nd.out.on { fill: var(--coral); stroke: var(--coral); }
+.net text { fill: var(--ink-2); font: 600 12.5px var(--sans); text-anchor: middle; }
+.net text.v { fill: #fff; font: 700 10px var(--mono); opacity: 0; transition: opacity .3s; }
+.net .on + text.v { opacity: 1; }
+.net-lg { display: flex; gap: 16px; flex-wrap: wrap; font-size: 12.5px; color: var(--ink-3); margin-top: 6px; }
+.net-lg span { display: inline-flex; align-items: center; gap: 6px; }
+.net-lg i { width: 18px; height: 3px; border-radius: 2px; display: inline-block; }
+
+.neuron { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 18px 24px; }
+@media (max-width: 600px) { .neuron { grid-template-columns: minmax(0, 1fr); } }
+.neuron .ins { display: grid; gap: 10px; }
+.neuron label { display: grid; grid-template-columns: 74px minmax(0, 1fr) 46px; align-items: center; gap: 10px; font-size: 13.5px; color: var(--ink-2); }
+.neuron label b { font: 700 13px var(--mono); color: var(--ink); text-align: right; }
+.neuron label .x { font: 600 12px var(--mono); color: var(--ink-3); }
+.neuron input[type=range] { width: 100%; accent-color: var(--gold); }
+.neuron .sw-row { display: flex; align-items: center; gap: 10px; font-size: 13.5px; color: var(--ink-2); cursor: pointer; margin-top: 4px; }
+.neuron .sw-row input { position: absolute; opacity: 0; pointer-events: none; }
+.neuron .sw-row input:focus-visible + .sw { outline: 2px solid var(--gold); outline-offset: 2px; }
+.neuron .sw-row input:checked + .sw { background: var(--green); }
+.neuron .sw-row input:checked + .sw::after { transform: translateX(20px); }
+.sw { width: 46px; height: 26px; border-radius: 999px; background: var(--line); position: relative; transition: background .3s; flex: none; }
+.sw::after { content: ""; position: absolute; top: 3px; left: 3px; width: 20px; height: 20px; border-radius: 50%; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,.25); transition: transform .3s var(--ease); }
+.neuron .calc { border-radius: 14px; background: var(--bg); border: 1px solid var(--line); padding: 16px; display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.neuron .eq { font: 500 13px/1.8 var(--mono); color: var(--ink-2); overflow-wrap: anywhere; }
+.neuron .eq b { color: var(--ink); }
+.neuron .out { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+.neuron .out b { font: 800 36px/1 var(--en); font-variant-numeric: tabular-nums; color: var(--coral); }
+.neuron .out span { font-size: 13px; color: var(--ink-3); }
+.neuron .meter2 { height: 12px; border-radius: 6px; background: var(--paper-2); position: relative; overflow: hidden; }
+.neuron .meter2 i { position: absolute; top: 0; bottom: 0; left: 50%; background: var(--coral); transition: all .3s var(--ease); }
+.neuron .meter2::after { content: ""; position: absolute; left: 50%; top: -2px; bottom: -2px; width: 1px; background: var(--ink-3); }
+
+/* ---------- 02 training loop ---------- */
+.loop { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; position: relative; }
+.loop .stp { border: 1.5px solid var(--line); border-radius: 14px; padding: 12px; background: var(--bg); transition: border-color .25s, background .25s, transform .25s; min-width: 0; }
+.loop .stp .k { font: 700 11.5px/1 var(--mono); color: var(--ink-3); }
+.loop .stp h6 { margin: 8px 0 4px; font-size: 15px; line-height: 1.3; }
+.loop .stp p { margin: 0; font-size: 12.5px; color: var(--ink-2); line-height: 1.5; }
+.loop .stp.on { border-color: var(--gold); background: var(--gold-soft); transform: translateY(-3px); }
+.loop .stp.on .k { color: var(--gold); }
+.loop .stp.back.on { border-color: var(--coral); background: var(--coral-soft); }
+.loop .stp.back.on .k { color: var(--coral); }
+.loop-back { height: 24px; margin: 4px 0 0; position: relative; }
+.loop-back svg { width: 100%; height: 100%; display: block; overflow: visible; }
+.loop-back path { fill: none; stroke: var(--ink-3); stroke-width: 1.5; stroke-dasharray: 4 4; vector-effect: non-scaling-stroke; }
+.in .loop-back path { animation: dash 1s linear infinite; }
+@media (max-width: 600px) { .loop { grid-template-columns: repeat(2, minmax(0, 1fr)); } .loop-back { display: none; } }
+.lossbox { margin-top: 14px; display: grid; grid-template-columns: minmax(0, 1fr) 150px; gap: 16px; align-items: center; }
+@media (max-width: 520px) { .lossbox { grid-template-columns: minmax(0, 1fr); } }
+.lossbox svg { width: 100%; height: 120px; display: block; }
+.lossbox .ax { stroke: var(--line); stroke-width: 1; }
+.lossbox .curve { fill: none; stroke: var(--coral); stroke-width: 2.5; stroke-linejoin: round; stroke-linecap: round; }
+.lossbox .pt { fill: var(--coral); }
+.lossbox .lbl { fill: var(--ink-3); font: 500 11px var(--mono); }
+.lossbox .read b { display: block; font: 800 32px/1 var(--en); font-variant-numeric: tabular-nums; color: var(--coral); }
+.lossbox .read span { display: block; font-size: 12.5px; color: var(--ink-3); margin-top: 4px; }
+.lossbox .read .ep { font: 700 13px var(--mono); color: var(--ink-2); margin-top: 10px; }
+
+.gd svg { width: 100%; max-width: 560px; height: auto; display: block; margin: 0 auto; }
+.gd .curve { fill: none; stroke: var(--ink-3); stroke-width: 2; }
+.gd .trail { fill: none; stroke: var(--gold); stroke-width: 1.5; stroke-dasharray: 3 4; }
+.gd .ball { fill: var(--coral); stroke: var(--paper); stroke-width: 2; }
+.gd .ghost { fill: var(--gold); opacity: .45; }
+.gd .min { fill: var(--green); }
+.gd text { fill: var(--ink-3); font: 500 11.5px var(--sans); }
+.gd-ctl { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 12px 16px; align-items: center; margin-top: 12px; }
+.gd-ctl label { display: grid; gap: 6px; font-size: 13.5px; color: var(--ink-2); }
+.gd-ctl label span { display: flex; justify-content: space-between; }
+.gd-ctl label b { font-family: var(--mono); color: var(--ink); }
+.gd-ctl input { width: 100%; accent-color: var(--gold); }
+.go-btn { appearance: none; border: 0; background: var(--ink); color: var(--bg); font: 700 13.5px/1 var(--sans); padding: 11px 16px; border-radius: 999px; cursor: pointer; white-space: nowrap; min-height: 40px; }
+.go-btn:hover { background: var(--gold); color: #1b1606; }
+.verdict { margin-top: 14px; padding: 12px 14px; border-radius: 12px; font-size: 14px; line-height: 1.55; background: var(--paper-2); color: var(--ink); }
+.verdict.ok { background: var(--green-soft); }
+.verdict.bad { background: var(--coral-soft); }
+.verdict.mid { background: var(--gold-soft); }
+.verdict b { font-weight: 800; }
+.presets { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 10px; }
+.presets button { appearance: none; border: 1px solid var(--line); background: var(--bg); color: var(--ink-2); font: 600 12.5px/1 var(--sans); padding: 8px 11px; border-radius: 999px; cursor: pointer; }
+.presets button:hover { border-color: var(--gold); color: var(--ink); }
+
+/* ---------- 03 tokens & attention ---------- */
+.tok-in { width: 100%; font: 500 15px/1.5 var(--sans); color: var(--ink); background: var(--bg); border: 1px solid var(--line); border-radius: 12px; padding: 11px 14px; }
+.tok-in:focus { outline: none; border-color: var(--gold); box-shadow: 0 0 0 3px var(--gold-soft); }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 14px; min-height: 40px; }
+.chips .tk { display: inline-flex; flex-direction: column; align-items: center; gap: 3px; padding: 6px 9px 5px; border-radius: 9px; font: 600 14px/1.2 var(--sans); white-space: pre; }
+.chips .tk small { font: 500 10px/1 var(--mono); opacity: .7; }
+.chips .tk:nth-child(5n+1) { background: var(--blue-soft); color: var(--blue); }
+.chips .tk:nth-child(5n+2) { background: var(--gold-soft); color: var(--gold); }
+.chips .tk:nth-child(5n+3) { background: var(--green-soft); color: var(--green); }
+.chips .tk:nth-child(5n+4) { background: var(--violet-soft); color: var(--violet); }
+.chips .tk:nth-child(5n+5) { background: var(--coral-soft); color: var(--coral); }
+.in .chips .tk { animation: pop .4s var(--ease) both; animation-delay: var(--d, 0ms); }
+.tok-stat { display: flex; gap: 18px; flex-wrap: wrap; margin-top: 14px; padding-top: 12px; border-top: 1px dashed var(--line); font-size: 13.5px; color: var(--ink-2); }
+.tok-stat b { font: 800 22px/1 var(--en); color: var(--ink); margin-right: 4px; font-variant-numeric: tabular-nums; }
+.emb { margin-top: 14px; display: grid; grid-template-columns: repeat(16, minmax(0, 1fr)); gap: 3px; max-width: 400px; }
+.emb i { aspect-ratio: 1; border-radius: 3px; display: block; }
+.emb-lbl { font-size: 12.5px; color: var(--ink-3); margin-top: 6px; }
+
+.attn .row { display: flex; flex-wrap: wrap; gap: 6px; }
+.attn button.q { appearance: none; border: 1.5px solid var(--line); background: var(--bg); color: var(--ink); font: 700 15px/1.2 var(--sans); padding: 10px 12px 8px; border-radius: 10px; cursor: pointer; display: inline-flex; flex-direction: column; align-items: center; gap: 4px; min-width: 58px;
+  background: color-mix(in srgb, var(--gold) calc(var(--a, 0) * 100%), var(--bg)); transition: background .35s, border-color .2s; }
+.attn button.q small { font: 600 10.5px/1 var(--mono); color: var(--ink-2); }
+.attn button.q.sel { border-color: var(--coral); box-shadow: 0 0 0 3px var(--coral-soft); background: var(--bg); }
+.attn button.q.sel small { color: var(--coral); }
+.attn .hint { font-size: 13.5px; color: var(--ink-2); margin: 14px 0 0; }
+.attn .hint b { color: var(--ink); }
+.attn .bars { margin-top: 12px; display: grid; gap: 5px; }
+.attn .bars div { display: grid; grid-template-columns: 72px minmax(0, 1fr) 40px; gap: 10px; align-items: center; font-size: 13px; color: var(--ink-2); }
+.attn .bars .tr { height: 10px; border-radius: 5px; background: var(--paper-2); overflow: hidden; }
+.attn .bars .tr i { display: block; height: 100%; background: var(--gold); border-radius: 5px; transition: width .45s var(--ease); }
+.attn .bars b { font: 700 12px var(--mono); text-align: right; color: var(--ink); }
+
+.ctx { display: grid; grid-template-columns: repeat(40, minmax(0, 1fr)); gap: 2px; margin-top: 4px; }
+.ctx i { height: 18px; border-radius: 2px; background: var(--paper-2); display: block; transition: background .2s; }
+.ctx i.in-w { background: var(--blue); }
+.ctx i.out-w { background: var(--ink-3); opacity: .35; }
+.ctx-lbl { display: flex; justify-content: space-between; font-size: 12.5px; color: var(--ink-3); margin-top: 8px; gap: 10px; flex-wrap: wrap; }
+
+/* ---------- 04 generation ---------- */
+.ar { display: grid; gap: 10px; }
+.ar .r { display: flex; flex-wrap: wrap; gap: 5px; align-items: center; }
+.ar .r .s { font: 700 11px/1 var(--mono); color: var(--ink-3); width: 44px; flex: none; }
+.ar .t { padding: 6px 9px; border-radius: 8px; font-size: 14px; font-weight: 600; border: 1.5px solid transparent; }
+.ar .t.c { background: var(--paper-2); color: var(--ink-3); }
+.ar .t.n { background: var(--gold-soft); color: var(--ink); border-color: var(--gold); }
+.ar .t.p { background: var(--coral); color: #fff; }
+.ar .arrow { color: var(--ink-3); font-size: 14px; margin: 0 2px; }
+.js .ar .r { opacity: 0; }
+.in .ar .r { animation: slideIn .5s var(--ease) both; animation-delay: var(--d); }
+
+.gen .prompt { font: 700 clamp(18px, 2.4vw, 22px)/1.5 var(--sans); margin-bottom: 14px; }
+.gen .prompt .blank { display: inline-block; min-width: 3.4em; padding: 0 8px; border-bottom: 2px solid var(--coral); color: var(--coral); text-align: center; }
+.gen .cand { display: grid; gap: 6px; }
+.gen .cand div { display: grid; grid-template-columns: 64px minmax(0, 1fr) 52px 34px; gap: 10px; align-items: center; font-size: 14px; }
+.gen .cand .w { font-weight: 700; }
+.gen .cand .tr { height: 18px; border-radius: 5px; background: var(--paper-2); overflow: hidden; }
+.gen .cand .tr i { display: block; height: 100%; background: var(--blue); border-radius: 5px; transition: width .35s var(--ease); }
+.gen .cand .p { font: 700 12.5px var(--mono); text-align: right; font-variant-numeric: tabular-nums; }
+.gen .cand .cnt { font: 700 12px var(--mono); color: var(--coral); text-align: right; }
+.gen .cand div.hit .tr i { background: var(--coral); }
+.gen .lg-row { display: flex; justify-content: space-between; font-size: 12px; color: var(--ink-3); margin: 0 0 6px; gap: 10px; }
+.gen-ctl { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 12px 16px; align-items: end; margin-top: 16px; }
+.gen-ctl label { display: grid; gap: 6px; font-size: 13.5px; color: var(--ink-2); }
+.gen-ctl label span { display: flex; justify-content: space-between; }
+.gen-ctl label b { font-family: var(--mono); color: var(--ink); }
+.gen-ctl input { width: 100%; accent-color: var(--coral); }
+@media (max-width: 480px) { .gen .cand div { grid-template-columns: 56px minmax(0, 1fr) 46px 28px; gap: 8px; } }
+
+/* ---------- 05 scale ---------- */
+.qz { display: grid; gap: 10px; }
+.qz .row { display: grid; grid-template-columns: 96px minmax(0, 1fr) 62px; gap: 12px; align-items: center; font-size: 13.5px; }
+.qz .row .nm b { display: block; font: 700 13px var(--en); color: var(--ink); }
+.qz .row .nm small { color: var(--ink-3); font-size: 12px; }
+.qz .trk { position: relative; height: 26px; }
+.qz .trk .bar { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 6px; background: var(--violet); width: var(--w); }
+.qz .row.fit .trk .bar { background: var(--green); }
+.qz .gb { font: 700 14px var(--mono); text-align: right; font-variant-numeric: tabular-nums; }
+.qz .row.fit .gb { color: var(--green); }
+.qz .lim { position: absolute; top: -6px; bottom: -6px; width: 0; border-left: 2px dashed var(--coral); left: var(--x); }
+.qz .lim-lbl { position: relative; height: 18px; margin-left: 108px; margin-right: 74px; font: 600 11.5px/1 var(--sans); color: var(--coral); }
+.qz .lim-lbl span { position: absolute; left: var(--x); transform: translateX(-50%); white-space: nowrap; }
+@media (max-width: 480px) {
+  .qz .row { grid-template-columns: 72px minmax(0, 1fr) 52px; gap: 8px; }
+  .qz .lim-lbl { margin-left: 80px; margin-right: 60px; }
+}
+.bits { display: flex; gap: 2px; margin-top: 4px; }
+.bits i { width: 6px; height: 10px; border-radius: 1.5px; background: currentColor; opacity: .85; display: block; }
+
+.moe { display: grid; gap: 14px; }
+.moe .tokq { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; font-size: 13px; color: var(--ink-3); }
+.moe .tokq span { padding: 6px 10px; border-radius: 8px; background: var(--paper-2); color: var(--ink-3); font-weight: 600; font-size: 14px; transition: all .25s; }
+.moe .tokq span.cur { background: var(--coral); color: #fff; transform: translateY(-2px); }
+.moe .tokq span.done { background: var(--coral-soft); color: var(--coral); }
+.moe .router { justify-self: center; padding: 8px 16px; border-radius: 999px; border: 1.5px dashed var(--ink-3); font: 700 13px var(--sans); color: var(--ink-2); }
+.moe .exps { display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); gap: 6px; }
+.moe .ex { border: 1.5px solid var(--line); border-radius: 10px; padding: 10px 4px; text-align: center; font: 700 12px/1.2 var(--mono); color: var(--ink-3); background: var(--bg); transition: all .25s; }
+.moe .ex.on { border-color: var(--gold); background: var(--gold); color: #1b1606; transform: translateY(-3px); box-shadow: 0 6px 16px color-mix(in srgb, var(--gold) 35%, transparent); }
+@media (max-width: 480px) { .moe .exps { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+.moe .read { display: flex; gap: 18px; flex-wrap: wrap; font-size: 13.5px; color: var(--ink-2); border-top: 1px dashed var(--line); padding-top: 12px; }
+.moe .read b { font: 800 22px/1 var(--en); color: var(--ink); margin-right: 4px; font-variant-numeric: tabular-nums; }
+
+/* ---------- flow ---------- */
+.study { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 14px; }
+@media (max-width: 600px) { .study { grid-template-columns: minmax(0, 1fr); } }
+.study .col { border-radius: 16px; padding: 16px; border: 1px solid var(--line); background: var(--bg); min-width: 0; }
+.study .col h6 { margin: 0 0 2px; font: 800 17px/1.3 var(--sans); }
+.study .col .sub { font-size: 12.5px; color: var(--ink-3); margin-bottom: 12px; }
+.study .tr h6 { color: var(--gold); }
+.study .inf h6 { color: var(--blue); }
+.study ol { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.study li { display: grid; grid-template-columns: 26px minmax(0, 1fr); gap: 10px; align-items: start; font-size: 14px; line-height: 1.5; }
+.study li .b { width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center; font: 800 12px/1 var(--en); background: var(--gold-soft); color: var(--gold); border: 1.5px solid var(--gold); }
+.study li small { display: block; color: var(--ink-3); font-size: 12.5px; }
+.study .inf li .b { background: var(--blue-soft); color: var(--blue); border-color: var(--blue); }
+.study .repeat { margin-top: 12px; font: 600 12.5px var(--mono); color: var(--gold); display: flex; align-items: center; gap: 6px; }
+.study .lock { margin-top: 12px; display: flex; align-items: center; gap: 8px; padding: 10px 12px; border-radius: 10px; background: var(--blue-soft); color: var(--blue); font-size: 13px; font-weight: 700; }
+.study .lock svg { width: 18px; height: 18px; flex: none; }
+
+/* ---------- index ---------- */
+.tindex { display: grid; gap: 18px; margin-top: 18px; }
+.tindex h6 { margin: 0 0 8px; font: 700 12px/1 var(--en); letter-spacing: .12em; text-transform: uppercase; color: var(--ink-3); display: flex; gap: 8px; }
+.tindex h6 .num { color: var(--gold); font-family: var(--mono); }
+.tindex .ch { display: flex; flex-wrap: wrap; gap: 6px; }
+.tindex a { display: inline-flex; gap: 6px; align-items: baseline; padding: 7px 11px; border-radius: 999px; border: 1px solid var(--line); background: var(--paper); color: var(--ink); text-decoration: none; font-size: 14px; font-weight: 600; }
+.tindex a small { font: 500 11.5px var(--en); color: var(--ink-3); }
+.tindex a:hover { border-color: var(--gold); background: var(--gold-soft); }
+
+@media (max-width: 640px) {
+  body { font-size: 16px; line-height: 1.78; }
+  .standfirst { font-size: 17px; }
+  h2 { font-size: 25px; margin-bottom: 14px; }
+  h3 { font-size: 18px; margin-top: 28px; }
+  section { padding: 32px 0 22px; }
+  .shell { padding-top: 8px; }
+  .hero-in { padding: 40px 0 36px; }
+  .hero h1 { margin: 14px 0 14px; }
+  .shift { margin-top: 30px; }
+  .stats { margin-top: 26px; }
+  .replay { min-height: 34px; padding: 0 12px; }
+  .callout { padding: 14px 16px; font-size: 15px; }
+  .quote { padding: 26px 20px; margin-left: -4px; margin-right: -4px; }
+  .crumb .back { display: inline; }
+  .crumb b { font-size: 13.5px; }
+}
+@media (max-width: 480px) { .stats a:last-child { grid-column: 1 / -1; } }
+</style>
+<script>document.documentElement.classList.add('js');try{var t=localStorage.getItem('archive-theme');if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body>
+
+<header class="topbar gutter">
+  <div class="topbar-in">
+    <a class="crumb" href="../" aria-label="Artifact Archives로 돌아가기"><span class="back" aria-hidden="true">←</span><span class="arch">ARTIFACT ARCHIVES</span><span class="sep">/</span><b>AI 작동 원리 용어</b></a>
+    <span class="sp"></span>
+    <button class="btn toc-btn" id="tocBtn" type="button" aria-haspopup="dialog" aria-label="목차 열기"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h10"/></svg><span id="tocCur">목차</span></button>
+    <button class="btn" id="themeBtn" type="button" aria-label="테마 전환"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 0 0 18z" fill="currentColor"/></svg><span class="lbl">테마</span></button>
+  </div>
+  <div class="progress" id="progress"></div>
+</header>
+
+<div class="hero gutter" id="hero">
+  <div class="hero-in">
+    <div class="kicker rv" style="--d:0ms">AI Basics · Glossary</div>
+    <h1 class="rv" style="--d:120ms">AI는 어떻게 작동할까<br><em>필수 용어 36개</em></h1>
+    <p class="lede rv" style="--d:260ms">AI가 작동하는 과정은 크게 <b>구조(신경망) → 학습(가중치 조정) → 추론(학습된 모델 사용)</b>의 세 단계로 볼 수 있습니다. 이 흐름을 따라가며 꼭 알아야 할 용어를 정리했습니다.</p>
+    <div class="meta rv" style="--d:380ms"><span>📄 5개 장 · 36개 용어</span><span>⏱ 약 10분 읽기</span><span>🖱 도해를 직접 움직여 볼 수 있어요</span></div>
+
+    <div class="shift rv" style="--d:480ms" aria-label="AI 작동 3단계">
+      <div class="rail"><i></i></div><div class="glow"></div>
+      <div class="st old"><div class="n">01 STRUCTURE</div><h3>구조 · 신경망</h3><p>숫자를 곱하고 더하는 층을 쌓아 만든 함수.</p></div>
+      <div class="st"><div class="n">02 TRAINING</div><h3>학습 · 가중치 조정</h3><p>틀린 만큼 거슬러 올라가 가중치를 조금씩 고친다.</p></div>
+      <div class="st new"><div class="n">03 INFERENCE</div><h3>추론 · 학습된 모델 사용</h3><p>고정된 가중치로 새 입력에 답을 계산한다.</p></div>
+    </div>
+
+    <div class="stats rv" style="--d:640ms">
+      <a href="#index"><b data-count="36" data-suf="개">0</b><span>이 페이지에 담은 필수 용어</span></a>
+      <a href="#structure"><b data-count="700" data-suf="억">0</b><span>“70B 모델”이 학습으로 조정하는 숫자의 개수</span></a>
+      <a href="#llm"><b>2017</b><span>트랜스포머를 제안한 논문이 나온 해</span></a>
+      <a href="#inference"><b data-count="1" data-suf="토큰">0</b><span>LLM이 한 번에 예측하는 양</span></a>
+      <a href="#scale"><b data-count="35" data-suf="GB">0</b><span>70B 모델 가중치를 4비트로 줄였을 때</span></a>
+    </div>
+  </div>
+</div>
+
+<div class="shell gutter">
+  <nav class="toc" aria-label="목차"><h4>CONTENTS</h4><ol id="toc"></ol></nav>
+
+  <article id="article">
+
+    <!-- ================= 1. 구조 ================= -->
+    <section id="structure" data-n="01" data-t="기본 구조: 신경망">
+      <span class="sec-label"><span class="num">01</span> · Structure</span>
+      <h2>기본 구조: 신경망</h2>
+      <p class="standfirst">AI의 뼈대는 <b>신경망</b>입니다. 이름은 뇌에서 따왔지만, 실제로는 <b>숫자를 곱하고 더하는 연산이 층층이 쌓인 함수</b>입니다.</p>
+      <p>입력이 들어오면 층을 하나씩 지나며 계산되고, 마지막 층에서 결과가 나옵니다. 모델이 “안다”고 말하는 모든 것은 결국 연결마다 붙은 숫자, 즉 <mark>가중치</mark>에 담겨 있습니다.</p>
+
+      <div class="fig" data-fig="net">
+        <div class="fig-h"><span class="t">입력이 층을 통과하는 모습</span><button class="replay" type="button" data-replay>다시 재생</button></div>
+        <svg class="net" id="net" viewBox="0 0 640 270" role="img" aria-label="입력층 3개, 은닉층 4개씩 두 층, 출력층 2개로 이루어진 신경망. 신호가 왼쪽에서 오른쪽으로 층을 차례로 지나간다."></svg>
+        <div class="net-lg"><span><i style="background:var(--gold)"></i>양(+)의 가중치</span><span><i style="background:var(--blue)"></i>음(−)의 가중치</span><span>선 굵기 = 가중치 크기</span></div>
+        <figcaption>은닉층이 여러 겹 쌓인 신경망을 쓰는 방식이 <b>딥러닝</b>입니다. 그림의 가중치는 예시 값입니다.</figcaption>
+      </div>
+
+      <dl class="terms">
+        <div class="tc wide" id="t-nn" data-k="신경망" data-e="Neural Network"><dt><span class="ko">신경망</span><span class="enn">Neural Network</span></dt><dd>뇌의 뉴런 연결에서 착안한 수학적 모델입니다. 실제로는 숫자를 곱하고 더하는 연산이 층층이 쌓인 함수입니다.</dd></div>
+        <div class="tc" id="t-neuron" data-k="뉴런 / 노드" data-e="Neuron, Node"><dt><span class="ko">뉴런 / 노드</span><span class="enn">Neuron, Node</span></dt><dd>입력값들을 받아 가중합을 계산하고 결과를 다음 층으로 넘기는 가장 작은 계산 단위입니다.</dd></div>
+        <div class="tc" id="t-layer" data-k="층" data-e="Layer"><dt><span class="ko">층</span><span class="enn">Layer</span></dt><dd>입력층, 은닉층, 출력층으로 나뉩니다. 은닉층이 많이 쌓인 신경망을 쓰는 방식을 <b>딥러닝</b>이라고 부릅니다.</dd></div>
+        <div class="tc" id="t-weight" data-k="가중치" data-e="Weight"><dt><span class="ko">가중치</span><span class="enn">Weight</span></dt><dd>뉴런 사이 연결의 강도를 나타내는 숫자입니다. 어떤 입력을 얼마나 중요하게 볼지 정하며, 모델이 배운 “지식”은 결국 이 숫자들에 저장됩니다.</dd></div>
+        <div class="tc" id="t-bias" data-k="편향" data-e="Bias"><dt><span class="ko">편향</span><span class="enn">Bias</span></dt><dd>가중합에 더하는 보정값입니다. 입력이 0이어도 출력이 나올 수 있도록 기준점을 옮겨 줍니다.</dd></div>
+        <div class="tc" id="t-param" data-k="파라미터" data-e="Parameter"><dt><span class="ko">파라미터</span><span class="enn">Parameter</span></dt><dd>가중치와 편향을 합쳐 부르는 말입니다. “700억 파라미터 모델”이라고 하면 학습으로 조정되는 숫자가 700억 개라는 뜻입니다.</dd></div>
+        <div class="tc" id="t-act" data-k="활성화 함수" data-e="Activation Function"><dt><span class="ko">활성화 함수</span><span class="enn">Activation Function</span></dt><dd>ReLU, GELU 같은 비선형 함수입니다. 이것이 없으면 층을 아무리 쌓아도 단순한 직선 계산에 머물러 복잡한 패턴을 표현할 수 없습니다.</dd></div>
+      </dl>
+
+      <h3><span class="hn">1.1</span>뉴런 하나를 직접 계산해 보기</h3>
+      <p>뉴런 하나가 하는 일은 단순합니다. 입력마다 가중치를 곱해 더하고(가중합), 편향을 더한 뒤, 활성화 함수에 통과시킵니다. 아래 슬라이더로 가중치와 편향을 바꿔 보세요. <strong>ReLU</strong>는 음수를 0으로 잘라 내는 가장 흔한 활성화 함수입니다.</p>
+
+      <div class="fig" data-fig="neuron">
+        <div class="fig-h"><span class="t">뉴런 계산기</span><span class="s">입력값은 예시로 고정</span></div>
+        <div class="neuron">
+          <div class="ins">
+            <label><span>w₁ <span class="x">× 1.0</span></span><input type="range" id="w1" min="-1" max="1" step="0.1" value="0.6"><b id="w1v">0.6</b></label>
+            <label><span>w₂ <span class="x">× 0.5</span></span><input type="range" id="w2" min="-1" max="1" step="0.1" value="-0.4"><b id="w2v">-0.4</b></label>
+            <label><span>w₃ <span class="x">× −0.8</span></span><input type="range" id="w3" min="-1" max="1" step="0.1" value="0.3"><b id="w3v">0.3</b></label>
+            <label><span>편향 b</span><input type="range" id="bb" min="-1" max="1" step="0.1" value="0.2"><b id="bbv">0.2</b></label>
+            <label class="sw-row"><input type="checkbox" id="relu" checked><span class="sw"></span><span>활성화 함수 ReLU 적용</span></label>
+          </div>
+          <div class="calc">
+            <div class="eq" id="eq"></div>
+            <div class="out"><b id="nout">0</b><span id="nnote">다음 층으로 전달되는 값</span></div>
+            <div class="meter2"><i id="nbar"></i></div>
+          </div>
+        </div>
+        <figcaption>가중치를 음수로 내려 가중합이 0보다 작아지면, ReLU를 켠 상태에서는 출력이 0이 됩니다. 이 “꺾임”이 쌓여서 신경망이 직선이 아닌 복잡한 패턴을 그릴 수 있게 됩니다.</figcaption>
+      </div>
+
+      <div class="callout"><span class="tag">숫자로 보는 파라미터</span><p>“700억 파라미터”는 위 계산기의 w와 b 같은 숫자가 700억 개 있다는 뜻입니다. 학습은 이 숫자 전부를 조금씩 맞춰 가는 과정이고, 다음 장에서 그 방법을 봅니다.</p></div>
+    </section>
+
+    <!-- ================= 2. 학습 ================= -->
+    <section id="training" data-n="02" data-t="학습: 가중치 맞추기">
+      <span class="sec-label"><span class="num">02</span> · Training</span>
+      <h2>학습: 가중치를 맞추는 과정</h2>
+      <p class="standfirst">처음 만들어진 신경망의 가중치는 무작위 숫자라서 엉뚱한 답을 냅니다. <b>학습</b>은 예시 데이터를 보여 주고, 틀린 만큼 가중치를 고치는 일을 수없이 반복하는 과정입니다.</p>
+
+      <div class="fig" data-fig="loop">
+        <div class="fig-h"><span class="t">학습 한 바퀴: 네 단계의 반복</span><button class="replay" type="button" data-replay>다시 재생</button></div>
+        <div class="loop" id="loopSteps">
+          <div class="stp"><span class="k">STEP 1</span><h6>순전파</h6><p>입력을 넣어 예측값을 계산</p></div>
+          <div class="stp"><span class="k">STEP 2</span><h6>손실 계산</h6><p>예측과 정답의 차이를 숫자 하나로</p></div>
+          <div class="stp back"><span class="k">STEP 3</span><h6>역전파</h6><p>각 가중치의 책임(기울기)을 거꾸로 계산</p></div>
+          <div class="stp"><span class="k">STEP 4</span><h6>가중치 업데이트</h6><p>기울기 반대 방향으로 조금 이동</p></div>
+        </div>
+        <div class="loop-back" aria-hidden="true"><svg viewBox="0 0 100 24" preserveAspectRatio="none"><path d="M87.5 0 V16 H12.5 V0"/></svg></div>
+        <div class="lossbox">
+          <svg id="lossSvg" viewBox="0 0 300 120" preserveAspectRatio="none" aria-label="반복할수록 손실이 줄어드는 그래프"></svg>
+          <div class="read"><b id="lossV">2.55</b><span>현재 손실</span><div class="ep" id="lossEp">반복 0회</div></div>
+        </div>
+        <figcaption>네 단계를 한 번 도는 것이 한 번의 업데이트입니다. 반복할수록 손실이 줄어듭니다. 그래프 수치는 예시입니다.</figcaption>
+      </div>
+
+      <dl class="terms">
+        <div class="tc" id="t-data" data-k="학습 데이터" data-e="Training Data"><dt><span class="ko">학습 데이터</span><span class="enn">Training Data</span></dt><dd>모델이 보고 배우는 예시들입니다. 언어 모델의 경우 방대한 텍스트가 여기에 해당합니다.</dd></div>
+        <div class="tc" id="t-fwd" data-k="순전파" data-e="Forward Pass"><dt><span class="ko">순전파</span><span class="enn">Forward Pass</span></dt><dd>입력을 넣어 층을 차례로 통과시키며 예측값을 계산하는 단계입니다.</dd></div>
+        <div class="tc" id="t-loss" data-k="손실 함수" data-e="Loss Function"><dt><span class="ko">손실 함수</span><span class="enn">Loss Function</span></dt><dd>예측이 정답과 얼마나 다른지를 숫자 하나로 나타냅니다. 학습의 목표는 이 값을 줄이는 것입니다.</dd></div>
+        <div class="tc" id="t-bp" data-k="역전파" data-e="Backpropagation"><dt><span class="ko">역전파</span><span class="enn">Backpropagation</span></dt><dd>손실을 출력층에서 입력층 방향으로 거꾸로 전달하면서, 각 가중치가 오차에 얼마나 책임이 있는지(기울기)를 계산합니다.</dd></div>
+        <div class="tc" id="t-gd" data-k="경사하강법" data-e="Gradient Descent"><dt><span class="ko">경사하강법</span><span class="enn">Gradient Descent</span></dt><dd>계산된 기울기의 반대 방향으로 가중치를 조금씩 움직여 손실을 줄이는 방법입니다. Adam 같은 <b>옵티마이저</b>가 이 방법을 개선한 것입니다.</dd></div>
+        <div class="tc" id="t-lr" data-k="학습률" data-e="Learning Rate"><dt><span class="ko">학습률</span><span class="enn">Learning Rate</span></dt><dd>가중치를 한 번에 얼마나 크게 바꿀지 정하는 값입니다. 너무 크면 학습이 불안정해지고, 너무 작으면 느려집니다.</dd></div>
+        <div class="tc" id="t-batch" data-k="배치 / 에폭" data-e="Batch / Epoch"><dt><span class="ko">배치 / 에폭</span><span class="enn">Batch / Epoch</span></dt><dd>배치는 한 번에 처리하는 데이터 묶음이고, 에폭은 전체 데이터를 한 바퀴 다 학습한 횟수입니다.</dd></div>
+        <div class="tc" id="t-over" data-k="과적합" data-e="Overfitting"><dt><span class="ko">과적합</span><span class="enn">Overfitting</span></dt><dd>학습 데이터를 외워 버려서 새로운 데이터에서는 성능이 떨어지는 현상입니다. 반대로 처음 보는 데이터에도 잘 작동하는 능력을 <b>일반화</b>라고 합니다.</dd></div>
+        <div class="tc wide" id="t-hyper" data-k="하이퍼파라미터" data-e="Hyperparameter"><dt><span class="ko">하이퍼파라미터</span><span class="enn">Hyperparameter</span></dt><dd>학습률이나 층의 수처럼, 학습으로 정해지지 않고 사람이 미리 정하는 설정값입니다. 파라미터는 모델이 배우고, 하이퍼파라미터는 사람이 정합니다.</dd></div>
+      </dl>
+
+      <h3><span class="hn">2.1</span>학습률을 바꿔 언덕을 내려가 보기</h3>
+      <p>경사하강법은 안개 낀 언덕에서 발밑의 기울기만 보고 가장 낮은 곳을 찾아 내려가는 것과 같습니다. 한 걸음의 크기가 <strong>학습률</strong>입니다. 걸음이 너무 작으면 한참 걸리고, 너무 크면 골짜기를 지나쳐 반대편으로 튀어 오릅니다.</p>
+
+      <div class="fig" data-fig="gd">
+        <div class="fig-h"><span class="t">경사하강법 시뮬레이터</span><span class="s">손실 = w² (예시 함수)</span></div>
+        <div class="gd"><svg id="gdSvg" viewBox="0 0 420 220" role="img" aria-label="포물선 모양의 손실 곡선 위에서 공이 학습률에 따라 바닥으로 내려가는 모습"></svg></div>
+        <div class="gd-ctl">
+          <label><span>학습률 <b id="lrV">0.20</b></span><input type="range" id="lr" min="0.02" max="1.1" step="0.02" value="0.2"></label>
+          <button class="go-btn" type="button" id="gdGo">▶ 12걸음 내려가기</button>
+        </div>
+        <div class="presets"><button type="button" data-lr="0.04">너무 작게 0.04</button><button type="button" data-lr="0.2">적당히 0.2</button><button type="button" data-lr="0.8">크게 0.8</button><button type="button" data-lr="1.04">너무 크게 1.04</button></div>
+        <div class="verdict" id="gdVerdict">학습률을 고르고 실행해 보세요.</div>
+      </div>
+
+      <div class="callout warn"><span class="tag">과적합 주의</span><p>학습 데이터에서 손실을 0에 가깝게 줄이는 것이 끝이 아닙니다. 시험 범위 문제집만 통째로 외운 학생이 새 문제를 못 푸는 것처럼, 모델도 학습 데이터만 외우면 처음 보는 입력에서 무너집니다. 그래서 학습에 쓰지 않은 데이터로 따로 성능을 확인합니다.</p></div>
+    </section>
+
+    <!-- ================= 3. LLM ================= -->
+    <section id="llm" data-n="03" data-t="대규모 언어 모델(LLM)">
+      <span class="sec-label"><span class="num">03</span> · LLM</span>
+      <h2>대규모 언어 모델(LLM) 관련 용어</h2>
+      <p class="standfirst">ChatGPT나 Claude 같은 <b>대규모 언어 모델(LLM)</b>도 앞의 신경망과 학습 원리 위에 있습니다. 다만 글을 다루기 위한 장치가 몇 가지 더 붙습니다.</p>
+      <p>글자는 그대로 계산할 수 없으니 먼저 <mark>토큰</mark>으로 쪼개고, 각 토큰을 숫자 벡터(<mark>임베딩</mark>)로 바꿉니다. 그다음 <mark>트랜스포머</mark>가 어텐션으로 토큰 사이의 관계를 계산합니다.</p>
+
+      <div class="fig" data-fig="tok">
+        <div class="fig-h"><span class="t">문장이 토큰으로 쪼개지는 모습</span><span class="s">직접 입력해 보세요</span></div>
+        <input class="tok-in" id="tokIn" type="text" value="인공지능은 다음 토큰을 예측합니다" aria-label="토큰으로 쪼갤 문장">
+        <div class="chips" id="tokOut" aria-live="polite"></div>
+        <div class="tok-stat"><span><b id="tokChars">0</b>글자</span><span><b id="tokN">0</b>토큰</span></div>
+        <div class="emb" id="emb" aria-hidden="true"></div>
+        <div class="emb-lbl" id="embLbl">첫 토큰의 임베딩 (16차원만 표시, 실제로는 수백~수천 차원)</div>
+        <figcaption><b>예시 토크나이저입니다.</b> 실제 모델은 학습으로 만든 어휘표를 써서 쪼개는 위치와 토큰 번호가 다릅니다. 한국어는 보통 한 단어가 여러 토큰으로 나뉜다는 점만 보여 줍니다.</figcaption>
+      </div>
+
+      <dl class="terms">
+        <div class="tc" id="t-token" data-k="토큰 / 토크나이저" data-e="Token / Tokenizer"><dt><span class="ko">토큰 / 토크나이저</span><span class="enn">Token / Tokenizer</span></dt><dd>텍스트를 모델이 처리하는 단위로 쪼갠 조각이 토큰이고, 쪼개는 도구가 토크나이저입니다. 한국어는 보통 한 단어가 여러 토큰으로 나뉩니다.</dd></div>
+        <div class="tc" id="t-emb" data-k="임베딩" data-e="Embedding"><dt><span class="ko">임베딩</span><span class="enn">Embedding</span></dt><dd>토큰을 수백에서 수천 차원의 숫자 벡터로 바꾼 것입니다. 의미가 비슷한 단어는 벡터 공간에서 가까운 위치에 놓입니다.</dd></div>
+        <div class="tc" id="t-tf" data-k="트랜스포머" data-e="Transformer"><dt><span class="ko">트랜스포머</span><span class="enn">Transformer</span></dt><dd>2017년 논문 “Attention Is All You Need”에서 제안된 구조로, 현재 대부분의 LLM이 이 구조를 기반으로 합니다.</dd></div>
+        <div class="tc" id="t-attn" data-k="어텐션 / 셀프 어텐션" data-e="Attention / Self-Attention"><dt><span class="ko">어텐션 / 셀프 어텐션</span><span class="enn">Attention / Self-Attention</span></dt><dd>문장 안의 각 토큰이 다른 토큰들 중 어디를 얼마나 참고할지 계산하는 메커니즘입니다. 예를 들어 “그것”이 앞의 어떤 명사를 가리키는지 파악하는 데 쓰입니다.</dd></div>
+        <div class="tc" id="t-ctx" data-k="컨텍스트 윈도우" data-e="Context Window"><dt><span class="ko">컨텍스트 윈도우</span><span class="enn">Context Window</span></dt><dd>모델이 한 번에 읽고 고려할 수 있는 최대 토큰 수입니다.</dd></div>
+        <div class="tc" id="t-pre" data-k="사전학습" data-e="Pre-training"><dt><span class="ko">사전학습</span><span class="enn">Pre-training</span></dt><dd>방대한 텍스트로 “다음 토큰 맞히기”를 반복하며 언어와 세상에 대한 일반 지식을 익히는 단계입니다. 비용이 가장 많이 드는 단계이기도 합니다.</dd></div>
+        <div class="tc" id="t-ft" data-k="파인튜닝" data-e="Fine-tuning"><dt><span class="ko">파인튜닝</span><span class="enn">Fine-tuning</span></dt><dd>사전학습된 모델을 특정 목적에 맞는 데이터로 추가 학습시키는 것입니다.</dd></div>
+        <div class="tc" id="t-rlhf" data-k="RLHF" data-e="Reinforcement Learning from Human Feedback"><dt><span class="ko">RLHF</span><span class="enn">인간 피드백 기반 강화학습</span></dt><dd>사람이 여러 답변을 비교 평가한 결과로 보상 모델을 만들고, 그 보상을 기준으로 모델을 조정하는 기법입니다. 모델을 더 유용하고 안전하게 다듬는 데 쓰입니다.</dd></div>
+        <div class="tc wide" id="t-cutoff" data-k="지식 컷오프" data-e="Knowledge Cutoff"><dt><span class="ko">지식 컷오프</span><span class="enn">Knowledge Cutoff</span></dt><dd>학습 데이터가 끝나는 시점입니다. 그 이후의 정보는 모델이 알지 못합니다. 최신 정보가 필요하면 검색 같은 외부 도구를 함께 써야 합니다.</dd></div>
+      </dl>
+
+      <h3><span class="hn">3.1</span>어텐션: 각 토큰이 어디를 보는가</h3>
+      <p>“그것은”이라는 토큰만 봐서는 무엇을 가리키는지 알 수 없습니다. 셀프 어텐션은 문장 안의 다른 토큰들에 점수를 매겨, 이 토큰을 이해할 때 어디를 얼마나 참고할지 정합니다. 토큰을 눌러 보세요.</p>
+
+      <div class="fig" data-fig="attn">
+        <div class="fig-h"><span class="t">셀프 어텐션 들여다보기</span><span class="s">색이 진할수록 많이 참고</span></div>
+        <div class="attn">
+          <div class="row" id="attnRow"></div>
+          <p class="hint" id="attnHint"></p>
+          <div class="bars" id="attnBars"></div>
+        </div>
+        <figcaption><b>예시 값입니다.</b> 실제 모델은 어텐션을 여러 층, 여러 “헤드”에서 동시에 계산하고, 헤드마다 보는 관계가 다릅니다.</figcaption>
+      </div>
+
+      <h3><span class="hn">3.2</span>컨텍스트 윈도우: 한 번에 볼 수 있는 범위</h3>
+      <p>대화가 길어지면 앞부분부터 창 밖으로 밀려납니다. 창 밖으로 나간 내용은 모델에게 더 이상 보이지 않습니다.</p>
+      <div class="fig" data-fig="ctx">
+        <div class="fig-h"><span class="t">대화가 길어질 때</span><button class="replay" type="button" data-replay>다시 재생</button></div>
+        <div class="ctx" id="ctx" aria-hidden="true"></div>
+        <div class="ctx-lbl"><span id="ctxL">토큰 0개</span><span><span style="color:var(--blue)">■</span> 창 안 (모델이 보는 부분) · <span style="color:var(--ink-3)">■</span> 창 밖으로 밀려난 부분</span></div>
+        <figcaption>칸 하나를 토큰 묶음으로 단순화한 그림입니다. 창 크기는 모델마다 다릅니다.</figcaption>
+      </div>
+    </section>
+
+    <!-- ================= 4. 추론 ================= -->
+    <section id="inference" data-n="04" data-t="추론: 학습된 모델 쓰기">
+      <span class="sec-label"><span class="num">04</span> · Inference</span>
+      <h2>추론: 학습된 모델을 쓰는 과정</h2>
+      <p class="standfirst">학습이 끝나면 가중치는 고정됩니다. 사용자가 AI와 대화하는 순간은 모두 <b>추론</b>이고, 이때 모델은 아무것도 새로 배우지 않습니다.</p>
+      <p>LLM은 답을 한 번에 만들지 않습니다. <mark>다음 토큰 하나</mark>를 예측하고, 그 토큰을 입력 끝에 붙여 다시 다음 토큰을 예측하는 일을 반복합니다.</p>
+
+      <div class="fig" data-fig="ar">
+        <div class="fig-h"><span class="t">한 토큰씩 이어 붙이는 자기회귀 생성</span><button class="replay" type="button" data-replay>다시 재생</button></div>
+        <div class="ar">
+          <div class="r" style="--d:0ms"><span class="s">STEP 1</span><span class="t n">오늘</span><span class="t n">날씨가</span><span class="arrow">→</span><span class="t p">정말</span></div>
+          <div class="r" style="--d:700ms"><span class="s">STEP 2</span><span class="t c">오늘</span><span class="t c">날씨가</span><span class="t n">정말</span><span class="arrow">→</span><span class="t p">좋네요</span></div>
+          <div class="r" style="--d:1400ms"><span class="s">STEP 3</span><span class="t c">오늘</span><span class="t c">날씨가</span><span class="t c">정말</span><span class="t n">좋네요</span><span class="arrow">→</span><span class="t p">.</span></div>
+        </div>
+        <div class="legend"><span><i style="background:var(--paper-2);border:1px solid var(--line)"></i>KV 캐시에서 재사용</span><span><i style="background:var(--gold-soft);border:1px solid var(--gold)"></i>이번에 새로 계산</span><span><i style="background:var(--coral)"></i>예측한 다음 토큰</span></div>
+        <figcaption>방금 예측한 토큰이 다음 단계의 입력이 됩니다. 앞 토큰들의 어텐션 계산값은 <b>KV 캐시</b>에 저장해 두고 재사용하므로, 매 단계 새 토큰 하나만 계산하면 됩니다.</figcaption>
+      </div>
+
+      <dl class="terms">
+        <div class="tc" id="t-inf" data-k="추론" data-e="Inference"><dt><span class="ko">추론</span><span class="enn">Inference</span></dt><dd>학습이 끝나 고정된 가중치로 새 입력에 대한 출력을 계산하는 것입니다. 이때 가중치는 바뀌지 않습니다. 사용자가 AI와 대화하는 순간이 바로 추론입니다.</dd></div>
+        <div class="tc" id="t-ar" data-k="자기회귀 생성" data-e="Autoregressive Generation"><dt><span class="ko">자기회귀 생성</span><span class="enn">Autoregressive Generation</span></dt><dd>LLM은 토큰을 하나씩 예측하고, 방금 예측한 토큰을 다시 입력에 붙여 다음 토큰을 예측하는 과정을 반복하며 문장을 만듭니다.</dd></div>
+        <div class="tc" id="t-logit" data-k="로짓 / 소프트맥스" data-e="Logits / Softmax"><dt><span class="ko">로짓 / 소프트맥스</span><span class="enn">Logits / Softmax</span></dt><dd>모델은 모든 후보 토큰에 점수(로짓)를 매기고, 소프트맥스 함수로 이 점수를 확률로 바꿉니다.</dd></div>
+        <div class="tc" id="t-temp" data-k="샘플링 / 온도" data-e="Sampling / Temperature"><dt><span class="ko">샘플링 / 온도</span><span class="enn">Sampling / Temperature</span></dt><dd>확률에 따라 다음 토큰을 고르는 방식입니다. 온도가 낮으면 무난하고 일관된 답이, 높으면 다양하고 창의적인 답이 나옵니다. <b>Top-p</b>와 <b>Top-k</b>는 후보 범위를 제한하는 방법입니다.</dd></div>
+        <div class="tc" id="t-hall" data-k="환각" data-e="Hallucination"><dt><span class="ko">환각</span><span class="enn">Hallucination</span></dt><dd>모델이 그럴듯하지만 사실이 아닌 내용을 생성하는 현상입니다. 모델이 사실을 검색하는 것이 아니라 확률적으로 그럴듯한 다음 토큰을 만들어 내기 때문에 생깁니다.</dd></div>
+        <div class="tc" id="t-kv" data-k="KV 캐시" data-e="KV Cache"><dt><span class="ko">KV 캐시</span><span class="enn">KV Cache</span></dt><dd>앞에서 계산한 어텐션 값을 저장해 두고 재사용하여 생성 속도를 높이는 기법입니다.</dd></div>
+      </dl>
+
+      <h3><span class="hn">4.1</span>온도를 바꿔 다음 토큰을 뽑아 보기</h3>
+      <p>모델은 후보마다 점수(로짓)를 매기고, 소프트맥스로 확률을 만든 뒤 그 확률대로 하나를 뽑습니다. <strong>온도</strong>는 이 확률 분포를 뾰족하게 또는 평평하게 만드는 손잡이입니다. 온도를 바꾸고 20번 뽑아 보세요.</p>
+
+      <div class="fig" data-fig="gen">
+        <div class="fig-h"><span class="t">다음 토큰 확률과 샘플링</span><span class="s">후보와 점수는 예시</span></div>
+        <div class="gen">
+          <div class="prompt">오늘 날씨가 정말 <span class="blank" id="genPick">?</span></div>
+          <div class="lg-row"><span>후보 토큰</span><span>확률 · 뽑힌 횟수</span></div>
+          <div class="cand" id="cand"></div>
+          <div class="gen-ctl">
+            <label><span>온도 <b id="tV">1.0</b></span><input type="range" id="temp" min="0.1" max="2" step="0.1" value="1"></label>
+            <button class="go-btn" type="button" id="genGo">🎲 20번 뽑기</button>
+          </div>
+          <div class="verdict" id="genVerdict">온도 1.0: 로짓을 그대로 확률로 바꾼 기본 상태입니다.</div>
+        </div>
+      </div>
+
+      <div class="callout warn"><span class="tag">환각은 왜 생길까</span><p>위 그림에서 모델은 “사실인지”를 따지지 않고 “다음에 오기 그럴듯한지”로만 토큰을 고릅니다. 그럴듯하지만 틀린 내용이 자연스럽게 이어질 수 있는 이유입니다. 중요한 사실은 출처로 확인하는 습관이 필요합니다.</p></div>
+    </section>
+
+    <!-- ================= 5. 규모와 효율 ================= -->
+    <section id="scale" data-n="05" data-t="규모와 효율">
+      <span class="sec-label"><span class="num">05</span> · Scale &amp; Efficiency</span>
+      <h2>규모와 효율 관련 용어</h2>
+      <p class="standfirst">모델은 키울수록 똑똑해지는 경향이 있지만, 그만큼 비싸고 무거워집니다. 그래서 <b>키우는 기술</b>과 <b>가볍게 만드는 기술</b>이 함께 발전해 왔습니다.</p>
+
+      <dl class="terms">
+        <div class="tc wide" id="t-scaling" data-k="스케일링 법칙" data-e="Scaling Laws"><dt><span class="ko">스케일링 법칙</span><span class="enn">Scaling Laws</span></dt><dd>파라미터 수, 데이터 양, 연산량을 늘리면 성능이 예측 가능한 패턴으로 향상된다는 경험적 법칙입니다.</dd></div>
+        <div class="tc" id="t-gpu" data-k="GPU / TPU" data-e="Graphics / Tensor Processing Unit"><dt><span class="ko">GPU / TPU</span><span class="enn">Graphics / Tensor Processing Unit</span></dt><dd>행렬 곱셈을 대량으로 병렬 처리하는 칩입니다. 학습과 추론 모두의 핵심 하드웨어입니다.</dd></div>
+        <div class="tc" id="t-quant" data-k="양자화" data-e="Quantization"><dt><span class="ko">양자화</span><span class="enn">Quantization</span></dt><dd>가중치를 더 적은 비트로 표현해 모델을 가볍고 빠르게 만드는 기법입니다. 정확도는 약간 손해를 볼 수 있습니다.</dd></div>
+        <div class="tc" id="t-distill" data-k="지식 증류" data-e="Distillation"><dt><span class="ko">지식 증류</span><span class="enn">Distillation</span></dt><dd>큰 모델(교사)의 출력을 작은 모델(학생)이 따라 배우게 해서 작지만 성능 좋은 모델을 만드는 방법입니다.</dd></div>
+        <div class="tc" id="t-moe" data-k="MoE" data-e="Mixture of Experts"><dt><span class="ko">MoE</span><span class="enn">Mixture of Experts</span></dt><dd>여러 “전문가” 하위 네트워크 중 입력마다 일부만 활성화해서, 전체 규모는 크지만 계산은 효율적으로 하는 구조입니다.</dd></div>
+      </dl>
+
+      <h3><span class="hn">5.1</span>양자화: 같은 모델을 더 적은 비트로</h3>
+      <p>700억(70B) 파라미터 모델의 가중치를 숫자 하나당 몇 비트로 저장하느냐에 따라 필요한 메모리가 크게 달라집니다. 비트를 절반으로 줄이면 메모리도 절반이 됩니다.</p>
+
+      <div class="fig" data-fig="quant">
+        <div class="fig-h"><span class="t">70B 모델 가중치 크기</span><span class="s">파라미터 수 × 숫자 하나의 크기</span></div>
+        <div class="qz">
+          <div class="qz lim-lbl" style="--x:28.57%"><span>GPU 메모리 80GB</span></div>
+          <div class="row"><div class="nm"><b>32비트</b><small>FP32</small></div><div class="trk"><div class="bar gx" style="--w:100%"></div><span class="lim" style="--x:28.57%"></span></div><span class="gb">280GB</span></div>
+          <div class="row"><div class="nm"><b>16비트</b><small>FP16 · BF16</small></div><div class="trk"><div class="bar gx" style="--w:50%;--d:150ms"></div><span class="lim" style="--x:28.57%"></span></div><span class="gb">140GB</span></div>
+          <div class="row fit"><div class="nm"><b>8비트</b><small>INT8</small></div><div class="trk"><div class="bar gx" style="--w:25%;--d:300ms"></div><span class="lim" style="--x:28.57%"></span></div><span class="gb">70GB</span></div>
+          <div class="row fit"><div class="nm"><b>4비트</b><small>INT4</small></div><div class="trk"><div class="bar gx" style="--w:12.5%;--d:450ms"></div><span class="lim" style="--x:28.57%"></span></div><span class="gb">35GB</span></div>
+        </div>
+        <figcaption>가중치만 계산한 값입니다(700억 × 4·2·1·0.5바이트). 실제로 돌릴 때는 KV 캐시 등 추가 메모리가 더 필요합니다. 점선은 메모리 80GB짜리 GPU 한 장을 기준으로 그은 선입니다.</figcaption>
+      </div>
+
+      <h3><span class="hn">5.2</span>MoE: 전문가 중 일부만 깨우기</h3>
+      <p>MoE 모델은 토큰마다 <strong>라우터</strong>가 어떤 전문가에게 맡길지 고릅니다. 전체 파라미터는 크지만, 토큰 하나를 처리할 때는 고른 전문가만 계산합니다.</p>
+
+      <div class="fig" data-fig="moe">
+        <div class="fig-h"><span class="t">토큰마다 전문가 2개만 활성화</span><button class="replay" type="button" data-replay>다시 재생</button></div>
+        <div class="moe">
+          <div class="tokq" id="moeQ"></div>
+          <div class="router">라우터 · 전문가 2개 선택</div>
+          <div class="exps" id="moeE"></div>
+          <div class="read"><span><b id="moeOn">0</b>/ 8 전문가 활성</span><span><b>약 1/4</b>전문가 층 계산량</span></div>
+        </div>
+        <figcaption>전문가 8개 중 2개를 고르는 구성은 예시입니다. 전문가 수와 선택 개수는 모델마다 다르고, 어텐션 등 공통 부분은 매번 계산합니다.</figcaption>
+      </div>
+    </section>
+
+    <!-- ================= Flow ================= -->
+    <section id="flow" data-n="◎" data-t="한눈에 보는 흐름">
+      <span class="sec-label"><span class="num">◎</span> · 정리</span>
+      <h2>한눈에 보는 흐름</h2>
+      <p>학습은 <strong>시험 공부</strong>, 추론은 <strong>시험 치르기</strong>에 비유할 수 있습니다.</p>
+
+      <div class="fig" data-fig="study">
+        <div class="fig-h"><span class="t">공부할 때와 시험 볼 때</span></div>
+        <div class="study">
+          <div class="col tr">
+            <h6>학습 = 시험 공부</h6><div class="sub">가중치가 계속 바뀐다</div>
+            <ol>
+              <li class="si" style="--d:0ms"><span class="b">1</span><div>문제를 푼다<small>순전파</small></div></li>
+              <li class="si" style="--d:150ms"><span class="b">2</span><div>채점한다<small>손실 함수</small></div></li>
+              <li class="si" style="--d:300ms"><span class="b">3</span><div>틀린 원인을 거슬러 찾는다<small>역전파</small></div></li>
+              <li class="si" style="--d:450ms"><span class="b">4</span><div>이해를 고친다<small>경사하강법으로 가중치 업데이트</small></div></li>
+            </ol>
+            <div class="repeat">↻ 수조 번 반복 → 결과가 가중치에 저장</div>
+          </div>
+          <div class="col inf">
+            <h6>추론 = 시험 치르기</h6><div class="sub">더 이상 공부하지 않는다</div>
+            <ol>
+              <li class="si" style="--d:600ms"><span class="b">1</span><div>새 문제를 받는다<small>사용자 입력</small></div></li>
+              <li class="si" style="--d:750ms"><span class="b">2</span><div>저장된 가중치만으로 답을 계산한다<small>순전파 + 자기회귀 생성</small></div></li>
+            </ol>
+            <div class="lock"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>가중치 고정</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="quote" data-fig="quote">
+        <div class="q" id="quoteTxt" aria-label="공부하는 동안 고친 이해는 가중치에 남고, 시험장에서는 그 가중치만으로 답을 계산한다."></div>
+        <div class="by">💡 핵심 요약</div>
+      </div>
+
+      <div class="concl">
+        <a class="cc rv" href="#structure"><span class="ix">01</span><div><h6>구조</h6><p>신경망은 곱하고 더하는 층을 쌓은 함수이고, 모델이 배운 지식은 가중치(파라미터)에 담깁니다.</p></div></a>
+        <a class="cc rv" style="--d:100ms" href="#training"><span class="ix">02</span><div><h6>학습</h6><p>순전파 → 손실 → 역전파 → 경사하강법을 반복해 손실을 줄이는 방향으로 가중치를 고칩니다.</p></div></a>
+        <a class="cc rv" style="--d:200ms" href="#llm"><span class="ix">03</span><div><h6>LLM</h6><p>글을 토큰과 임베딩으로 바꾸고, 트랜스포머의 어텐션으로 토큰 사이 관계를 계산합니다.</p></div></a>
+        <a class="cc rv" style="--d:300ms" href="#inference"><span class="ix">04</span><div><h6>추론</h6><p>고정된 가중치로 다음 토큰을 하나씩 확률적으로 뽑아 문장을 만듭니다. 환각도 여기서 생깁니다.</p></div></a>
+        <a class="cc rv" style="--d:400ms" href="#scale"><span class="ix">05</span><div><h6>규모와 효율</h6><p>키우면 좋아지지만(스케일링 법칙), 양자화·증류·MoE로 같은 성능을 더 가볍게 냅니다.</p></div></a>
+      </div>
+    </section>
+
+    <section id="index" data-n="※" data-t="용어 색인">
+      <span class="sec-label"><span class="num">※</span> · 부록</span>
+      <h2>용어 색인</h2>
+      <p>36개 용어를 장별로 모았습니다. 누르면 해당 설명으로 이동합니다.</p>
+      <div class="tindex" id="tindex"></div>
+      <p class="endnote">이 페이지는 2026년 6월까지 알려진 일반적인 지식을 바탕으로 정리했습니다. 도해와 데모는 이해를 돕기 위해 새로 만든 것이며, “예시”라고 적힌 수치는 실제 모델의 값이 아닙니다.</p>
+    </section>
+  </article>
+</div>
+
+<footer class="site gutter"><div class="in-wrap"><a href="../">← Artifact Archives</a><a href="../llm-guide/">LLM 이해하기 (스크롤형)</a><a href="https://github.com/ndkkdn/artifactarchives" target="_blank" rel="noopener">github.com/ndkkdn/artifactarchives</a></div></footer>
+<dialog class="sheet" id="tocSheet" aria-label="목차"><div class="sheet-h"><b>목차</b><button type="button" class="sheet-x" data-close aria-label="닫기">✕</button></div><ol id="tocMobile"></ol></dialog>
+<button class="totop" id="totop" type="button" aria-label="맨 위로"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg></button>
+
+<script>
+(() => {
+  const root = document.documentElement;
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const $ = s => document.querySelector(s), $$ = (s, el = document) => [...el.querySelectorAll(s)];
+  const wait = ms => new Promise(r => setTimeout(r, reduce ? 0 : ms));
+  const ease = t => 1 - Math.pow(1 - t, 3);
+  const fmt = (v, d = 1) => (Math.abs(v) < 1e-9 ? 0 : v).toFixed(d).replace('-', '−');
+  const NS = 'http://www.w3.org/2000/svg';
+  const svgEl = (tag, attrs, parent) => { const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); if (parent) parent.appendChild(e); return e; };
+
+  $('#themeBtn').onclick = () => {
+    const dark = root.dataset.theme ? root.dataset.theme === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
+    root.dataset.theme = dark ? 'light' : 'dark';
+    try { localStorage.setItem('archive-theme', root.dataset.theme); } catch (e) {}
+    paintEmb();
+  };
+
+  function countUp(el, dur = 1400) {
+    const to = parseFloat(el.dataset.count), dec = +(el.dataset.dec || 0), pre = el.dataset.pre || '', suf = el.dataset.suf || '';
+    const f = v => pre + v.toLocaleString('en-US', { minimumFractionDigits: dec, maximumFractionDigits: dec }) + suf;
+    if (reduce) { el.textContent = f(to); return; }
+    const t0 = performance.now();
+    const step = now => { const t = Math.min(1, (now - t0) / dur); el.textContent = f(to * ease(t)); if (t < 1) requestAnimationFrame(step); };
+    requestAnimationFrame(step);
+  }
+
+  async function typeInto(el, parts, speed = 45, token) {
+    el.innerHTML = '';
+    const caret = document.createElement('span'); caret.className = 'caret';
+    for (const p of parts) {
+      const [txt, cls] = Array.isArray(p) ? p : [p, null];
+      const span = cls ? Object.assign(document.createElement('span'), { className: cls }) : document.createTextNode('');
+      el.appendChild(span); el.appendChild(caret);
+      if (reduce) { span.textContent = txt; continue; }
+      for (const ch of txt) { if (token && token.dead) return; span.textContent += ch; await wait(speed); }
+    }
+    if (!reduce) setTimeout(() => caret.remove(), 1800); else caret.remove();
+  }
+
+  const HOOKS = {};
+  const runs = new WeakMap();
+  function play(fig) {
+    const prev = runs.get(fig); if (prev) prev.dead = true;
+    const tk = { dead: false }; runs.set(fig, tk);
+    fig.classList.remove('in'); void fig.offsetWidth; fig.classList.add('in');
+    $$('[data-count]', fig).forEach(el => countUp(el));
+    const h = HOOKS[fig.dataset.fig]; if (h) h(fig, tk);
+  }
+
+  /* ---------- 01 network ---------- */
+  const LAYERS = [3, 4, 4, 2], LX = [70, 240, 410, 570], LBL = ['입력층', '은닉층 1', '은닉층 2', '출력층'];
+  const net = $('#net'), nodes = [], edges = [];
+  let ns = 11; const nrnd = () => (ns = (Math.imul(ns, 1103515245) + 12345) >>> 0) / 4294967296;
+  const ny = (L, i) => 120 + (i - (LAYERS[L] - 1) / 2) * 58;
+  const eg = svgEl('g', {}, net), ngp = svgEl('g', {}, net);
+  for (let L = 0; L < LAYERS.length - 1; L++) for (let i = 0; i < LAYERS[L]; i++) for (let j = 0; j < LAYERS[L + 1]; j++) {
+    const w = nrnd() * 2 - 1;
+    const e = svgEl('line', { x1: LX[L], y1: ny(L, i), x2: LX[L + 1], y2: ny(L + 1, j), class: 'e' + (w < 0 ? ' neg' : '') }, eg);
+    e.style.setProperty('--w', (0.6 + Math.abs(w) * 3.2).toFixed(2)); e.dataset.l = L; edges.push(e);
+  }
+  LAYERS.forEach((n, L) => {
+    for (let i = 0; i < n; i++) {
+      const c = svgEl('circle', { cx: LX[L], cy: ny(L, i), r: 15, class: 'nd' + (L === LAYERS.length - 1 ? ' out' : '') }, ngp);
+      c.dataset.l = L; nodes.push(c);
+      const v = svgEl('text', { x: LX[L], y: ny(L, i) + 3.5, class: 'v' }, ngp); v.textContent = (nrnd()).toFixed(1).replace(/^0/, '');
+    }
+    svgEl('text', { x: LX[L], y: 258 }, net).textContent = LBL[L];
+  });
+  HOOKS.net = async (fig, tk) => {
+    nodes.concat(edges).forEach(x => x.classList.remove('on'));
+    for (let L = 0; L < LAYERS.length; L++) {
+      await wait(L ? 650 : 250); if (tk.dead) return;
+      nodes.filter(n => +n.dataset.l === L).forEach(n => n.classList.add('on'));
+      if (L > 0) edges.filter(e => +e.dataset.l === L - 1).forEach(e => e.classList.remove('on'));
+      if (L < LAYERS.length - 1) edges.filter(e => +e.dataset.l === L).forEach(e => e.classList.add('on'));
+    }
+  };
+
+  /* neuron calculator */
+  const X = [1.0, 0.5, -0.8];
+  function neuron() {
+    const w = ['w1', 'w2', 'w3'].map(id => +$('#' + id).value), b = +$('#bb').value, relu = $('#relu').checked;
+    ['w1', 'w2', 'w3', 'bb'].forEach(id => $('#' + id + 'v').textContent = fmt(+$('#' + id).value));
+    const z = X.reduce((s, x, i) => s + x * w[i], 0) + b, out = relu ? Math.max(0, z) : z;
+    const par = v => v < 0 ? '(' + fmt(v) + ')' : fmt(v), term = (x, wi) => `${par(x)}×${par(wi)}`;
+    $('#eq').innerHTML = `가중합 = ${X.map((x, i) => term(x, w[i])).join(' + ')} + ${b < 0 ? '(' + fmt(b) + ')' : fmt(b)}<br>= <b>${fmt(z, 2)}</b>` +
+      (relu ? `<br>ReLU(${fmt(z, 2)}) = max(0, ${fmt(z, 2)}) = <b>${fmt(out, 2)}</b>` : '<br>활성화 함수 없음 → 가중합 그대로');
+    $('#nout').textContent = fmt(out, 2);
+    $('#nnote').textContent = relu && z < 0 ? '음수라서 0으로 잘림' : '다음 층으로 전달되는 값';
+    const bar = $('#nbar'), pct = Math.min(50, Math.abs(out) / 3 * 50);
+    bar.style.left = (out >= 0 ? 50 : 50 - pct) + '%'; bar.style.width = pct + '%';
+  }
+  $$('.neuron input').forEach(i => i.addEventListener('input', neuron)); neuron();
+
+  /* ---------- 02 training loop ---------- */
+  const lossSvg = $('#lossSvg');
+  const LOSS = Array.from({ length: 11 }, (_, k) => 2.4 * Math.exp(-k * .38) + .15 + (k ? (Math.sin(k * 2.3) * .06) : 0));
+  const lx = k => 30 + k * 26, ly = v => 104 - v / 2.6 * 92;
+  function drawLoss(n) {
+    lossSvg.innerHTML = '';
+    svgEl('line', { x1: 30, y1: 104, x2: 296, y2: 104, class: 'ax' }, lossSvg); svgEl('line', { x1: 30, y1: 8, x2: 30, y2: 104, class: 'ax' }, lossSvg);
+    svgEl('text', { x: 4, y: 16, class: 'lbl' }, lossSvg).textContent = '손실';
+    svgEl('text', { x: 236, y: 118, class: 'lbl' }, lossSvg).textContent = '반복 →';
+    if (n < 1) return;
+    svgEl('polyline', { points: LOSS.slice(0, n).map((v, k) => lx(k) + ',' + ly(v)).join(' '), class: 'curve' }, lossSvg);
+    svgEl('circle', { cx: lx(n - 1), cy: ly(LOSS[n - 1]), r: 4, class: 'pt' }, lossSvg);
+  }
+  drawLoss(1); $('#lossV').textContent = LOSS[0].toFixed(2);
+  HOOKS.loop = async (fig, tk) => {
+    const st = $$('.stp', fig);
+    drawLoss(1); $('#lossV').textContent = LOSS[0].toFixed(2); $('#lossEp').textContent = '반복 0회';
+    for (let k = 1; k < LOSS.length; k++) {
+      for (let s = 0; s < 4; s++) {
+        await wait(k < 3 ? 420 : 140); if (tk.dead) return;
+        st.forEach((x, i) => x.classList.toggle('on', i === s));
+      }
+      drawLoss(k + 1); $('#lossV').textContent = LOSS[k].toFixed(2); $('#lossEp').textContent = `반복 ${k}회`;
+    }
+    await wait(300); st.forEach(x => x.classList.remove('on'));
+  };
+
+  /* gradient descent */
+  const gdSvg = $('#gdSvg'), W0 = -2.6, gx = w => 210 + w * 62, gy = l => 196 - l * 22;
+  let gdRun = 0;
+  function gdBase() {
+    gdSvg.innerHTML = '';
+    let d = ''; for (let w = -3.3; w <= 3.31; w += .05) d += (d ? 'L' : 'M') + gx(w).toFixed(1) + ' ' + gy(w * w).toFixed(1);
+    svgEl('path', { d, class: 'curve' }, gdSvg);
+    svgEl('circle', { cx: gx(0), cy: gy(0), r: 5, class: 'min' }, gdSvg);
+    svgEl('text', { x: gx(0) + 10, y: gy(0) + 4 }, gdSvg).textContent = '최저점 (손실 0)';
+    svgEl('text', { x: 8, y: 16 }, gdSvg).textContent = '손실 ↑';
+    svgEl('text', { x: 360, y: 214 }, gdSvg).textContent = '가중치 w →';
+  }
+  const clampW = w => Math.max(-3.3, Math.min(3.3, w));
+  function verdict(lr) {
+    if (lr >= 1) return ['bad', `<b>발산.</b> 학습률 ${lr.toFixed(2)}은 너무 커서 걸음마다 골짜기를 넘어 더 높은 곳에 떨어집니다. 손실이 오히려 커집니다.`];
+    if (lr > .5) return ['mid', `<b>진동하며 수렴.</b> 좌우로 튀면서도 바닥에 다가가지만 불안정합니다. 실제 학습에서는 손실이 출렁입니다.`];
+    if (lr < .08) return ['mid', `<b>너무 느림.</b> 방향은 맞지만 걸음이 작아 12걸음으로는 바닥에 한참 못 미칩니다.`];
+    return ['ok', `<b>적당함.</b> 걸음마다 바닥에 성큼 다가가 몇 걸음 만에 손실이 거의 0이 됩니다.`];
+  }
+  async function gdGo() {
+    const id = ++gdRun, lr = +$('#lr').value; gdBase();
+    const trail = svgEl('path', { d: '', class: 'trail' }, gdSvg);
+    const ball = svgEl('circle', { r: 8, class: 'ball' }, gdSvg);
+    let w = W0, d = `M${gx(w)} ${gy(w * w)}`;
+    const vEl = $('#gdVerdict'); vEl.className = 'verdict'; vEl.textContent = '내려가는 중…';
+    for (let k = 0; k <= 12; k++) {
+      const cw = clampW(w);
+      ball.setAttribute('cx', gx(cw)); ball.setAttribute('cy', Math.max(10, gy(cw * cw)));
+      if (k) { d += ` L${gx(cw)} ${Math.max(10, gy(cw * cw))}`; trail.setAttribute('d', d); svgEl('circle', { cx: gx(cw), cy: Math.max(10, gy(cw * cw)), r: 3, class: 'ghost' }, gdSvg); }
+      gdSvg.appendChild(ball);
+      vEl.textContent = `${k}걸음 · w = ${fmt(w, 2)} · 손실 = ${(w * w).toFixed(3)}`;
+      if (Math.abs(w) > 3.3) break;
+      await wait(260); if (id !== gdRun) return;
+      w = w - lr * 2 * w;
+    }
+    const [cls, msg] = verdict(lr); vEl.className = 'verdict ' + cls; vEl.innerHTML = msg + ` <span style="color:var(--ink-3)">(마지막 손실 ${(Math.min(99, w * w)).toFixed(3)})</span>`;
+  }
+  $('#lr').addEventListener('input', () => $('#lrV').textContent = (+$('#lr').value).toFixed(2));
+  $('#gdGo').onclick = gdGo;
+  $$('.presets button').forEach(b => b.onclick = () => { $('#lr').value = b.dataset.lr; $('#lrV').textContent = (+b.dataset.lr).toFixed(2); gdGo(); });
+  gdBase();
+  HOOKS.gd = () => gdGo();
+
+  /* ---------- 03 tokenizer (illustrative) ---------- */
+  const PART = ['에서', '으로', '합니다', '습니다', '입니다', '니다', '은', '는', '이', '가', '을', '를', '에', '의', '도', '로', '와', '과'];
+  function tokenize(s) {
+    const out = [];
+    for (const m of s.matchAll(/(\s*)([가-힣]+|[A-Za-z]+|\d+|[^\s가-힣A-Za-z\d])/g)) {
+      const sp = m[1] ? '▁' : '', w = m[2];
+      const pieces = [];
+      if (/^[가-힣]+$/.test(w)) {
+        let stem = w, tail = [];
+        for (let g = 0; g < 2; g++) { const p = PART.find(p => stem.length > p.length && stem.endsWith(p)); if (!p) break; tail.unshift(p); stem = stem.slice(0, -p.length); }
+        for (let i = 0; i < stem.length; i += 2) pieces.push(stem.slice(i, i + 2));
+        pieces.push(...tail);
+      } else if (/^[A-Za-z]+$/.test(w)) { for (let i = 0; i < w.length; i += 4) pieces.push(w.slice(i, i + 4)); }
+      else if (/^\d+$/.test(w)) { for (let i = 0; i < w.length; i += 3) pieces.push(w.slice(i, i + 3)); }
+      else pieces.push(w);
+      pieces.forEach((p, i) => out.push((i === 0 ? sp : '') + p));
+    }
+    return out;
+  }
+  const hid = s => { let h = 2166136261; for (const c of s) h = Math.imul(h ^ c.codePointAt(0), 16777619); return (h >>> 0) % 50000 + 100; };
+  let firstTok = '';
+  function paintEmb() {
+    const s = getComputedStyle(root), pos = s.getPropertyValue('--blue').trim(), neg = s.getPropertyValue('--coral').trim();
+    let h = hid(firstTok || 'x');
+    $('#emb').innerHTML = Array.from({ length: 16 }, () => { h = Math.imul(h ^ (h >>> 13), 1274126177) >>> 0; const v = h / 4294967296 * 2 - 1;
+      return `<i style="background:${v < 0 ? neg : pos};opacity:${(.18 + Math.abs(v) * .82).toFixed(2)}" title="${v.toFixed(2)}"></i>`; }).join('');
+    $('#embLbl').textContent = `“${firstTok.replace('▁', '')}”의 임베딩 예시 (16차원만 표시, 실제로는 수백~수천 차원)`;
+  }
+  function runTok(animate) {
+    const s = $('#tokIn').value, toks = tokenize(s);
+    $('#tokOut').innerHTML = toks.map((t, i) => `<span class="tk" style="--d:${animate ? i * 70 : 0}ms">${t.replace(/&/g, '&amp;').replace(/</g, '&lt;')}<small>#${hid(t)}</small></span>`).join('');
+    $('#tokChars').textContent = [...s.replace(/\s/g, '')].length; $('#tokN').textContent = toks.length;
+    firstTok = toks[0] || ''; paintEmb();
+  }
+  $('#tokIn').addEventListener('input', () => runTok(false));
+  runTok(false);
+  HOOKS.tok = () => runTok(true);
+
+  /* attention (illustrative weights) */
+  const AT = ['철수가', '가게에서', '사과를', '샀다.', '그것은', '아주', '달았다.'];
+  const AW = {
+    '그것은': [.07, .06, .58, .09, .1, .04, .06],
+    '달았다.': [.04, .03, .3, .05, .38, .14, .06],
+    '샀다.': [.32, .2, .3, .1, .02, .02, .04],
+    '사과를': [.12, .1, .44, .26, .03, .02, .03],
+    '아주': [.02, .02, .1, .03, .16, .22, .45],
+  };
+  const awFor = q => AW[q] || AT.map((t, i) => { const d = Math.abs(i - AT.indexOf(q)); return d === 0 ? .4 : d === 1 ? .2 : .04; });
+  const ATXT = { '그것은': '“그것은”이 가장 많이 참고하는 토큰은 <b>“사과를”</b>입니다. “그것”이 사과를 가리킨다는 것을 어텐션이 잡아냅니다.', '달았다.': '“달았다.”는 무엇이 달았는지 알기 위해 <b>“그것은”</b>과 <b>“사과를”</b>을 함께 봅니다.', '샀다.': '“샀다.”는 누가(<b>철수가</b>) 무엇을(<b>사과를</b>) 샀는지에 주목합니다.', '아주': '“아주”는 꾸며 줄 말인 <b>“달았다.”</b>를 가장 많이 봅니다.' };
+  let attnQ = '그것은';
+  function drawAttn() {
+    const w = awFor(attnQ), sum = w.reduce((a, b) => a + b, 0), p = w.map(v => v / sum), mx = Math.max(...p);
+    $('#attnRow').innerHTML = AT.map((t, i) => `<button type="button" class="q${t === attnQ ? ' sel' : ''}" style="--a:${t === attnQ ? 0 : (p[i] / mx * .75).toFixed(2)}" aria-pressed="${t === attnQ}">${t}<small>${Math.round(p[i] * 100)}%</small></button>`).join('');
+    $('#attnHint').innerHTML = ATXT[attnQ] || `“${attnQ}”는 주로 자기 자신과 바로 옆 토큰을 참고합니다. 다른 토큰도 눌러 보세요.`;
+    $('#attnBars').innerHTML = AT.map((t, i) => `<div><span>${t}</span><span class="tr"><i style="width:${(p[i] / mx * 100).toFixed(1)}%"></i></span><b>${Math.round(p[i] * 100)}%</b></div>`).join('');
+    $$('#attnRow .q').forEach(b => b.onclick = () => { attnQ = b.firstChild.textContent; drawAttn(); });
+  }
+  drawAttn();
+
+  /* context window */
+  const ctx = $('#ctx'), CN = 40, WIN = 24;
+  ctx.innerHTML = '<i></i>'.repeat(CN);
+  HOOKS.ctx = async (fig, tk) => {
+    const cells = $$('i', ctx); cells.forEach(c => c.className = '');
+    for (let n = 1; n <= CN; n++) {
+      await wait(70); if (tk.dead) return;
+      cells.forEach((c, i) => c.className = i >= n ? '' : i < n - WIN ? 'out-w' : 'in-w');
+      $('#ctxL').textContent = n > WIN ? `대화 ${n}칸 중 앞 ${n - WIN}칸은 더 이상 보이지 않음` : `대화 ${n}칸 · 모두 창 안`;
+    }
+  };
+
+  /* ---------- 04 sampling ---------- */
+  const CAND = [['좋네요', 3.0], ['맑아요', 2.4], ['덥네요', 1.9], ['춥네요', 1.3], ['흐려요', .9], ['바나나', -1.2]];
+  let counts = CAND.map(() => 0), genRun = 0;
+  const probs = T => { const e = CAND.map(([, l]) => Math.exp(l / T)), s = e.reduce((a, b) => a + b, 0); return e.map(v => v / s); };
+  function drawCand(hit = -1) {
+    const T = +$('#temp').value, p = probs(T);
+    $('#cand').innerHTML = CAND.map(([w], i) => `<div class="${i === hit ? 'hit' : ''}"><span class="w">${w}</span><span class="tr"><i style="width:${(p[i] * 100).toFixed(1)}%"></i></span><span class="p">${(p[i] * 100).toFixed(1)}%</span><span class="cnt">${counts[i] ? counts[i] : ''}</span></div>`).join('');
+  }
+  function tempNote(T) {
+    if (T <= .4) return `온도 ${T.toFixed(1)}: 분포가 뾰족해져 <b>거의 항상 “좋네요”</b>만 나옵니다. 무난하고 일관되지만 단조롭습니다.`;
+    if (T >= 1.5) return `온도 ${T.toFixed(1)}: 분포가 평평해져 <b>엉뚱한 후보(“바나나”)도 가끔</b> 뽑힙니다. 다양하지만 이상한 답이 섞일 수 있습니다.`;
+    return `온도 ${T.toFixed(1)}: 높은 점수의 후보가 자주 나오지만 <b>다른 후보도 섞여</b> 나옵니다.`;
+  }
+  $('#temp').addEventListener('input', () => { const T = +$('#temp').value; $('#tV').textContent = T.toFixed(1); counts = CAND.map(() => 0); $('#genPick').textContent = '?'; drawCand(); $('#genVerdict').innerHTML = tempNote(T); });
+  async function sample20() {
+    const id = ++genRun, T = +$('#temp').value, p = probs(T);
+    counts = CAND.map(() => 0);
+    for (let k = 0; k < 20; k++) {
+      let r = Math.random(), i = 0; while (i < p.length - 1 && (r -= p[i]) > 0) i++;
+      counts[i]++; $('#genPick').textContent = CAND[i][0]; drawCand(i);
+      await wait(90); if (id !== genRun) return;
+    }
+    const kinds = counts.filter(Boolean).length;
+    $('#genVerdict').innerHTML = tempNote(T) + ` 이번 20번에서는 <b>${kinds}종류</b>의 토큰이 나왔습니다.`;
+  }
+  $('#genGo').onclick = sample20;
+  drawCand();
+
+  /* ---------- 05 MoE ---------- */
+  const MQ = ['고양이가', '수학', '문제를', '풀었다', '.'], MP = [[1, 5], [3, 6], [3, 0], [6, 2], [7, 4]];
+  $('#moeQ').innerHTML = MQ.map(t => `<span>${t}</span>`).join('');
+  $('#moeE').innerHTML = Array.from({ length: 8 }, (_, i) => `<div class="ex">E${i + 1}</div>`).join('');
+  HOOKS.moe = async (fig, tk) => {
+    const qs = $$('#moeQ span'), ex = $$('#moeE .ex');
+    qs.forEach(q => q.className = ''); ex.forEach(e => e.classList.remove('on')); $('#moeOn').textContent = '0';
+    for (let k = 0; k < MQ.length; k++) {
+      await wait(k ? 1000 : 300); if (tk.dead) return;
+      qs.forEach((q, i) => q.className = i < k ? 'done' : i === k ? 'cur' : '');
+      ex.forEach((e, i) => e.classList.toggle('on', MP[k].includes(i)));
+      $('#moeOn').textContent = '2';
+    }
+    await wait(1000); if (tk.dead) return;
+    qs.forEach(q => q.className = 'done'); ex.forEach(e => e.classList.remove('on')); $('#moeOn').textContent = '0';
+  };
+
+  /* quote */
+  HOOKS.quote = (fig, tk) => typeInto($('#quoteTxt'), ['“공부하는 동안 고친 이해는 ', ['가중치', 'em-q'], '에 남고, 시험장에서는 그 가중치만으로 답을 계산한다.”'], 55, tk);
+  const st = document.createElement('style'); st.textContent = '.quote .em-q{color:#d5a844}'; document.head.appendChild(st);
+
+  /* ---------- index from term cards ---------- */
+  $('#tindex').innerHTML = $$('article section').filter(s => s.querySelector('.terms')).map(s =>
+    `<div><h6><span class="num">${s.dataset.n}</span>${s.dataset.t}</h6><div class="ch">${$$('.tc', s).map(tc => `<a href="#${tc.id}">${tc.dataset.k}<small>${tc.dataset.e}</small></a>`).join('')}</div></div>`).join('');
+  $$('.terms').forEach(dl => $$('.tc', dl).forEach((tc, i) => tc.style.setProperty('--d', i * 60 + 'ms')));
+
+  /* ---------- observers ---------- */
+  const figs = $$('[data-fig]');
+  const io = 'IntersectionObserver' in window ? new IntersectionObserver(es => es.forEach(e => {
+    if (e.isIntersecting) { play(e.target); io.unobserve(e.target); }
+  }), { threshold: .3, rootMargin: '0px 0px -8% 0px' }) : null;
+  figs.forEach(f => io ? io.observe(f) : play(f));
+  $$('[data-replay]').forEach(b => b.addEventListener('click', () => play(b.closest('[data-fig]'))));
+  const rio = 'IntersectionObserver' in window ? new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); rio.unobserve(e.target); } }), { threshold: .1 }) : null;
+  $$('.concl, .terms').forEach(el => rio ? rio.observe(el) : el.classList.add('in'));
+  // a card opened by #hash must be visible even before its grid scrolls in
+  const showHash = () => { const t = location.hash && document.getElementById(location.hash.slice(1)); if (t && t.closest('.terms')) t.closest('.terms').classList.add('in'); };
+  addEventListener('hashchange', showHash); showHash();
+
+  const hero = $('#hero');
+  requestAnimationFrame(() => { hero.classList.add('in'); setTimeout(() => $$('[data-count]', hero).forEach(el => countUp(el, 1600)), reduce ? 0 : 700); });
+
+  /* ---------- TOC, scroll spy, progress ---------- */
+  const secs = $$('article section');
+  const item = s => `<li><a href="#${s.id}"><span class="n">${s.dataset.n}</span><span>${s.dataset.t}</span></a></li>`;
+  $('#toc').innerHTML = secs.map(item).join('');
+  $('#tocMobile').innerHTML = secs.map(item).join('');
+  const sheet = $('#tocSheet'), tocCur = $('#tocCur'), mLinks = $$('#tocMobile a');
+  $('#tocBtn').onclick = () => { sheet.showModal(); sheet.querySelector('a.on')?.focus(); };
+  sheet.addEventListener('click', e => { if (e.target === sheet || e.target.closest('[data-close]')) sheet.close(); });
+  mLinks.forEach(a => a.addEventListener('click', () => sheet.close()));
+  const links = $$('#toc a'), bar = $('#progress'), top = $('#totop');
+  function onScroll() {
+    const h = document.documentElement.scrollHeight - innerHeight;
+    bar.style.transform = `scaleX(${h > 0 ? Math.min(1, scrollY / h) : 0})`;
+    top.classList.toggle('show', scrollY > innerHeight);
+    let cur = secs[0];
+    for (const s of secs) if (s.getBoundingClientRect().top < innerHeight * .35) cur = s;
+    links.concat(mLinks).forEach(a => a.classList.toggle('on', a.getAttribute('href') === '#' + cur.id));
+    const lbl = scrollY < innerHeight * .5 ? '목차' : cur.dataset.n + ' ' + cur.dataset.t;
+    if (tocCur.textContent !== lbl) tocCur.textContent = lbl;
+  }
+  addEventListener('scroll', onScroll, { passive: true }); addEventListener('resize', onScroll); onScroll();
+  top.onclick = () => scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' });
+})();
+</script>
+</body>
+</html>
