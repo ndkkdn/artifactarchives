@@ -11,7 +11,8 @@
  *   #bg-cloud  pixel clouds that drift and stream away from the mouse; animated
  * Seasons (:root[data-season], set by the page; ?season=winter to preview) tint the palette, move
  * sunrise and sunset, thicken or thin the clouds, raise a seasonal shoreline on the horizon (blossom hills,
- * green islands, autumn foliage, snowy peaks) and drop petals, leaves or snow — or, in summer, send gulls
+ * green islands, autumn foliage, snowy peaks) and drop fluttering petals, swinging leaves or snow (petals and leaves
+ * come to rest on the sea for a while) — or, in summer, send gulls
  * across the day sky and fireflies over the night shore.
  *
  * The body gets .sky-light / .sky-dark so the top bar can keep its text readable, and --hl / --hl-text
@@ -46,11 +47,11 @@
   const T = (o) => Object.fromEntries(Object.entries(o).map(([k, [c, a]]) => [k, [hex(c), a]]));
   const SEASONS = {
     spring: { rise: 6, set: 19, cloud: 0, tint: T({ hl: ['#e0517a', 1], skyTop: ['#9fb2f2', .45], skyBot: ['#fcd9e6', .75], glow: ['#ffe2ee', .5], seaDeep: ['#123a78', .3], seaMid: ['#2f74bc', .45], seaLight: ['#8cc8ee', .55], foam: ['#fff0f6', .6], cloud: ['#fff4f8', .6], cloud2: ['#f8d4e2', .7], cloudEdge: ['#f2c8da', .7] }),
-      fall: { per: 420, speed: .2, sway: .7, drift: .18, shape: 'pair', colors: ['#fbc4d6', '#f49dbb', '#fde4ec', '#ec8aae'] } },
+      fall: { per: 300, speed: .13, sway: .9, drift: .14, shape: 'petal', back: '#fff4f8', float: [6, 9], colors: ['#fbc4d6', '#f49dbb', '#fde4ec', '#ec8aae'] } },
     summer: { rise: 5.3, set: 19.8, cloud: .045, glint: 1.35, tint: T({ hl: ['#ff6a1a', .8], skyTop: ['#2f86f0', .7], skyBot: ['#aee0ff', .65], glow: ['#fffbe8', .4], seaDeep: ['#023f66', .6], seaMid: ['#0482b8', .7], seaLight: ['#22cbd6', .8], foam: ['#ffffff', .5], cloud: ['#ffffff', .6] }),
       fall: null },
     autumn: { rise: 6.7, set: 17.8, cloud: .02, tint: T({ hl: ['#d9541e', 1], skyTop: ['#8a9fcf', .35], skyBot: ['#f6cf9e', .7], glow: ['#ffc890', .5], seaDeep: ['#0b1f40', .5], seaMid: ['#1d3f72', .45], seaLight: ['#6a87ad', .4], cloud: ['#fbeedd', .6], cloud2: ['#ecd0b0', .65], cloudEdge: ['#e2c09c', .65] }),
-      fall: { per: 520, speed: .32, sway: 1.2, drift: .24, shape: 'pair', colors: ['#d9622b', '#eaa23a', '#b8432a', '#cf7c2c', '#9a4a24'] } },
+      fall: { per: 950, speed: .3, sway: 2.6, drift: .1, shape: 'leaf', float: [10, 15], colors: ['#d9622b', '#eaa23a', '#b8432a', '#cf7c2c', '#9a4a24', '#e3b33c'] } },
     winter: { rise: 7.4, set: 17.4, cloud: -.07, glint: .75, tint: T({ hl: ['#3a6fd8', 1], skyTop: ['#9fb0c8', .7], skyBot: ['#eef1f5', .8], glow: ['#f6f7fa', .5], seaDeep: ['#152638', .7], seaMid: ['#324a66', .7], seaLight: ['#8aa2bc', .65], foam: ['#ffffff', .7], cloud: ['#f6f7fa', .5], cloud2: ['#d4dae3', .7], cloudEdge: ['#c4ccd8', .7] }),
       fall: { per: 200, speed: .24, sway: .5, drift: .05, shape: 'flake', colors: ['#ffffff', '#f2f6ff', '#e2eaf6'] } },
   };
@@ -333,33 +334,83 @@
     for (let k = 0; k < n; k++) flakes.push(newFlake(f, Math.random() * rows));
   }
   function newFlake(f, y) {
-    return { x: Math.random() * cols, y, ph: Math.random() * 6.28, sp: f.speed * (.6 + Math.random() * .8),
-      c: Math.floor(Math.random() * f.colors.length), land: seaRow0 + Math.random() * (rows - seaRow0) * .9, tw: Math.random() < .5 };
+    const x = Math.random() * cols;
+    return { x, x0: x, y, ph: Math.random() * 6.28, sp: f.speed * (.6 + Math.random() * .8),
+      c: Math.floor(Math.random() * f.colors.length), land: seaRow0 + 1 + Math.random() * (rows - seaRow0) * .85, tw: Math.random() < .5,
+      amp: f.sway * (.6 + Math.random() * .8), om: .8 + Math.random() * .6, tumble: Math.random() < .2, fl: null,
+      stay: f.float ? f.float[0] + Math.random() * (f.float[1] - f.float[0]) : 0 };
   }
+  // autumn leaves: 3×3 sprites (# leaf, d stem/vein), picked by how the leaf is tilted mid-swing
+  const LEAF = {
+    flat: ['#.#', '#d#', '.d.'],
+    right: ['.##', '#d#', 'd..'],
+    left: ['##.', '#d#', '..d'],
+    edge: ['...', '##d', '...'],
+  };
+  const LEAF_SPIN = ['flat', 'right', 'edge', 'left'];
   function drawFall(t) {
     if (flakeKey !== seasonKey() + cols + 'x' + rows) seedFall();
     const f = season().fall; if (!f) return;
     const dim = isDark() ? .72 : 1;
-    const cols8 = f.colors.map(c => pack(hex(c).map(v => v * dim)));
+    const tone = (c, k = 1, a = 255) => pack(hex(c).map(v => v * dim * k), a);
+    const cols8 = f.colors.map(c => tone(c));
+    // spring: every so often a breeze sweeps the petals sideways
+    const breeze = f.shape === 'petal' ? Math.pow(Math.max(0, Math.sin(t * .33)), 4) : 0;
     const aspect = W / H, R = .16, R2 = R * R;
     for (const p of flakes) {
       if (!reducedMq.matches) {
         let wx = 0, wy = 0;
         for (const g of gusts) { const ex = (p.x / cols - g.x) * aspect, ey = p.y / rows - g.y, d2 = ex * ex + ey * ey;
           if (d2 < R2) { const s = (1 - d2 / R2) * g.life; wx += g.vx * s * cols * .4; wy += g.vy * s * rows * .4; } }
-        p.y += p.sp + wy;
-        p.x += f.drift + Math.sin(t * 1.3 + p.ph) * f.sway * .12 + wx;
-        if (p.y > p.land || p.y > rows) Object.assign(p, newFlake(f, -2));
-        if (p.x > cols + 2) p.x -= cols + 4; else if (p.x < -2) p.x += cols + 4;
+        if (p.fl !== null) {
+          // resting on the water: bob along with the swell, then sink away
+          p.x += .025 + Math.sin(t * .7 + p.ph) * .03;
+          if (t - p.fl > p.stay) Object.assign(p, newFlake(f, -2 - Math.random() * rows * .2));
+        } else if (f.shape === 'leaf') {
+          // falling-leaf pendulum: swing side to side, glide (slow) at each end, drop fastest through the middle
+          const a = t * p.om + p.ph, c = Math.cos(a);
+          p.x0 += f.drift + wx;
+          p.x = p.x0 + Math.sin(a) * p.amp * (p.tumble ? .4 : 1);
+          p.y += p.sp * (p.tumble ? 1.5 : .15 + 1.25 * c * c) + wy;
+        } else if (f.shape === 'petal') {
+          // petals are light: they loop in little circles and ride the breeze
+          const a = t * 2.1 + p.ph;
+          p.y += p.sp + Math.cos(a) * .1 + wy;
+          p.x += f.drift * (1 + breeze * 5) + Math.sin(a) * f.sway * .22 + wx;
+        } else {
+          p.y += p.sp + wy;
+          p.x += f.drift + Math.sin(t * 1.3 + p.ph) * f.sway * .12 + wx;
+        }
+        if (p.fl === null && (p.y > p.land || p.y > rows)) {
+          if (f.float && p.land < rows) { p.y = Math.round(p.land); p.fl = t; }
+          else Object.assign(p, newFlake(f, -2));
+        }
+        if (p.x > cols + 2) { p.x -= cols + 4; p.x0 -= cols + 4; } else if (p.x < -2) { p.x += cols + 4; p.x0 += cols + 4; }
       }
       const i = Math.round(p.x), j = Math.round(p.y);
       if (j < 0 || j >= rows || i < 0 || i >= cols) continue;
-      const c = cols8[p.c];
-      cloudBuf[j * cols + i] = c;
-      const put = (di, dj) => { const ii = i + di, jj = j + dj; if (ii >= 0 && ii < cols && jj >= 0 && jj < rows) cloudBuf[jj * cols + ii] = c; };
-      // petals and leaves are two cells, tumbling between flat and upright; some snowflakes are a small plus
-      if (f.shape === 'pair') { if (Math.sin(t * 2.2 + p.ph) > 0) put(0, 1); else put(1, 0); }
-      else if (p.tw) { put(1, 0); put(-1, 0); put(0, 1); put(0, -1); }
+      // fade out over the last two seconds afloat
+      const alpha = p.fl === null ? 255 : Math.round(255 * Math.max(0, Math.min(1, (p.stay - (t - p.fl)) / 2)));
+      if (!alpha) continue;
+      const put = (di, dj, c) => { const ii = i + di, jj = j + dj; if (ii >= 0 && ii < cols && jj >= 0 && jj < rows) cloudBuf[jj * cols + ii] = c; };
+      const hue = f.colors[p.c];
+      if (f.shape === 'leaf') {
+        const main = tone(hue, 1, alpha), dark = tone(hue, .6, alpha);
+        let shape;
+        if (p.fl !== null) shape = Math.sin(t * 1.4 + p.ph) > 0 ? LEAF.flat : LEAF.edge;      // rocking on the swell
+        else if (p.tumble) shape = LEAF[LEAF_SPIN[Math.floor(t * 5 + p.ph) & 3]];
+        else { const sw = Math.sin(t * p.om + p.ph + 1.57); shape = sw > .35 ? LEAF.right : sw < -.35 ? LEAF.left : LEAF.flat; }
+        for (let r = 0; r < 3; r++) for (let q = 0; q < 3; q++) { const ch = shape[r][q]; if (ch !== '.') put(q - 1, r - 1, ch === 'd' ? dark : main); }
+      } else if (f.shape === 'petal') {
+        // a petal flips as it falls: pink face, pale back, and broad (two cells) when it turns flat to us
+        const s2 = Math.sin(t * 3.2 + p.ph), c = s2 > .55 ? tone(f.back, 1, alpha) : tone(hue, 1, alpha);
+        put(0, 0, c);
+        if (p.fl === null && Math.abs(s2) < .3) put(1, 0, tone(hue, .92, alpha));
+      } else {
+        const c = cols8[p.c];
+        put(0, 0, c);
+        if (p.tw) { put(1, 0, c); put(-1, 0, c); put(0, 1, c); put(0, -1, c); }   // some snowflakes are a small plus
+      }
     }
   }
 
