@@ -186,31 +186,39 @@
     spring: { height: .09, far: '#a7bccb', near: '#78ad5e', nearDark: '#54894a', top: ['#f7b6cb', '#fbd3e0', '#f19bb8', '#fde8ef'], topAmt: .6 },
     summer: { height: .08, farScale: .5, islands: true, far: '#94bccb', near: '#2f9050', nearDark: '#1f6e3a', top: ['#46ad5e', '#62bf6c'], topAmt: .35, beach: '#f1dca2' },
     autumn: { height: .09, far: '#a99aa6', near: '#bb532c', nearDark: '#7a3420', top: ['#e07a2c', '#f0b040', '#d9542a', '#a8381f', '#e89a3a'], topAmt: .75 },
-    winter: { height: .13, peaks: true, far: '#8e9db4', rock: '#5f6f88', near: '#eef2f7', nearDark: '#c3cfdd', top: ['#ffffff', '#f6f9fc'], topAmt: .5 },
+    winter: { height: .15, peaks: true, haze: .12, far: '#7f8ea8', rock: '#46546d', rockShade: '#323e54', snowShade: '#aebdd2', near: '#e9eef5', nearDark: '#b7c4d6', top: ['#2c4a43', '#355a4c', '#24403a'], topAmt: .45 },
   };
   function drawLand() {
     const L = LANDS[seasonKey()]; if (!L) return;
     const light = .28 + .72 * dayLight, night = mix(pal.seaDeep, pal.skyTop, .3), dark = isDark();
     const shade = c => { let o = mix(night, c, light); if (dark) o = o.map((v, i) => v * .55 + [14, 16, 40][i] * .3); return o; };
     const far = shade(mix(hex(L.far), pal.skyBot, .35)), near = shade(hex(L.near)), nearD = shade(hex(L.nearDark));
-    const tops = L.top.map(c => shade(hex(c))), snow = shade(hex('#f6f9fc'));
-    const rock = L.rock ? shade(mix(mix(hex(L.far), pal.skyBot, .35), hex(L.rock), .7)) : null, beach = L.beach ? shade(hex(L.beach)) : null;
+    const tops = L.top.map(c => shade(hex(c))), beach = L.beach ? shade(hex(L.beach)) : null;
+    // winter peaks: rock and snow each get a sunlit (left) and a shaded (right) face so they stand off the pale sky
+    const haze = c => shade(mix(hex(c), pal.skyBot, L.haze ?? .35));
+    const snow = shade(hex('#f6f9fc')), snowS = L.snowShade ? haze(L.snowShade) : snow;
+    const rock = L.rock ? haze(L.rock) : null, rockS = L.rockShade ? haze(L.rockShade) : rock;
     const env = x => .35 + .65 * Math.min(1, Math.abs(x - .5) * 2.4);
     const maxH = L.height * rows;
     const cell = (i, j, c) => { gl.fillStyle = css(c); gl.fillRect(i * C, j * C, C, C); };
     const stretch = (v, a, b) => Math.max(0, Math.min(1, (v - a) / (b - a)));   // fbm sits near .5; spread it out
+    const farH = x => {
+      // winter: a jagged range with a peak either side of the covers; otherwise soft rolling hills
+      const h = L.peaks ? Math.pow(stretch(fbm(x * 7 + 13.8, 1.7, 4), .3, .7), 1.5) : stretch(fbm(x * 5 + 3, 1.7, 3), .25, .75);
+      return maxH * (L.peaks ? 1.3 : .9) * (L.farScale || 1) * h * env(x);
+    };
     for (let i = 0; i < cols; i++) {
-      const x = i / cols, e = env(x);
-      let fh = stretch(fbm(x * 5 + 3, 1.7, 3), .25, .75);
-      if (L.peaks) fh = 1 - Math.abs(2 * fh - 1);
-      fh = Math.round(maxH * (L.peaks ? 1.15 : .9) * (L.farScale || 1) * fh * e);
+      const x = i / cols, e = env(x), fhRaw = farH(x), fh = Math.round(fhRaw);
+      const lit = farH((i + 1) / cols) >= fhRaw;   // sun on the left: slopes rising to the right are lit
       let nh = .3 + .7 * stretch(fbm(x * 9 + 11, 4.2, 3), .25, .75);
       // islands either side of the covers, open water between
       if (L.islands) { const m = stretch(fbm(x * 7 + 20.4, 2.1, 2), .32, .39); nh *= Math.sqrt(m); }
       nh = Math.round(maxH * .75 * nh * e);
       for (let d = 0; d < fh; d++) {
         const j = seaRow0 - 1 - d; if (j < 0) break;
-        cell(i, j, L.peaks ? (d > fh * .6 && fh > maxH * .45 ? snow : rock) : far);
+        if (!L.peaks) { cell(i, j, far); continue; }
+        const bay = BAYER[(j & 3) * 4 + (i & 3)], snowy = fh > maxH * .35 && d > fh * (.5 + bay * .15);
+        cell(i, j, snowy ? (lit ? snow : snowS) : (lit ? rock : rockS));
       }
       for (let d = 0; d < nh; d++) {
         const j = seaRow0 - 1 - d; if (j < 0) break;
