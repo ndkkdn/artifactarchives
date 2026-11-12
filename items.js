@@ -8,7 +8,8 @@ window.ITEMS = [
     "type": "리포트",
     "tags": ["기본기", "용어", "LLM"],
     "date": "2026-11-12",
-    "thumb": "thumbs/ai-terms.jpg"
+    "thumb": "thumbs/ai-terms.jpg",
+    "hidden": true
   },
   {
     "href": "ai-trends-2026-11-report/",
