@@ -2,6 +2,26 @@
 // 직접 고칠 때도 JSON 형식(따옴표 붙은 키)을 유지해 주세요.
 window.ITEMS = [
   {
+    "href": "ai-briefing-2026-11-w3-report/",
+    "title": "2026년 11월 셋째 주 테크·AI 브리핑 (스크롤형)",
+    "desc": "AI 시험 부정행위(세무사 수석 자백·수능 대책), MS365 Copilot 과금, Gemini 4 Argon·Carbon·Hydrogen과 Krypton 유출, 소형 모델 3종, Claude Projects, ChatGPT Wallet, Anthropic IPO까지 출처와 함께 정리한 상세 리포트. 정부 대응 일정표, 신호 경로 도해, Gemini·소형 모델 비교, IPO 공모가 계산기 등 직접 조작하는 그림 포함.",
+    "type": "리포트",
+    "tags": ["AI 동향", "주간 브리핑", "IPO", "Gemini"],
+    "date": "2026-11-16",
+    "thumb": "thumbs/ai-briefing-2026-11-w3-report.jpg",
+    "hidden": true
+  },
+  {
+    "href": "ai-briefing-2026-11-w3/",
+    "title": "2026년 11월 셋째 주 테크·AI 브리핑 (슬라이드형)",
+    "desc": "Anthropic IPO, AI 시험 부정행위, MS365 Copilot, Gemini 4, 소형 모델 3종, Claude Projects, ChatGPT Wallet을 30장으로 정리. 확정·루머·판단·벤더 수치 배지, 움직이는 도해와 약어 풀이, 폰 세로 화면 대응. Speaker Notes(N), Fullscreen(F).",
+    "type": "슬라이드",
+    "tags": ["AI 동향", "주간 브리핑", "IPO", "Gemini"],
+    "date": "2026-11-16",
+    "thumb": "thumbs/ai-briefing-2026-11-w3.jpg",
+    "hidden": true
+  },
+  {
     "href": "ai-terms/",
     "title": "AI 작동 원리 필수 용어 (스크롤형)",
     "desc": "구조(신경망) → 학습(가중치 조정) → 추론의 흐름을 따라 정리한 필수 용어 42개. 용어마다 움직이는 미니 도해, Attention Is All You Need 논문 요약과 트랜스포머 구조도, 뉴런 계산기, 학습률 시뮬레이터, 토크나이저·어텐션 데모, 온도·Top-k·Top-p 샘플링 실험, 양자화·MoE 도해.",

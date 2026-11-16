@@ -1,0 +1,1562 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>2026년 11월 셋째 주 테크·AI 브리핑</title>
+<meta name="description" content="AI 시험 부정행위와 정부 대응, MS365 Copilot 사용량 과금, Gemini 4 Argon·Carbon·Hydrogen과 Krypton 유출, 소형 모델 3종, Claude Projects, ChatGPT Wallet, Anthropic IPO를 슬라이드로 정리">
+<link rel="icon" href="../favicon.ico">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0c1524; --bg-2: #122038; --card: rgba(243, 239, 228, .045); --card-2: rgba(243, 239, 228, .08);
+    --line: rgba(243, 239, 228, .12); --ink: #f3efe4; --ink-2: rgba(243, 239, 228, .7); --ink-3: rgba(243, 239, 228, .44);
+    --gold: #d5a844; --coral: #f0542a; --blue: #6aa8ff; --green: #4cc38a; --red: #ff6b6b; --violet: #a98bff;
+    --c-ant: #d08a6a; --c-oai: #b7c0d2; --c-meta: #6aa8ff;
+    --ease: cubic-bezier(.2, .8, .2, 1);
+    color-scheme: dark;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; background: var(--bg); color: var(--ink); overflow: hidden; }
+  body { font-family: "Pretendard Variable", Pretendard, Inter, system-ui, sans-serif; -webkit-font-smoothing: antialiased; word-break: keep-all; }
+  .mono { font-family: "JetBrains Mono", ui-monospace, monospace; }
+  .en { font-family: Inter, "Pretendard Variable", sans-serif; }
+  #bgfx { position: fixed; inset: 0; width: 100%; height: 100%; }
+
+  /* ── fixed 1600×900 stage, scaled to fit ── */
+  .deck { position: fixed; left: 50%; top: 50%; width: 1600px; height: 900px; transform-origin: 0 0; }
+  .slide {
+    position: absolute; inset: 0; padding: 92px 110px 96px; display: flex; flex-direction: column;
+    opacity: 0; visibility: hidden; transform: translateX(40px); transition: opacity .5s var(--ease), transform .6s var(--ease), visibility 0s .6s;
+  }
+  .slide.is-active { opacity: 1; visibility: visible; transform: none; transition: opacity .5s var(--ease), transform .6s var(--ease); }
+  .slide.is-past { transform: translateX(-40px); }
+
+  /* entrance choreography: every [data-a] child plays when its slide becomes active */
+  .slide [data-a] { opacity: 0; }
+  .slide.is-active [data-a] { animation: var(--anim, rise) .8s var(--ease) both; animation-delay: calc(140ms + var(--d, 0) * 110ms); }
+  [data-a="fade"] { --anim: fade; } [data-a="left"] { --anim: fromLeft; } [data-a="right"] { --anim: fromRight; } [data-a="pop"] { --anim: pop; }
+  @keyframes rise { from { opacity: 0; transform: translateY(28px); } to { opacity: 1; transform: none; } }
+  @keyframes fade { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes fromLeft { from { opacity: 0; transform: translateX(-40px); } to { opacity: 1; transform: none; } }
+  @keyframes fromRight { from { opacity: 0; transform: translateX(40px); } to { opacity: 1; transform: none; } }
+  @keyframes pop { 0% { opacity: 0; transform: scale(.85); } 70% { opacity: 1; transform: scale(1.03); } 100% { opacity: 1; transform: none; } }
+
+  /* ── type ── */
+  .kicker { display: inline-flex; align-items: center; gap: 10px; font: 600 18px/1 Inter, "Pretendard Variable", sans-serif; letter-spacing: .14em; text-transform: uppercase; color: var(--gold); }
+  .kicker::before { content: ""; width: 28px; height: 2px; background: currentColor; }
+  h1, h2, h3 { margin: 0; font-weight: 700; letter-spacing: -.035em; }
+  h2 { font-size: 54px; line-height: 1.18; margin-top: 16px; }
+  /* slide titles: Paperlogy (SIL OFL, via jsDelivr/project noonnu) */
+  @font-face { font-family: "Paperlogy"; font-weight: 700; font-style: normal; font-display: swap; src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/2408-3@1.0/Paperlogy-7Bold.woff2") format("woff2"); }
+  h1, h2 { font-family: "Paperlogy", "Pretendard Variable", Pretendard, Inter, sans-serif; letter-spacing: -.03em; }
+  h1 { font-weight: 800; }
+  h2 em, h1 em { font-style: normal; color: var(--gold); }
+  .lead { font-size: 25px; line-height: 1.6; color: var(--ink-2); margin: 18px 0 0; max-width: 1180px; }
+  .lead b, .body b { color: var(--ink); font-weight: 600; }
+  .body { font-size: 21px; line-height: 1.6; color: var(--ink-2); margin: 0; }
+  .small { font-size: 16px; color: var(--ink-3); line-height: 1.55; }
+  .small b { color: var(--ink-2); }
+  .chip { display: inline-flex; align-items: center; gap: 8px; padding: 8px 16px; border-radius: 999px; background: var(--card-2); border: 1px solid var(--line); font-size: 18px; color: var(--ink-2); white-space: nowrap; }
+  .chip.gold { color: #1b1606; background: var(--gold); border-color: transparent; font-weight: 600; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 22px; padding: 26px 28px; }
+  .card h3 { font-size: 25px; letter-spacing: -.025em; }
+  .card .num { font: 700 14px/1.3 "JetBrains Mono", "Pretendard Variable", monospace; color: var(--gold); letter-spacing: .06em; }
+  .card p { margin: 10px 0 0; font-size: 18px; line-height: 1.55; color: var(--ink-2); }
+  .card p b, .card li b { color: var(--ink); }
+  .card ul { margin: 10px 0 0; padding-left: 20px; font-size: 18px; line-height: 1.55; color: var(--ink-2); }
+  .card li + li { margin-top: 6px; }
+  .row { display: flex; gap: 28px; }
+  .grow { flex: 1; min-width: 0; }
+  .src { position: absolute; left: 110px; bottom: 44px; font-size: 15px; color: var(--ink-3); max-width: 900px; }
+  .cols { display: grid; gap: 22px; }
+  .c2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .c3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .c4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .c5 { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+  .c3w { grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr) minmax(0, 1fr); }
+
+  /* ── status badges: confirmed / rumor / judgment / vendor numbers ── */
+  .badge { display: inline-flex; align-items: center; gap: 6px; font: 700 14px/1.2 "Pretendard Variable", Inter, sans-serif; letter-spacing: .02em; padding: 5px 11px; border-radius: 999px; white-space: nowrap; vertical-align: middle; }
+  .badge.ok { background: rgba(76,195,138,.16); color: var(--green); border: 1px solid rgba(76,195,138,.45); }
+  .badge.ok::before { content: "✓"; }
+  .badge.rumor { color: #ff8a63; border: 1.5px dashed rgba(240,84,42,.8); background: repeating-linear-gradient(-45deg, rgba(240,84,42,.18) 0 6px, rgba(240,84,42,.05) 6px 12px); }
+  .badge.rumor::before { content: "?"; font-weight: 800; }
+  .badge.judge { background: rgba(213,168,68,.16); color: var(--gold); border: 1px solid rgba(213,168,68,.5); }
+  .badge.judge::before { content: "◆"; font-size: 11px; }
+  .badge.vendor { background: rgba(106,168,255,.14); color: var(--blue); border: 1px solid rgba(106,168,255,.45); }
+  .badge.vendor::before { content: "!"; font-weight: 800; }
+  .badge.warn { background: rgba(240,84,42,.14); color: #ff8a63; border: 1px solid rgba(240,84,42,.5); }
+  .card.ok { border-color: rgba(76,195,138,.45); background: linear-gradient(160deg, rgba(76,195,138,.10), rgba(76,195,138,.02)); }
+  .card.rumor { border: 1.5px dashed rgba(240,84,42,.65); background: repeating-linear-gradient(-45deg, rgba(240,84,42,.07) 0 10px, rgba(240,84,42,.015) 10px 20px); }
+  .card.judge { border-color: rgba(213,168,68,.55); background: linear-gradient(160deg, rgba(213,168,68,.14), rgba(213,168,68,.02)); }
+  .card.vendor { border-color: rgba(106,168,255,.4); background: linear-gradient(160deg, rgba(106,168,255,.08), rgba(106,168,255,.01)); }
+  .card.hotc { border-color: rgba(240,84,42,.45); background: rgba(240,84,42,.06); }
+  .ustamp { position: absolute; display: inline-block; border: 3px solid var(--coral); color: var(--coral); font: 800 19px/1 "Pretendard Variable", sans-serif; letter-spacing: .06em; padding: 7px 12px; border-radius: 8px; transform: rotate(-7deg) scale(1.7); opacity: 0; pointer-events: none; background: rgba(12,21,36,.6); }
+  .is-active .ustamp { animation: stamp .45s var(--ease) var(--sd, 1.8s) both; }
+  @keyframes stamp { to { opacity: .95; transform: rotate(-7deg) scale(1); } }
+
+  /* ── chrome ── */
+  .progress { position: fixed; left: 0; top: 0; height: 3px; background: var(--gold); width: 0; transition: width .5s var(--ease); z-index: 5; }
+  .hud { position: fixed; right: max(18px, env(safe-area-inset-right)); bottom: max(16px, env(safe-area-inset-bottom)); display: flex; gap: 8px; align-items: center; z-index: 5; }
+  .hud button, .hud a { appearance: none; border: 0; height: 38px; min-width: 38px; padding: 0 12px; border-radius: 999px; background: rgba(243,239,228,.08); color: var(--ink-2);
+    font: 500 14px Inter, "Pretendard Variable", sans-serif; cursor: pointer; display: inline-grid; place-items: center; text-decoration: none; backdrop-filter: blur(8px); }
+  .hud button:hover, .hud a:hover { background: rgba(243,239,228,.16); color: var(--ink); }
+  .hud .count { font: 500 14px "JetBrains Mono", monospace; color: var(--ink-3); padding: 0 6px; white-space: nowrap; }
+  .notes { position: fixed; left: 50%; bottom: 70px; transform: translateX(-50%); width: min(920px, calc(100vw - 32px)); max-height: 60vh; overflow-y: auto; z-index: 6; display: none;
+    background: rgba(8, 14, 26, .94); border: 1px solid var(--line); border-radius: 16px; padding: 18px 22px; font-size: 16px; line-height: 1.65; color: var(--ink-2); }
+  .notes.show { display: block; }
+  .notes b { color: var(--gold); font-weight: 600; margin-right: 6px; }
+  :focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
+
+  /* ── glossary strip (abbreviations) ── */
+  .gloss { margin-top: auto; padding-top: 12px; border-top: 1px solid var(--line); display: flex; flex-wrap: wrap; gap: 4px 26px; font-size: 14.5px; line-height: 1.5; color: var(--ink-3); position: relative; z-index: 1; }
+  .gloss span { max-width: 100%; }
+  .gloss b { font: 700 13.5px "JetBrains Mono", monospace; color: var(--gold); margin-right: 8px; }
+  .gloss em { font-style: normal; color: var(--ink-2); }
+  .slide:has(.src) .gloss { margin-bottom: 12px; }
+
+  /* ── 01 title ── */
+  .s-title { justify-content: center; }
+  @font-face { font-family: "Paperlogy"; font-weight: 800; font-style: normal; font-display: swap; src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/2408-3@1.0/Paperlogy-8ExtraBold.woff2") format("woff2"); }
+  .s-title h1 { font-family: "Paperlogy", "Pretendard Variable", Pretendard, Inter, sans-serif; font-weight: 800; font-size: 100px; line-height: 1.12; letter-spacing: -.035em; margin-top: 26px; }
+  .s-title .lead { font-size: 27px; margin-top: 28px; }
+  .s-title .chips { display: flex; gap: 12px; margin-top: 48px; flex-wrap: wrap; }
+  .s-title .date { position: absolute; right: 110px; top: 92px; font: 500 18px "JetBrains Mono", "Pretendard Variable", monospace; color: var(--ink-3); }
+
+  /* ── agenda ── */
+  .agenda { display: grid; grid-template-columns: 1fr 1fr; gap: 0 48px; margin: 34px 0 0; padding: 0; }
+  .agenda li { list-style: none; display: flex; gap: 22px; align-items: baseline; padding: 18px 0; border-bottom: 1px solid var(--line); }
+  .agenda .n { font: 700 21px "JetBrains Mono", monospace; color: var(--gold); width: 38px; flex: none; }
+  .agenda .t { font-size: 28px; font-weight: 600; letter-spacing: -.02em; }
+  .agenda .d { font-size: 18px; color: var(--ink-3); margin-top: 5px; }
+  .agenda li.warn .n, .agenda li.warn .t { color: var(--coral); }
+
+  /* ── TL;DR ── */
+  .tldr { display: grid; grid-template-columns: 1.1fr 1fr 1fr; gap: 22px; margin-top: 34px; }
+  .tldr .card { padding: 24px 26px; }
+  .tldr ul { font-size: 18px; line-height: 1.55; }
+  .tldr li + li { margin-top: 10px; }
+
+  /* ── horizontal bars ── */
+  .hbars { display: flex; flex-direction: column; gap: 10px; }
+  .hbar { display: grid; grid-template-columns: var(--lw, 150px) minmax(0, 1fr) var(--vw, 100px); gap: 12px; align-items: center; font-size: 17px; color: var(--ink-2); }
+  .hbar .nm { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .hbar .tr { height: var(--bh, 22px); border-radius: 7px; background: var(--card-2); overflow: hidden; position: relative; }
+  .hbar .tr i { position: absolute; left: 0; top: 0; bottom: 0; width: 0; border-radius: inherit; background: var(--c, var(--blue)); transition: width 1.2s var(--ease); }
+  .hbar .tr i.rng { background: repeating-linear-gradient(-45deg, var(--c, var(--blue)) 0 5px, transparent 5px 10px); opacity: .9; }
+  .is-active .hbar .tr i { width: var(--w); transition-delay: calc(var(--bd, .6s) + var(--k, 0) * .12s); }
+  .hbar .v { font: 700 17px "JetBrains Mono", "Pretendard Variable", monospace; color: var(--ink); text-align: right; white-space: nowrap; }
+  .hbar.best .nm, .hbar.best .v { color: var(--gold); }
+  .legend { display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: 15px; color: var(--ink-3); }
+  .legend i { display: inline-block; width: 12px; height: 12px; border-radius: 3px; margin-right: 6px; vertical-align: -1px; }
+
+  /* ── vertical column bars ── */
+  .vbars { display: flex; align-items: flex-end; gap: 12px; height: var(--vh, 190px); border-bottom: 1px solid var(--line); margin-top: 10px; }
+  .vbars .b { flex: 1; min-width: 0; height: 100%; display: flex; flex-direction: column; justify-content: flex-end; position: relative; }
+  .vbars .b i { display: block; height: 0; border-radius: 7px 7px 0 0; background: var(--c, var(--blue)); transition: height 1.1s var(--ease); }
+  .is-active .vbars .b i { height: var(--h); transition-delay: calc(var(--bd, .6s) + var(--k, 0) * .12s); }
+  .vbars .b em { position: absolute; left: 0; right: 0; bottom: calc(var(--h) + 6px); text-align: center; font: 700 16px "JetBrains Mono", monospace; font-style: normal; color: var(--ink); opacity: 0; transition: opacity .3s; white-space: nowrap; }
+  .is-active .vbars .b em { opacity: 1; transition-delay: calc(var(--bd, .6s) + .9s + var(--k, 0) * .12s); }
+  .vlab { display: flex; gap: 12px; margin-top: 8px; }
+  .vlab span { flex: 1; min-width: 0; text-align: center; font-size: 14px; color: var(--ink-3); line-height: 1.3; }
+
+  /* ── timeline ── */
+  .tline { position: relative; display: grid; grid-template-columns: repeat(var(--n, 4), minmax(0, 1fr)); gap: 24px; margin-top: 34px; padding-top: 44px; }
+  .tline .axis { position: absolute; left: 0; right: 0; top: 12px; height: 3px; background: var(--line); }
+  .tline .axis i { position: absolute; inset: 0; background: var(--gold); transform: scaleX(0); transform-origin: left; transition: transform 1.6s var(--ease); }
+  .is-active .tline .axis i { transform: scaleX(1); transition-delay: .5s; }
+  .tline .ev { position: relative; min-width: 0; }
+  .tline .ev .dot { position: absolute; left: 0; top: -43px; width: 22px; height: 22px; border-radius: 50%; background: var(--bg); border: 4px solid var(--gold); }
+  .tline .ev.key .dot { background: var(--gold); box-shadow: 0 0 0 6px rgba(213,168,68,.18); }
+  .tline .ev.bad .dot { border-color: var(--coral); background: var(--coral); }
+  .tline .ev.rum .dot { border-style: dashed; border-color: var(--coral); }
+  .tline .when { font: 700 18px "JetBrains Mono", "Pretendard Variable", monospace; color: var(--gold); }
+  .tline .ev.bad .when, .tline .ev.rum .when { color: #ff8a63; }
+  .tline .what { font-size: 18.5px; line-height: 1.5; color: var(--ink-2); margin-top: 6px; }
+  .tline .what b { color: var(--ink); }
+  .tline .q { margin-top: 8px; font-size: 16px; line-height: 1.5; color: var(--ink-2); padding-left: 12px; border-left: 3px solid var(--line); }
+  .tline .q.en { font-style: italic; }
+
+  /* ── 04 scores + exam room ── */
+  .scores { display: flex; gap: 46px; margin-top: 12px; }
+  .scores .lbl { font-size: 16px; color: var(--ink-3); }
+  .kpi { font: 800 64px/1.05 Inter, sans-serif; letter-spacing: -.04em; color: var(--ink); }
+  .kpi small { font-size: 28px; color: var(--ink-3); letter-spacing: -.02em; margin-left: 4px; }
+  .kpi.gold { color: var(--gold); }
+  .room { display: grid; grid-template-columns: repeat(5, 40px); gap: 8px; justify-content: center; padding: 14px 18px; border-radius: 14px; background: var(--bg-2); }
+  .room .podium { grid-column: 1 / -1; text-align: center; font-size: 13px; color: var(--ink-3); padding: 4px; border: 1px solid var(--line); border-radius: 6px; margin-bottom: 4px; }
+  .room i { height: 26px; border-radius: 6px; background: var(--card-2); transition: background .4s, box-shadow .4s; font: 700 11px/26px "Pretendard Variable"; font-style: normal; text-align: center; color: transparent; }
+  .is-active .room i.s1 { background: var(--coral); color: #1b0a05; transition-delay: 1.4s; box-shadow: 0 0 0 3px rgba(240,84,42,.3); }
+  .is-active .room i.s2 { background: var(--gold); color: #1b1606; transition-delay: 1.9s; box-shadow: 0 0 0 3px rgba(213,168,68,.3); }
+
+  /* ── 06 government measures ── */
+  .measures { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 14px; margin-top: 14px; }
+  .measures .m { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 16px 18px; font-size: 17px; line-height: 1.45; color: var(--ink-2); }
+  .measures .m b { display: block; font: 700 15px "JetBrains Mono"; color: var(--gold); margin-bottom: 6px; }
+  .measures .m.flag { border-style: dashed; border-color: rgba(240,84,42,.5); }
+
+  /* ── 09 signal chain ── */
+  .chain-svg { width: 100%; height: auto; display: block; margin-top: 18px; }
+  .chain-svg text { fill: #f3efe4; font-family: "Pretendard Variable", sans-serif; }
+  .chain-svg .node rect { fill: rgba(243,239,228,.05); stroke: rgba(243,239,228,.22); stroke-width: 1.5; }
+  .chain-svg .leg { stroke: rgba(243,239,228,.25); stroke-width: 4; stroke-dasharray: 8 8; fill: none; }
+  .chain-svg .leg.bt { stroke: rgba(76,195,138,.5); transition: stroke .2s; }
+  .chain-svg .leg.bt.hit { stroke: var(--green); stroke-dasharray: none; }
+  .chain-svg .pkt { fill: var(--gold); }
+  .chain-svg .ring { fill: none; stroke: var(--green); stroke-width: 2; opacity: 0; }
+  .is-active .chain-svg .ring { animation: ring 2.4s ease-out infinite; }
+  .chain-svg .ring.r2 { animation-delay: .8s !important; } .chain-svg .ring.r3 { animation-delay: 1.6s !important; }
+  @keyframes ring { 0% { opacity: .9; r: 10; } 100% { opacity: 0; r: 70; } }
+  .chain-svg .okt { fill: var(--green) !important; font-weight: 700; }
+  .chain-v { display: none; }
+  html.portrait .chain-h { display: none; }
+  html.portrait .chain-v { display: block; margin-top: 20px; }
+  html.portrait .sw .cell.plan .strike { top: 64%; }
+  .chain-svg .not { fill: #ff8a63 !important; font-weight: 700; }
+
+  /* ── 10 UBB swimlane ── */
+  .sw { display: grid; grid-template-columns: 150px repeat(5, minmax(0, 1fr)); grid-template-rows: auto auto auto; gap: 12px; margin-top: 30px; position: relative; }
+  .sw .hd { font: 700 16px "JetBrains Mono", "Pretendard Variable", monospace; color: var(--gold); padding: 0 4px 2px; align-self: end; position: relative; z-index: 1; }
+  .sw .ln { font-size: 19px; font-weight: 700; color: var(--ink); display: flex; flex-direction: column; justify-content: center; position: relative; z-index: 1; }
+  .sw .ln small { font-size: 14px; font-weight: 500; color: var(--ink-3); margin-top: 4px; }
+  .sw .cell { position: relative; z-index: 1; background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 14px 16px; font-size: 16.5px; line-height: 1.45; color: var(--ink-2); min-height: 118px; }
+  .sw .cell b { color: var(--ink); }
+  .sw .cell.empty { background: none; border: 1px dashed rgba(243,239,228,.08); }
+  .sw .cell.on { border-color: rgba(213,168,68,.6); background: rgba(213,168,68,.10); }
+  .sw .cell.bad { border-color: rgba(240,84,42,.6); background: rgba(240,84,42,.08); }
+  .sw .cell.plan .strike { position: absolute; left: 12px; right: 12px; top: 50%; height: 3px; background: var(--red); transform: scaleX(0); transform-origin: left; transition: transform .7s var(--ease); border-radius: 2px; }
+  .is-active .sw .cell.plan .strike { transform: scaleX(1); transition-delay: 1.9s; }
+  .sw .band { border: 2px dashed rgba(240,84,42,.75); border-radius: 18px; margin: -8px -6px; background: rgba(240,84,42,.05); z-index: 0; position: relative; }
+  .sw .band span { position: absolute; left: 50%; bottom: -16px; transform: translateX(-50%); white-space: nowrap; font-size: 14px; font-weight: 700; color: #ff8a63; background: var(--bg); padding: 2px 10px; border-radius: 999px; border: 1px solid rgba(240,84,42,.6); }
+  .sw .band { opacity: 0; }
+  .is-active .sw .band { animation: fade .6s ease 1.6s both, bandPulse 2s ease-in-out 2.4s infinite; }
+  @keyframes bandPulse { 50% { background: rgba(240,84,42,.14); } }
+  .sw .cell[data-when]::before { display: none; }
+
+  /* ── 13 gantt ── */
+  .gantt { display: grid; grid-template-columns: 330px minmax(0, 1fr); gap: 16px 24px; margin-top: 30px; align-items: center; }
+  .gantt .gl b { display: block; font-size: 26px; letter-spacing: -.02em; }
+  .gantt .gl small { display: block; font-size: 15px; color: var(--ink-3); line-height: 1.45; margin-top: 4px; }
+  .gantt .gt { position: relative; height: 62px; border-radius: 10px; background: var(--card); }
+  .gantt .seg { position: absolute; top: 24px; height: 26px; border-radius: 6px; transform: scaleX(0); transform-origin: left; transition: transform .9s var(--ease); }
+  .gantt .seg.pre { background: repeating-linear-gradient(-45deg, var(--c) 0 5px, transparent 5px 10px); opacity: .75; }
+  .gantt .seg.ga { background: var(--c); }
+  .is-active .gantt .seg { transform: none; transition-delay: var(--sd, .8s); }
+  .gantt .mk { position: absolute; top: 2px; font: 700 13.5px "JetBrains Mono", "Pretendard Variable", monospace; color: var(--ink-2); white-space: nowrap; transform: translateX(-2px); opacity: 0; transition: opacity .4s; }
+  .gantt .mk.r { transform: translateX(-100%); }
+  .is-active .gantt .mk { opacity: 1; transition-delay: var(--sd, 1s); }
+  .gantt .ticks { position: relative; height: 22px; grid-column: 2; }
+  .gantt .ticks span { position: absolute; top: 0; transform: translateX(-50%); font: 500 13px "JetBrains Mono"; color: var(--ink-3); }
+
+  /* ── 14 model panels ── */
+  .panels { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px 22px; margin-top: 22px; }
+  .panels .card { padding: 18px 22px 20px; }
+  .panels .card h3 { font-size: 20px; display: flex; justify-content: space-between; align-items: baseline; gap: 10px; margin-bottom: 12px; }
+  .panels .card h3 small { font: 500 14px "Pretendard Variable"; color: var(--ink-3); letter-spacing: 0; }
+  .panels .hbars { gap: 7px; }
+  .panels .hbar { --lw: 150px; --vw: 120px; --bh: 18px; font-size: 15.5px; }
+  .panels .hbar .v { font-size: 15.5px; }
+
+  /* ── 15 price toggle ── */
+  .ptog { display: inline-flex; padding: 4px; border-radius: 999px; background: var(--card-2); border: 1px solid var(--line); gap: 4px; }
+  .ptog button { appearance: none; border: 0; background: transparent; color: var(--ink-2); font: 600 16px "Pretendard Variable", sans-serif; padding: 8px 16px; border-radius: 999px; cursor: pointer; }
+  .ptog button[aria-pressed="true"] { background: var(--gold); color: #1b1606; }
+  .pchart .hbar { --lw: 170px; --vw: 92px; --bh: 20px; font-size: 16px; }
+  .pchart .hbar .tr i { width: 0; transition: width .9s var(--ease); }
+  .is-active .pchart .hbar .tr i { width: var(--w0); transition-delay: 0s; }
+  .is-active .pchart.after .hbar .tr i { width: var(--w1); }
+  .pchart .v1, .pchart.after .v0 { display: none; }
+  .pchart.after .v1 { display: inline; }
+  .pchart.after .hbar.dbl .v { color: #ff8a63; }
+  .pchart .grp { font-size: 17px; font-weight: 700; color: var(--ink); margin: 12px 0 6px; display: flex; align-items: center; gap: 10px; }
+  .pchart .grp:first-child { margin-top: 0; }
+  .pchart .grp i { width: 12px; height: 12px; border-radius: 3px; background: var(--c); }
+  .vlist { margin: 10px 0 0; padding: 0; list-style: none; font-size: 16px; line-height: 1.45; color: var(--ink-2); }
+  .vlist li { display: flex; justify-content: space-between; gap: 12px; padding: 6px 0; border-bottom: 1px dashed var(--line); }
+  .vlist li span:last-child { text-align: right; color: var(--ink); font-family: "JetBrains Mono", "Pretendard Variable", monospace; font-size: 15px; }
+
+  /* ── 16 credibility gauge ── */
+  .gauge { position: relative; height: 22px; border-radius: 11px; background: linear-gradient(90deg, rgba(240,84,42,.7), rgba(213,168,68,.7) 50%, rgba(76,195,138,.7)); margin: 18px 0 8px; }
+  .gauge .needle { position: absolute; top: -8px; bottom: -8px; width: 4px; border-radius: 2px; background: var(--ink); left: 0; transition: left 1.6s var(--ease); box-shadow: 0 0 0 3px rgba(12,21,36,.7); }
+  .is-active .gauge .needle { left: 33%; transition-delay: 1.4s; }
+  .gauge .zone { position: absolute; top: 0; bottom: 0; left: 18%; width: 30%; border: 2px solid var(--ink); border-radius: 11px; opacity: 0; transition: opacity .5s; }
+  .is-active .gauge .zone { opacity: .9; transition-delay: 2.6s; }
+  .gscale { display: flex; justify-content: space-between; font-size: 14px; color: var(--ink-3); }
+
+  /* ── 17 small models ── */
+  .sm-wrap { display: grid; grid-template-columns: minmax(0, 1fr) 60px minmax(0, 1fr); gap: 14px; align-items: stretch; margin-top: 26px; }
+  .sm-wrap .arr { display: grid; place-items: center; font-size: 40px; color: var(--gold); }
+  .sm-wrap .hbar { --lw: 170px; --vw: 140px; --bh: 26px; font-size: 18px; }
+  .sm-wrap .hbar .v { font-size: 18px; }
+  .ttab { display: grid; grid-template-columns: 200px repeat(3, minmax(0, 1fr)); margin-top: 20px; border-radius: 16px; overflow: hidden; border: 1px solid var(--line); }
+  .ttab > div { padding: 11px 16px; font-size: 16.5px; line-height: 1.4; color: var(--ink-2); border-bottom: 1px solid var(--line); background: var(--card); }
+  .ttab > div.h { font-weight: 700; color: var(--ink); background: var(--card-2); }
+  .ttab > div.rh { color: var(--ink-3); font-weight: 600; }
+  .ttab > div:nth-last-child(-n+4) { border-bottom: 0; }
+
+  /* ── 20 projects diagram ── */
+  .pj-wrap { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: 30px; margin-top: 22px; align-items: start; }
+  .pj-svg { width: 100%; height: auto; display: block; }
+  .pj-svg text { fill: #f3efe4; font-family: "Pretendard Variable", sans-serif; }
+  .pj-svg text.cmd { fill: var(--gold); font-family: "JetBrains Mono", monospace; font-weight: 700; }
+  .pj-svg .node rect.box { fill: rgba(243,239,228,.05); stroke: rgba(243,239,228,.22); stroke-width: 1.5; }
+  .pj-svg .coord rect.box { fill: rgba(213,168,68,.14); stroke: rgba(213,168,68,.7); }
+  .pj-svg .path { fill: none; stroke: rgba(243,239,228,.2); stroke-width: 2; stroke-dasharray: 6 8; }
+  .pj-svg .pkt { fill: var(--gold); } .pj-svg .pkt.up { fill: var(--blue); }
+  .pj-svg .pbg { fill: rgba(243,239,228,.1); } .pj-svg .pfill { fill: var(--green); }
+  .pj-svg .bub rect { fill: rgba(106,168,255,.14); stroke: rgba(106,168,255,.55); }
+  .upd { display: flex; flex-direction: column; gap: 12px; }
+  .upd .card { padding: 16px 20px; }
+  .upd .card h3 { font-size: 20px; }
+  .upd .card p { font-size: 16px; margin-top: 6px; }
+  .upd code, .card code { font: 600 15px "JetBrains Mono", monospace; color: var(--gold); background: rgba(213,168,68,.12); padding: 1px 6px; border-radius: 6px; }
+
+  /* ── 21 usage drain ── */
+  .drain { display: grid; grid-template-columns: 180px minmax(0, 1fr) 120px; gap: 16px; align-items: center; font-size: 19px; color: var(--ink-2); margin-top: 18px; }
+  .drain .tank { height: 34px; border-radius: 10px; background: var(--card-2); overflow: hidden; position: relative; }
+  .drain .tank i { position: absolute; inset: 0; right: auto; width: 100%; border-radius: inherit; background: linear-gradient(90deg, var(--green), #8be3b5); transition: width 4s linear; }
+  .is-active .drain .t1 i { width: 80%; transition-delay: 1.2s; }
+  .is-active .drain .t5 i { width: 0%; transition-delay: 1.2s; background: linear-gradient(90deg, var(--coral), #ff9b7c); }
+  .drain .thr { display: flex; gap: 6px; }
+  .drain .thr i { width: 18px; height: 18px; border-radius: 5px; background: var(--blue); }
+  .drain .lab { font: 700 18px "JetBrains Mono", "Pretendard Variable", monospace; color: var(--ink); text-align: right; }
+
+  /* ── 22 wallet flow ── */
+  .wflow { display: grid; grid-template-columns: minmax(0, 1fr) 46px minmax(0, 1fr) 46px minmax(0, 1fr) 46px minmax(0, 1fr); align-items: stretch; margin-top: 28px; }
+  .wstep { background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: 18px 20px; transition: border-color .35s, background .35s, box-shadow .35s; }
+  .wstep .ic { font-size: 28px; }
+  .wstep h3 { font-size: 21px; margin-top: 8px; }
+  .wstep p { margin: 6px 0 0; font-size: 16px; line-height: 1.5; color: var(--ink-2); }
+  .wstep .tok { font: 600 14px "JetBrains Mono", monospace; color: var(--gold); margin-top: 8px; display: inline-block; padding: 2px 8px; border-radius: 6px; background: rgba(213,168,68,.12); }
+  .wstep.on { border-color: rgba(213,168,68,.75); background: rgba(213,168,68,.12); box-shadow: 0 20px 50px -28px rgba(213,168,68,.8); }
+  .wflow .ar { display: grid; place-items: center; color: var(--ink-3); font-size: 26px; transition: color .3s; }
+  .wflow .ar.on { color: var(--gold); }
+  .vault { display: flex; align-items: center; gap: 18px; margin-top: 18px; padding: 14px 22px; border-radius: 16px; border: 1px dashed rgba(76,195,138,.55); background: rgba(76,195,138,.06); font-size: 18px; color: var(--ink-2); }
+  .vault .cn { font: 700 20px "JetBrains Mono", monospace; color: var(--ink); letter-spacing: .06em; position: relative; white-space: nowrap; }
+  .vault .cn::after { content: ""; position: absolute; left: -4px; right: -4px; top: 50%; height: 3px; background: var(--green); transform: scaleX(0); transform-origin: left; transition: transform .7s var(--ease); }
+  .is-active .vault .cn::after { transform: scaleX(1); transition-delay: 1.6s; }
+  .vault b { color: var(--green); }
+  .conds { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+  .conds .chip { font-size: 15.5px; padding: 6px 12px; }
+
+  /* ── 23 delegation risk ── */
+  .risk { display: grid; grid-template-columns: minmax(0, 1fr) 60px minmax(0, 1fr); align-items: center; gap: 10px; margin-top: 12px; }
+  .risk .st { border-radius: 14px; padding: 12px 16px; font-size: 16px; line-height: 1.45; color: var(--ink-2); background: var(--card-2); }
+  .risk .st b { display: block; color: var(--ink); font-size: 17px; }
+  .risk .st.hi { border: 1.5px solid rgba(240,84,42,.6); background: rgba(240,84,42,.08); }
+  .risk .ar { text-align: center; color: #ff8a63; font-size: 26px; }
+
+  /* ── 24 IPO stack ── */
+  .stack { position: relative; height: 84px; border-radius: 14px; background: var(--card); margin-top: 52px; display: flex; overflow: visible; }
+  .stack .sg { position: relative; height: 100%; width: 0; transition: width 1.2s var(--ease); display: flex; align-items: center; padding-left: 16px; overflow: hidden; white-space: nowrap; font-size: 19px; font-weight: 700; color: #0c1524; }
+  .stack .sg:first-child { border-radius: 14px 0 0 14px; }
+  .stack .sg.pub { background: var(--gold); }
+  .stack .sg.pub .rng { position: absolute; right: 0; top: 0; bottom: 0; width: var(--rw); background: repeating-linear-gradient(-45deg, rgba(12,21,36,.35) 0 5px, transparent 5px 10px); }
+  .stack .sg.prv { background: var(--blue); border-radius: 0 14px 14px 0; }
+  .is-active .stack .sg.pub { width: var(--w); transition-delay: .7s; }
+  .is-active .stack .sg.prv { width: var(--w); transition-delay: 1.7s; }
+  .stack .mark { position: absolute; top: -40px; bottom: -10px; left: var(--x); border-left: 2px dashed var(--ink); opacity: 0; transition: opacity .4s; }
+  .stack .mark span { position: absolute; top: 0; left: 10px; white-space: nowrap; font-size: 17px; font-weight: 700; color: var(--ink); }
+  .is-active .stack .mark { opacity: 1; transition-delay: 2.9s; }
+  .sticks { position: relative; height: 22px; margin-top: 10px; }
+  .sticks span { position: absolute; transform: translateX(-50%); font: 500 13px "JetBrains Mono"; color: var(--ink-3); }
+  .sticks span:first-child { transform: none; }
+  .ipo-head { align-items: center; }
+  html.portrait .ipo-head { align-items: flex-start; }
+  .ipo-sum { display: flex; align-items: baseline; gap: 16px; }
+  .ipo-sum .kpi { font-size: 76px; color: var(--gold); }
+
+  /* ── 25 demand blocks ── */
+  .demand { display: flex; gap: 8px; align-items: flex-end; margin-top: 12px; }
+  .demand i { width: 34px; border-radius: 6px 6px 0 0; background: var(--card-2); height: 26px; transition: background .3s, height .5s var(--ease); }
+  .demand i.base { background: var(--ink-3); }
+  .is-active .demand i.x { background: var(--gold); height: 52px; transition-delay: calc(1.4s + var(--k) * .18s); }
+
+  /* ── 26 S-1 ── */
+  .s1fin { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 24px; margin-top: 22px; }
+  .s1fin .vbars { --vh: 200px; }
+  .s1fin .kpis { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+  .s1fin .kpis .card { padding: 16px 18px; }
+  .s1fin .kpis .kpi { font-size: 42px; }
+  .s1fin .kpis .kpi small { font-size: 20px; }
+  .s1fin .kpis p { font-size: 14.5px; margin-top: 4px; }
+  .loss { display: flex; height: 36px; border-radius: 10px; overflow: hidden; background: var(--card-2); margin-top: 10px; }
+  .loss i { width: 0; height: 100%; transition: width 1.2s var(--ease); display: block; }
+  .loss i.nc { background: repeating-linear-gradient(-45deg, rgba(240,84,42,.75) 0 6px, rgba(240,84,42,.4) 6px 12px); }
+  .loss i.rest { background: var(--coral); }
+  .is-active .loss i { width: var(--w); transition-delay: var(--ld, 1.2s); }
+
+  /* ── 28 compare ── */
+  .cmp { display: grid; grid-template-columns: 130px minmax(0, 1fr) minmax(0, 1fr); gap: 8px 12px; margin-top: 12px; align-items: center; }
+  .cmp .h { font-size: 18px; font-weight: 700; padding: 10px 14px; border-radius: 12px; background: var(--card-2); }
+  .cmp .h.ant { color: var(--c-ant); border: 1px solid rgba(208,138,106,.45); }
+  .cmp .rh { font-size: 15px; color: var(--ink-3); font-weight: 600; }
+  .cmp .c { font-size: 16px; line-height: 1.4; color: var(--ink-2); padding: 8px 4px; border-top: 1px dashed var(--line); }
+  .cmp .c b { color: var(--ink); }
+  .cmp .mbar { height: 12px; border-radius: 6px; background: var(--card-2); margin-top: 6px; overflow: hidden; }
+  .cmp .mbar i { display: block; height: 100%; width: 0; background: var(--c, var(--ink-3)); border-radius: inherit; transition: width 1.1s var(--ease); }
+  .is-active .cmp .mbar i { width: var(--w); transition-delay: calc(.8s + var(--k, 0) * .15s); }
+
+  /* ── summary ── */
+  .concl { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; margin-top: 32px; }
+  .concl .card { display: flex; flex-direction: column; gap: 8px; padding: 20px 22px; }
+  .concl .ic { font-size: 26px; }
+  .concl h3 { font-size: 21px; line-height: 1.3; }
+  .concl p { margin: 0; font-size: 15.5px; line-height: 1.5; color: var(--ink-2); }
+  .concl .cal { grid-column: span 1; }
+  .cal ol { list-style: none; margin: 4px 0 0; padding: 0; display: flex; flex-direction: column; gap: 6px; font-size: 15px; color: var(--ink-2); }
+  .cal li b { font: 700 14px "JetBrains Mono"; color: var(--gold); margin-right: 8px; }
+
+  /* ── phone held sideways: controls get their own lane under the stage ── */
+  .hud .alt { gap: 6px; display: inline-flex; align-items: center; }
+  .hud .alt .ico { font-size: 13px; }
+  html.portrait .hud .alt .lbl, html.short .hud .alt .lbl { display: none; }
+  html.portrait .hud #fsBtn { display: none; }
+  html.short .hud { bottom: max(8px, env(safe-area-inset-bottom)); gap: 6px; }
+  html.short .hud button, html.short .hud a { height: 34px; min-width: 34px; }
+  html.short .notes { bottom: 52px; }
+
+  /* ── phone held upright: 640-wide stage, one column ── */
+  html.portrait .hud { left: max(10px, env(safe-area-inset-left)); right: max(10px, env(safe-area-inset-right)); justify-content: center; gap: 6px; }
+  html.portrait .hud button, html.portrait .hud a { height: 40px; min-width: 40px; }
+  html.portrait .slide { padding: 64px 40px 140px; overflow-y: auto; overflow-x: hidden; overscroll-behavior: contain; scrollbar-width: none; justify-content: flex-start; }
+  html.portrait .slide::-webkit-scrollbar { display: none; }
+  html.portrait .s-title { justify-content: center; }
+  html.portrait .kicker { font-size: 15px; }
+  html.portrait h2 { font-size: 38px; line-height: 1.24; margin-top: 14px; }
+  html.portrait .lead { font-size: 20px; margin-top: 14px; }
+  html.portrait .body { font-size: 18px; }
+  html.portrait .small { font-size: 15px; }
+  html.portrait .chip { font-size: 15px; padding: 6px 12px; }
+  html.portrait .card { padding: 18px 20px; border-radius: 18px; }
+  html.portrait .card h3 { font-size: 21px; }
+  html.portrait .card p, html.portrait .card ul { font-size: 16px; }
+  html.portrait .row { flex-direction: column; gap: 16px; }
+  html.portrait .row > * { width: auto !important; }
+  html.portrait .cols { grid-template-columns: minmax(0, 1fr); gap: 14px; }
+  html.portrait .src { position: static; margin-top: 18px; font-size: 13px; }
+  html.portrait .gloss { font-size: 14.5px; gap: 6px 18px; padding-top: 12px; margin-top: 24px; }
+  html.portrait .gloss b { font-size: 13.5px; }
+  html.portrait .gloss span { display: block; }
+  html.portrait .slide:has(.src) .gloss { margin-bottom: 0; }
+  html.portrait .badge { font-size: 13px; padding: 4px 9px; }
+  html.portrait .ustamp { font-size: 16px; }
+  html.portrait .kpi { font-size: 50px; }
+  html.portrait .kpi small { font-size: 22px; }
+  /* title */
+  html.portrait .s-title h1 { font-size: 60px; }
+  html.portrait .s-title .lead { font-size: 20px; margin-top: 22px; }
+  html.portrait .s-title .chips { gap: 8px; margin-top: 30px; }
+  html.portrait .s-title .date { right: 40px; top: 64px; font-size: 15px; }
+  /* agenda */
+  html.portrait .agenda { grid-template-columns: minmax(0, 1fr); margin-top: 20px; }
+  html.portrait .agenda li { padding: 12px 0; gap: 14px; }
+  html.portrait .agenda .n { font-size: 16px; width: 28px; }
+  html.portrait .agenda .t { font-size: 22px; }
+  html.portrait .agenda .d { font-size: 15px; }
+  /* tldr */
+  html.portrait .tldr { grid-template-columns: minmax(0, 1fr); gap: 14px; margin-top: 22px; }
+  html.portrait .tldr ul { font-size: 16px; }
+  /* bars */
+  html.portrait .hbar { --lw: 118px; --vw: 84px; gap: 8px; font-size: 14.5px; }
+  html.portrait .hbar .v { font-size: 14px; }
+  html.portrait .vbars { gap: 8px; }
+  html.portrait .vbars .b em { font-size: 13px; }
+  html.portrait .vlab { gap: 8px; } html.portrait .vlab span { font-size: 12.5px; }
+  /* timeline */
+  html.portrait .tline { grid-template-columns: minmax(0, 1fr); gap: 14px; padding-top: 0; padding-left: 34px; margin-top: 24px; }
+  html.portrait .tline .axis { left: 9px; right: auto; top: 6px; bottom: 6px; width: 3px; height: auto; }
+  html.portrait .tline .axis i { transform: scaleY(0); transform-origin: top; }
+  html.portrait .is-active .tline .axis i { transform: none; }
+  html.portrait .tline .ev .dot { left: -34px; top: 0; }
+  html.portrait .tline .when { font-size: 16px; }
+  html.portrait .tline .what { font-size: 16.5px; }
+  html.portrait .tline .q { font-size: 15px; }
+  /* scores */
+  html.portrait .scores { gap: 26px; }
+  /* measures */
+  html.portrait .measures { grid-template-columns: minmax(0, 1fr); gap: 8px; }
+  html.portrait .measures .m { font-size: 15.5px; padding: 12px 14px; }
+  /* swimlane → two stacked lists */
+  html.portrait .sw { display: flex; flex-direction: column; gap: 10px; margin-top: 20px; }
+  html.portrait .sw .hd, html.portrait .sw .band, html.portrait .sw .cell.empty { display: none; }
+  html.portrait .sw .ln { margin-top: 10px; }
+  html.portrait .sw .cell { min-height: 0; font-size: 15.5px; padding: 12px 14px; }
+  html.portrait .sw .cell[data-when]::before { content: attr(data-when); display: block; font: 700 14px "JetBrains Mono", "Pretendard Variable", monospace; color: var(--gold); margin-bottom: 4px; }
+  /* gantt */
+  html.portrait .gantt { grid-template-columns: minmax(0, 1fr); gap: 6px; margin-top: 20px; }
+  html.portrait .gantt .gl { margin-top: 10px; }
+  html.portrait .gantt .gl b { font-size: 21px; }
+  html.portrait .gantt .gl small { font-size: 13.5px; }
+  html.portrait .gantt .ticks { grid-column: 1; }
+  html.portrait .gantt .mk { font-size: 11.5px; }
+  /* panels */
+  html.portrait .panels { grid-template-columns: minmax(0, 1fr); gap: 12px; margin-top: 16px; }
+  html.portrait .panels .hbar { --lw: 112px; --vw: 104px; font-size: 13.5px; }
+  html.portrait .panels .hbar .v { font-size: 13px; }
+  html.portrait .panels .card h3 { font-size: 17px; flex-wrap: wrap; }
+  html.portrait .pchart .hbar { --lw: 104px; --vw: 76px; font-size: 14px; }
+  html.portrait .vlist { font-size: 14.5px; }
+  html.portrait .vlist li span:last-child { font-size: 13px; }
+  /* small models */
+  html.portrait .sm-wrap { grid-template-columns: minmax(0, 1fr); gap: 8px; margin-top: 18px; }
+  html.portrait .sm-wrap .arr { transform: rotate(90deg); font-size: 30px; height: 40px; width: 40px; margin: 0 auto; }
+  html.portrait .sm-wrap .hbar { --lw: 120px; --vw: 110px; font-size: 15px; }
+  html.portrait .sm-wrap .hbar .v { font-size: 14.5px; }
+  html.portrait .ttab { grid-template-columns: 82px repeat(3, minmax(0, 1fr)); }
+  html.portrait .ttab > div { padding: 8px 8px; font-size: 13px; }
+  /* projects */
+  html.portrait .pj-wrap { grid-template-columns: minmax(0, 1fr); gap: 16px; margin-top: 16px; }
+  html.portrait .upd .card h3 { font-size: 18px; }
+  html.portrait .upd .card p { font-size: 15px; }
+  html.portrait .drain { grid-template-columns: 96px minmax(0, 1fr) 70px; gap: 10px; font-size: 15px; }
+  html.portrait .drain .thr i { width: 12px; height: 12px; }
+  html.portrait .drain .lab { font-size: 14px; }
+  /* wallet */
+  html.portrait .wflow { grid-template-columns: minmax(0, 1fr); margin-top: 18px; }
+  html.portrait .wflow .ar { height: 30px; width: 30px; margin: 0 auto; transform: rotate(90deg); font-size: 22px; }
+  html.portrait .wstep { padding: 14px 16px; }
+  html.portrait .wstep h3 { font-size: 18px; }
+  html.portrait .wstep p { font-size: 15px; }
+  html.portrait .vault { flex-direction: column; align-items: flex-start; gap: 6px; font-size: 15.5px; }
+  html.portrait .vault .cn { font-size: 16px; }
+  html.portrait .risk { grid-template-columns: minmax(0, 1fr); }
+  html.portrait .risk .ar { transform: rotate(90deg); width: 30px; margin: 0 auto; }
+  /* ipo */
+  html.portrait .stack { height: 64px; margin-top: 56px; }
+  html.portrait .stack .sg { font-size: 13.5px; padding-left: 8px; }
+  html.portrait .stack .mark span { font-size: 14px; left: auto; right: 8px; }
+  html.portrait .ipo-sum { flex-wrap: wrap; }
+  html.portrait .ipo-sum .kpi { font-size: 56px; }
+  html.portrait .demand i { width: 24px; }
+  html.portrait .s1fin { grid-template-columns: minmax(0, 1fr); gap: 16px; }
+  html.portrait .s1fin .kpis .kpi { font-size: 34px; }
+  html.portrait .cmp { grid-template-columns: 74px minmax(0, 1fr) minmax(0, 1fr); gap: 6px 8px; }
+  html.portrait .cmp .h { font-size: 15px; padding: 8px 10px; }
+  html.portrait .cmp .rh { font-size: 13px; }
+  html.portrait .cmp .c { font-size: 14px; }
+  /* summary */
+  html.portrait .concl { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin-top: 20px; }
+  html.portrait .concl .card { padding: 14px 16px; }
+  html.portrait .concl h3 { font-size: 17px; }
+  html.portrait .concl p, html.portrait .cal ol { font-size: 14px; }
+  html.portrait .concl .cal { grid-column: 1 / -1; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .slide, .slide [data-a], .slide.is-active [data-a] { animation: none !important; transition: none !important; opacity: 1; transform: none; }
+    .slide:not(.is-active) { opacity: 0; }
+    *, *::before, *::after { animation-duration: .001s !important; animation-delay: 0s !important; transition-duration: .001s !important; transition-delay: 0s !important; }
+  }
+</style>
+</head>
+<body>
+<canvas id="bgfx" aria-hidden="true"></canvas>
+<div class="progress" id="progress"></div>
+
+<main class="deck" id="deck">
+
+  <!-- 01 title -->
+  <section class="slide s-title" data-notes="2026년 11월 16일까지의 보도를 기준으로 한 주간 브리핑입니다. 가장 중요한 두 사건은 Anthropic IPO와 AI 시험 부정행위입니다. Anthropic은 11월 18일 공모가를 확정하고 19일 나스닥에서 ANT로 거래를 시작할 예정이며, 공모 규모는 최대 644억 달러, 동시 사모를 합하면 904억 달러입니다. 국내에서는 세무사 시험 수석 합격자가 초소형 카메라와 생성형 AI로 부정행위를 했다고 자백했고, 정부가 국가자격시험 전수조사와 수능 감독 강화에 나섰습니다. 그 밖에 MS365 Copilot 과금, Gemini 4, 소형 모델 3종, Claude Projects, ChatGPT Wallet을 다룹니다.">
+    <div class="date" data-a="fade">2026.11.16 기준</div>
+    <div class="kicker" data-a="left">Weekly Tech · AI Briefing</div>
+    <h1 data-a style="--d:1">2026년 11월 셋째 주<br><em>테크·AI 브리핑</em></h1>
+    <p class="lead" data-a style="--d:2">이번 주 가장 큰 두 사건은 <b>Anthropic IPO</b>와 <b>AI 시험 부정행위</b>.<br>여기에 Copilot 과금, Gemini 4, 소형 모델, Claude Projects, ChatGPT Wallet까지.</p>
+    <div class="chips">
+      <span class="chip" data-a="pop" style="--d:4">AI 시험 부정행위</span>
+      <span class="chip" data-a="pop" style="--d:5">MS365 Copilot</span>
+      <span class="chip" data-a="pop" style="--d:6">Gemini 4</span>
+      <span class="chip" data-a="pop" style="--d:7">소형 모델 3종</span>
+      <span class="chip" data-a="pop" style="--d:8">Claude Projects</span>
+      <span class="chip" data-a="pop" style="--d:9">ChatGPT Wallet</span>
+      <span class="chip gold" data-a="pop" style="--d:10">Anthropic IPO</span>
+    </div>
+  </section>
+
+  <!-- 02 agenda -->
+  <section class="slide" data-notes="일곱 개 주제와 마지막 주의사항 순서로 봅니다. 사실, 루머·미확인, 판단을 구분해 표시합니다. 초록 체크는 확인된 사실, 주황 점선은 루머·미확인, 금색 마름모는 판단, 파란 느낌표는 벤더가 직접 발표했거나 골라 실은 수치입니다.">
+    <div class="kicker" data-a="left">Contents</div>
+    <h2 data-a style="--d:1">이번 주 일곱 가지</h2>
+    <ul class="agenda">
+      <li data-a style="--d:2"><span class="n">01</span><div><div class="t">AI 시험 부정행위</div><div class="d">세무사 수석 자백 · 정부 대응 · 수능 대책 · Monorean Pro</div></div></li>
+      <li data-a style="--d:3"><span class="n">02</span><div><div class="t">MS365 Copilot</div><div class="d">사용량 과금 일정 엇갈림 · fair use · 모델 선택 · Ignite</div></div></li>
+      <li data-a style="--d:4"><span class="n">03</span><div><div class="t">Gemini 4</div><div class="d">Argon · Carbon · Hydrogen 비교와 Krypton 유출</div></div></li>
+      <li data-a style="--d:5"><span class="n">04</span><div><div class="t">소형 모델 3종</div><div class="d">Muse Ember · Claude Haiku 5.5 · GPT-6 Luna</div></div></li>
+      <li data-a style="--d:6"><span class="n">05</span><div><div class="t">Claude Projects</div><div class="d">능동형 코디네이터와 병렬 스레드</div></div></li>
+      <li data-a style="--d:7"><span class="n">06</span><div><div class="t">ChatGPT Wallet</div><div class="d">에이전트 결제 · 결제 토큰 · 건별 생체 인증</div></div></li>
+      <li data-a style="--d:8"><span class="n">07</span><div><div class="t">Anthropic IPO</div><div class="d">공모 조건 · S-1 재무 · 위험 요인 · SpaceX 비교</div></div></li>
+      <li data-a style="--d:9" class="warn"><span class="n">!</span><div><div class="t">주의사항</div><div class="d">기준일 · 벤더 수치 · 1차 출처 미확인 항목</div></div></li>
+    </ul>
+    <div class="legend" data-a="fade" style="--d:10; margin-top:20px; gap:10px 14px"><span class="badge ok">확정된 사실</span><span class="badge rumor">루머·미확인</span><span class="badge judge">판단</span><span class="badge vendor">벤더 수치</span></div>
+    <div class="gloss" data-a="fade" style="--d:11" aria-label="약어 풀이"><span><b>AI</b><em>Artificial Intelligence</em> · 인공지능</span><span><b>MS365</b><em>Microsoft 365</em> · Word·Excel·Teams 등을 묶은 Microsoft 구독 서비스</span><span><b>S-1</b><em>Form S-1</em> · 미국 상장 때 증권거래위원회(SEC)에 내는 증권신고서</span><span><b>IPO</b><em>Initial Public Offering</em> · 기업공개. 주식시장 첫 상장</span></div>
+  </section>
+
+  <!-- 03 TL;DR -->
+  <section class="slide" data-notes="확정된 사실: 세무사 수석 합격자 한 씨가 11월 15일 자수했고, 정부는 합격 취소와 5년 응시 제한, 국가자격시험 전수조사를 결정했습니다. Google은 Gemini 4 Hydrogen을 11월 12일 정식 출시했고(Carbon은 11월 10일 GA), OpenAI는 11월 13일 ChatGPT Wallet을 내놨습니다. Anthropic IPO는 주당 70~78달러, 8억 2,500만 주 조건이며, Bloomberg는 11월 12일 소식통을 인용해 공모 물량의 약 6배(about six times the orders) 초과청약을 보도했습니다. 루머·미확인: Gemini Krypton은 X 유출 계정 게시물뿐 Google 확인이 없어 신뢰도가 낮습니다. 11만 원짜리 부정행위 장비 같은 온라인 주장도 검증되지 않았습니다. Monorean Pro가 세무사 사건에 쓰였다는 보도는 찾지 못했습니다. 판단: 소형 모델 중 Muse Ember가 같은 토큰 단가에서 과업당 비용이 가장 유리하지만(벤더 수치 기준) 실사용 테스트에선 Luna·Haiku와 비슷해 직접 평가가 필요합니다. M365 Copilot은 UBB 기본 적용 일정이 문서마다 달라 관리자가 지출 한도부터 설정하는 것이 우선입니다.">
+    <div class="kicker" data-a="left">TL;DR</div>
+    <h2 data-a style="--d:1">세 줄이 아니라 <em>세 칸</em>으로 요약</h2>
+    <div class="tldr">
+      <div class="card ok" data-a style="--d:2">
+        <span class="badge ok">확정된 사실</span>
+        <ul>
+          <li>세무사 수석 합격자 <b>11/15 자수</b> → 합격 취소 · 5년 응시 제한 · 국가자격시험 <b>전수조사</b></li>
+          <li>Gemini 4 <b>Hydrogen 11/12 정식 출시</b> (Carbon은 11/10 GA)</li>
+          <li>OpenAI <b>ChatGPT Wallet</b> 11/13 출시</li>
+          <li>Anthropic IPO 주당 <b>70~78달러 · 8억 2,500만 주</b>. Bloomberg(11/12, 소식통 인용) “약 6배” 초과청약 보도</li>
+        </ul>
+      </div>
+      <div class="card rumor" data-a style="--d:3">
+        <span class="badge rumor">루머·미확인</span>
+        <ul>
+          <li>Gemini <b>“Krypton”</b>: X 유출 계정 게시물뿐, Google 확인 없음 → 신뢰도 낮음</li>
+          <li><b>“11만 원짜리 부정행위 장비”</b> 같은 온라인 주장: 검증 안 됨</li>
+          <li><b>Monorean Pro</b>가 세무사 사건에 쓰였다는 보도: 찾지 못함</li>
+        </ul>
+      </div>
+      <div class="card judge" data-a style="--d:4">
+        <span class="badge judge">판단</span>
+        <ul>
+          <li>소형 모델: 같은 토큰 단가에서 <b>Muse Ember의 과업당 비용이 가장 유리</b>(벤더 수치). 실사용에선 Luna·Haiku와 비슷 → <b>직접 평가</b> 필요</li>
+          <li>M365 Copilot: UBB 기본 적용 일정이 문서마다 다름 → 관리자는 <b>지출 한도부터 설정</b></li>
+        </ul>
+      </div>
+    </div>
+    <div class="gloss" data-a="fade" style="--d:8" aria-label="약어 풀이"><span><b>GA</b><em>General Availability</em> · 누구나 쓸 수 있는 정식 일반 공개</span><span><b>UBB</b><em>Usage-Based Billing</em> · 쓴 만큼 내는 사용량 기반 과금</span><span><b>M365</b><em>Microsoft 365</em> · Microsoft 업무용 구독 서비스</span><span><b>IPO</b><em>Initial Public Offering</em> · 기업공개</span></div>
+  </section>
+
+  <!-- 04 scores -->
+  <section class="slide" data-notes="제63회 세무사 시험 수석 합격자는 34세 한 씨입니다(한국경제·헤럴드경제가 실명 보도). 헤럴드경제(11월 15일)에 따르면 1차는 400점 만점에 397.5점, 2차는 800점 만점에 663점이었고, 1차에서는 재정학 한 문제만 틀리고 세법학개론·회계학개론·상법은 만점이었습니다. 응시자 평균이 30점가량(SBS)에 그친 세법학개론에서 만점을 받아 온라인에서 AI 스마트안경 사용 의혹이 나왔습니다. 파이낸셜뉴스·뉴시스(11월 16일)에 따르면 시험은 4월(1차)과 7월(2차)에 치러졌고, 한 씨는 1차 때 교단 기준 둘째 줄 중앙, 2차 때 첫째 줄 중앙에 앉았으며 시험실마다 감독위원 2명이 있었지만 적발하지 못했습니다. 시험을 시행한 한국산업인력공단은 자백 직전까지 '특이사항 없음'이라는 입장이었습니다. 오른쪽 좌석 배치도는 위치를 보여 주기 위한 예시입니다.">
+    <div class="kicker" data-a="left">01 · AI 시험 부정행위</div>
+    <h2 data-a style="--d:1">세무사 수석의 성적, 그리고 <em>감독 실패</em></h2>
+    <div class="row" style="margin-top:30px; align-items:stretch">
+      <div class="card grow" data-a style="--d:2">
+        <div class="num">제63회 세무사 시험 · 수석 합격자 (34세)</div>
+        <div class="scores">
+          <div><div class="lbl">1차</div><div class="kpi gold"><span data-count="397.5" data-dec="1" data-from="0">0</span><small>/ 400</small></div></div>
+          <div><div class="lbl">2차</div><div class="kpi"><span data-count="663" data-from="0">0</span><small>/ 800</small></div></div>
+        </div>
+        <p>1차: 재정학 <b>한 문제만</b> 틀림 · 세법학개론·회계학개론·상법 <b>만점</b></p>
+        <div class="hbars" style="margin-top:16px">
+          <div class="hbar" style="--lw:200px; --vw:80px; --k:0; --bd:1.2s"><span class="nm">세법학개론 응시자 평균</span><span class="tr"><i style="--w:30%; --c:var(--ink-3)"></i></span><span class="v">약 30</span></div>
+          <div class="hbar best" style="--lw:200px; --vw:80px; --k:2; --bd:1.2s"><span class="nm">수석 합격자</span><span class="tr"><i style="--w:100%; --c:var(--gold)"></i></span><span class="v">100</span></div>
+        </div>
+        <p class="small" style="margin-top:12px">→ 온라인에서 AI 스마트안경 사용 의혹 제기 · 평균은 SBS 보도</p>
+      </div>
+      <div class="card hotc" data-a="right" style="--d:4; width:560px">
+        <div class="num" style="color:#ff8a63">감독 실패</div>
+        <div class="row" style="gap:20px; margin-top:12px; align-items:center">
+          <div class="room" aria-label="좌석 위치 예시: 1차 둘째 줄 중앙, 2차 첫째 줄 중앙">
+            <div class="podium">교단</div>
+            <i></i><i></i><i class="s2">2차</i><i></i><i></i>
+            <i></i><i></i><i class="s1">1차</i><i></i><i></i>
+            <i></i><i></i><i></i><i></i><i></i>
+            <i></i><i></i><i></i><i></i><i></i>
+          </div>
+          <ul style="margin:0; font-size:17px">
+            <li>1차 4월 · 2차 7월</li>
+            <li>1차 <b>둘째 줄 중앙</b>, 2차 <b>첫째 줄 중앙</b></li>
+            <li>시험실마다 <b>감독위원 2명</b></li>
+          </ul>
+        </div>
+        <p style="margin-top:16px">그런데도 적발하지 못했고, 시행 기관인 한국산업인력공단은 자백 직전까지 <b>“특이사항 없음”</b></p>
+      </div>
+    </div>
+    <p class="src">좌석 배치도는 위치를 보여 주기 위한 예시 · 자료: 헤럴드경제, SBS, 파이낸셜뉴스, 뉴시스</p>
+    <div class="gloss" data-a="fade" style="--d:8" aria-label="약어 풀이"><span><b>AI</b><em>Artificial Intelligence</em> · 인공지능</span><span><b>SBS</b><em>Seoul Broadcasting System</em> · 국내 지상파 방송사</span></div>
+  </section>
+
+  <!-- 05 denial to confession -->
+  <section class="slide" data-notes="한 씨는 11월 11일 한국경제와 약 34분간 통화하며 'AI 안경으로 이걸 맞힐 수 있으면 공부를 왜 할까요'라고 의혹을 부인했습니다. 그러나 11월 15일 법률대리인 이돈호 변호사의 유튜브에 출연해 '초소형 카메라를 이용해 시험 문제를 찍고 AI로 전송을 해서 스마트폰으로 답을 확인하는 방법으로 부정행위를 저질렀다'고 자백했습니다. 세무사 1·2차 모두에서 부정행위를 했고 공인회계사 1차에서도 같은 방식을 썼다고 밝혔지만, 금융감독원은 한 씨가 공인회계사 1차에 불합격했다고 확인했습니다(톱스타뉴스). 한 씨는 모방을 막기 위해 구체적 수법은 공개하지 않겠다고 했습니다. 서울경찰청은 11월 15일 자수서를 접수해 광역수사단에 배당했고, 산업인력공단은 사과문을 내고 업무방해 혐의로 고소하기로 했습니다. 정부는 시험 무효, 합격 취소, 5년 응시 제한, 고발을 신속히 추진합니다. 적용 가능한 처벌: 세무사법 제5조의3(시험 무효, 처분일부터 5년 응시 정지), 형법 제314조 업무방해(5년 이하 징역 또는 1,500만 원 이하 벌금), 공인회계사법(불합격자도 부정행위 처분 시 5년 응시 불가). 형사처벌 수위는 아직 정해지지 않았고, 법조계에서는 사후 적발 시 실형도 가능하다고 봅니다(파이낸셜뉴스).">
+    <div class="kicker" data-a="left">01 · AI 시험 부정행위</div>
+    <h2 data-a style="--d:1">“공부를 왜 할까요”에서 <em>자백</em>까지 나흘</h2>
+    <div class="tline" style="--n:4">
+      <div class="axis"><i></i></div>
+      <div class="ev" data-a style="--d:2"><div class="dot"></div><div class="when">11.11 · 부인</div><div class="what">한국경제와 <b>약 34분 통화</b></div><div class="q">“AI 안경으로 이걸 맞힐 수 있으면 공부를 왜 할까요”</div></div>
+      <div class="ev bad" data-a style="--d:4"><div class="dot"></div><div class="when">11.15 · 자백</div><div class="what">법률대리인 <b>유튜브 출연</b></div><div class="q">“초소형 카메라로 시험 문제를 찍고 AI로 전송해 스마트폰으로 답을 확인”</div><span class="ustamp" style="right:0; top:-8px; --sd:1.6s">자백</span></div>
+      <div class="ev" data-a style="--d:6"><div class="dot"></div><div class="when">11.15 · 자수</div><div class="what">서울경찰청 <b>자수서 접수</b> → 광역수사단 배당</div></div>
+      <div class="ev key" data-a style="--d:8"><div class="dot"></div><div class="when">이후</div><div class="what">공단: 사과문 · <b>업무방해 고소</b><br>정부: 시험 무효 · 합격 취소 · <b>5년 응시 제한</b> · 고발</div></div>
+    </div>
+    <div class="cols c3" style="margin-top:26px">
+      <div class="card" data-a style="--d:9"><h3 style="font-size:20px">본인 진술 vs 확인</h3><p>세무사 1·2차 모두, 공인회계사 1차도 같은 방식이라고 밝힘 → 금감원: <b>공인회계사 1차는 불합격</b>. 구체적 수법은 모방 방지를 이유로 비공개</p></div>
+      <div class="card" data-a style="--d:10"><h3 style="font-size:20px">적용 가능한 처벌</h3><p>세무사법 §5의3: 시험 무효 + <b>5년</b> 응시 정지<br>형법 §314 업무방해: <b>5년 이하 징역</b> 또는 1,500만 원 이하 벌금<br>공인회계사법: 불합격자도 5년 응시 불가</p></div>
+      <div class="card" data-a style="--d:11"><h3 style="font-size:20px">아직 정해지지 않은 것</h3><p>형사처벌 수위는 <b>미정</b>. 법조계에선 “사후 적발 시 실형 선고”도 가능하다고 봄(파이낸셜뉴스)</p></div>
+    </div>
+    <div class="gloss" data-a="fade" style="--d:12" aria-label="약어 풀이"><span><b>AI</b><em>Artificial Intelligence</em> · 인공지능. 여기서는 사진 속 문제를 받아 답을 내는 생성형 AI</span></div>
+  </section>
+
+  <!-- 06 government response -->
+  <section class="slide" data-notes="11월 5일 이재명 대통령이 '모든 시험에서 스마트기기를 활용한 부정행위가 발생하지 않도록 종합 대책을 마련하라'고 지시했습니다. 11월 15일 오후 3시 30분 청와대 하준경 정책실장이 'AI 활용 부정시험 확산 방지 긴급대책회의'를 주재해 국가자격시험 전체 의심 사례 전수조사, 초소형 카메라 등 장비 유통 실태 점검, 제보 활성화를 주문했습니다. 같은 날 고용노동부 비상대책회의(권창준 차관 주재)는 5대 대책을 냈습니다: 올해 시행된 국가자격시험 전체 전수조사, 온·오프라인 제보센터 개설, 감독관 대상 기기 식별 교육 확대, AI 기기 부정행위 전담 'AI 인스펙터' 배치 확대, 한국방송통신전파진흥원이 개발 중인 전파탐지기 도입. 노동부·공단 합동 TF를 꾸려 연내 종합대책을 마련합니다. 11월 16일에는 한성숙 국무총리가 관계 부처 차관회의를 열고, 국회 교육위원회가 최교진 교육부 장관에게서 수능 부정행위 대책 현안보고를 받습니다. 수능은 11월 19일입니다.">
+    <div class="kicker" data-a="left">01 · 정부 대응</div>
+    <h2 data-a style="--d:1">대통령 지시에서 수능까지, <em>정부 대응 2주</em></h2>
+    <div class="tline" style="--n:4">
+      <div class="axis"><i></i></div>
+      <div class="ev" data-a style="--d:2"><div class="dot"></div><div class="when">11.05</div><div class="what"><b>대통령 지시</b><br>모든 시험의 스마트기기 부정행위 종합 대책 마련</div></div>
+      <div class="ev" data-a style="--d:4"><div class="dot"></div><div class="when">11.15 15:30</div><div class="what"><b>청와대 긴급대책회의</b><br>국가자격시험 전수조사 · 장비 유통 점검 · 제보 활성화</div></div>
+      <div class="ev" data-a style="--d:6"><div class="dot"></div><div class="when">11.16</div><div class="what"><b>총리 주재 차관회의</b><br>국회 교육위 수능 대책 현안보고</div></div>
+      <div class="ev key" data-a style="--d:8"><div class="dot"></div><div class="when">11.19</div><div class="what"><b>수능</b><br>전국 1,312개 시험장</div></div>
+    </div>
+    <div data-a style="--d:9; margin-top:30px">
+      <div class="small"><b>11.15 같은 날</b> 고용노동부 비상대책회의 · 5대 대책</div>
+      <div class="measures">
+        <div class="m"><b>01</b>올해 시행 국가자격시험 <span style="color:var(--ink)">전체 전수조사</span></div>
+        <div class="m"><b>02</b>온·오프라인 <span style="color:var(--ink)">제보센터</span> 개설</div>
+        <div class="m"><b>03</b>감독관 대상 <span style="color:var(--ink)">기기 식별 교육</span> 확대</div>
+        <div class="m"><b>04</b>AI 기기 부정행위 전담 <span style="color:var(--ink)">‘AI 인스펙터’</span> 배치 확대</div>
+        <div class="m flag"><b>05</b><span style="color:var(--ink)">전파탐지기</span> 도입 (한국방송통신전파진흥원 개발 중)</div>
+      </div>
+      <p class="small" style="margin-top:10px">+ 노동부·공단 <b>합동 TF</b> → 연내 종합대책</p>
+    </div>
+    <div class="gloss" data-a="fade" style="--d:11" aria-label="약어 풀이"><span><b>TF</b><em>Task Force</em> · 특정 과제를 위해 꾸린 임시 전담 조직</span><span><b>AI</b><em>Artificial Intelligence</em> · 인공지능</span></div>
+  </section>
+
+  <!-- 07 suneung -->
+  <section class="slide" data-notes="수능(11월 19일) 대책입니다. 휴대전화, 스마트안경, 스마트워치, 블루투스 이어폰 등의 반입이 금지되며, 1교시 전에 제출하지 않고 갖고 있다가 적발되면 실제로 썼는지와 관계없이 부정행위로 처리됩니다. 전국 1,312개 시험장에 스마트안경 전담 요원을 1명씩 배치하고, 서울시교육청은 11월 11일 전담 요원 239명을 연수했습니다. 정부는 열감지카메라 등 지금 쓸 수 있는 수단을 모두 동원하라고 지시했고, 단추 없는 옷을 권장하는 방안도 검토 중입니다. 교육부는 수능 부정행위자의 응시자격 정지 기간을 1년에서 3년으로 늘리고, 위계에 의한 공무집행방해 혐의로 수사를 의뢰하는 방안을 발표했습니다. 한계: 전파탐지기는 올해 수능에는 도입되지 않고 내년 도입을 검토하는 단계여서, 초소형 이어폰이나 카메라는 감독관이 눈으로 찾아야 합니다. 교총·전교조도 육안 검사의 한계를 지적하며 민원으로부터 감독관을 보호할 방안을 요구했습니다.">
+    <div class="kicker" data-a="left">01 · 수능 대책</div>
+    <h2 data-a style="--d:1">11월 19일 수능: 대책은 늘었지만 <em>빈틈</em>도</h2>
+    <div class="cols c3" style="margin-top:28px">
+      <div class="card" data-a style="--d:2"><div class="num">반입 금지 · 처리 기준</div>
+        <div class="conds" style="margin-top:12px"><span class="chip">휴대전화</span><span class="chip">스마트안경</span><span class="chip">스마트워치</span><span class="chip">블루투스 이어폰</span></div>
+        <p>1교시 전에 제출하지 않고 갖고 있다 적발되면 <b>사용 여부와 관계없이 부정행위</b></p></div>
+      <div class="card" data-a style="--d:3"><div class="num">현장 감독</div>
+        <div class="kpi gold" style="margin-top:10px"><span data-count="1312" data-comma="1" data-from="0">0</span><small>개 시험장</small></div>
+        <p>시험장마다 <b>스마트안경 전담 요원 1명</b>. 서울 전담 요원 239명 연수(11/11). 열감지카메라 등 총동원 지시, 단추 없는 옷 권장 검토</p></div>
+      <div class="card" data-a style="--d:4"><div class="num">처벌 강화 (교육부)</div>
+        <div class="hbars" style="margin-top:16px">
+          <div class="hbar" style="--lw:60px; --vw:50px; --k:0; --bd:1s"><span class="nm">기존</span><span class="tr"><i style="--w:33.3%; --c:var(--ink-3)"></i></span><span class="v">1년</span></div>
+          <div class="hbar best" style="--lw:60px; --vw:50px; --k:3; --bd:1s"><span class="nm">변경</span><span class="tr"><i style="--w:100%; --c:var(--coral)"></i></span><span class="v">3년</span></div>
+        </div>
+        <p>응시자격 정지 기간 확대 + <b>위계에 의한 공무집행방해</b> 혐의 수사 의뢰</p></div>
+    </div>
+    <div class="card hotc" data-a style="--d:6; margin-top:20px; display:flex; gap:24px; align-items:center">
+      <span class="badge warn" style="font-size:16px">한계</span>
+      <p style="margin:0; font-size:19px"><b>전파탐지기는 올해 수능에 도입되지 않음</b>(내년 도입 검토) → 초소형 이어폰·카메라는 <b>감독관 육안</b>에 의존. 교총·전교조도 육안 검사의 한계를 지적하고 감독관 민원 보호를 요구</p>
+    </div>
+  </section>
+
+  <!-- 08 unverified methods + precedents -->
+  <section class="slide" data-notes="커뮤니티에는 셔츠 단추에 와이파이 카메라를 달고, 귀에 '쌀알 크기' 이어폰을 넣고, 옷 안에 '전류발생기'(유도 루프 방식으로 추정)를 둔 뒤 AI로 답을 받는다는 주장이 돌고 있습니다. 장비값이 '11만 원'이면 된다거나 '이런 식으로 수능 만점 근처 나온 애들이 수백 명'이라는 주장도 있습니다. 이 주장들은 근거가 제시되지 않았습니다. 한 씨 본인이 밝힌 방식은 카메라 촬영, AI 전송, 스마트폰 화면 확인이었습니다. 해외 쇼핑몰에서는 초소형 카메라와 이어폰을 묶은 '학생 세트'가 판매되고 있습니다(머니투데이). 앞선 사례: 서울경찰청 광역수사단 국제범죄수사대가 2026년 7월 21일 TOPIK 부정응시 조직을 적발해 중국인 101명을 입건했습니다. 브로커 A씨(28)는 위계에 의한 공무집행방해 혐의로 구속 송치돼 6월 징역 3년을 선고받았고, 부정응시 약 200만 원·대리응시 약 800만 원을 받아 2021년 10월부터 지난해 11월까지 약 7억 원의 범죄수익을 올린 것으로 조사됐습니다(시사저널·SBS). 이 밖에 올해 연세대·서울시립대 논술에서 스마트안경 착용자가 적발됐고, 중·고교에서도 스마트안경 부정행위 4건이 확인됐습니다. 파이낸셜뉴스에 따르면 올해 국가자격시험에서만 5건이 적발됐습니다.">
+    <div class="kicker" data-a="left">01 · 미검증 주장과 앞선 사례</div>
+    <h2 data-a style="--d:1">온라인 ‘수법’ 주장은 <em>검증되지 않았다</em></h2>
+    <div class="cols c2" style="margin-top:28px; align-items:stretch">
+      <div class="card rumor" data-a style="--d:2; position:relative">
+        <span class="badge rumor">루머·미확인 · 근거 미제시</span>
+        <ul style="margin-top:14px">
+          <li>단추 카메라 + ‘쌀알 크기’ 이어폰 + 옷 속 ‘전류발생기’로 AI 답을 받는다는 주장</li>
+          <li>장비값 <b>“11만 원”</b>이면 된다는 주장</li>
+          <li><b>“수능 만점 근처 수백 명”</b>이라는 주장</li>
+        </ul>
+        <span class="ustamp" style="right:24px; top:20px; --sd:1.8s">근거 없음</span>
+        <div style="margin-top:18px; padding-top:14px; border-top:1px dashed rgba(240,84,42,.4)">
+          <span class="badge ok">본인 진술</span>
+          <p style="margin-top:8px">한 씨가 밝힌 방식은 <b>카메라 촬영 → AI 전송 → 스마트폰 화면 확인</b></p>
+          <p class="small" style="margin-top:6px">해외 쇼핑몰에선 초소형 카메라·이어폰 ‘학생 세트’가 판매 중(머니투데이)</p>
+        </div>
+      </div>
+      <div class="card ok" data-a="right" style="--d:4">
+        <span class="badge ok">확인된 앞선 사례</span>
+        <div class="row" style="gap:26px; margin-top:14px; align-items:flex-end">
+          <div><div class="kpi"><span data-count="101" data-from="0">0</span><small>명</small></div><div class="small">TOPIK 부정응시 입건 (7/21)</div></div>
+          <div><div class="kpi gold">약 <span data-count="7" data-from="0">0</span><small>억 원</small></div><div class="small">브로커 범죄수익 (징역 3년)</div></div>
+        </div>
+        <ul style="margin-top:16px">
+          <li>연세대·서울시립대 <b>논술</b>에서 스마트안경 착용자 적발</li>
+          <li>중·고교 스마트안경 부정행위 <b>4건</b></li>
+          <li>올해 국가자격시험 적발 <b>5건</b> (파이낸셜뉴스)</li>
+        </ul>
+      </div>
+    </div>
+    <div class="gloss" data-a="fade" style="--d:8" aria-label="약어 풀이"><span><b>TOPIK</b><em>Test of Proficiency in Korean</em> · 한국어능력시험</span><span><b>AI</b><em>Artificial Intelligence</em> · 인공지능</span></div>
+  </section>
+
+  <!-- 09 Monorean chain -->
+  <section class="slide" data-hook="chain" data-notes="Monorean은 판매사가 스스로 '시험용으로 설계됐고 사실상 부정행위에 최적화된 스파이 기기'라고 홍보하는 초소형 이어피스 브랜드입니다. Pro는 상위 모델로, 블루투스로 휴대전화와 연결되는 제어 박스, 목에 거는 '종이처럼 얇은' 유도(inductive) 칼라, 배터리 없는 초소형 귓속 이어피스, 신발 속에 숨기는 신호 버튼으로 구성됩니다. 공식 장바구니 가격은 247.10유로입니다. 일부 쇼핑몰(AliExpress 검색 페이지)은 '3.5mm 유선 이어폰'으로 소개하지만 공식 사양과 맞지 않아 신뢰하기 어렵습니다. 국내 보도와 한 씨의 자백 어디에서도 Monorean이라는 이름은 확인되지 않았습니다. 온라인의 '쌀알 이어폰 + 전류발생기' 구성과 구조적으로 비슷할 뿐 직접적인 연결고리는 없습니다. 탐지 측면: 유도형 귓속 이어피스는 자체 무선 송신이 거의 없어 전파탐지기는 주로 휴대전화와 제어 박스 사이의 블루투스 구간만 잡을 수 있습니다. 전원을 껐다가 특정 순간에만 통신하면 적발이 어렵다는 지적도 있습니다(서플). 그래서 금속탐지, 생체인식 본인 확인, 사후 성적 이상치 검증을 함께 써야 한다는 결론으로 이어지고, 경찰도 TOPIK 사건 뒤 관계기관에 금속탐지기와 생체인식 도입을 요청했습니다.">
+    <div class="kicker" data-a="left">01 · Monorean Pro</div>
+    <h2 data-a style="--d:1">전파탐지기가 잡을 수 있는 구간은 <em>하나뿐</em></h2>
+    <p class="lead" data-a style="--d:2; font-size:20px; margin-top:10px">판매사가 스스로 ‘시험용’이라 홍보하는 초소형 이어피스. <span class="badge rumor">세무사 사건과의 연관은 확인되지 않음</span></p>
+    <svg class="chain-svg chain-h" viewBox="0 0 1380 300" data-a="fade" style="--d:3" id="chainsvg" aria-label="휴대전화, 제어 박스, 유도 칼라, 귓속 이어피스로 이어지는 구성. 전파탐지기는 휴대전화와 제어 박스 사이 블루투스 구간만 주로 잡을 수 있음">
+      <line class="leg bt" id="leg1" x1="234" y1="80" x2="386" y2="80"/>
+      <line class="leg" x1="616" y1="80" x2="768" y2="80"/>
+      <line class="leg" x1="998" y1="80" x2="1150" y2="80"/>
+      <g class="node"><rect x="4" y="20" width="230" height="120" rx="18"/><text x="119" y="72" text-anchor="middle" font-size="26" font-weight="700">휴대전화</text><text x="119" y="106" text-anchor="middle" font-size="17" opacity=".65">블루투스로 연결</text></g>
+      <g class="node"><rect x="386" y="20" width="230" height="120" rx="18"/><text x="501" y="72" text-anchor="middle" font-size="26" font-weight="700">제어 박스</text><text x="501" y="106" text-anchor="middle" font-size="17" opacity=".65">몸에 숨기는 중계기</text></g>
+      <g class="node"><rect x="768" y="20" width="230" height="120" rx="18"/><text x="883" y="72" text-anchor="middle" font-size="26" font-weight="700">유도 칼라</text><text x="883" y="106" text-anchor="middle" font-size="17" opacity=".65">목에 거는 얇은 고리</text></g>
+      <g class="node"><rect x="1150" y="20" width="226" height="120" rx="18"/><text x="1263" y="72" text-anchor="middle" font-size="26" font-weight="700">귓속 이어피스</text><text x="1263" y="106" text-anchor="middle" font-size="17" opacity=".65">배터리 없는 초소형</text></g>
+      <text x="310" y="62" text-anchor="middle" font-size="17" class="okt">블루투스</text>
+      <text x="1074" y="62" text-anchor="middle" font-size="17" opacity=".7">유도 전달</text>
+      <g id="chainpk"></g>
+      <circle class="ring" cx="310" cy="232" r="10"/><circle class="ring r2" cx="310" cy="232" r="10"/><circle class="ring r3" cx="310" cy="232" r="10"/>
+      <rect x="262" y="210" width="96" height="44" rx="12" fill="rgba(76,195,138,.18)" stroke="rgba(76,195,138,.8)"/>
+      <text x="310" y="238" text-anchor="middle" font-size="17" class="okt">전파탐지기</text>
+      <text x="310" y="288" text-anchor="middle" font-size="18" class="okt">탐지 가능 구간</text>
+      <text x="692" y="200" text-anchor="middle" font-size="18" class="not">탐지 어려움</text>
+      <text x="1074" y="200" text-anchor="middle" font-size="18" class="not">탐지 어려움</text>
+      <text x="1074" y="226" text-anchor="middle" font-size="15" opacity=".6">자체 무선 송신 거의 없음</text>
+    </svg>
+    <svg class="chain-svg chain-v" viewBox="0 0 560 620" data-a="fade" style="--d:3" aria-hidden="true">
+      <line class="leg bt" id="vleg1" x1="150" y1="100" x2="150" y2="180"/>
+      <line class="leg" x1="150" y1="270" x2="150" y2="350"/>
+      <line class="leg" x1="150" y1="440" x2="150" y2="520"/>
+      <g class="node"><rect x="20" y="10" width="260" height="90" rx="16"/><text x="150" y="50" text-anchor="middle" font-size="26" font-weight="700">휴대전화</text><text x="150" y="80" text-anchor="middle" font-size="17" opacity=".65">블루투스로 연결</text></g>
+      <g class="node"><rect x="20" y="180" width="260" height="90" rx="16"/><text x="150" y="220" text-anchor="middle" font-size="26" font-weight="700">제어 박스</text><text x="150" y="250" text-anchor="middle" font-size="17" opacity=".65">몸에 숨기는 중계기</text></g>
+      <g class="node"><rect x="20" y="350" width="260" height="90" rx="16"/><text x="150" y="390" text-anchor="middle" font-size="26" font-weight="700">유도 칼라</text><text x="150" y="420" text-anchor="middle" font-size="17" opacity=".65">목에 거는 얇은 고리</text></g>
+      <g class="node"><rect x="20" y="520" width="260" height="90" rx="16"/><text x="150" y="560" text-anchor="middle" font-size="26" font-weight="700">귓속 이어피스</text><text x="150" y="590" text-anchor="middle" font-size="17" opacity=".65">배터리 없는 초소형</text></g>
+      <g id="vchainpk"></g>
+      <circle class="ring" cx="420" cy="140" r="10"/><circle class="ring r2" cx="420" cy="140" r="10"/><circle class="ring r3" cx="420" cy="140" r="10"/>
+      <rect x="360" y="118" width="120" height="44" rx="12" fill="rgba(76,195,138,.18)" stroke="rgba(76,195,138,.8)"/>
+      <text x="420" y="146" text-anchor="middle" font-size="18" class="okt">전파탐지기</text>
+      <text x="170" y="146" font-size="18" class="okt">블루투스</text>
+      <text x="420" y="196" text-anchor="middle" font-size="18" class="okt">탐지 가능 구간</text>
+      <text x="320" y="316" font-size="20" class="not">탐지 어려움</text>
+      <text x="320" y="478" font-size="20" class="not">탐지 어려움</text>
+      <text x="320" y="504" font-size="16" opacity=".6">유도 전달 · 자체 송신 거의 없음</text>
+    </svg>
+    <div class="cols c2" style="margin-top:8px">
+      <div class="card" data-a style="--d:5; padding:18px 22px"><p style="margin:0">전원을 껐다가 <b>특정 순간에만 통신</b>하면 적발이 어렵다는 지적(서플)</p></div>
+      <div class="card judge" data-a style="--d:6; padding:18px 22px"><p style="margin:0">→ <b>금속탐지 · 생체인식 본인 확인 · 사후 성적 이상치 검증</b>을 함께. 경찰도 TOPIK 사건 뒤 금속탐지기·생체인식 도입 요청</p></div>
+    </div>
+    <div class="gloss" data-a="fade" style="--d:8" aria-label="약어 풀이"><span><b>BT</b><em>Bluetooth</em> · 블루투스. 몇 미터 안에서 기기끼리 잇는 근거리 무선 통신</span><span><b>TOPIK</b><em>Test of Proficiency in Korean</em> · 한국어능력시험</span></div>
+  </section>
+
+  <!-- 10 UBB swimlane -->
+  <section class="slide" data-notes="원래 계획: Microsoft는 9월 16일 CSP 파트너들에게 11월 2일부터 CSP로 새로 구매하는 Copilot Business 라이선스에 UBB를 기본 적용한다고 알렸습니다. 과금은 M365 청구서가 아니라 연결된 Azure 구독으로 나가며, 기본 한도는 사용자당 월 4,000 Copilot Credits(약 40달러)이고 관리자가 조정할 수 있습니다. 변경 보도: 11월 6일 업데이트된 Microsoft FAQ를 인용한 보도(o365hq, vissensa)에 따르면 CSP 기본 적용은 Microsoft 회계연도 2027년 3분기(2027년 1~3월)로 연기됐고 11월 11일 현재 opt-in 방식입니다. 반면 메시지센터 공지 MC1476200은 '11월 중순부터 Microsoft에서 직접 구매하는 신규 테넌트'에는 기본 적용된다고 밝혔습니다. 즉 판매 채널(CSP인지 직접 구매인지)에 따라 일정이 다르고 문서끼리도 충돌하므로 테넌트별 확인이 필요합니다.">
+    <div class="kicker" data-a="left">02 · MS365 Copilot</div>
+    <h2 data-a style="--d:1">사용량 과금(UBB), <em>채널마다 일정이 다르다</em></h2>
+    <div class="sw">
+      <div class="band" style="grid-column:5; grid-row:1 / 4"><span>문서끼리 충돌 → 테넌트별 확인</span></div>
+      <div class="hd" style="grid-column:2; grid-row:1; --d:2" data-a="fade">9.16</div>
+      <div class="hd" style="grid-column:3; grid-row:1; --d:3" data-a="fade">11.2</div>
+      <div class="hd" style="grid-column:4; grid-row:1; --d:4" data-a="fade">11.6 ~ 11.11</div>
+      <div class="hd" style="grid-column:5; grid-row:1; --d:5" data-a="fade">11월 중순</div>
+      <div class="hd" style="grid-column:6; grid-row:1; --d:6" data-a="fade">2027.1 ~ 3</div>
+      <div class="ln" style="grid-column:1; grid-row:2; --d:2" data-a="left">CSP 구매<small>파트너 재판매</small></div>
+      <div class="cell" data-when="9.16" style="grid-column:2; grid-row:2; --d:2" data-a>CSP 파트너에 공지: <b>11/2부터</b> 신규 Copilot Business에 UBB <b>기본 적용</b></div>
+      <div class="cell plan" data-when="11.2" style="grid-column:3; grid-row:2; --d:3" data-a>원래 계획대로라면 <b>기본 적용 시작</b><i class="strike"></i></div>
+      <div class="cell on" data-when="11.6 ~ 11.11" style="grid-column:4; grid-row:2; --d:4" data-a>FAQ 갱신(11/6) 인용 보도: <b>FY27 3분기로 연기</b>, 11/11 현재 <b>opt-in</b></div>
+      <div class="cell" data-when="11월 중순" style="grid-column:5; grid-row:2; --d:5" data-a>opt-in 유지<br><span class="small">(보도 기준)</span></div>
+      <div class="cell on" data-when="2027.1 ~ 3" style="grid-column:6; grid-row:2; --d:6" data-a><b>기본 적용</b> (연기된 일정)</div>
+      <div class="ln" style="grid-column:1; grid-row:3; --d:3" data-a="left">직접 구매<small>Microsoft에서</small></div>
+      <div class="cell empty" style="grid-column:2; grid-row:3"></div>
+      <div class="cell empty" style="grid-column:3; grid-row:3"></div>
+      <div class="cell empty" style="grid-column:4; grid-row:3"></div>
+      <div class="cell bad" data-when="11월 중순" style="grid-column:5; grid-row:3; --d:7" data-a>MC1476200: <b>신규 테넌트에 기본 적용</b></div>
+      <div class="cell empty" style="grid-column:6; grid-row:3"></div>
+    </div>
+    <div class="cols c2" style="margin-top:30px">
+      <div class="card" data-a style="--d:6; padding:16px 22px"><p style="margin:0">청구: M365 청구서가 아니라 <b>연결된 Azure 구독</b>으로</p></div>
+      <div class="card" data-a style="--d:7; padding:16px 22px"><p style="margin:0">기본 한도: 사용자당 월 <b>4,000 Copilot Credits(약 40달러)</b>, 관리자 조정 가능</p></div>
+    </div>
+    <div class="gloss" data-a="fade" style="--d:9" aria-label="약어 풀이"><span><b>UBB</b><em>Usage-Based Billing</em> · 쓴 만큼 내는 사용량 기반 과금</span><span><b>CSP</b><em>Cloud Solution Provider</em> · Microsoft 라이선스를 재판매하는 파트너 채널</span><span><b>MC</b><em>Message Center</em> · M365 관리자 센터의 공지 게시판. MC1476200은 공지 번호</span><span><b>FY27</b><em>Fiscal Year 2027</em> · Microsoft 회계연도 2027. 3분기 = 2027년 1~3월</span><span><b>FAQ</b><em>Frequently Asked Questions</em> · 자주 묻는 질문 문서</span></div>
+  </section>
+
+  <!-- 11 UBB scope, fair use, advice -->
+  <section class="slide" data-notes="UBB 과금 대상 기능은 Copilot Cowork, Work IQ APIs, GitHub Copilot Harness입니다. 11월 초부터는 GPT-6 Astra, Claude Fable 5.1 같은 'UBB 모델'이 Chat과 Word·Excel·PowerPoint의 모델 선택기에 나타납니다. 쓰려면 Copilot 라이선스, UBB 활성화, 크레딧 할당이 모두 필요합니다. 12월 1일부터는 M365 기본 구독 없이도 Copilot과 Copilot Business 신규 오퍼를 구매할 수 있습니다. Partner Center 공식 공지에 따르면 Copilot 라이선스가 없는 사용자의 Copilot Chat 추가 기능에 공정 사용(fair use) 한도가 새로 적용됩니다. M365 좌석 2,000석 이하 조직은 11월 2일, 그보다 큰 조직은 11월 9일부터입니다. 권고: 기본 적용 일정과 관계없이 관리자 센터 '비용 관리'에서 지출 정책과 사용자별 크레딧 한도를 지금 설정해 두는 것이 안전합니다.">
+    <div class="kicker" data-a="left">02 · MS365 Copilot</div>
+    <h2 data-a style="--d:1">과금 대상 · 공정 사용 한도 · <em>지금 할 일</em></h2>
+    <div class="cols c3" style="margin-top:30px; align-items:stretch">
+      <div class="card" data-a style="--d:2"><div class="num">UBB 과금 대상</div>
+        <div class="conds" style="margin-top:12px"><span class="chip">Copilot Cowork</span><span class="chip">Work IQ APIs</span><span class="chip">GitHub Copilot Harness</span></div>
+        <p>11월 초부터 <b>‘UBB 모델’</b>(GPT-6 Astra, Claude Fable 5.1 등)이 Chat·Word·Excel·PowerPoint 모델 선택기에</p>
+        <p class="small" style="margin-top:12px">쓰려면 세 가지 모두 필요</p>
+        <div class="conds"><span class="chip">① Copilot 라이선스</span><span class="chip">② UBB 활성화</span><span class="chip">③ 크레딧 할당</span></div>
+      </div>
+      <div class="card" data-a style="--d:3"><div class="num">Copilot Chat 공정 사용 한도</div>
+        <p>Copilot 라이선스 <b>없는</b> 사용자의 Chat 추가 기능에 새로 적용</p>
+        <div class="tline" style="--n:2; margin-top:18px; padding-top:40px; gap:14px">
+          <div class="axis"><i></i></div>
+          <div class="ev"><div class="dot"></div><div class="when">11.2</div><div class="what">M365 <b>2,000석 이하</b></div></div>
+          <div class="ev"><div class="dot"></div><div class="when">11.9</div><div class="what"><b>2,000석 초과</b></div></div>
+        </div>
+        <p style="margin-top:16px"><b>12월 1일</b>부터 M365 기본 구독 없이도 Copilot · Copilot Business 신규 오퍼 구매 가능</p>
+      </div>
+      <div class="card judge" data-a style="--d:4"><span class="badge judge">권고</span>
+        <h3 style="margin-top:14px">일정이 어떻게 정해지든, <span style="color:var(--gold)">한도부터</span></h3>
+        <p>관리자 센터 <b>‘비용 관리’</b>에서</p>
+        <ul><li><b>지출 정책</b> 설정</li><li><b>사용자별 크레딧 한도</b> 설정</li></ul>
+        <p>기본 적용 여부를 테넌트별로 확인하기 전에 먼저 걸어 두는 것이 안전</p>
+      </div>
+    </div>
+    <div class="gloss" data-a="fade" style="--d:8" aria-label="약어 풀이"><span><b>UBB</b><em>Usage-Based Billing</em> · 사용량 기반 과금</span><span><b>API</b><em>Application Programming Interface</em> · 다른 프로그램이 기능을 코드로 불러 쓰는 창구</span><span><b>M365</b><em>Microsoft 365</em> · Microsoft 업무용 구독 서비스</span></div>
+  </section>
+
+  <!-- 12 models + Ignite -->
+  <section class="slide" data-notes="9월에 Home, Code, Autopilot을 포함한 '새 Copilot'이 발표됐습니다. Copilot Code는 11월에 Frontier 프로그램 대상으로 롤아웃 중이고, Autopilot은 비공개 프리뷰 단계입니다. 모델 선택: 9월 22일 Claude Opus 5.5와 GPT-6 Sol이 Word·Excel·PowerPoint·Chat·Cowork·Copilot Studio에 롤아웃되기 시작했고, 9월 30일 GPT-6.1 Sol과 Claude Sonnet 5.5가 추가됐습니다. Word에는 Grok 4.5가 보이기 시작했다는 사용자 보고가 있습니다. Anthropic 모델은 관리자가 따로 켜야 합니다. 독립 테스트: 한 사용자가 Cowork에서 같은 과제를 돌린 결과 Opus 5.5가 더 완성도 높은 덱과 엑셀 결과물을 만들었고 비용은 약 10달러(Sol은 약 7달러)였습니다. 표본이 하나뿐이라 참고용입니다. Ignite 2026(11월 17~20일, 샌프란시스코)은 작성 시점(11월 16일)에 아직 열리지 않아 확정된 신기능은 없습니다. 세션 카탈로그로 보면 Copilot 앱의 진화(Chat·Cowork·Code·Autopilot 통합, BRK201), 플러그인 레지스트리, Copilot Connectors, 비용과 거버넌스가 핵심 주제로 예상됩니다.">
+    <div class="kicker" data-a="left">02 · MS365 Copilot</div>
+    <h2 data-a style="--d:1">모델 선택지는 넓어지고, Ignite는 <em>아직</em></h2>
+    <div class="cols c3w" style="margin-top:28px; align-items:stretch">
+      <div class="card" data-a style="--d:2"><div class="num">모델 선택 · 새 Copilot</div>
+        <ul style="margin-top:12px">
+          <li><b>9월</b> ‘새 Copilot’ 발표: Home · Code · Autopilot</li>
+          <li><b>9/22</b> Claude Opus 5.5 · GPT-6 Sol 롤아웃 시작 (Word·Excel·PowerPoint·Chat·Cowork·Copilot Studio)</li>
+          <li><b>9/30</b> GPT-6.1 Sol · Claude Sonnet 5.5 추가</li>
+          <li>Word에 Grok 4.5 <span class="badge rumor">사용자 보고</span></li>
+          <li>Anthropic 모델은 <b>관리자가 따로 켜야</b> 함</li>
+          <li><b>11월</b> Copilot Code: Frontier 프로그램 대상 롤아웃 · Autopilot: 비공개 프리뷰</li>
+        </ul>
+      </div>
+      <div class="card" data-a style="--d:3"><div class="num">독립 테스트 · Cowork 같은 과제</div>
+        <div class="hbars" style="margin-top:22px">
+          <div class="hbar" style="--lw:90px; --vw:60px; --k:0; --bh:30px"><span class="nm">Opus 5.5</span><span class="tr"><i style="--w:100%; --c:var(--c-ant)"></i></span><span class="v">~$10</span></div>
+          <div class="hbar" style="--lw:90px; --vw:60px; --k:1; --bh:30px"><span class="nm">GPT-6 Sol</span><span class="tr"><i style="--w:70%; --c:var(--c-oai)"></i></span><span class="v">~$7</span></div>
+        </div>
+        <p>Opus 5.5가 <b>더 완성도 높은 덱·엑셀</b> 결과물</p>
+        <p class="small" style="margin-top:10px">⚠ 표본 1개 · 참고용</p>
+      </div>
+      <div class="card" data-a style="--d:4"><div class="num">Ignite 2026 · 11/17~20 샌프란시스코</div>
+        <p><b>작성 시점(11/16)엔 미개최</b> → 확정된 신기능 없음</p>
+        <p class="small" style="margin-top:14px">세션 카탈로그로 본 <span class="badge judge">예상 주제</span></p>
+        <ul style="margin-top:8px"><li>Copilot 앱 통합: Chat·Cowork·Code·Autopilot (BRK201)</li><li>플러그인 레지스트리</li><li>Copilot Connectors</li><li>비용 · 거버넌스</li></ul>
+      </div>
+    </div>
+    <div class="gloss" data-a="fade" style="--d:8" aria-label="약어 풀이"><span><b>BRK</b><em>Breakout session</em> · Ignite 본 세션 번호 접두어. BRK201은 세션 코드</span><span><b>GPT</b><em>Generative Pre-trained Transformer</em> · OpenAI 모델 계열 이름</span></div>
+  </section>
+
+  <!-- 13 Gemini gantt -->
+  <section class="slide" data-notes="공식 출시 일정(확정): Argon은 9월 30일 발표(처음에는 Fairwind 프로그램의 사이버 방어자 대상), 10월 13일 GA, 유료 API와 Gemini 앱 AI Pro·Ultra. Carbon은 10월 28일 발표(사이버 방어자·Fairwind 파트너 대상), 11월 10일 GA, 유료 API·AI Ultra·Antigravity이며 사이버 특화판(cyber-permissive)은 Fairwind 전용. Hydrogen은 11월 12일 발표와 동시에 GA, 무료 티어를 포함한 모든 API 티어, Gemini 앱(무료 사용자는 자동 선택 시), Google 검색. Hydrogen 출시 여부 논란: 11월 초에는 'Hydrogen은 Flash급 루머 모델'이라는 보도가 많았지만, Google이 11월 12일 18:00 UTC에 출시 공지와 릴리스 노트를 냈고 Artificial Analysis도 11월 12일 출시로 기록했습니다. 11월 12일 정식 출시가 맞습니다. Hydrogen은 '단기 GA, 은퇴 45일 전 사전 고지' 조건입니다.">
+    <div class="kicker" data-a="left">03 · Gemini 4</div>
+    <h2 data-a style="--d:1">세 모델이 <em>6주 사이</em> 모두 GA</h2>
+    <div class="gantt">
+      <div class="gl" data-a="left" style="--d:2"><b style="color:var(--blue)">Argon</b><small>유료 API · Gemini 앱 AI Pro·Ultra</small></div>
+      <div class="gt" data-a="fade" style="--d:2">
+        <span class="seg pre" style="--c:var(--blue); left:9.43%; width:24.53%; --sd:.8s"></span><span class="seg ga" style="--c:var(--blue); left:33.96%; width:66.04%; --sd:1.1s"></span>
+        <span class="mk" style="left:9.43%; --sd:.9s">9/30 발표</span><span class="mk" style="left:33.96%; --sd:1.2s">10/13 GA</span>
+      </div>
+      <div class="gl" data-a="left" style="--d:3"><b style="color:var(--violet)">Carbon</b><small>유료 API · AI Ultra · Antigravity<br>사이버 특화판은 Fairwind 전용</small></div>
+      <div class="gt" data-a="fade" style="--d:3">
+        <span class="seg pre" style="--c:var(--violet); left:62.26%; width:24.53%; --sd:1.5s"></span><span class="seg ga" style="--c:var(--violet); left:86.79%; width:13.21%; --sd:1.8s"></span>
+        <span class="mk" style="left:62.26%; --sd:1.6s">10/28 발표</span><span class="mk r" style="left:86.79%; --sd:1.9s">11/10 GA</span>
+      </div>
+      <div class="gl" data-a="left" style="--d:4"><b style="color:var(--green)">Hydrogen</b><small>무료 티어 포함 모든 API · Gemini 앱 · Google 검색</small></div>
+      <div class="gt" data-a="fade" style="--d:4">
+        <span class="seg ga" style="--c:var(--green); left:90.57%; width:9.43%; --sd:2.2s"></span>
+        <span class="mk r" style="left:90.57%; --sd:2.3s; color:var(--green)">11/12 발표 = 즉시 GA</span>
+      </div>
+      <div class="ticks"><span style="left:11.3%">10/1</span><span style="left:37.7%">10/15</span><span style="left:69.8%">11/1</span><span style="left:96.2%">11/15</span></div>
+    </div>
+    <div class="legend" data-a="fade" style="--d:5; margin-top:6px"><span><i style="background:repeating-linear-gradient(-45deg, var(--ink-3) 0 3px, transparent 3px 6px)"></i>발표 · 제한 공개 (사이버 방어자·Fairwind)</span><span><i style="background:var(--ink-3)"></i>GA</span></div>
+    <div class="card ok" data-a style="--d:6; margin-top:18px; padding:18px 24px; display:flex; gap:18px; align-items:center">
+      <span class="badge ok">Hydrogen 논란 정리</span>
+      <p style="margin:0">11월 초 “Flash급 루머 모델” 보도 → <b>11/12 18:00 UTC</b> Google 출시 공지·릴리스 노트, AA도 11/12 출시로 기록 → <b>정식 출시가 맞음</b>. 단, “단기 GA · 은퇴 45일 전 사전 고지” 조건</p>
+    </div>
+    <div class="gloss" data-a="fade" style="--d:8" aria-label="약어 풀이"><span><b>GA</b><em>General Availability</em> · 정식 일반 공개</span><span><b>API</b><em>Application Programming Interface</em> · 코드로 모델을 불러 쓰는 창구</span><span><b>UTC</b><em>Coordinated Universal Time</em> · 협정 세계시. 한국 시간 = UTC + 9시간</span><span><b>AA</b><em>Artificial Analysis</em> · AI 모델 성능·가격을 독립 측정하는 업체</span></div>
+  </section>
+
+  <!-- 14 Gemini bars -->
+  <section class="slide" data-notes="Artificial Analysis 기준 비교입니다(실시간 스냅샷이라 수시로 바뀜). Intelligence Index v5.0.1: Hydrogen 51(high)·54(xhigh), Argon 50(high), Carbon 60(high, 출시 당시 v5.0 기준 59). 과업당 비용: Hydrogen $1.87(high)·$3.16(xhigh), Argon $4.97, Carbon $5.48. 과업당 소요 시간: Hydrogen 8.3분·13.5분, Argon 30.6분, Carbon 28.1분. 첫 응답 토큰까지(high): Hydrogen 약 17~19초, Argon 약 41~44초, Carbon 약 63~72초. 출력 속도: Hydrogen 약 180~198 tok/s, Argon 약 63, Carbon 약 61~72. 컨텍스트는 3종 공통 1,048,576 토큰(입력·사고·출력 통합)이며 동기 출력은 최대 65,536, long decode 시 최대 1M입니다. 범위로 표시된 값은 막대를 상단 값으로 그렸습니다.">
+    <div class="kicker" data-a="left">03 · Gemini 4</div>
+    <h2 data-a style="--d:1">Hydrogen: Argon 수준 점수에 <em>비용·시간은 몇 분의 1</em></h2>
+    <div class="legend" data-a="fade" style="--d:2; margin-top:12px"><span><i style="background:var(--green)"></i>Hydrogen</span><span><i style="background:var(--blue)"></i>Argon</span><span><i style="background:var(--violet)"></i>Carbon</span><span>· 자료: Artificial Analysis 스냅샷 · 범위 값은 상단 기준으로 막대 표시</span></div>
+    <div class="panels">
+      <div class="card" data-a style="--d:2"><h3>AA Intelligence Index v5.0.1 <small>높을수록 좋음</small></h3><div class="hbars">
+        <div class="hbar" style="--k:0"><span class="nm">Hydrogen high</span><span class="tr"><i style="--w:78.5%; --c:var(--green)"></i></span><span class="v">51</span></div>
+        <div class="hbar" style="--k:1"><span class="nm">Hydrogen xhigh</span><span class="tr"><i style="--w:83.1%; --c:var(--green)"></i></span><span class="v">54</span></div>
+        <div class="hbar" style="--k:2"><span class="nm">Argon high</span><span class="tr"><i style="--w:76.9%; --c:var(--blue)"></i></span><span class="v">50</span></div>
+        <div class="hbar best" style="--k:3"><span class="nm">Carbon high</span><span class="tr"><i style="--w:92.3%; --c:var(--violet)"></i></span><span class="v">60</span></div></div></div>
+      <div class="card" data-a style="--d:3"><h3>AA 과업당 비용 <small>낮을수록 좋음</small></h3><div class="hbars">
+        <div class="hbar best" style="--k:0"><span class="nm">Hydrogen high</span><span class="tr"><i style="--w:31.2%; --c:var(--green)"></i></span><span class="v">$1.87</span></div>
+        <div class="hbar" style="--k:1"><span class="nm">Hydrogen xhigh</span><span class="tr"><i style="--w:52.7%; --c:var(--green)"></i></span><span class="v">$3.16</span></div>
+        <div class="hbar" style="--k:2"><span class="nm">Argon</span><span class="tr"><i style="--w:82.8%; --c:var(--blue)"></i></span><span class="v">$4.97</span></div>
+        <div class="hbar" style="--k:3"><span class="nm">Carbon</span><span class="tr"><i style="--w:91.3%; --c:var(--violet)"></i></span><span class="v">$5.48</span></div></div></div>
+      <div class="card" data-a style="--d:4"><h3>과업당 소요 시간 <small>짧을수록 좋음</small></h3><div class="hbars">
+        <div class="hbar best" style="--k:0"><span class="nm">Hydrogen high</span><span class="tr"><i style="--w:25.9%; --c:var(--green)"></i></span><span class="v">8.3분</span></div>
+        <div class="hbar" style="--k:1"><span class="nm">Hydrogen xhigh</span><span class="tr"><i style="--w:42.2%; --c:var(--green)"></i></span><span class="v">13.5분</span></div>
+        <div class="hbar" style="--k:2"><span class="nm">Argon</span><span class="tr"><i style="--w:95.6%; --c:var(--blue)"></i></span><span class="v">30.6분</span></div>
+        <div class="hbar" style="--k:3"><span class="nm">Carbon</span><span class="tr"><i style="--w:87.8%; --c:var(--violet)"></i></span><span class="v">28.1분</span></div></div></div>
+      <div class="card" data-a style="--d:5"><h3>출력 속도 (AA) <small>높을수록 좋음</small></h3><div class="hbars">
+        <div class="hbar best" style="--k:0"><span class="nm">Hydrogen</span><span class="tr"><i style="--w:99%; --c:var(--green)"></i></span><span class="v">180~198</span></div>
+        <div class="hbar" style="--k:1"><span class="nm">Argon</span><span class="tr"><i style="--w:31.5%; --c:var(--blue)"></i></span><span class="v">~63</span></div>
+        <div class="hbar" style="--k:2"><span class="nm">Carbon</span><span class="tr"><i style="--w:36%; --c:var(--violet)"></i></span><span class="v">61~72</span></div></div>
+        <p class="small" style="margin-top:8px">tok/s · 첫 응답 토큰까지(high): H 17~19초 · A 41~44초 · C 63~72초</p></div>
+    </div>
+    <div class="gloss" data-a="fade" style="--d:8" aria-label="약어 풀이"><span><b>AA</b><em>Artificial Analysis</em> · AI 모델 성능·가격을 독립 측정하는 업체</span><span><b>tok/s</b><em>tokens per second</em> · 초당 출력 토큰 수</span><span><b>high · xhigh</b><em>추론 강도 설정</em> · 더 오래 생각하게 할수록 점수와 비용이 함께 오름</span></div>
+  </section>
+
+  <!-- 15 Gemini price toggle -->
+  <section class="slide" data-hook="gprice" data-notes="API 가격(100만 토큰당 입력/출력): Hydrogen은 $1.50/$7.50로 전 구간 동일합니다. Argon과 Carbon은 11월 30일까지 $2/$10이고 12월 1일부터 $4/$20으로 두 배가 됩니다. 버튼으로 전후를 바꿔 볼 수 있습니다. 해석: high 설정 기준으로 Hydrogen은 Argon보다 점수가 1점 높으면서 과업당 비용은 약 62% 낮고 3.7배 빠릅니다. 텍스트 위주 과업에서는 Argon을 쓸 이유가 거의 없고, 12월 1일 가격 인상 후 격차는 더 벌어집니다. Carbon은 가장 어려운 디버깅·설계 작업용 상한 모델로 남습니다. Google 공식 벤치마크(Carbon 모델 카드, 벤더 자체 수치): Terminal-Bench 4.0 Carbon 65.2%, Argon 57.1%; FrontierSWE 2 Carbon 61.2%(GPT-6 Astra 65.5%가 더 높음); OSWorld-2.1 Carbon 81.5%(Opus 5.5 87.2%가 더 높음); GraphWalks 256k~1M Carbon 96.2%, Argon 84.2%; SEC-bench Pro Carbon 88.2%. HLE, GPQA, SWE-bench Verified 수치는 공개하지 않았습니다. Google 주장: Hydrogen은 Gemini 3.8 Flash보다 2.5배 빠르게 과업을 끝내고, Antigravity Orchestrator가 Carbon으로 계획하고 Hydrogen으로 실행하면 Carbon에 가까운 성공률에 쿼터 24% 절감, 19% 빠름. 모두 벤더 주장이며 Terminal-Bench 버전 표기(4.0과 4.1)도 문서마다 다릅니다. 참고로 Carbon은 출시 당시 AA 1위였지만 11월 9일 Claude Fable 5.2(65점)가 1위를 차지했다는 2차 보도가 있습니다(미검증).">
+    <div class="kicker" data-a="left">03 · Gemini 4</div>
+    <h2 data-a style="--d:1">12월 1일, Argon·Carbon <em>가격 두 배</em></h2>
+    <div class="row" style="margin-top:24px; align-items:stretch">
+      <div class="card grow" data-a style="--d:2">
+        <div style="display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap">
+          <div class="num">API 가격 · 100만 토큰당 (입력 / 출력)</div>
+          <div class="ptog" role="group" aria-label="가격 시점 선택"><button type="button" data-p="0" aria-pressed="true">11월 30일까지</button><button type="button" data-p="1" aria-pressed="false">12월 1일부터</button></div>
+        </div>
+        <div class="pchart" id="pchart" style="margin-top:16px">
+          <div class="grp" style="--c:var(--blue)"><i></i>Argon</div>
+          <div class="hbars">
+            <div class="hbar dbl"><span class="nm">입력</span><span class="tr"><i style="--w0:10%; --w1:20%; --c:var(--blue)"></i></span><span class="v"><span class="v0">$2</span><span class="v1">$4</span></span></div>
+            <div class="hbar dbl"><span class="nm">출력</span><span class="tr"><i style="--w0:50%; --w1:100%; --c:var(--blue)"></i></span><span class="v"><span class="v0">$10</span><span class="v1">$20</span></span></div>
+          </div>
+          <div class="grp" style="--c:var(--violet)"><i></i>Carbon <span class="small" style="font-weight:400">Argon과 동일</span></div>
+          <div class="hbars">
+            <div class="hbar dbl"><span class="nm">입력</span><span class="tr"><i style="--w0:10%; --w1:20%; --c:var(--violet)"></i></span><span class="v"><span class="v0">$2</span><span class="v1">$4</span></span></div>
+            <div class="hbar dbl"><span class="nm">출력</span><span class="tr"><i style="--w0:50%; --w1:100%; --c:var(--violet)"></i></span><span class="v"><span class="v0">$10</span><span class="v1">$20</span></span></div>
+          </div>
+          <div class="grp" style="--c:var(--green)"><i></i>Hydrogen <span class="small" style="font-weight:400">전 구간 동일</span></div>
+          <div class="hbars">
+            <div class="hbar"><span class="nm">입력</span><span class="tr"><i style="--w0:7.5%; --w1:7.5%; --c:var(--green)"></i></span><span class="v">$1.50</span></div>
+            <div class="hbar"><span class="nm">출력</span><span class="tr"><i style="--w0:37.5%; --w1:37.5%; --c:var(--green)"></i></span><span class="v">$7.50</span></div>
+          </div>
+        </div>
+      </div>
+      <div style="width:560px; display:flex; flex-direction:column; gap:16px">
+        <div class="card judge" data-a="right" style="--d:3; padding:20px 24px"><span class="badge judge">해석 (high 기준)</span>
+          <p>Hydrogen은 Argon보다 점수 <b>+1</b>, 과업당 비용 <b>약 −62%</b>, <b>3.7배</b> 빠름 → 텍스트 위주 과업엔 Argon을 쓸 이유가 거의 없음. Carbon은 <b>가장 어려운 디버깅·설계용 상한 모델</b></p></div>
+        <div class="card vendor" data-a="right" style="--d:4; padding:18px 24px"><span class="badge vendor">벤더 수치 · Carbon 모델 카드</span>
+          <ul class="vlist">
+            <li><span>Terminal-Bench 4.0</span><span>C 65.2 · A 57.1</span></li>
+            <li><span>FrontierSWE 2</span><span>C 61.2 &lt; GPT-6 Astra 65.5</span></li>
+            <li><span>OSWorld-2.1</span><span>C 81.5 &lt; Opus 5.5 87.2</span></li>
+            <li><span>GraphWalks 256k~1M</span><span>C 96.2 · A 84.2</span></li>
+          </ul>
+          <p class="small" style="margin-top:8px">HLE · GPQA · SWE-bench Verified는 미공개</p></div>
+      </div>
+    </div>
+    <div class="gloss" data-a="fade" style="--d:8" aria-label="약어 풀이"><span><b>API</b><em>Application Programming Interface</em> · 코드로 모델을 불러 쓰는 창구. 가격은 토큰 단위로 매김</span><span><b>256k · 1M</b><em>토큰 수</em> · 약 25만 6천 · 100만 토큰 길이의 입력</span></div>
+  </section>
+
+  <!-- 16 Krypton -->
+  <section class="slide" data-notes="Krypton 유출은 모두 미확인입니다. 11월 8일 X 사용자 @lyraxana가 'Google released a new internal checkpoint called Krypton… even better than Carbon'이라고 게시했습니다. 11월 9일 @chetaslua가 'Krypton-a의 첫 체크포인트'라며 Carbon·Argon과 비교한 영상을 올렸고, 같은 프롬프트에서 시간이 약 2배 걸렸고 코드도 약 2배 많이 썼다고 합니다. 같은 날 @koltregaskes는 'Gemini Krypton is real… sounds like a BIG model', kimmonismus는 'breathtaking'이라고 썼습니다. Opus 5.5와 비교한 게시물에선 속도는 Opus, 시각적 결과물은 Krypton이 앞섰다는 평가가 나왔습니다. Logan Kilpatrick이 11월 11일께 'Gemini' 한 단어만 게시해 추측을 키웠습니다. 11월 13~14일 Arena에서 'gemini-4-hydrogen' 라벨로 Krypton이 테스트된다는 주장이 퍼졌으나, 가장 많이 공유된 데모의 게시자가 실제로는 '높은 추론 강도의 Hydrogen'이었다고 정정했고 다른 유출 계정은 Krypton이 Arena에 없다고 했습니다. Google은 공식 발표, 모델 ID, 가격, 출시일 모두 없습니다. 신뢰도 판단은 낮음~중간: 원소 이름 체계(Argon → Carbon → Krypton)와 맞고 여러 계정이 언급한다는 점은 존재 가능성을 높이지만, 재현 가능한 점수가 전혀 없고 정정 사례도 나왔습니다. 'Carbon보다 낫다'는 말은 선별된 데모에 근거한 주장일 뿐입니다.">
+    <div class="kicker" data-a="left">03 · Gemini Krypton</div>
+    <h2 data-a style="--d:1">‘Krypton’: <em>유출뿐, 확인은 없다</em> <span class="badge rumor" style="font-size:17px; vertical-align:12px">루머·미확인</span></h2>
+    <div class="tline" style="--n:4">
+      <div class="axis"><i style="background:var(--coral)"></i></div>
+      <div class="ev rum" data-a style="--d:2"><div class="dot"></div><div class="when">11.08</div><div class="what">X @lyraxana</div><div class="q en">“new internal checkpoint called Krypton… even better than Carbon”</div></div>
+      <div class="ev rum" data-a style="--d:4"><div class="dot"></div><div class="when">11.09</div><div class="what">@chetaslua ‘Krypton-a’ 비교 영상: 같은 프롬프트에 <b>시간·코드 약 2배</b></div><div class="q en">“sounds like a BIG model” — @koltregaskes</div></div>
+      <div class="ev rum" data-a style="--d:6"><div class="dot"></div><div class="when">11.11께</div><div class="what">Logan Kilpatrick <b>“Gemini”</b> 한 단어 게시 → 추측 확대</div></div>
+      <div class="ev bad" data-a style="--d:8"><div class="dot"></div><div class="when">11.13 ~ 14</div><div class="what">Arena ‘gemini-4-hydrogen’ 라벨 테스트 주장 → 최다 공유 데모 게시자가 <b>“실은 높은 추론 강도의 Hydrogen”</b>으로 정정</div></div>
+    </div>
+    <div class="cols c2" style="margin-top:24px">
+      <div class="card" data-a style="--d:9"><div class="num">Google 공식 입장</div>
+        <div class="conds" style="margin-top:12px"><span class="chip">발표 없음</span><span class="chip">모델 ID 없음</span><span class="chip">가격 없음</span><span class="chip">출시일 없음</span></div>
+        <p>“Carbon보다 낫다”는 말은 <b>선별된 데모</b>에 근거한 주장일 뿐</p></div>
+      <div class="card judge" data-a style="--d:10"><span class="badge judge">신뢰도: 낮음 ~ 중간</span>
+        <div class="gauge"><span class="zone"></span><span class="needle"></span></div>
+        <div class="gscale"><span>낮음</span><span>중간</span><span>높음</span></div>
+        <p style="font-size:16px">＋ 원소 이름 체계(Argon → Carbon → Krypton)와 맞고 여러 계정이 언급<br>－ 재현 가능한 점수 없음 · 정정 사례 발생</p></div>
+    </div>
+    <div class="gloss" data-a="fade" style="--d:11" aria-label="약어 풀이"><span><b>ID</b><em>Identifier</em> · API에서 모델을 부를 때 쓰는 고유 이름</span><span><b>X</b><em>옛 Twitter</em> · 유출 게시물이 올라온 소셜 미디어</span></div>
+  </section>
+
+  <!-- 17 small models price -->
+  <section class="slide" data-notes="Muse Ember는 Meta가 11월 9일 출시한 Muse 계열의 가장 작은 멀티모달 모델로, OpenRouter ID는 meta/muse-ember입니다. 1M 컨텍스트를 지원하며 가중치는 공개하지 않습니다. 세 모델 모두 기본 구간 가격이 입력 $0.10, 출력 $0.50(100만 토큰당)으로 같습니다. 그런데 Artificial Analysis 과업당 비용은 Ember 약 $0.14, Haiku 5.5 약 $0.41, Luna 약 $0.15로 갈립니다. '같은 점수에 비용 3분의 1'이라는 주장은 Ember가 과업당 출력 토큰을 약 3분의 1만 쓰기 때문에 나온 결과입니다. 장문 프롬프트 요금: Ember는 200K 초과 시 $0.30/$1.50, Haiku는 100K 초과 시 $0.50/$2.50, Luna는 272K까지 기본 요금이고 초과 시 인상. 컨텍스트: Ember 1M, Haiku 1M, Luna는 공개 자료로 확인하지 못함. 출력 속도(AA): Ember 449 tok/s, Haiku 확인 불가, Luna 102 tok/s.">
+    <div class="kicker" data-a="left">04 · 소형 모델 3종</div>
+    <h2 data-a style="--d:1">같은 토큰 단가, <em>다른 과업당 비용</em></h2>
+    <div class="sm-wrap">
+      <div class="card" data-a style="--d:2"><div class="num">토큰 단가 · 100만 토큰당 기본 구간</div>
+        <div class="hbars" style="margin-top:18px">
+          <div class="hbar" style="--k:0"><span class="nm">Muse Ember</span><span class="tr"><i style="--w:100%; --c:var(--c-meta)"></i></span><span class="v">$0.10 / $0.50</span></div>
+          <div class="hbar" style="--k:1"><span class="nm">Claude Haiku 5.5</span><span class="tr"><i style="--w:100%; --c:var(--c-ant)"></i></span><span class="v">$0.10 / $0.50</span></div>
+          <div class="hbar" style="--k:2"><span class="nm">GPT-6 Luna</span><span class="tr"><i style="--w:100%; --c:var(--c-oai)"></i></span><span class="v">$0.10 / $0.50</span></div>
+        </div>
+        <p class="small" style="margin-top:12px">입력 / 출력 · 세 모델 모두 동일</p></div>
+      <div class="arr" data-a="fade" style="--d:4">→</div>
+      <div class="card" data-a style="--d:5"><div class="num">AA 과업당 비용</div>
+        <div class="hbars" style="margin-top:18px">
+          <div class="hbar best" style="--k:0; --bd:1.6s"><span class="nm">Muse Ember</span><span class="tr"><i style="--w:34.1%; --c:var(--c-meta)"></i></span><span class="v">약 $0.14</span></div>
+          <div class="hbar" style="--k:1; --bd:1.6s"><span class="nm">Claude Haiku 5.5</span><span class="tr"><i style="--w:100%; --c:var(--c-ant)"></i></span><span class="v">약 $0.41</span></div>
+          <div class="hbar" style="--k:2; --bd:1.6s"><span class="nm">GPT-6 Luna</span><span class="tr"><i style="--w:36.6%; --c:var(--c-oai)"></i></span><span class="v">약 $0.15</span></div>
+        </div>
+        <p class="small" style="margin-top:12px">Ember가 과업당 <b>출력 토큰을 약 1/3</b>만 써서 생기는 차이</p></div>
+    </div>
+    <div class="ttab" data-a style="--d:7">
+      <div class="h"></div><div class="h" style="color:var(--c-meta)">Muse Ember</div><div class="h" style="color:var(--c-ant)">Claude Haiku 5.5</div><div class="h" style="color:var(--c-oai)">GPT-6 Luna</div>
+      <div class="rh">장문 프롬프트 요금</div><div>200K 초과 시 $0.30 / $1.50</div><div>100K 초과 시 $0.50 / $2.50</div><div>272K까지 기본, 초과 시 인상</div>
+      <div class="rh">컨텍스트</div><div>1M</div><div>1M</div><div>공개 자료로 확인 못 함</div>
+      <div class="rh">출력 속도 (AA)</div><div>449 tok/s</div><div>확인 불가</div><div>102 tok/s</div>
+    </div>
+    <div class="gloss" data-a="fade" style="--d:9" aria-label="약어 풀이"><span><b>AA</b><em>Artificial Analysis</em> · AI 모델 성능·가격을 독립 측정하는 업체</span><span><b>K · M</b><em>천 · 백만</em> · 200K = 20만 토큰, 1M = 100만 토큰</span><span><b>tok/s</b><em>tokens per second</em> · 초당 출력 토큰 수</span></div>
+  </section>
+
+  <!-- 18 small model benchmarks -->
+  <section class="slide" data-notes="주의할 점: 아래 표는 Meta가 발표 자료에 실은 수치입니다. '-AA'가 붙은 항목은 Artificial Analysis가 실행했지만 표를 고르고 구성한 것은 Meta입니다. Ember는 10개 지표 중 9개에서 1위이거나 동률이고, 유일하게 지는 항목은 FrontierCode(머지 가능한 실무 코드)입니다. AA Intelligence Index(max 추론): Ember 36(반올림 전 35.8), Haiku 36(36.2), Luna 28. AutomationBench-AA: 37.8 / 13.9 / 20.2. Coding Agent Index-AA: 46 / 37 / 31. Terminal-Bench 4.0: 40.9 / 39.2 / 16.4. FrontierCode 2.0-AA: Haiku 1위, Ember는 Haiku보다 낮음. OSWorld 2.1: Ember가 Haiku를 근소하게(1점 이내) 앞서고 Luna는 크게 뒤짐. GDP.pdf(긴 문서): Ember 22.8, Luna 22.8 동률.">
+    <div class="kicker" data-a="left">04 · 소형 모델 3종</div>
+    <h2 data-a style="--d:1">벤치마크는 Ember 우세, 단 <em>Meta가 고른 수치</em></h2>
+    <div class="card vendor" data-a style="--d:2; margin-top:20px; padding:14px 22px; display:flex; gap:16px; align-items:center">
+      <span class="badge vendor">벤더 수치</span><p style="margin:0; font-size:17px">Meta 발표 자료의 표. ‘-AA’ 항목은 Artificial Analysis가 실행했지만 <b>어떤 지표를 실을지는 Meta가 골랐음</b></p>
+    </div>
+    <div class="legend" data-a="fade" style="--d:3; margin-top:14px"><span><i style="background:var(--c-meta)"></i>Muse Ember</span><span><i style="background:var(--c-ant)"></i>Claude Haiku 5.5</span><span><i style="background:var(--c-oai)"></i>GPT-6 Luna</span></div>
+    <div class="cols c4" style="margin-top:10px">
+      <div class="card" data-a style="--d:3; padding:16px 18px"><div class="num">AA Intelligence Index (max)</div><div class="vbars" style="--vh:170px; margin-top:28px">
+        <div class="b" style="--h:72%; --k:0; --c:var(--c-meta)"><em>36</em><i></i></div><div class="b" style="--h:72%; --k:1; --c:var(--c-ant)"><em>36</em><i></i></div><div class="b" style="--h:56%; --k:2; --c:var(--c-oai)"><em>28</em><i></i></div></div></div>
+      <div class="card" data-a style="--d:4; padding:16px 18px"><div class="num">AutomationBench-AA</div><div class="vbars" style="--vh:170px; margin-top:28px">
+        <div class="b" style="--h:75.6%; --k:0; --c:var(--c-meta)"><em>37.8</em><i></i></div><div class="b" style="--h:27.8%; --k:1; --c:var(--c-ant)"><em>13.9</em><i></i></div><div class="b" style="--h:40.4%; --k:2; --c:var(--c-oai)"><em>20.2</em><i></i></div></div></div>
+      <div class="card" data-a style="--d:5; padding:16px 18px"><div class="num">Coding Agent Index-AA</div><div class="vbars" style="--vh:170px; margin-top:28px">
+        <div class="b" style="--h:92%; --k:0; --c:var(--c-meta)"><em>46</em><i></i></div><div class="b" style="--h:74%; --k:1; --c:var(--c-ant)"><em>37</em><i></i></div><div class="b" style="--h:62%; --k:2; --c:var(--c-oai)"><em>31</em><i></i></div></div></div>
+      <div class="card" data-a style="--d:6; padding:16px 18px"><div class="num">Terminal-Bench 4.0</div><div class="vbars" style="--vh:170px; margin-top:28px">
+        <div class="b" style="--h:81.8%; --k:0; --c:var(--c-meta)"><em>40.9</em><i></i></div><div class="b" style="--h:78.4%; --k:1; --c:var(--c-ant)"><em>39.2</em><i></i></div><div class="b" style="--h:32.8%; --k:2; --c:var(--c-oai)"><em>16.4</em><i></i></div></div></div>
+    </div>
+    <div class="cols c3" style="margin-top:16px">
+      <div class="card hotc" data-a style="--d:7; padding:14px 18px"><p style="margin:0; font-size:16px"><b>FrontierCode 2.0-AA</b>(머지 가능한 실무 코드): <b>Haiku 1위</b>. Ember가 지는 유일한 항목</p></div>
+      <div class="card" data-a style="--d:8; padding:14px 18px"><p style="margin:0; font-size:16px"><b>OSWorld 2.1</b>: Ember가 Haiku를 1점 이내로 앞섬, Luna는 크게 뒤짐</p></div>
+      <div class="card" data-a style="--d:9; padding:14px 18px"><p style="margin:0; font-size:16px"><b>GDP.pdf</b>(긴 문서): Ember = Luna 22.8 동률 · Ember는 10개 지표 중 <b>9개 1위·동률</b></p></div>
+    </div>
+    <div class="gloss" data-a="fade" style="--d:10" aria-label="약어 풀이"><span><b>AA</b><em>Artificial Analysis</em> · AI 모델 성능·가격을 독립 측정하는 업체. ‘-AA’는 AA가 직접 실행한 버전</span></div>
+  </section>
+
+  <!-- 19 independent tests + judgment -->
+  <section class="slide" data-notes="독립 실사용 테스트입니다. flaviocopes(앱 과제 200문항): 추론을 끈 Luna가 158/200으로 가장 높았고, 응답은 Haiku가 가장 빨랐으며(중앙값 808ms), Ember는 이 과제에서 비용이 가장 높았습니다($0.0342). vibecoding.cz: Luna와 Ember가 사실상 동률이었고 Ember가 약 2배 빨랐습니다. AA 지수에서 보인 8점 차이는 재현되지 않았습니다. 판단: 대량 에이전트 하위 작업과 업무 자동화에는 Ember가 우선 후보입니다. 머지할 코드 품질이 중요하면 Haiku 5.5가 낫습니다. 200K~272K 구간의 긴 입력과 최저 비용이 중요하면 Luna가 유리합니다. 벤더 지수와 실제 업무 성능 차이가 크므로 자체 평가셋으로 반드시 검증하십시오.">
+    <div class="kicker" data-a="left">04 · 소형 모델 3종</div>
+    <h2 data-a style="--d:1">실사용 테스트에선 <em>차이가 좁혀진다</em></h2>
+    <div class="cols c2" style="margin-top:26px">
+      <div class="card" data-a style="--d:2"><div class="num">flaviocopes · 앱 과제 200문항</div>
+        <div class="hbars" style="margin-top:14px"><div class="hbar best" style="--lw:150px; --vw:90px"><span class="nm">Luna (추론 끔)</span><span class="tr"><i style="--w:79%; --c:var(--c-oai)"></i></span><span class="v">158/200</span></div></div>
+        <ul><li>정답 최다: <b>Luna</b></li><li>응답 최속: <b>Haiku</b> (중앙값 808ms)</li><li>이 과제에서 비용 최고: <b>Ember</b> ($0.0342)</li></ul></div>
+      <div class="card" data-a style="--d:3"><div class="num">vibecoding.cz</div>
+        <div class="kpi" style="font-size:46px; margin-top:12px">Luna <span style="color:var(--ink-3)">≈</span> Ember</div>
+        <ul><li>사실상 <b>동률</b>, Ember가 <b>약 2배 빠름</b></li><li>AA 지수의 <b>8점 차이는 재현되지 않음</b></li></ul></div>
+    </div>
+    <div class="cols c3" style="margin-top:18px">
+      <div class="card judge" data-a style="--d:5; padding:18px 22px"><span class="badge judge">Muse Ember</span><p>대량 에이전트 하위 작업 · 업무 자동화의 <b>우선 후보</b></p></div>
+      <div class="card judge" data-a style="--d:6; padding:18px 22px"><span class="badge judge">Claude Haiku 5.5</span><p><b>머지할 코드 품질</b>이 중요할 때</p></div>
+      <div class="card judge" data-a style="--d:7; padding:18px 22px"><span class="badge judge">GPT-6 Luna</span><p><b>200K~272K 긴 입력</b>과 최저 비용이 중요할 때</p></div>
+    </div>
+    <p class="body" data-a style="--d:8; margin-top:16px">→ 벤더 지수와 실제 업무 성능의 차이가 크다. <b>자체 평가셋으로 반드시 검증</b>할 것</p>
+    <div class="gloss" data-a="fade" style="--d:9" aria-label="약어 풀이"><span><b>AA</b><em>Artificial Analysis</em> · AI 모델 독립 측정 업체</span><span><b>ms</b><em>millisecond</em> · 1,000분의 1초</span><span><b>K</b><em>천</em> · 200K = 20만 토큰</span></div>
+  </section>
+
+  <!-- 20 Claude Projects -->
+  <section class="slide" data-hook="projects" data-notes="배경(9월 17일): Anthropic은 Projects를 '폴더'에서 '대화'로 재설계했습니다. 하나의 코디네이터 대화가 작업을 쪼개 병렬 스레드에 맡기는 구조입니다. 각 스레드는 저장소 사본과 Git 브랜치를 따로 가진 완전한 Claude Code 클라우드 세션으로, 노트북을 덮어도 계속 실행됩니다. Anthropic 설명: 'Claude scopes the request, delegates the work, coordinates parallel threads, reviews the outputs, and assembles the finished result.' 11월 13일 업데이트(@ClaudeDevs, 22:51 UTC): 능동형 코디네이터 — 'The coordinator is now much more proactive. It answers your questions in the project chat and gives you updates on the status of your ongoing threads.' /btw와 /fork가 프로젝트 안에서도 작동합니다(/btw는 곁가지 주제를 별도 스레드로 분리, /fork는 현재 스레드에서 갈라져 새 스레드). 읽기 전용 스레드 공유: 로그인한 Claude 사용자에게 링크로 공유 가능, 로컬 컴퓨터 접근 권한이 있는 스레드는 공유 불가. 기타: 스레드 리마인더, 스레드 패널의 최근 항목 행과 아티팩트 썸네일. 왼쪽 그림은 구조를 보여 주기 위한 개념도입니다.">
+    <div class="kicker" data-a="left">05 · Claude Projects</div>
+    <h2 data-a style="--d:1">코디네이터가 <em>먼저 말을 건다</em></h2>
+    <div class="pj-wrap">
+      <svg class="pj-svg" viewBox="0 0 820 470" data-a="fade" style="--d:2" aria-label="코디네이터 대화가 네 개의 병렬 스레드에 작업을 나눠 맡기고 결과를 받아 조립하는 구조">
+        <path class="path" id="pp0" d="M262 270 C 400 270, 400 65, 520 65"/>
+        <path class="path" id="pp1" d="M262 270 C 400 270, 400 180, 520 180"/>
+        <path class="path" id="pp2" d="M262 270 C 400 270, 400 295, 520 295"/>
+        <path class="path" id="pp3" d="M262 270 C 400 270, 400 410, 520 410"/>
+        <g class="bub"><rect x="20" y="40" width="300" height="104" rx="16"/><text x="40" y="74" font-size="15" opacity=".7">코디네이터 → 나</text><text x="40" y="106" font-size="19" font-weight="700" id="pbub1">스레드 4개 시작</text><text x="40" y="130" font-size="15" opacity=".75" id="pbub2">진행 상황을 먼저 알려 줌</text></g>
+        <g class="node coord"><rect class="box" x="20" y="200" width="242" height="140" rx="22"/><text x="141" y="252" text-anchor="middle" font-size="26" font-weight="800">코디네이터</text><text x="141" y="282" text-anchor="middle" font-size="15" opacity=".75">범위 정하기 · 위임 · 조율</text><text x="141" y="304" text-anchor="middle" font-size="15" opacity=".75">결과 검토 · 조립</text></g>
+        <g class="node"><rect class="box" x="20" y="370" width="115" height="46" rx="12"/><text x="77" y="399" text-anchor="middle" font-size="16" font-family="JetBrains Mono" class="cmd">/btw</text></g>
+        <g class="node"><rect class="box" x="147" y="370" width="115" height="46" rx="12"/><text x="204" y="399" text-anchor="middle" font-size="16" font-family="JetBrains Mono" class="cmd">/fork</text></g>
+        <g class="node"><rect class="box" x="520" y="22" width="290" height="86" rx="16"/><text x="540" y="54" font-size="19" font-weight="700">스레드 1</text><text x="790" y="54" text-anchor="end" font-size="13" opacity=".6">저장소 사본 · 브랜치</text><rect class="pbg" x="540" y="78" width="250" height="9" rx="4"/><rect class="pfill" id="pf0" x="540" y="78" width="0" height="9" rx="4"/></g>
+        <g class="node"><rect class="box" x="520" y="137" width="290" height="86" rx="16"/><text x="540" y="169" font-size="19" font-weight="700">스레드 2</text><text x="790" y="169" text-anchor="end" font-size="13" opacity=".6">저장소 사본 · 브랜치</text><rect class="pbg" x="540" y="193" width="250" height="9" rx="4"/><rect class="pfill" id="pf1" x="540" y="193" width="0" height="9" rx="4"/></g>
+        <g class="node"><rect class="box" x="520" y="252" width="290" height="86" rx="16"/><text x="540" y="284" font-size="19" font-weight="700">스레드 3</text><text x="790" y="284" text-anchor="end" font-size="13" opacity=".6">저장소 사본 · 브랜치</text><rect class="pbg" x="540" y="308" width="250" height="9" rx="4"/><rect class="pfill" id="pf2" x="540" y="308" width="0" height="9" rx="4"/></g>
+        <g class="node"><rect class="box" x="520" y="367" width="290" height="86" rx="16"/><text x="540" y="399" font-size="19" font-weight="700">스레드 4</text><text x="790" y="399" text-anchor="end" font-size="13" opacity=".6">저장소 사본 · 브랜치</text><rect class="pbg" x="540" y="423" width="250" height="9" rx="4"/><rect class="pfill" id="pf3" x="540" y="423" width="0" height="9" rx="4"/></g>
+        <g id="ppk"></g>
+      </svg>
+      <div class="upd">
+        <div class="card" data-a="right" style="--d:3"><div class="num">배경 · 9/17 재설계</div><p>‘폴더’에서 ‘대화’로. 스레드마다 <b>저장소 사본과 Git 브랜치</b>를 가진 Claude Code 클라우드 세션 → <b>노트북을 덮어도 계속 실행</b></p></div>
+        <div class="card ok" data-a="right" style="--d:4"><div class="num">11/13 업데이트 · @ClaudeDevs</div>
+          <p><b>능동형 코디네이터</b>: 프로젝트 채팅에서 질문에 답하고 진행 중 스레드 상태를 알려 줌</p>
+          <p><code>/btw</code> 곁가지를 별도 스레드로 · <code>/fork</code> 현재 스레드에서 분기</p>
+          <p><b>읽기 전용 공유</b>: 로그인한 Claude 사용자에게 링크로. 로컬 접근 권한이 있는 스레드는 불가</p>
+          <p>스레드 리마인더 · 최근 항목 행 · 아티팩트 썸네일</p></div>
+      </div>
+    </div>
+    <p class="src">왼쪽 그림은 구조를 보여 주기 위한 개념도</p>
+  </section>
+
+  <!-- 21 Projects usage -->
+  <section class="slide" data-notes="요금과 한도: 별도 요금은 없지만 스레드마다 플랜 사용량을 따로 소모합니다. 스레드 5개를 동시에 돌리면 플랜이 약 5배 빨리 줄어듭니다. 새 스레드는 하루 200개까지 만들 수 있고, 한도에 걸린 스레드는 멈췄다가 자동으로 재개됩니다. 새 프로젝트의 기본값은 코디네이터와 워커 모두 Opus이며, 코디네이터는 low effort, 워커는 high effort입니다. 롤아웃: Pro(월 20달러)와 Max(월 100달러) 플랜에서 공개 베타로 제공됩니다. 대기자 명단 운영, 일반 채팅과 Cowork로의 확장 일정, Enterprise 프로젝트 태그 같은 관련 기능은 이번 조사에서 1차 출처로 확인하지 못했습니다. 위 소모 막대는 '5개 동시 = 약 5배'를 보여 주는 개념도입니다.">
+    <div class="kicker" data-a="left">05 · Claude Projects</div>
+    <h2 data-a style="--d:1">별도 요금은 없지만, <em>스레드 수만큼</em> 빨리 준다</h2>
+    <div class="card" data-a style="--d:2; margin-top:28px">
+      <div class="num">같은 시간 동안의 플랜 사용량 (개념도)</div>
+      <div class="drain"><span>스레드 1개 <span class="thr" style="display:inline-flex; vertical-align:middle; margin-left:6px"><i></i></span></span><div class="tank t1"><i></i></div><span class="lab">× 1</span></div>
+      <div class="drain"><span>스레드 5개 <span class="thr" style="display:inline-flex; vertical-align:middle; margin-left:6px"><i></i><i></i><i></i><i></i><i></i></span></span><div class="tank t5"><i></i></div><span class="lab" style="color:#ff8a63">약 × 5</span></div>
+    </div>
+    <div class="cols c4" style="margin-top:18px">
+      <div class="card" data-a style="--d:4"><div class="num">새 스레드</div><div class="kpi" style="font-size:48px; margin-top:8px"><span data-count="200" data-from="0">0</span><small>/일</small></div><p>한도에 걸리면 멈췄다가 <b>자동 재개</b></p></div>
+      <div class="card" data-a style="--d:5"><div class="num">기본 모델</div><p style="font-size:17px"><b>코디네이터</b> Opus · low effort<br><b>워커</b> Opus · high effort</p></div>
+      <div class="card ok" data-a style="--d:6"><div class="num">롤아웃</div><p style="font-size:17px"><b>공개 베타</b><br>Pro 월 $20 · Max 월 $100</p></div>
+      <div class="card rumor" data-a style="--d:7"><span class="badge rumor">1차 출처 미확인</span><p style="font-size:16px">대기자 명단 · 일반 채팅·Cowork 확장 일정 · Enterprise 프로젝트 태그</p></div>
+    </div>
+  </section>
+
+  <!-- 22 Wallet flow -->
+  <section class="slide" data-hook="wallet" data-notes="ChatGPT Wallet(11월 13일 출시)은 OpenAI가 9월 29일 DevDay에서 공개한 상시 실행형 에이전트 'dots'가 사용자 대신 결제까지 할 수 있게 하는 기능입니다. 현재는 dots 대화 안에서만 작동하고, 일반 ChatGPT, ChatGPT Work, Codex에서는 아직 쓸 수 없습니다. 이용 조건: 미국 거주, 미국 청구지 주소, 만 18세 이상, ChatGPT Pro 구독자이며 점진적으로 배포됩니다. 미국에서 발급된 Visa·Mastercard·Amex 신용카드만 쓸 수 있고, 직불카드와 가상카드는 출시 시점에 지원하지 않습니다. Chase 카드는 주 카드 소유자가 Chase 앱에서 연결을 승인해야 합니다. 작동 방식: 실제 카드번호 대신 카드 네트워크가 발급한 결제 토큰으로 결제합니다. OpenAI는 '에이전트도 판매자도 실제 카드번호를 받지 않는다'고 설명합니다. 구매할 때마다 Face ID나 지문으로 승인해야 하고 승인할 때마다 기록이 남습니다. 출시 시점에는 특정 유형의 구매를 미리 승인해 두는 옵션이 없습니다. 카드 포인트 적립과 분쟁 보호는 그대로 유지됩니다. 흐름도는 이 설명을 단계로 나눠 그린 개념도입니다.">
+    <div class="kicker" data-a="left">06 · ChatGPT Wallet</div>
+    <h2 data-a style="--d:1">에이전트가 결제하되, <em>카드번호는 모른다</em></h2>
+    <div class="wflow" id="wflow">
+      <div class="wstep" data-a style="--d:2"><div class="ic">🤖</div><h3>① dots가 구매 진행</h3><p>상시 실행형 에이전트. 지금은 <b style="color:var(--ink)">dots 대화 안에서만</b></p></div>
+      <div class="ar" data-a="fade" style="--d:3">→</div>
+      <div class="wstep" data-a style="--d:3"><div class="ic">🫆</div><h3>② 매번 생체 인증</h3><p><b style="color:var(--ink)">구매마다</b> Face ID·지문 승인, 승인 기록이 남음. 사전 승인 옵션은 출시 시 없음</p></div>
+      <div class="ar" data-a="fade" style="--d:4">→</div>
+      <div class="wstep" data-a style="--d:4"><div class="ic">🔑</div><h3>③ 결제 토큰</h3><p>카드 네트워크가 발급한 토큰으로 결제</p><span class="tok" id="wtok">tok · ••••</span></div>
+      <div class="ar" data-a="fade" style="--d:5">→</div>
+      <div class="wstep" data-a style="--d:5"><div class="ic">🛒</div><h3>④ 판매자</h3><p>토큰만 받음. 카드 포인트 적립·분쟁 보호는 그대로</p></div>
+    </div>
+    <div class="vault" data-a style="--d:6"><span>🔒</span><span class="cn">4•••&nbsp;••••&nbsp;••••&nbsp;••••</span><span>실제 카드번호는 <b>에이전트도 판매자도 받지 않음</b> (OpenAI 설명)</span></div>
+    <div class="card" data-a style="--d:7; margin-top:16px; padding:16px 22px"><div class="num">이용 조건 · 점진 배포</div>
+      <div class="conds"><span class="chip">미국 거주 · 미국 청구지</span><span class="chip">만 18세 이상</span><span class="chip">ChatGPT Pro</span><span class="chip">미국 발급 Visa·Mastercard·Amex <b style="color:var(--ink)">신용카드만</b></span><span class="chip">직불·가상카드 ✕</span><span class="chip">Chase: 앱에서 연결 승인</span></div></div>
+    <div class="gloss" data-a="fade" style="--d:9" aria-label="약어 풀이"><span><b>Face ID</b><em>Apple 얼굴 인식 인증</em> · 얼굴로 본인을 확인하는 생체 인증</span><span><b>DevDay</b><em>OpenAI Developer Day</em> · OpenAI 개발자 행사. dots가 9/29 여기서 공개됨</span></div>
+  </section>
+
+  <!-- 23 Wallet merchants & risk -->
+  <section class="slide" data-notes="판매자 측면: OpenAI는 판매자를 위한 'Commerce Partner Playbook'을 공개했습니다. 전용 연동이 없는 사이트에서도 에이전트가 결제를 진행할 수 있지만, 에이전트를 차단하는 사이트에서는 작동하지 않습니다. Amazon이 가장 큰 차단 사례로, 자사 에이전트인 Alexa로 고객을 유도하고 있습니다. 미국 은행들도 Meta Muse 같은 에이전트를 차단하고 있다는 보도가 있습니다. 향후 계획: 지출 한도와 상품별 조건을 설정해 사전 승인하는 기능(위임 범위 확대)과 판매처 확대를 예고했습니다. Business Premium·Enterprise 플랜, Codex, 미국 외 시장으로의 확대 일정은 밝히지 않았습니다. 경쟁: 다른 개인 에이전트(예: Instinct)도 에이전트 구매를 지원합니다. 다만 '출시 시 수수료 없음', Coinbase·Circle·Google 등과의 구체적인 경쟁 구도는 이번 조사에서 1차 출처로 확인하지 못했습니다. 보안·프라이버시 평가: 토큰화와 건별 생체 인증은 카드번호 유출 위험을 크게 줄입니다. 그러나 에이전트가 무엇을 살지 판단하는 과정의 오류나 조작(예: 프롬프트 인젝션), 쇼핑 데이터가 OpenAI에 쌓이는 문제는 별개의 위험으로 남습니다. 건별 승인을 없애는 '위임' 기능이 나오는 시점이 실질적인 위험 분기점이 될 것입니다.">
+    <div class="kicker" data-a="left">06 · ChatGPT Wallet</div>
+    <h2 data-a style="--d:1">남은 위험은 <em>‘무엇을 살지’</em>의 판단</h2>
+    <div class="cols c3" style="margin-top:28px; align-items:stretch">
+      <div class="card" data-a style="--d:2"><div class="num">판매자 측면</div>
+        <ul><li><b>Commerce Partner Playbook</b> 공개</li><li>전용 연동 없는 사이트에서도 결제 진행</li><li>에이전트를 <b>차단하는 사이트에선 불가</b> — 최대 사례 <b>Amazon</b>(자사 Alexa로 유도)</li><li>미국 은행들도 Meta Muse 같은 에이전트 차단 보도</li></ul></div>
+      <div class="card" data-a style="--d:3"><div class="num">향후 계획 · 경쟁</div>
+        <ul><li>지출 한도·상품별 조건으로 <b>사전 승인(위임 확대)</b>, 판매처 확대 예고</li><li>Business Premium·Enterprise·Codex·미국 외 일정은 <b>미공개</b></li><li>다른 개인 에이전트(예: Instinct)도 에이전트 구매 지원</li></ul>
+        <div style="margin-top:12px"><span class="badge rumor">1차 출처 미확인</span><p class="small" style="margin-top:6px">‘출시 시 수수료 없음’, Coinbase·Circle·Google 등과의 경쟁 구도</p></div></div>
+      <div class="card judge" data-a style="--d:4"><span class="badge judge">보안·프라이버시 평가</span>
+        <p>토큰화 + 건별 생체 인증 → <b>카드번호 유출 위험은 크게 감소</b></p>
+        <p>별개로 남는 위험: 구매 판단의 <b>오류·조작</b>(예: 프롬프트 인젝션), <b>쇼핑 데이터</b>의 OpenAI 축적</p>
+        <div class="risk">
+          <div class="st"><b>지금</b>건별 승인</div><div class="ar">→</div><div class="st hi"><b>‘위임’ 기능</b>건별 승인 없음 = 위험 분기점</div>
+        </div></div>
+    </div>
+  </section>
+
+  <!-- 24 IPO structure -->
+  <section class="slide" data-notes="공모 조건(S-1/A, 11월 10일 제출): 티커는 ANT(나스닥 글로벌 셀렉트)이고, 클래스 A 8억 2,500만 주를 주당 70~78달러에 공모합니다. 공모 규모는 577억 5,000만~643억 5,000만 달러입니다. 동시 사모: Google, Nvidia, AMD, Broadcom, Micron, Microsoft, TSMC Partners가 의결권 없는 클래스 N 주식 260억 달러어치를 공모가로 매입합니다. Google과 Nvidia가 각각 약 100억 달러입니다. 공모와 사모를 합치면 최대 904억 달러로 사상 최대 규모입니다. 중간값(74달러) 기준 순조달액은 약 846억 달러입니다. 11월 18일 공모가를 확정하고 19일 거래를 시작할 예정입니다. 이 섹션은 사실 정리이며 투자 권유가 아닙니다.">
+    <div class="kicker" data-a="left">07 · Anthropic IPO</div>
+    <h2 data-a style="--d:1">공모 + 동시 사모 = <em>최대 904억 달러</em></h2>
+    <div class="row ipo-head" style="margin-top:22px; justify-content:space-between; flex-wrap:wrap; gap:16px">
+      <div class="ipo-sum" data-a style="--d:2"><div class="kpi"><span data-count="904" data-from="0">0</span><small>억 달러</small></div><span class="body">사상 최대 · 중간값($74) 기준 순조달 <b>약 846억</b></span></div>
+      <div class="conds" data-a style="--d:3; margin:0"><span class="chip gold">ANT · 나스닥 글로벌 셀렉트</span><span class="chip">11/18 공모가 확정</span><span class="chip">11/19 거래 시작</span></div>
+    </div>
+    <div data-a="fade" style="--d:3">
+      <div class="stack" aria-label="공모 577.5억~643.5억 달러와 사모 260억 달러를 합친 최대 904억 달러">
+        <div class="sg pub" style="--w:64.35%; --rw:10.26%">공모 577.5 ~ 643.5억<span class="rng"></span></div>
+        <div class="sg prv" style="--w:26%">사모 260억</div>
+        <div class="mark" style="--x:90.4%"><span>최대 904억</span></div>
+      </div>
+      <div class="sticks"><span style="left:0">0</span><span style="left:25%">250</span><span style="left:50%">500</span><span style="left:75%">750</span><span style="left:100%; transform:translateX(-100%)">1,000억 달러</span></div>
+    </div>
+    <div class="cols c2" style="margin-top:22px">
+      <div class="card" data-a style="--d:5; border-color:rgba(213,168,68,.5)"><div class="num">공모 · 클래스 A</div>
+        <p><b>8억 2,500만 주 × 주당 70~78달러</b> = 577억 5,000만 ~ 643억 5,000만 달러 <span class="small">(빗금 = 공모가 범위에 따른 폭)</span></p></div>
+      <div class="card" data-a style="--d:6; border-color:rgba(106,168,255,.5)"><div class="num" style="color:var(--blue)">동시 사모 · 클래스 N (의결권 없음)</div>
+        <p><b>260억 달러</b>를 공모가로 매입: Google·Nvidia <b>각 약 100억</b>, AMD · Broadcom · Micron · Microsoft · TSMC Partners</p></div>
+    </div>
+    <p class="src">사실 정리이며 투자 권유가 아님 · 자료: S-1/A(11/10 제출) 관련 보도</p>
+    <div class="gloss" data-a="fade" style="--d:8" aria-label="약어 풀이"><span><b>IPO</b><em>Initial Public Offering</em> · 기업공개</span><span><b>S-1/A</b><em>Form S-1 Amendment</em> · 미국 증권신고서(S-1)의 수정본</span><span><b>TSMC</b><em>Taiwan Semiconductor Manufacturing Company</em> · 대만 반도체 위탁생산 기업</span></div>
+  </section>
+
+  <!-- 25 valuation & demand -->
+  <section class="slide" data-notes="기업가치 계산이 엇갈리는 이유: 상장 후 발행주식 13,086,672,593주를 기준(기본 주식수)으로 하면 9,161억~1조 208억 달러입니다. Fortune과 TechCrunch가 보도한 약 1조 4,000억 달러(1.404조)는 완전 희석 기준입니다. 두 수치는 계산 기준이 다를 뿐 서로 모순되지 않습니다. 배정: 최대 20%를 개인투자자에게 배정합니다. 여섯 개 플랫폼에서 청약할 수 있고 Fidelity의 최소 청약은 25주입니다. 독일 금융감독청(BaFin)이 투자설명서를 승인해 유럽·스위스, 그리고 호주·일본의 개인투자자도 참여할 수 있습니다. 수요: Bloomberg는 11월 11일 'multiple times oversubscribed'라고만 보도하며 수요가 'anchor-size indications of interest'에서 나왔다고 전했고, 11월 12일(Bailey Lipschultz 기자)에는 소식통을 인용해 약 6배('about six times the orders for the shares available')로 보도했습니다. 기존 투자자를 우선 배정할 예정이어서 일부 투자자는 신청보다 적게 받게 됩니다. 창업자 7명은 17억 5,000만 달러어치를 매도합니다. 작성 시점까지 공모가 범위를 조정했다는 공식 발표는 없습니다. 예측시장 Polymarket의 상장 전 계약은 103.93달러로 범위 상단보다 약 33% 높게 마감했는데, 이는 시장의 기대를 보여줄 뿐 보장은 아닙니다.">
+    <div class="kicker" data-a="left">07 · Anthropic IPO</div>
+    <h2 data-a style="--d:1">1조? 1.4조? <em>주식 수 기준</em>이 다를 뿐</h2>
+    <div class="row" style="margin-top:26px; align-items:stretch">
+      <div class="card grow" data-a style="--d:2"><div class="num">기업가치 · 같은 공모가, 다른 주식 수</div>
+        <div class="hbars" style="margin-top:20px; gap:16px">
+          <div class="hbar" style="--lw:130px; --vw:190px; --bh:34px; --k:0"><span class="nm">기본 주식수</span><span class="tr"><i class="rng" style="--w:68%; --c:var(--gold)"></i><i style="--w:61.1%; --c:var(--gold)"></i></span><span class="v">9,161억 ~ 1조 208억</span></div>
+          <div class="hbar best" style="--lw:130px; --vw:190px; --bh:34px; --k:2"><span class="nm">완전 희석</span><span class="tr"><i style="--w:93.6%; --c:var(--gold)"></i></span><span class="v">약 1.4조</span></div>
+        </div>
+        <p>기본: 상장 후 발행주식 <b>13,086,672,593주</b> × 70~78달러<br>완전 희석: Fortune·TechCrunch 보도 <b>약 1조 4,000억 달러(1.404조)</b></p>
+        <p class="small" style="margin-top:8px">→ 계산 기준이 다를 뿐 <b>서로 모순되지 않음</b> · 단위: 달러</p></div>
+      <div class="card" data-a="right" style="--d:4; width:600px"><div class="num">수요 · 배정</div>
+        <div class="demand" aria-label="공모 물량 대비 약 6배 주문"><i class="base"></i><i class="x" style="--k:0"></i><i class="x" style="--k:1"></i><i class="x" style="--k:2"></i><i class="x" style="--k:3"></i><i class="x" style="--k:4"></i><span class="small" style="margin-left:10px">물량 1 : 주문 약 6</span></div>
+        <ul style="font-size:16.5px">
+          <li>Bloomberg 11/11 “multiple times” → 11/12 소식통 인용 <b>“약 6배”</b></li>
+          <li>기존 투자자 우선 배정 · 창업자 7명 <b>17억 5,000만 달러</b> 매도</li>
+          <li>개인 <b>최대 20%</b> · 6개 플랫폼 · Fidelity 최소 25주 · BaFin 승인으로 유럽·스위스·호주·일본 개인도 참여</li>
+          <li>공모가 범위 조정 <b>공식 발표 없음</b></li>
+          <li>Polymarket 상장 전 계약 103.93달러(상단 +33%) — <b>기대일 뿐 보장 아님</b></li>
+        </ul></div>
+    </div>
+    <p class="src">사실 정리이며 투자 권유가 아님</p>
+    <div class="gloss" data-a="fade" style="--d:8" aria-label="약어 풀이"><span><b>BaFin</b><em>Bundesanstalt für Finanzdienstleistungsaufsicht</em> · 독일 연방금융감독청</span><span><b>완전 희석</b><em>fully diluted</em> · 스톡옵션·전환증권 등이 모두 주식이 된다고 가정한 주식 수</span></div>
+  </section>
+
+  <!-- 26 S-1 financials -->
+  <section class="slide" data-notes="S-1 주요 재무 수치: 2025년 매출 45억 8,500만 달러. 2026년 상반기 매출 162억 8,600만 달러(전년 동기 11억 6,300만 달러). 2026년 3분기 매출 약 170억 달러, 1~9월 누적 332억 4,000만 달러. 영업손실은 상반기 6억 9,300만 달러, 3분기 5억 6,700만 달러. 상반기 순손실 807억 4,800만 달러 중 723억 8,800만 달러는 전환사채·SAFE 공정가치 변동에 따른 비현금 손실입니다. 1~9월 누적 순손실 1,040억 달러. 연환산 매출(run-rate)은 810억 달러(10월 31일 기준, 회사 자체 정의). 순매출유지율(NRR)은 약 900%입니다.">
+    <div class="kicker" data-a="left">07 · Anthropic IPO</div>
+    <h2 data-a style="--d:1">S-1: 매출은 급증, <em>순손실은 대부분 비현금</em></h2>
+    <div class="s1fin">
+      <div class="card" data-a style="--d:2"><div class="num">매출 · 억 달러</div>
+        <div class="vbars" style="--vh:210px; margin-top:34px; gap:20px">
+          <div class="b" style="--h:6.8%; --k:0; --c:var(--ink-3)"><em>11.63</em><i></i></div>
+          <div class="b" style="--h:27%; --k:1; --c:var(--c-ant)"><em>45.85</em><i></i></div>
+          <div class="b" style="--h:95.8%; --k:2; --c:var(--gold)"><em>162.86</em><i></i></div>
+          <div class="b" style="--h:100%; --k:3; --c:var(--gold)"><em>약 170</em><i></i></div>
+        </div>
+        <div class="vlab" style="gap:20px"><span>2025 상반기</span><span>2025 연간</span><span>2026 상반기</span><span>2026 3분기</span></div>
+        <p class="small" style="margin-top:10px">2026년 1~9월 누적 <b>332억 4,000만</b></p></div>
+      <div class="kpis">
+        <div class="card" data-a style="--d:3"><div class="num">연환산 매출</div><div class="kpi gold"><span data-count="810" data-from="0">0</span><small>억</small></div><p>10/31 기준 · 회사 자체 정의</p></div>
+        <div class="card" data-a style="--d:4"><div class="num">NRR</div><div class="kpi">약 <span data-count="900" data-from="0">0</span><small>%</small></div><p>순매출유지율</p></div>
+        <div class="card" data-a style="--d:5"><div class="num">영업손실</div><p style="font-size:17px; margin-top:8px">상반기 <b>6억 9,300만</b><br>3분기 <b>5억 6,700만</b></p></div>
+        <div class="card" data-a style="--d:6"><div class="num">1~9월 누적 순손실</div><div class="kpi" style="color:var(--coral)"><span data-count="1040" data-comma="1" data-from="0">0</span><small>억</small></div></div>
+      </div>
+    </div>
+    <div class="card" data-a style="--d:7; margin-top:16px; padding:16px 22px">
+      <div style="display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap"><span class="num" style="color:#ff8a63">2026 상반기 순손실 807억 4,800만 달러</span><span class="small">빗금 = 전환사채·SAFE 공정가치 변동에 따른 <b>비현금 손실 723억 8,800만</b></span></div>
+      <div class="loss"><i class="nc" style="--w:89.65%"></i><i class="rest" style="--w:10.35%; --ld:2s"></i></div>
+    </div>
+    <div class="gloss" data-a="fade" style="--d:9" aria-label="약어 풀이"><span><b>S-1</b><em>Form S-1</em> · 미국 상장 때 증권거래위원회에 내는 증권신고서</span><span><b>NRR</b><em>Net Revenue Retention</em> · 기존 고객 매출이 1년 뒤 몇 %가 됐는지</span><span><b>SAFE</b><em>Simple Agreement for Future Equity</em> · 나중에 주식으로 바뀌는 초기 투자 계약</span></div>
+  </section>
+
+  <!-- 27 risks & lockup -->
+  <section class="slide" data-notes="주요 위험 요인: 클라우드 사업자 마켓플레이스 매출이 상반기 매출의 48%, 상위 5개 고객이 약 25%를 차지합니다. 1~9월 매출의 5~7%는 나중에 이용정책 위반으로 확인된 고객에게서 나왔고, 이 매출은 반복되지 않을 것으로 보입니다. WSJ는 10월 20일 S-1 초안을 근거로 향후 10년간 약 4,500억 달러('roughly $450 billion in cloud compute agreements over the next decade')의 클라우드 약정이 있다고 보도했습니다. 내역은 Google Cloud 1,110억, AWS 1,100억, Microsoft 310억 달러이고, 기간은 7~10년이며 대부분 해지할 수 없는 계약입니다(세 항목 합은 총액에 못 미치며, 나머지 내역은 원문 브리핑에 없습니다). 국방부(Department of War)가 Anthropic을 '공급망 위험'으로 지정한 분쟁이 진행 중입니다. AI 규제 강화와 지속적인 순손실 가능성도 위험 요인으로 기재돼 있습니다. 락업은 기본 180일이며 기간이 더 긴 트랜치가 따로 있습니다. 다만 일부 내부자는 상장 첫날부터 매도할 수 있는 이례적인 구조라는 보도가 있습니다(MarketScale).">
+    <div class="kicker" data-a="left">07 · Anthropic IPO</div>
+    <h2 data-a style="--d:1">S-1이 적은 <em>위험 요인</em>과 락업</h2>
+    <div class="cols c3" style="margin-top:26px; align-items:stretch">
+      <div class="card" data-a style="--d:2"><div class="num">매출 집중 · 상반기 매출 대비</div>
+        <div class="hbars" style="margin-top:16px">
+          <div class="hbar" style="--lw:170px; --vw:56px; --k:0"><span class="nm">클라우드 마켓플레이스</span><span class="tr"><i style="--w:48%; --c:var(--gold)"></i></span><span class="v">48%</span></div>
+          <div class="hbar" style="--lw:170px; --vw:56px; --k:1"><span class="nm">상위 5개 고객</span><span class="tr"><i style="--w:25%; --c:var(--gold)"></i></span><span class="v">~25%</span></div>
+        </div>
+        <p>1~9월 매출의 <b>5~7%</b>는 나중에 <b>이용정책 위반</b>으로 확인된 고객 → 반복되지 않을 매출</p></div>
+      <div class="card" data-a style="--d:3"><div class="num">클라우드 약정 · WSJ 10/20</div>
+        <div class="kpi" style="font-size:52px; margin-top:8px">약 <span data-count="4500" data-comma="1" data-from="0">0</span><small>억 달러</small></div>
+        <p>향후 10년, 기간 7~10년, <b>대부분 해지 불가</b></p>
+        <div class="conds"><span class="chip">Google Cloud 1,110억</span><span class="chip">AWS 1,100억</span><span class="chip">Microsoft 310억</span></div>
+        <p class="small" style="margin-top:6px">보도된 내역 · 나머지 내역은 브리핑에 없음</p></div>
+      <div class="card hotc" data-a style="--d:4"><div class="num" style="color:#ff8a63">그 밖의 위험 · 락업</div>
+        <ul><li>국방부(Department of War)의 <b>‘공급망 위험’ 지정</b> 분쟁 진행 중</li><li>AI 규제 강화 · <b>지속적 순손실</b> 가능성</li><li>락업 <b>기본 180일</b> + 더 긴 트랜치</li><li>일부 내부자 <b>상장 첫날 매도 가능</b>이라는 이례적 구조 보도(MarketScale)</li></ul></div>
+    </div>
+    <p class="src">사실 정리이며 투자 권유가 아님</p>
+    <div class="gloss" data-a="fade" style="--d:8" aria-label="약어 풀이"><span><b>WSJ</b><em>The Wall Street Journal</em> · 미국 경제 일간지</span><span><b>AWS</b><em>Amazon Web Services</em> · Amazon 클라우드</span><span><b>S-1</b><em>Form S-1</em> · 미국 증권신고서</span><span><b>AI</b><em>Artificial Intelligence</em> · 인공지능</span></div>
+  </section>
+
+  <!-- 28 SpaceX & variables -->
+  <section class="slide" data-notes="SpaceX IPO(6월)와 비교: SpaceX는 공모가 135달러, 티커 SPCX(6월 11일 가격 확정, 6월 12일 거래 시작), 조달액 860억 달러, 기업가치 1조 7,700억 달러, 기관 대 개인 배정 70:30. Anthropic은 70~78달러, ANT, 공모 최대 644억 + 사모 260억 = 904억 달러, 기본 약 1조 달러 / 완전 희석 약 1조 4,000억 달러, 개인 최대 20%. 최근 변수: 11월 12일 Jensen Huang이 Nvidia CEO에서 사임했다는 보도가 나왔고(임시 CEO는 Colette Kress), 이 때문에 Nvidia의 100억 달러 참여에 관심이 쏠리고 있습니다. Nvidia는 11월 17일 실적을 발표합니다. Anthropic의 Nvidia 컴퓨팅 계약 중 1,500억 달러를 짧은 통보로 해지할 수 있다는 주장은 Substack(karanbathla) 분석에서 나왔으며, 출처를 'Bloomberg Technology analyst, November 13, 2026'으로만 밝혀 검증이 필요합니다. S-1 원문에서 확인되는 해지 가능 계약은 SpaceXAI와의 Nvidia GPU 계약(최대 1,205억 달러)으로, 'Following initial non-cancelable periods ending in January 2027 and March 2027… may be cancelled by either party upon 90 days' advance written notice'라고 기재돼 있습니다. 이 섹션은 사실 정리이며 투자 권유가 아닙니다.">
+    <div class="kicker" data-a="left">07 · Anthropic IPO</div>
+    <h2 data-a style="--d:1">SpaceX IPO와 비교, 그리고 <em>최근 변수</em></h2>
+    <div class="row" style="margin-top:22px; align-items:stretch">
+      <div class="card grow" data-a style="--d:2; padding:20px 24px">
+        <div class="cmp">
+          <div></div><div class="h">SpaceX <span class="small">(6월)</span></div><div class="h ant">Anthropic</div>
+          <div class="rh">공모가 · 티커</div><div class="c"><b>135달러</b> · SPCX<br><span class="small">6/11 가격 확정, 6/12 거래</span></div><div class="c"><b>70~78달러</b> · ANT</div>
+          <div class="rh">조달액</div><div class="c"><b>860억</b><div class="mbar"><i style="--w:86%; --k:0"></i></div></div><div class="c"><b>최대 904억</b> <span class="small">공모 644 + 사모 260</span><div class="mbar"><i style="--w:90.4%; --k:1; --c:var(--c-ant)"></i></div></div>
+          <div class="rh">기업가치</div><div class="c"><b>1조 7,700억</b><div class="mbar"><i style="--w:88.5%; --k:2"></i></div></div><div class="c"><b>약 1조</b> 기본 / <b>약 1.4조</b> 완전 희석<div class="mbar"><i style="--w:70%; --k:3; --c:var(--c-ant)"></i></div></div>
+          <div class="rh">기관 : 개인</div><div class="c"><b>70 : 30</b></div><div class="c">개인 <b>최대 20%</b></div>
+        </div>
+        <p class="small" style="margin-top:10px">단위: 달러 · 막대 눈금 최대 2조(기업가치), 1,000억(조달액)</p>
+      </div>
+      <div style="width:560px; display:flex; flex-direction:column; gap:12px">
+        <div class="card" data-a="right" style="--d:3; padding:16px 20px"><div class="num">Nvidia 변수</div><p style="font-size:16.5px">11/12 Jensen Huang <b>CEO 사임 보도</b>(임시 CEO Colette Kress) → Nvidia 100억 달러 참여에 관심. <b>11/17 실적 발표</b></p></div>
+        <div class="card rumor" data-a="right" style="--d:4; padding:16px 20px"><span class="badge rumor">검증 필요</span><p style="font-size:16.5px">“Nvidia 계약 <b>1,500억 달러</b>를 짧은 통보로 해지 가능” — Substack 분석, 출처는 ‘Bloomberg Technology analyst’로만 표기</p></div>
+        <div class="card ok" data-a="right" style="--d:5; padding:16px 20px"><span class="badge ok">S-1 원문</span><p style="font-size:16.5px">SpaceXAI와의 Nvidia GPU 계약(최대 <b>1,205억</b>): 2027년 1월·3월 비해지 기간 이후 <b>90일 서면 통보</b>로 양측 해지 가능</p></div>
+      </div>
+    </div>
+    <p class="src">사실 정리이며 투자 권유가 아님</p>
+    <div class="gloss" data-a="fade" style="--d:8" aria-label="약어 풀이"><span><b>CEO</b><em>Chief Executive Officer</em> · 최고경영자</span><span><b>GPU</b><em>Graphics Processing Unit</em> · AI 학습·추론 연산용 칩</span><span><b>S-1</b><em>Form S-1</em> · 미국 증권신고서</span></div>
+  </section>
+
+  <!-- 29 caveats -->
+  <section class="slide" data-notes="이 브리핑은 2026년 11월 16일까지의 보도를 기준으로 했습니다. Ignite(11월 17일~), Anthropic 공모가 확정(11월 18일), 수능 당일(11월 19일)에는 상황이 크게 바뀔 수 있습니다. 모델 벤치마크 상당수는 벤더가 직접 발표했거나 벤더가 골라 실은 수치입니다. Artificial Analysis 수치는 실시간 스냅샷이라 수시로 바뀝니다. 다음 항목은 1차 출처로 확인하지 못했습니다: Claude Projects 대기자 명단과 Enterprise 태그, ChatGPT Wallet 수수료 정책과 경쟁 구도, Haiku 5.5의 출력 한도. Anthropic IPO 부분은 사실 정리이며 투자 권유가 아닙니다.">
+    <div class="kicker" data-a="left" style="color:var(--coral)">Caveats</div>
+    <h2 data-a style="--d:1">읽기 전에 <em>주의할 점</em></h2>
+    <div class="cols c2" style="margin-top:30px">
+      <div class="card hotc" data-a style="--d:2"><div class="num" style="color:#ff8a63">기준일 · 2026.11.16</div>
+        <p>이번 주 안에 상황이 크게 바뀔 수 있음</p>
+        <div class="conds"><span class="chip">11/17~ Ignite</span><span class="chip">11/18 Anthropic 공모가 확정</span><span class="chip">11/19 수능 · ANT 거래 시작</span></div></div>
+      <div class="card vendor" data-a style="--d:3"><span class="badge vendor">벤더 수치</span>
+        <p>모델 벤치마크 상당수는 <b>벤더가 직접 발표</b>했거나 <b>벤더가 골라 실은</b> 수치. Artificial Analysis 수치는 <b>실시간 스냅샷</b>이라 수시로 바뀜</p></div>
+      <div class="card rumor" data-a style="--d:4"><span class="badge rumor">1차 출처로 확인 못 함</span>
+        <ul><li>Claude Projects 대기자 명단 · Enterprise 태그</li><li>ChatGPT Wallet 수수료 정책 · 경쟁 구도</li><li>Haiku 5.5의 출력 한도</li></ul></div>
+      <div class="card judge" data-a style="--d:5"><span class="badge judge">투자 권유 아님</span>
+        <p>Anthropic IPO 부분은 공개 자료와 보도를 정리한 <b>사실 정리</b>입니다. Polymarket 가격 등은 시장의 기대일 뿐 보장이 아닙니다</p></div>
+    </div>
+  </section>
+
+  <!-- 30 summary -->
+  <section class="slide" data-notes="일곱 줄 요약과 이번 주 일정입니다. 11월 17일 Ignite 개막과 Nvidia 실적, 18일 Anthropic 공모가 확정, 19일 ANT 거래 시작과 수능, 12월 1일 Gemini Argon·Carbon 가격 인상과 Copilot 단독 구매 오퍼가 이어집니다.">
+    <div class="kicker" data-a="left">Summary</div>
+    <h2 data-a style="--d:1">일곱 줄 요약과 <em>이번 주 일정</em></h2>
+    <div class="concl">
+      <div class="card" data-a style="--d:2"><div class="ic">📝</div><h3>AI 시험 부정행위</h3><p>세무사 수석 자백 → 전수조사·5년 응시 제한. 수능엔 전파탐지기 없이 육안 감독</p></div>
+      <div class="card" data-a style="--d:3"><div class="ic">💳</div><h3>Copilot 사용량 과금</h3><p>채널마다 일정이 엇갈림. 관리자는 지출 한도부터</p></div>
+      <div class="card" data-a style="--d:4"><div class="ic">⚗️</div><h3>Gemini 4</h3><p>Hydrogen이 Argon보다 싸고 빠름, Carbon은 상한 모델. Krypton은 미확인</p></div>
+      <div class="card" data-a style="--d:5"><div class="ic">🪶</div><h3>소형 모델</h3><p>같은 단가, Ember가 과업당 비용 유리(벤더 수치). 자체 평가 필수</p></div>
+      <div class="card" data-a style="--d:6"><div class="ic">🧵</div><h3>Claude Projects</h3><p>능동형 코디네이터. 스레드 수만큼 사용량도 빨리 줄어듦</p></div>
+      <div class="card" data-a style="--d:7"><div class="ic">👛</div><h3>ChatGPT Wallet</h3><p>토큰 + 건별 생체 인증. 위험 분기점은 ‘위임’ 기능</p></div>
+      <div class="card" data-a style="--d:8"><div class="ic">📈</div><h3>Anthropic IPO</h3><p>최대 904억 달러, 약 6배 청약 보도. 상반기 순손실 대부분 비현금 · 투자 권유 아님</p></div>
+      <div class="card judge cal" data-a style="--d:9"><div class="num">이번 주 · 다음 체크</div>
+        <ol><li><b>11.17</b>Ignite 개막 · Nvidia 실적</li><li><b>11.18</b>Anthropic 공모가 확정</li><li><b>11.19</b>ANT 거래 시작 · 수능</li><li><b>12.01</b>Argon·Carbon 가격 2배 · Copilot 단독 구매</li></ol></div>
+    </div>
+    <div class="gloss" data-a="fade" style="--d:10" aria-label="약어 풀이"><span><b>AI</b><em>Artificial Intelligence</em> · 인공지능</span><span><b>IPO</b><em>Initial Public Offering</em> · 기업공개</span></div>
+  </section>
+
+</main>
+
+<div class="notes" id="notes" role="note"></div>
+<nav class="hud" aria-label="슬라이드 이동">
+  <a href="../" title="아카이브로">← Archive</a>
+  <button type="button" id="prev" aria-label="이전 슬라이드">‹</button>
+  <span class="count" id="count">1 / 30</span>
+  <button type="button" id="next" aria-label="다음 슬라이드">›</button>
+  <button type="button" id="notesBtn" title="발표자 노트 (N)">N</button>
+  <button type="button" id="fsBtn" title="전체 화면 (F)">⛶</button>
+  <a class="alt" href="../ai-briefing-2026-11-w3-report/" title="같은 내용을 위아래로 스크롤해 읽는 스크롤형"><span class="ico" aria-hidden="true">☰</span><span class="lbl">스크롤형으로 보기</span></a>
+</nav>
+
+<script>
+(() => {
+  const deck = document.getElementById('deck');
+  const slides = [...deck.querySelectorAll('.slide')];
+  const N = slides.length;
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const $ = id => document.getElementById(id);
+  const SVG = 'http://www.w3.org/2000/svg';
+  let cur = -1, timers = [], rafs = [];
+
+  /* ── fit the 1600×900 stage to the window ── */
+  // Landscape: the 1600×900 stage. Phone held upright: a 640-wide stage whose height follows the
+  // screen, and every slide re-flows to one column (html.portrait rules in the CSS).
+  function fit() {
+    const W = innerWidth, H = innerHeight, root = document.documentElement;
+    const portrait = H > W * 1.15 && W < 900;
+    const short = !portrait && H < 560;
+    root.classList.toggle('portrait', portrait);
+    root.classList.toggle('short', short);
+    const dw = portrait ? 640 : 1600;
+    const dh = portrait ? Math.round(Math.max(1000, Math.min(1500, 640 * H / W))) : 900;
+    const availH = short ? H - 54 : H;
+    const s = Math.min(W / dw, availH / dh);
+    deck.style.width = dw + 'px'; deck.style.height = dh + 'px';
+    deck.style.top = short ? (availH / 2) + 'px' : '50%';
+    deck.style.transform = `scale(${s}) translate(${-dw / 2}px, ${-dh / 2}px)`;
+  }
+  addEventListener('resize', fit); addEventListener('orientationchange', () => setTimeout(fit, 200)); fit();
+
+  /* ── per-slide timers that are cleared when the slide is left ── */
+  const later = (fn, ms) => timers.push(setTimeout(fn, reduced ? 0 : ms));
+  const every = (fn, ms) => timers.push(setInterval(fn, ms));
+  const frame = fn => { let id; const loop = t => { if (fn(t) !== false) { id = requestAnimationFrame(loop); rafs.push(id); } }; id = requestAnimationFrame(loop); rafs.push(id); };
+  function clearAll() { timers.forEach(t => { clearTimeout(t); clearInterval(t); }); rafs.forEach(cancelAnimationFrame); timers = []; rafs = []; }
+
+  const fmt = (v, dec, comma) => comma ? v.toLocaleString('en-US', { minimumFractionDigits: dec, maximumFractionDigits: dec }) : v.toFixed(dec);
+  function countUp(el) {
+    const to = +el.dataset.count, from = +(el.dataset.from || 0), dec = +(el.dataset.dec || 0), delay = +(el.dataset.delay || 500), dur = 1600, comma = !!el.dataset.comma;
+    el.textContent = fmt(from, dec, comma);
+    if (reduced) { el.textContent = fmt(to, dec, comma); return; }
+    later(() => { const t0 = performance.now(); frame(t => { const p = Math.min(1, (t - t0) / dur), e = 1 - Math.pow(1 - p, 3); el.textContent = fmt(from + (to - from) * e, dec, comma); return p < 1; }); }, delay);
+  }
+
+  /* ── Gemini price toggle (also works by click) ── */
+  const pchart = $('pchart');
+  const setPrice = after => {
+    pchart.classList.toggle('after', after);
+    document.querySelectorAll('.ptog button').forEach(b => b.setAttribute('aria-pressed', String((b.dataset.p === '1') === after)));
+  };
+  document.querySelectorAll('.ptog button').forEach(b => b.addEventListener('click', e => { e.stopPropagation(); clearAll(); setPrice(b.dataset.p === '1'); }));
+
+  /* ── slide-specific animations ── */
+  const hooks = {
+    chain() {
+      const cfgs = [
+        { g: $('chainpk'), leg: $('leg1'), axis: 'cx', fixed: ['cy', 80], a0: 234, a1: 1150, spans: [[234, 386], [616, 768], [998, 1150]] },
+        { g: $('vchainpk'), leg: $('vleg1'), axis: 'cy', fixed: ['cx', 150], a0: 100, a1: 520, spans: [[100, 180], [270, 350], [440, 520]] },
+      ];
+      cfgs.forEach(c => { c.g.innerHTML = ''; c.pk = Array.from({ length: 4 }, (_, k) => { const el = document.createElementNS(SVG, 'circle'); el.setAttribute('r', 9); el.setAttribute(c.fixed[0], c.fixed[1]); el.setAttribute('class', 'pkt'); c.g.appendChild(el); return { el, off: k / 4 }; }); });
+      if (reduced) { cfgs.forEach(c => c.pk.forEach((o, k) => { const sp = c.spans[k % 3]; o.el.setAttribute(c.axis, (sp[0] + sp[1]) / 2); })); return; }
+      const t0 = performance.now();
+      later(() => frame(t => {
+        const s = (t - t0) / 4200;
+        cfgs.forEach(c => {
+          let hit = false;
+          c.pk.forEach(o => {
+            const u = (s + o.off) % 1, v = c.a0 + (c.a1 - c.a0) * u;
+            const on = c.spans.findIndex(([a, b]) => v >= a && v <= b);
+            o.el.setAttribute(c.axis, v.toFixed(1)); o.el.setAttribute('opacity', on < 0 ? 0 : 1);
+            if (on === 0) hit = true;
+          });
+          c.leg.classList.toggle('hit', hit);
+        });
+      }), 1000);
+    },
+    gprice() { setPrice(false); later(() => setPrice(true), 2600); },
+    projects() {
+      const g = $('ppk'); g.innerHTML = '';
+      const paths = [0, 1, 2, 3].map(k => $('pp' + k)), lens = paths.map(p => p.getTotalLength());
+      const fills = [0, 1, 2, 3].map(k => $('pf' + k));
+      const speed = [.05, .034, .042, .028];             // progress per second-ish, per thread
+      const prog = [0, 0, 0, 0];
+      fills.forEach(f => f.setAttribute('width', 0));
+      const b1 = $('pbub1'), b2 = $('pbub2');
+      b1.textContent = '스레드 4개 시작'; b2.textContent = '진행 상황을 먼저 알려 줌';
+      const pk = []; for (let k = 0; k < 8; k++) { const c = document.createElementNS(SVG, 'circle'); c.setAttribute('r', 7); c.setAttribute('class', 'pkt' + (k % 2 ? ' up' : '')); g.appendChild(c); pk.push({ c, p: k % 4, off: k / 8, up: k % 2 }); }
+      if (reduced) { fills.forEach(f => f.setAttribute('width', 250)); b1.textContent = '스레드 4개 모두 완료'; b2.textContent = '결과를 검토해 조립합니다'; return; }
+      let last = null, doneCount = 0;
+      const msgs = ['스레드 1 완료 · 나머지 진행 중', '스레드 3 완료 · 2개 남음', '스레드 2 완료 · 1개 남음', '4개 모두 완료 → 결과 조립'];
+      const t0 = performance.now();
+      later(() => frame(t => {
+        const dt = last === null ? 0 : (t - last) / 1000; last = t;
+        const s = (t - t0) / 2400;
+        pk.forEach(o => { let u = (s + o.off) % 1; if (o.up) u = 1 - u; const pt = paths[o.p].getPointAtLength(lens[o.p] * u); o.c.setAttribute('cx', pt.x); o.c.setAttribute('cy', pt.y); o.c.setAttribute('opacity', (prog[o.p] >= 1 && !o.up) ? 0 : Math.sin(Math.PI * u).toFixed(2)); });
+        prog.forEach((v, k) => {
+          if (v >= 1) return;
+          prog[k] = Math.min(1, v + dt * speed[k] * 2.2);
+          fills[k].setAttribute('width', (250 * prog[k]).toFixed(1));
+          if (prog[k] >= 1) { b1.textContent = msgs[Math.min(doneCount, 3)]; doneCount++; b2.textContent = doneCount < 4 ? '묻기 전에 상태를 알려 줌' : '결과를 검토해 조립합니다'; }
+        });
+        if (doneCount >= 4) { later(() => hooks.projects(), 2600); return false; }
+      }), 900);
+    },
+    wallet() {
+      const steps = [...$('wflow').querySelectorAll('.wstep')], arrs = [...$('wflow').querySelectorAll('.ar')];
+      const tok = $('wtok'); let i = -1;
+      const hex = () => Math.random().toString(16).slice(2, 6);
+      const tick = () => {
+        i = (i + 1) % 5;
+        steps.forEach((s, k) => s.classList.toggle('on', k === i));
+        arrs.forEach((a, k) => a.classList.toggle('on', k < i && i < 4));
+        if (i === 2) tok.textContent = 'tok · ' + hex() + hex();
+      };
+      steps.forEach(s => s.classList.remove('on')); arrs.forEach(a => a.classList.remove('on'));
+      if (reduced) { steps.forEach(s => s.classList.add('on')); return; }
+      later(() => { tick(); every(tick, 1300); }, 1200);
+    },
+  };
+
+  /* ── navigation ── */
+  function go(n, fromHash) {
+    n = Math.max(0, Math.min(N - 1, n));
+    if (n === cur) return;
+    clearAll();
+    slides.forEach((s, k) => { s.classList.toggle('is-active', k === n); s.classList.toggle('is-past', k < n); s.setAttribute('aria-hidden', k !== n); });
+    cur = n;
+    const s = slides[n]; s.scrollTop = 0;
+    s.querySelectorAll('[data-count]').forEach(countUp);
+    if (s.dataset.hook && hooks[s.dataset.hook]) hooks[s.dataset.hook]();
+    $('progress').style.width = ((n + 1) / N * 100) + '%';
+    $('count').textContent = `${n + 1} / ${N}`;
+    $('notes').innerHTML = `<b>${n + 1}</b>${s.dataset.notes || ''}`;
+    if (!fromHash) history.replaceState(null, '', '#' + (n + 1));
+  }
+  slides.forEach((s, k) => { s.setAttribute('role', 'group'); s.setAttribute('aria-roledescription', 'slide'); s.setAttribute('aria-label', `${k + 1} / ${N}`); });
+  $('prev').onclick = () => go(cur - 1);
+  $('next').onclick = () => go(cur + 1);
+  $('notesBtn').onclick = () => $('notes').classList.toggle('show');
+  const fs = () => document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen?.();
+  $('fsBtn').onclick = fs;
+  addEventListener('keydown', e => {
+    if (e.metaKey || e.ctrlKey || e.altKey) return;
+    if (['ArrowRight', 'ArrowDown', 'PageDown', ' '].includes(e.key)) { e.preventDefault(); go(cur + 1); }
+    else if (['ArrowLeft', 'ArrowUp', 'PageUp'].includes(e.key)) { e.preventDefault(); go(cur - 1); }
+    else if (e.key === 'Home') go(0);
+    else if (e.key === 'End') go(N - 1);
+    else if (e.key === 'n' || e.key === 'N') $('notes').classList.toggle('show');
+    else if (e.key === 'f' || e.key === 'F') fs();
+  });
+  let tx = null, ty = 0;
+  addEventListener('touchstart', e => { tx = e.touches[0].clientX; ty = e.touches[0].clientY; }, { passive: true });
+  addEventListener('touchend', e => {
+    if (tx === null) return;
+    const d = e.changedTouches[0].clientX - tx, dy = e.changedTouches[0].clientY - ty; tx = null;
+    if (Math.abs(d) > 50 && Math.abs(d) > Math.abs(dy) * 1.3) go(cur + (d < 0 ? 1 : -1));
+  });
+  addEventListener('hashchange', () => go((parseInt(location.hash.slice(1), 10) || 1) - 1, true));
+  go((parseInt(location.hash.slice(1), 10) || 1) - 1, true);
+
+  /* ── background: a slow field of dots, brighter where a wave passes ── */
+  const cv = $('bgfx'), g = cv.getContext('2d');
+  let W, H, dpr;
+  const size = () => { dpr = Math.min(2, devicePixelRatio || 1); W = innerWidth; H = innerHeight; cv.width = W * dpr; cv.height = H * dpr; g.setTransform(dpr, 0, 0, dpr, 0, 0); };
+  size(); addEventListener('resize', size);
+  let last = 0;
+  const draw = t => {
+    if (!reduced) requestAnimationFrame(draw);
+    if (t - last < 50) return; last = t;
+    g.fillStyle = '#0c1524'; g.fillRect(0, 0, W, H);
+    const step = 26, s = t / 1000;
+    for (let y = step / 2; y < H; y += step) for (let x = step / 2; x < W; x += step) {
+      const w = Math.sin(x * .006 + s * .6) + Math.sin(y * .008 - s * .4) + Math.sin((x + y) * .004 + s * .3);
+      const a = .05 + Math.max(0, w) * .045;
+      g.fillStyle = `rgba(213,168,68,${a.toFixed(3)})`; g.fillRect(x - 1, y - 1, 2, 2);
+    }
+  };
+  requestAnimationFrame(draw);
+})();
+</script>
+</body>
+</html>
