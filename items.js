@@ -14,7 +14,7 @@ window.ITEMS = [
   {
     "href": "ai-briefing-2026-11-w3/",
     "title": "2026년 11월 셋째 주 테크·AI 브리핑 (슬라이드형)",
-    "desc": "Anthropic IPO, AI 시험 부정행위, MS365 장애, Gemini 4, 소형 모델 3종, Claude Projects, ChatGPT Wallet을 35장으로 정리. 장마다 사진 표지, 확정·루머·판단·벤더 수치 배지, 움직이는 도해와 약어 풀이, 폰 세로 화면 대응. Speaker Notes(N), Fullscreen(F).",
+    "desc": "Anthropic IPO, AI 시험 부정행위, MS365 장애, Gemini 4, 소형 모델 3종, Claude Projects, ChatGPT Wallet, 피클 vs 부이를 37장으로 정리. 장마다 사진 표지, 확정·루머·판단·벤더 수치 배지, 움직이는 도해와 약어 풀이, 폰 세로 화면 대응. Speaker Notes(N), Fullscreen(F).",
     "type": "슬라이드",
     "tags": ["AI 동향", "주간 브리핑", "IPO", "MS365 장애", "Gemini"],
     "date": "2026-11-16",

@@ -737,6 +737,24 @@
   html.portrait .hud a[title="아카이브로"] { font-size: 0; padding: 0; width: 40px; justify-content: center; }
   html.portrait .hud a[title="아카이브로"]::before { content: "←"; font-size: 18px; }
   .hud #firstBtn:disabled { opacity: .35; cursor: default; background: rgba(243,239,228,.04); }
+  .scen-grid { display: grid; grid-template-columns: 700px minmax(0, 1fr); gap: 26px; margin-top: 18px; align-items: start; }
+  .scen-shot { position: relative; margin: 0; border-radius: 16px; overflow: hidden; border: 1.5px dashed rgba(240,84,42,.7); }
+  .scen-shot img { display: block; width: 100%; height: auto; }
+  .scen-shot .stamp { position: absolute; left: 14px; top: 14px; padding: 6px 12px; border-radius: 10px; background: rgba(12,21,36,.85); border: 1.5px dashed #f0542a; color: #ff8a63; font: 800 15px "Pretendard Variable", sans-serif; }
+  .scen-cap { font-size: 13px; color: var(--ink-3); margin-top: 8px; }
+  .scen-side .card { padding: 18px 22px; } .scen-side .card + .card { margin-top: 12px; }
+  .scen-side ol { margin: 8px 0 0; padding-left: 20px; font-size: 17px; line-height: 1.55; color: var(--ink-2); }
+  .scen-side ul { margin: 8px 0 0; padding-left: 18px; font-size: 16.5px; line-height: 1.55; color: var(--ink-2); }
+  html.portrait .scen-grid { grid-template-columns: minmax(0, 1fr); gap: 14px; }
+  .pv { grid-template-columns: 118px minmax(0, 1fr) minmax(0, 1fr); gap: 0 14px; margin-top: 16px; }
+  .pv .c { font-size: 17.5px; line-height: 1.45; padding: 11px 4px; }
+  .pv .rh { font-size: 16px; padding: 11px 0; border-top: 1px dashed var(--line); align-self: stretch; display: flex; align-items: center; }
+  .pv .h.pk { color: #8fd18a; border: 1px solid rgba(143,209,138,.4); } .pv .h.vy { color: #a98bff; border: 1px solid rgba(169,139,255,.45); }
+  .pv .key { background: rgba(213,168,68,.10); border-top: 1.5px solid rgba(213,168,68,.6) !important; color: var(--ink); }
+  .pv .rh.key { color: var(--gold); padding-left: 10px; border-radius: 10px 0 0 10px; }
+  .pv .c.key:last-child { border-radius: 0 10px 10px 0; }
+  html.portrait .pv { grid-template-columns: 74px minmax(0, 1fr) minmax(0, 1fr); gap: 0 8px; }
+  html.portrait .pv .c { font-size: 12.5px; } html.portrait .pv .rh { font-size: 12px; }
 </style>
 </head>
 <body>
@@ -825,9 +843,9 @@
   </section>
 
   <!-- 02 agenda -->
-  <section class="slide" data-notes="일곱 개 주제와 마지막 주의사항 순서로 봅니다. 사실, 루머·미확인, 판단을 구분해 표시합니다. 초록 체크는 확인된 사실, 주황 점선은 루머·미확인, 금색 마름모는 판단, 파란 느낌표는 벤더가 직접 발표했거나 골라 실은 수치입니다.">
+  <section class="slide" data-notes="여덟 개 주제를 순서대로 봅니다. 사실, 루머·미확인, 판단을 구분해 표시합니다. 초록 체크는 확인된 사실, 주황 점선은 루머·미확인, 금색 마름모는 판단, 파란 느낌표는 벤더가 직접 발표했거나 골라 실은 수치입니다.">
     <div class="kicker" data-a="left">Contents</div>
-    <h2 data-a style="--d:1">이번 주 일곱 가지</h2>
+    <h2 data-a style="--d:1">이번 주 여덟 가지</h2>
     <ul class="agenda">
       <li data-a style="--d:2"><span class="n">01</span><div><div class="t">AI 시험 부정행위</div><div class="d">세무사 수석 자백 · 정부 대응 · 수능 대책 · Monorean Pro</div></div></li>
       <li data-a style="--d:3"><span class="n">02</span><div><div class="t">MS365 장애</div><div class="d">Exchange발 전 세계 장애 · 복구 타임라인 · 원인 · 관리자 체크와 SLA 크레딧</div></div></li>
@@ -835,8 +853,8 @@
       <li data-a style="--d:5"><span class="n">04</span><div><div class="t">소형 모델 3종</div><div class="d">Muse Ember · Claude Haiku 5.5 · GPT-6 Luna</div></div></li>
       <li data-a style="--d:6"><span class="n">05</span><div><div class="t">Claude Projects</div><div class="d">능동형 코디네이터와 병렬 스레드</div></div></li>
       <li data-a style="--d:7"><span class="n">06</span><div><div class="t">ChatGPT Wallet</div><div class="d">에이전트 결제 · 결제 토큰 · 건별 생체 인증</div></div></li>
-      <li data-a style="--d:8"><span class="n">07</span><div><div class="t">Anthropic IPO</div><div class="d">공모 조건 · S-1 재무 · 위험 요인 · SpaceX 비교</div></div></li>
-      <li data-a style="--d:9" class="warn"><span class="n">!</span><div><div class="t">주의사항</div><div class="d">기준일 · 벤더 수치 · 1차 출처 미확인 항목</div></div></li>
+      <li data-a style="--d:8"><span class="n">07</span><div><div class="t">Anthropic IPO</div><div class="d">공모 · 동시 사모 구조 · SpaceX 비교 · 최근 변수</div></div></li>
+      <li data-a style="--d:9"><span class="n">08</span><div><div class="t">Pickle vs vooy</div><div class="d">국내 AI 비서 둘 · 카드 정보 보관과 결제 승인 방식</div></div></li>
     </ul>
     <div class="legend" data-a="fade" style="--d:10; margin-top:20px; gap:10px 14px"><span class="badge ok">확정된 사실</span><span class="badge rumor">루머·미확인</span><span class="badge judge">판단</span><span class="badge vendor">벤더 수치</span></div>
     <div class="gloss" data-a="fade" style="--d:11" aria-label="약어 풀이"><span><b>AI</b><em>Artificial Intelligence</em> · 인공지능</span><span><b>MS365</b><em>Microsoft 365</em> · Word·Excel·Teams 등을 묶은 Microsoft 구독 서비스</span><span><b>S-1</b><em>Form S-1</em> · 미국 상장 때 증권거래위원회(SEC)에 내는 증권신고서</span><span><b>IPO</b><em>Initial Public Offering</em> · 기업공개. 주식시장 첫 상장</span></div>
@@ -1080,6 +1098,28 @@
       </div>
     </div>
     <div class="gloss" data-a="fade" style="--d:8" aria-label="약어 풀이"><span><b>TOPIK</b><em>Test of Proficiency in Korean</em> · 한국어능력시험</span><span><b>AI</b><em>Artificial Intelligence</em> · 인공지능</span></div>
+  </section>
+
+  <!-- 08b circulating scenario illustration -->
+  <section class="slide" data-notes="온라인에서 도는 '세무사 시험 AI 부정행위 통신 시나리오' 그림입니다. 원출처는 확인하지 못했고, 사건 보도나 자백으로 확인된 구성이 아닙니다. 한 씨가 자백한 방식은 초소형 카메라로 문제를 찍어 AI로 전송하고 스마트폰으로 답을 확인한 것뿐이며, 모방을 막기 위해 구체적 수법은 공개하지 않았습니다. 그림 속 개조 계산기(무선 수신 칩·LCD 표시), 옷 속 유선 연결, 이동통신망 경로 같은 세부는 추정입니다. 다만 그림이 보여 주는 구조, 즉 촬영 장치와 외부 AI 사이를 휴대전화가 중계한다는 점은 전파탐지기가 휴대전화 통신 구간을 노려야 한다는 앞 장의 논의와 맞닿아 있습니다.">
+    <div class="kicker" data-a="left">01 · 추정 시나리오</div>
+    <h2 data-a style="--d:1">온라인에 도는 ‘통신 시나리오’ 그림: <em>확인된 것과 추정을 나눠 보기</em></h2>
+    <div class="scen-grid">
+      <div data-a style="--d:2">
+        <figure class="scen-shot"><img src="img/ch1-scenario.jpg" width="1440" height="1076" alt="세무사 시험 AI 부정행위 통신 시나리오 추정도: 옷 단추형 카메라, 주머니 속 스마트폰, 이동통신망을 통한 원격 AI 서버, 개조 계산기 화면 표시. 검증되지 않은 추정"><span class="stamp">? 검증되지 않은 추정도</span></figure>
+        <div class="scen-cap">제공 이미지 · 원출처 미확인 · 사건 보도나 자백으로 확인된 구성이 아닌 추정 시나리오</div>
+      </div>
+      <div class="scen-side">
+        <div class="card" data-a style="--d:3"><span class="badge ok">자백으로 확인</span>
+          <ol><li>초소형 카메라로 시험 문제 촬영</li><li>AI로 전송</li><li>스마트폰 화면으로 답 확인</li></ol>
+          <p class="small" style="margin-top:8px">세무사 1·2차, 공인회계사 1차(불합격)에서 같은 방식 · 구체적 수법은 비공개</p></div>
+        <div class="card rumor" data-a style="--d:4"><span class="badge rumor">그림에만 있는 요소</span>
+          <ul><li>개조 계산기로 답 표시(무선 수신 칩·LCD 변조)</li><li>옷 속 유선 연결, 이동통신망 경로 등 세부 구성</li></ul>
+          <p class="small" style="margin-top:8px">보도·자백 어디에서도 확인되지 않음</p></div>
+        <div class="card" data-a style="--d:5"><p style="font-size:16.5px">공통점: 휴대전화가 <b>촬영 장치와 외부 AI 사이를 중계</b> → 탐지는 휴대전화 통신 구간이 관건</p></div>
+      </div>
+    </div>
+    <div class="gloss" data-a="fade" style="--d:8" aria-label="약어 풀이"><span><b>LTE · 5G</b><em>이동통신망</em> · 휴대전화 데이터 통신</span><span><b>BLE</b><em>Bluetooth Low Energy</em> · 저전력 근거리 무선</span><span><b>RF</b><em>Radio Frequency</em> · 무선 주파수 통신</span></div>
   </section>
 
   <!-- 09 Monorean chain -->
@@ -1784,6 +1824,18 @@
     <div class="gloss" data-a="fade" style="--d:8" aria-label="약어 풀이"><span><b>CEO</b><em>Chief Executive Officer</em> · 최고경영자</span><span><b>GPU</b><em>Graphics Processing Unit</em> · AI 학습·추론 연산용 칩</span><span><b>S-1</b><em>Form S-1</em> · 미국 증권신고서</span></div>
   </section>
 
+  <!-- 08 Pickle vs vooy -->
+  <section class="slide" data-notes="여덟 번째 주제는 국내에서 쓰이는 개인 AI 에이전트 두 곳, 피클과 부이의 비교입니다. 피클은 2024년 샌프란시스코에서 한국인 창업팀이 세운 Pickle, Inc.로 Y Combinator 2025년 겨울 배치 출신이며, 국내는 초대제 베타입니다. 전용 앱 안 채팅과 전화로 쓰고, 대리 전화, KTX 예매, 정부24·홈택스, 쿠팡 재주문, 아침 브리핑을 휴대폰과 분리된 클라우드 브라우저로 처리합니다. 한국 계정은 무료이고 하루 사용 한도가 있으며 리셋권(2,900원·5,800원)을 팝니다. 부이는 서울의 부이코리아가 9월 28일 EastPoint 행사에서 공개한 서비스로, 11월 10일 기사에선 초대제 베타, 11월 15일 정리 사이트에선 정식 오픈으로 보도가 엇갈립니다. 8월 약관은 텔레그램 메신저 기반으로 규정하지만 11월 개인정보처리방침과 앱스토어는 앱·웹 서비스로 설명합니다. 검색·비교·예약, 캐치테이블·요기요 주문, 단체방 약속 잡기를 하고, 개인정보처리방침에는 대리 통화도 적혀 있습니다. 기본 모델은 무료, 프론티어 모델은 토큰 충전 방식입니다. 관건인 카드 정보: 둘 다 '금고'에 카드 정보를 저장할 수 있습니다. 피클은 기기에서 암호화해 AI 모델에 넘기지 않는다고 하지만(끝 4자리는 AI가 읽음), 개인정보처리방침은 미국 서버 저장을 언급해 설명이 엇갈립니다. 부이의 '금고'는 부이 서비스 자체의 보관함(Vault)으로, 개인정보처리방침상 위탁업체인 Cloudflare가 저장을 맡습니다. 즉 기기 안이 아니라 서버 쪽 보관이며, 기기에서 만든 키로 암호화하고 작업할 때만 격리된 환경에서 잠시 푼다고 설명하지만 이 부분은 방침 후반부 요약으로만 확인했습니다. 카드번호·유효기간·CVC·비밀번호를 '계속 보관' 또는 '이번 작업만'으로 선택해 저장하며, 작업용 정보는 작업 후 30분 안에 지웁니다. 결제 승인은 피클이 결제 직전 항목·금액 승인을 받고 금액이 오르면 다시 묻는 반면, 부이 약관은 결제 전 확인을 '요청할 수 있다'고만 쓰고 사용자가 설정에서 끄고 켤 수 있게 했습니다. 개인정보는 피클의 경우 권한 있는 직원이 대화를 열람할 수 있고, 부이는 대화를 AI 학습에 쓰지 않는다고 밝힙니다. 모두 보도·약관·개인정보처리방침 기준이며 공식 도움말 전체를 확인한 것은 아닙니다.">
+    <div class="kicker" data-a="left">08 · Pickle vs vooy</div>
+    <h2 data-a style="--d:1">국내 AI 비서 둘: <em>둘 다 카드를 맡기지만, 승인 방식이 다르다</em></h2>
+    <div class="cmp pv" data-a="fade" style="--d:2">
+      <div></div><div class="h pk">피클 Pickle</div><div class="h vy">부이 vooy</div>
+      <div class="rh">회사 · 상태</div><div class="c">Pickle, Inc.(샌프란시스코, 한국인 창업팀, YC W25) · 국내는 <b>초대제 베타</b></div><div class="c">부이코리아(서울) · 9/28 공개 · <b>초대 베타</b>↔<b>정식 오픈</b> 보도 엇갈림</div><div class="rh">쓰는 곳</div><div class="c">전용 앱(iPhone · Android) 안 채팅 + 전화</div><div class="c">앱 · 웹 + 메신저(약관상 <b>텔레그램</b> 기반)</div><div class="rh">잘하는 일</div><div class="c"><b>대리 전화</b>, KTX 예매, 정부24 · 홈택스, 쿠팡 재주문, 아침 브리핑</div><div class="c"><b>검색 · 비교 · 예약</b>, 캐치테이블 · 요기요, 단체방 약속 잡기, 대리 통화(개인정보처리방침)</div><div class="rh">실행 방식</div><div class="c">휴대폰과 분리된 <b>클라우드 브라우저</b></div><div class="c">외부 브라우저(Kernel · Browser Use) + 서비스 연동</div><div class="rh">요금</div><div class="c">한국 <b>무료</b> · 하루 한도, 리셋권 2,900 · 5,800원</div><div class="c">기본 <b>무료</b> + 프론티어 모델 <b>토큰 충전</b>(OpenAI · Anthropic · Google · xAI)</div><div class="rh key">카드 정보</div><div class="c key">앱 안 <b>‘금고’</b>에 카드번호 · 비밀번호 저장 · <b>기기에서 암호화</b>, AI엔 미전달(끝 4자리만) <span class="badge rumor" style="font-size:12px">미국 서버 보관 문구와 엇갈림</span></div><div class="c key">부이 자체 <b>‘Vault’</b>(<b>Cloudflare 서버</b> 보관)에 카드번호 · 유효기간 · CVC · 비밀번호 저장 가능 · <b>“계속 보관” / “이번 작업만”(30분 내 삭제)</b> 선택</div><div class="rh">결제 승인</div><div class="c">결제 직전 항목 · 금액 <b>승인 필수</b>, 금액 오르면 재승인 · PASS · 카카오페이 최종 승인은 사람</div><div class="c">결제 전 확인 요청 “할 수 있음” · <b>설정에서 끄고 켜기</b></div><div class="rh">개인정보</div><div class="c">운영 직원 대화 열람 가능 · 통화 녹음 X(전사 보관) · 만 18세+</div><div class="c">AI 학습 미사용 · 통화 음성 미보관(전사 보관) · 만 14세+</div>
+    </div>
+    <div class="gloss" data-a="fade" style="--d:8" aria-label="약어 풀이"><span><b>YC W25</b><em>Y Combinator Winter 2025</em> · 미국 스타트업 육성 프로그램 2025년 겨울 배치</span><span><b>CVC</b><em>Card Verification Code</em> · 카드 뒷면 보안 코드</span><span><b>PASS</b><em>통신사 본인인증 앱</em></span></div>
+    <p class="src">자료: 디지털마케터 · 연합뉴스(서플) · 재경일보 · 소상공인연합신문 · 부이 약관(8/11) · 개인정보처리방침(11/20 시행) · 메트로신문 · 블루밍비트</p>
+  </section>
+
   <!-- 30 summary -->
   <section class="slide" data-notes="일곱 줄 요약과 이번 주 일정입니다. MS365 장애는 Microsoft의 예비 설명만 나온 상태라 이번 주 초로 예상되는 예비 사후 보고서(PIR)를 봐야 하고, SLA 크레딧은 자동 지급이 아니므로 11월분을 12월 31일까지 청구해야 합니다. 일정: 11월 17일 Ignite 개막과 Nvidia 실적, 18일 Anthropic 공모가 확정, 19일 ANT 거래 시작과 수능, 12월 1일 Gemini Argon·Carbon 가격 인상, 12월 31일 SLA 크레딧 청구 마감. Ignite는 Microsoft가 매년 여는 IT 관리자·개발자 대상 최대 기술 콘퍼런스로, Microsoft 365·Azure·Copilot의 신기능과 로드맵을 발표하는 자리입니다. 올해는 11월 17~20일 샌프란시스코에서 열리며 작성 시점(11월 16일)에는 아직 열리지 않았습니다.">
     <div class="kicker" data-a="left">Summary</div>
@@ -1810,7 +1862,7 @@
   <a href="../" title="아카이브로">← Archive</a>
   <button type="button" id="firstBtn" title="첫 페이지로 (Home)" aria-label="첫 슬라이드로"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 3v10"/><path d="M12.5 3.5 7 8l5.5 4.5"/></svg></button>
   <button type="button" id="prev" aria-label="이전 슬라이드">‹</button>
-  <span class="count" id="count">1 / 35</span>
+  <span class="count" id="count">1 / 37</span>
   <button type="button" id="next" aria-label="다음 슬라이드">›</button>
   <button type="button" id="notesBtn" title="발표자 노트 (N)">N</button>
   <button type="button" id="fsBtn" title="전체 화면 (F)">⛶</button>
