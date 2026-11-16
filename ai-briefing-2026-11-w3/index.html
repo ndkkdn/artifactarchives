@@ -733,6 +733,10 @@
   .aa-side .card { padding: 18px 22px; } .aa-side .card + .card { margin-top: 12px; }
   .aa-credit { font-size: 13px; color: var(--ink-3); margin-top: 10px; }
   html.portrait .aa-grid { grid-template-columns: minmax(0, 1fr); gap: 14px; }
+  .hud #firstBtn { display: inline-grid; place-items: center; padding: 0 10px; }
+  html.portrait .hud a[title="아카이브로"] { font-size: 0; padding: 0; width: 40px; justify-content: center; }
+  html.portrait .hud a[title="아카이브로"]::before { content: "←"; font-size: 18px; }
+  .hud #firstBtn:disabled { opacity: .35; cursor: default; background: rgba(243,239,228,.04); }
 </style>
 </head>
 <body>
@@ -1804,6 +1808,7 @@
 <div class="notes" id="notes" role="note"></div>
 <nav class="hud" aria-label="슬라이드 이동">
   <a href="../" title="아카이브로">← Archive</a>
+  <button type="button" id="firstBtn" title="첫 페이지로 (Home)" aria-label="첫 슬라이드로"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 3v10"/><path d="M12.5 3.5 7 8l5.5 4.5"/></svg></button>
   <button type="button" id="prev" aria-label="이전 슬라이드">‹</button>
   <span class="count" id="count">1 / 35</span>
   <button type="button" id="next" aria-label="다음 슬라이드">›</button>
@@ -1994,10 +1999,12 @@
     if (s.dataset.hook && hooks[s.dataset.hook]) hooks[s.dataset.hook]();
     $('progress').style.width = ((n + 1) / N * 100) + '%';
     $('count').textContent = `${n + 1} / ${N}`;
+    $('firstBtn').disabled = n === 0;
     $('notes').innerHTML = `<b>${n + 1}</b>${s.dataset.notes || ''}`;
     if (!fromHash) history.replaceState(null, '', '#' + (n + 1));
   }
   slides.forEach((s, k) => { s.setAttribute('role', 'group'); s.setAttribute('aria-roledescription', 'slide'); s.setAttribute('aria-label', `${k + 1} / ${N}`); });
+  $('firstBtn').onclick = () => go(0);
   $('prev').onclick = () => go(cur - 1);
   $('next').onclick = () => go(cur + 1);
   $('notesBtn').onclick = () => $('notes').classList.toggle('show');
