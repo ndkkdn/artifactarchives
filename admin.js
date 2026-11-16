@@ -6,8 +6,10 @@
  *
  * 필요한 것: 이 저장소에 대한 Fine-grained token (Contents: Read and write).
  * 토큰은 GitHub API 외에는 보내지 않습니다. 이 기기에 저장할 때는 직접 정한 패스워드로 암호화해
- * (PBKDF2-SHA256 600,000회 → AES-256-GCM) localStorage에 넣고, 평문 토큰은 지금 열린 탭의
- * sessionStorage에만 둡니다. 패스워드를 5번 틀리면 저장된 토큰을 지웁니다.
+ * (PBKDF2-SHA256 600,000회 → AES-256-GCM) localStorage에 넣습니다. 패스워드로 한 번 열면 그 세션은
+ * '관리 모드 끄기'를 누를 때까지 창을 닫아도 유지됩니다(이 기기의 localStorage). '이 기기에 저장'을 끄고
+ * 들어온 경우만 지금 열린 탭(sessionStorage)에 두고, 탭을 닫으면 사라집니다. 패스워드를 5번 틀리면
+ * 저장된 토큰을 지웁니다.
  */
 (() => {
   const REPO = 'ndkkdn/artifactarchives';
@@ -15,6 +17,7 @@
   const DATA_PATH = 'items.js';
   const TOKEN_KEY = 'archive-gh-token';      // plaintext: sessionStorage only (legacy: localStorage)
   const VAULT_KEY = 'archive-gh-vault';      // password-encrypted token in localStorage
+  const SESSION_KEY = 'archive-gh-session';  // unlocked session: survives closing the window until 관리 모드 끄기
   const MAX_FAILS = 5, PBKDF2_ITER = 600000, MIN_PW = 8;
   const API = 'https://api.github.com';
 
@@ -259,7 +262,7 @@
       throw new Error(`패스워드가 맞지 않아요. (${MAX_FAILS - v.fails}번 남음)`);
     }
   }
-  function forgetAll() { ls.del(VAULT_KEY); ls.del(TOKEN_KEY); ss.del(TOKEN_KEY); }
+  function forgetAll() { ls.del(VAULT_KEY); ls.del(TOKEN_KEY); ss.del(TOKEN_KEY); ls.del(SESSION_KEY); }
   function checkNewPw(f) {
     const pw = f.elements.pw.value, pw2 = f.elements.pw2.value;
     if (pw.length < MIN_PW) throw new Error(`패스워드는 ${MIN_PW}자 이상으로 정해 주세요. 단어 몇 개를 이은 문장이면 기억하기 쉽고 안전해요.`);
@@ -271,11 +274,12 @@
           <label class="adm-field"><span>패스워드 확인 <b>*</b></span><input type="password" name="pw2" autocomplete="new-password"></label>
           <p class="adm-field full" style="margin:0"><small>이 패스워드로 토큰을 암호화해 이 기기에만 저장해요. 패스워드는 어디에도 보내지 않아서 잊으면 되찾을 수 없고, 토큰을 다시 넣으면 돼요.</small></p>`;
 
-  async function unlocked(tok, d) {
+  async function unlocked(tok, d, persist = true) {
     token = tok;
     await checkWrite();
     await refresh(A.current && A.current.href);
-    ss.set(TOKEN_KEY, token);                // stays usable in this tab until it is closed
+    if (persist) { ls.set(SESSION_KEY, token); ss.del(TOKEN_KEY); }   // stays open across windows until 관리 모드 끄기
+    else { ss.set(TOKEN_KEY, token); ls.del(SESSION_KEY); }           // not remembered: this tab only
     enter(); d && d.close();
   }
 
@@ -305,10 +309,10 @@
         const tok = f.elements.token.value.trim();
         if (!tok) throw new Error('토큰을 입력해 주세요.');
         const pw = f.elements.remember.checked ? checkNewPw(f) : null;
-        await unlocked(tok, null);
+        await unlocked(tok, null, !!pw);
         ls.del(TOKEN_KEY);
-        if (pw) { await sealToken(token, pw); toast('관리 모드를 켰습니다. 다음부터는 패스워드로 열 수 있어요.'); }
-        else { ls.del(VAULT_KEY); toast('관리 모드를 켰습니다. 이 탭을 닫으면 토큰은 사라져요.'); }
+        if (pw) { await sealToken(token, pw); toast('관리 모드를 켰습니다. 창을 닫아도 ‘관리 모드 끄기’를 누를 때까지 유지돼요.'); }
+        else { ls.del(VAULT_KEY); toast('관리 모드를 켰습니다. 저장하지 않았으니 이 탭을 닫으면 토큰은 사라져요.'); }
         d.close();
       }).catch(() => {});
     });
@@ -335,7 +339,7 @@
         let tok;
         try { tok = await openVault(f.elements.pw.value); }
         catch (err) { if (err.wiped) { d.close(); loginDialog(err.message); return; } f.elements.pw.select(); throw err; }
-        try { await unlocked(tok, d); toast('관리 모드를 켰습니다.'); }
+        try { await unlocked(tok, d); toast('관리 모드를 켰습니다. ‘관리 모드 끄기’를 누를 때까지 유지돼요.'); }
         catch (err) {
           // the password was right but the token no longer works (expired, revoked, permissions changed)
           if (err.status === 401 || err.noWrite) { forgetAll(); d.close(); loginDialog(err.message + '\n저장돼 있던 토큰을 지웠어요. 새 토큰을 넣어 주세요.'); return; }
@@ -356,7 +360,7 @@
       </form>`);
     const f = d.querySelector('form');
     d.querySelector('[data-skip]').addEventListener('click', () => busy(d, async () => {
-      ls.del(TOKEN_KEY); await unlocked(legacy, d); toast('관리 모드를 켰습니다. 이 탭을 닫으면 토큰은 사라져요.');
+      ls.del(TOKEN_KEY); await unlocked(legacy, d, false); toast('관리 모드를 켰습니다. 저장하지 않았으니 이 탭을 닫으면 토큰은 사라져요.');
     }).catch(() => {}));
     f.addEventListener('submit', e => {
       e.preventDefault();
@@ -660,9 +664,10 @@
   });
 
   function enter() { document.body.classList.add('admin'); loadSubmissions().catch(() => {}); }
-  function leave() {
-    ss.del(TOKEN_KEY); ls.del(TOKEN_KEY);
+  function leave(quiet) {
+    ss.del(TOKEN_KEY); ls.del(TOKEN_KEY); ls.del(SESSION_KEY);
     token = ''; document.body.classList.remove('admin');
+    if (quiet) return;
     toast(readVault() ? '관리 모드를 껐습니다. 다음엔 패스워드로 열 수 있어요.' : '관리 모드를 껐습니다. 토큰은 이 브라우저에서 지웠어요.');
   }
 
@@ -673,16 +678,22 @@
   }
   let opening = false;
   async function openFlow() {
-    const session = ss.get(TOKEN_KEY), legacy = ls.get(TOKEN_KEY);
-    if (session) {                                   // already unlocked in this tab
-      try { await unlocked(session, null); return; }
-      catch (e) { ss.del(TOKEN_KEY); if (e.status === 401 || e.noWrite) { forgetAll(); return loginDialog(e.message); } }
+    const kept = ls.get(SESSION_KEY), tabOnly = ss.get(TOKEN_KEY), legacy = ls.get(TOKEN_KEY);
+    const session = kept || tabOnly;
+    if (session) {                                   // already unlocked: this device (until 끄기) or this tab
+      try { await unlocked(session, null, !!kept); return; }
+      catch (e) { ss.del(TOKEN_KEY); ls.del(SESSION_KEY); if (e.status === 401 || e.noWrite) { forgetAll(); return loginDialog(e.message); } }
     }
     if (legacy && canCrypt) return migrateDialog(legacy);
     if (legacy) { ls.del(TOKEN_KEY); try { await unlocked(legacy, null); return; } catch (e) { return loginDialog(e.message); } }
     if (readVault() && canCrypt) return unlockDialog();
     return loginDialog();
   }
+
+  // turning admin mode off in one window turns it off in every other open window too
+  window.addEventListener('storage', e => {
+    if (e.key === SESSION_KEY && !e.newValue && document.body.classList.contains('admin') && !ss.get(TOKEN_KEY)) leave(true);
+  });
 
   window.ArchiveAdmin = { open };
   open();

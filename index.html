@@ -959,7 +959,7 @@
   /* ── boot ──────────────────────────────── */
   fitCovers(); renderTabs(); buildStage(); renderIndex();
   if (document.fonts) document.fonts.ready.then(() => { fitCovers(); layout(); });
-  try { if (/[?&#]admin\b/.test(location.search + location.hash) || localStorage.getItem('archive-gh-token') || sessionStorage.getItem('archive-gh-token')) loadAdmin(); } catch (_) {}
+  try { if (/[?&#]admin\b/.test(location.search + location.hash) || localStorage.getItem('archive-gh-session') || localStorage.getItem('archive-gh-token') || sessionStorage.getItem('archive-gh-token')) loadAdmin(); } catch (_) {}
   try { if (localStorage.getItem('archive-view') === 'index') setView('index'); } catch (_) {}
 
   // intro: a thin bar fills while the front covers load, then the stage fades in
