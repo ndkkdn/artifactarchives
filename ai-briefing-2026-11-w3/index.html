@@ -634,6 +634,31 @@
     .art .ans, .art .seq.okm { opacity: 1; }
     .art .run, .art .seq { translate: none; }
   }
+
+  /* ── chapter openers with photos ── */
+  .ph { position: absolute; inset: -4%; background-size: cover; background-position: center; transform: scale(1.04); }
+  .is-active .ph { animation: phDrift 22s ease-in-out infinite alternate; }
+  .ph.soft { filter: blur(14px) saturate(1.1) brightness(.75); inset: -8%; }
+  @keyframes phDrift { 0% { transform: scale(1.04) translate(0, 0); } 50% { transform: scale(1.12) translate(-2%, 1%); } 100% { transform: scale(1.08) translate(2%, -1.5%); } }
+  @media (prefers-reduced-motion: reduce) { .is-active .ph { animation: none; } }
+  .ph-shade { position: absolute; inset: 0; background: linear-gradient(90deg, rgba(12,21,36,.94) 0%, rgba(12,21,36,.72) 42%, rgba(12,21,36,.25) 100%), linear-gradient(0deg, rgba(12,21,36,.85) 0%, rgba(12,21,36,0) 45%); }
+  .s-photo { justify-content: flex-end; padding-bottom: 150px; }
+  .s-photo > *:not(.ph):not(.ph-shade) { position: relative; z-index: 1; }
+  .s-photo .bign { font: 800 150px/1 Inter, sans-serif; color: rgba(213,168,68,.9); letter-spacing: -.04em; margin-bottom: 8px; }
+  .s-photo h2 { font-size: 72px; margin: 0; }
+  .s-photo .sub { font-size: 24px; color: var(--ink-2); margin-top: 18px; max-width: 900px; line-height: 1.5; }
+  .credit { position: absolute !important; left: 110px; bottom: 40px; font-size: 13px; color: rgba(243,239,228,.55); z-index: 2; max-width: 900px; }
+  .ph-card { position: absolute !important; right: 110px; top: 150px; width: 640px; margin: 0; border-radius: 22px; overflow: hidden; border: 1px solid rgba(243,239,228,.18); box-shadow: 0 30px 80px rgba(0,0,0,.5); transform: rotate(1.5deg); }
+  .ph-card img { display: block; width: 100%; max-height: 560px; object-fit: cover; object-position: top; }
+  .s-title .ph-title { position: absolute; right: 0; top: 0; bottom: 0; width: 62%; background-size: cover; background-position: center; -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 45%); mask-image: linear-gradient(90deg, transparent 0%, #000 45%); opacity: .75; }
+  .s-title .art-title { display: none !important; }
+  .ignite-what { margin-top: 10px; padding: 10px 14px; border-radius: 12px; background: rgba(243,239,228,.05); border: 1px solid var(--line); font-size: 15.5px; line-height: 1.5; color: var(--ink-2); }
+  .ignite-what b { color: var(--ink); }
+  html.portrait .s-photo { padding-bottom: 120px; }
+  html.portrait .s-photo .bign { font-size: 96px; } html.portrait .s-photo h2 { font-size: 48px; } html.portrait .s-photo .sub { font-size: 18px; }
+  html.portrait .slide.s-photo { justify-content: flex-end; padding-bottom: 170px; }
+  html.portrait .ph-card { left: 40px; right: 40px; top: 110px; width: auto; transform: none; } html.portrait .credit { left: 24px; bottom: 96px; font-size: 11px; max-width: 80%; }
+  html.portrait .s-title .ph-title { width: 100%; opacity: .35; -webkit-mask-image: linear-gradient(180deg, #000 0%, transparent 70%); mask-image: linear-gradient(180deg, #000 0%, transparent 70%); }
 </style>
 </head>
 <body>
@@ -666,6 +691,7 @@
 
   <!-- 01 title -->
   <section class="slide s-title" data-notes="2026년 11월 16일까지의 보도를 기준으로 한 주간 브리핑입니다. 가장 중요한 두 사건은 Anthropic IPO와 AI 시험 부정행위입니다. Anthropic은 11월 18일 공모가를 확정하고 19일 나스닥에서 ANT로 거래를 시작할 예정이며, 공모 규모는 최대 644억 달러, 동시 사모를 합하면 904억 달러입니다. 국내에서는 세무사 시험 수석 합격자가 초소형 카메라와 생성형 AI로 부정행위를 했다고 자백했고, 정부가 국가자격시험 전수조사와 수능 감독 강화에 나섰습니다. 그 밖에 MS365 Copilot 과금, Gemini 4, 소형 모델 3종, Claude Projects, ChatGPT Wallet을 다룹니다.">
+    <div class="ph-title" style="background-image:url(img/title-seoul-night.jpg)" aria-hidden="true"></div><div class="credit">사진: NASA Johnson Space Center · Public domain (Wikimedia Commons)</div>
     <div class="date" data-a="fade">2026.11.16 기준</div>
     <div class="art art-title" data-a="fade" style="--d:3" aria-hidden="true">
       <svg viewBox="0 0 400 400">
@@ -736,6 +762,14 @@
     </ul>
     <div class="legend" data-a="fade" style="--d:10; margin-top:20px; gap:10px 14px"><span class="badge ok">확정된 사실</span><span class="badge rumor">루머·미확인</span><span class="badge judge">판단</span><span class="badge vendor">벤더 수치</span></div>
     <div class="gloss" data-a="fade" style="--d:11" aria-label="약어 풀이"><span><b>AI</b><em>Artificial Intelligence</em> · 인공지능</span><span><b>MS365</b><em>Microsoft 365</em> · Word·Excel·Teams 등을 묶은 Microsoft 구독 서비스</span><span><b>S-1</b><em>Form S-1</em> · 미국 상장 때 증권거래위원회(SEC)에 내는 증권신고서</span><span><b>IPO</b><em>Initial Public Offering</em> · 기업공개. 주식시장 첫 상장</span></div>
+  </section>
+
+  <section class="slide s-photo" data-notes="첫 번째 주제는 AI 시험 부정행위입니다. 세무사 수석 합격자의 자백과 정부 대응, 11월 19일 수능 대책을 봅니다.">
+    <div class="ph" style="background-image:url(img/ch1-suneung-pen.jpg)" aria-hidden="true"></div><div class="ph-shade"></div><figure class="ph-card" data-a="right" style="--d:2"><img src="img/ch1-thermal.jpg" alt="전자 부품 열화상 이미지"></figure>
+    <div class="bign" data-a="left">01</div>
+    <h2 data-a style="--d:1">AI 시험 부정행위</h2>
+    <p class="sub" data-a style="--d:2">세무사 수석 합격자의 자백, 그리고 사흘 앞으로 다가온 수능</p>
+    <div class="credit">배경: 고려 · CC BY 4.0 · 2018학년도 수능 컴퓨터용 사인펜과 샤프 / 우측: Mister rf · CC BY-SA 4.0 · 열화상 이미지 (Wikimedia Commons)</div>
   </section>
 
   <!-- 04 scores -->
@@ -1028,6 +1062,14 @@
     <div class="gloss" data-a="fade" style="--d:8" aria-label="약어 풀이"><span><b>BT</b><em>Bluetooth</em> · 블루투스. 몇 미터 안에서 기기끼리 잇는 근거리 무선 통신</span><span><b>TOPIK</b><em>Test of Proficiency in Korean</em> · 한국어능력시험</span></div>
   </section>
 
+  <section class="slide s-photo" data-notes="두 번째 주제는 Microsoft 365 Copilot입니다. 사용량 기반 과금 일정, 공정 사용 한도, 모델 선택과 Ignite 2026을 봅니다.">
+    <div class="ph soft" style="background-image:url(img/ch2-copilot-models.jpg)" aria-hidden="true"></div><div class="ph-shade"></div><figure class="ph-card" data-a="right" style="--d:2"><img src="img/ch2-copilot-plugins.jpg" alt="Copilot 플러그인 메뉴 화면"></figure>
+    <div class="bign" data-a="left">02</div>
+    <h2 data-a style="--d:1">MS365 Copilot</h2>
+    <p class="sub" data-a style="--d:2">사용량 기반 과금 일정은 엇갈리고, 모델 선택지는 넓어진다</p>
+    <div class="credit">배경: Microsoft Tech Community 「More Models, One Copilot」 / 우측: 「Plugins at Microsoft Ignite 2026」</div>
+  </section>
+
   <!-- 10 UBB swimlane -->
   <section class="slide" data-notes="원래 계획: Microsoft는 9월 16일 CSP 파트너들에게 11월 2일부터 CSP로 새로 구매하는 Copilot Business 라이선스에 UBB를 기본 적용한다고 알렸습니다. 과금은 M365 청구서가 아니라 연결된 Azure 구독으로 나가며, 기본 한도는 사용자당 월 4,000 Copilot Credits(약 40달러)이고 관리자가 조정할 수 있습니다. 변경 보도: 11월 6일 업데이트된 Microsoft FAQ를 인용한 보도(o365hq, vissensa)에 따르면 CSP 기본 적용은 Microsoft 회계연도 2027년 3분기(2027년 1~3월)로 연기됐고 11월 11일 현재 opt-in 방식입니다. 반면 메시지센터 공지 MC1476200은 '11월 중순부터 Microsoft에서 직접 구매하는 신규 테넌트'에는 기본 적용된다고 밝혔습니다. 즉 판매 채널(CSP인지 직접 구매인지)에 따라 일정이 다르고 문서끼리도 충돌하므로 테넌트별 확인이 필요합니다.">
     <div class="kicker" data-a="left">02 · MS365 Copilot</div>
@@ -1113,12 +1155,21 @@
         <p class="small" style="margin-top:10px">⚠ 표본 1개 · 참고용</p>
       </div>
       <div class="card" data-a style="--d:4"><div class="num">Ignite 2026 · 11/17~20 샌프란시스코</div>
-        <p><b>작성 시점(11/16)엔 미개최</b> → 확정된 신기능 없음</p>
+        <div class="ignite-what"><b>Ignite란?</b> Microsoft가 매년 여는 IT 관리자·개발자 대상 최대 기술 콘퍼런스. Microsoft 365·Azure·Copilot의 신기능과 로드맵을 발표하는 자리</div>
+        <p style="margin-top:10px"><b>작성 시점(11/16)엔 미개최</b> → 확정된 신기능 없음</p>
         <p class="small" style="margin-top:14px">세션 카탈로그로 본 <span class="badge judge">예상 주제</span></p>
         <ul style="margin-top:8px"><li>Copilot 앱 통합: Chat·Cowork·Code·Autopilot (BRK201)</li><li>플러그인 레지스트리</li><li>Copilot Connectors</li><li>비용 · 거버넌스</li></ul>
       </div>
     </div>
     <div class="gloss" data-a="fade" style="--d:8" aria-label="약어 풀이"><span><b>BRK</b><em>Breakout session</em> · Ignite 본 세션 번호 접두어. BRK201은 세션 코드</span><span><b>GPT</b><em>Generative Pre-trained Transformer</em> · OpenAI 모델 계열 이름</span></div>
+  </section>
+
+  <section class="slide s-photo" data-notes="세 번째 주제는 Google Gemini 4입니다. 정식 공개된 세 모델을 비교하고, 확인되지 않은 Krypton과 Helix 유출을 정리합니다.">
+    <div class="ph soft" style="background-image:url(img/ch3-gemini-app.jpg)" aria-hidden="true"></div><div class="ph-shade"></div><figure class="ph-card" data-a="right" style="--d:2"><img src="img/ch3-gemini-hydrogen.jpg" alt="Gemini 4 Hydrogen 공식 이미지"></figure>
+    <div class="bign" data-a="left">03</div>
+    <h2 data-a style="--d:1">Gemini 4</h2>
+    <p class="sub" data-a style="--d:2">Argon · Carbon · Hydrogen, 그리고 Krypton · Helix 유출</p>
+    <div class="credit">배경: Google 공식 블로그 「Gemini 4 Argon is now available in the Gemini app」 / 우측: 「Introducing Gemini 4 Hydrogen」</div>
   </section>
 
   <!-- 13 Gemini gantt -->
@@ -1308,6 +1359,14 @@
     <div class="gloss" data-a="fade" style="--d:11" aria-label="약어 풀이"><span><b>GA</b><em>General Availability</em> · 누구나 쓸 수 있게 정식 공개된 상태</span><span><b>Flash-Lite</b><em>Gemini 최경량 등급</em> · Flash보다 더 싸고 빠른 모델 자리</span></div>
   </section>
 
+  <section class="slide s-photo" data-notes="네 번째 주제는 소형 모델 세 가지입니다. 토큰 단가는 같지만 과업당 비용과 벤치마크, 실사용 결과가 다릅니다.">
+    <div class="ph soft" style="background-image:url(img/ch4-muse-ember.jpg)" aria-hidden="true"></div><div class="ph-shade"></div><figure class="ph-card" data-a="right" style="--d:2"><img src="img/ch4-gpu-die.jpg" alt="Nvidia G70 GPU 다이 사진"></figure>
+    <div class="bign" data-a="left">04</div>
+    <h2 data-a style="--d:1">소형 모델 3종</h2>
+    <p class="sub" data-a style="--d:2">Muse Ember · Claude Haiku 5.5 · GPT-6 Luna, 같은 토큰 단가의 다른 성적표</p>
+    <div class="credit">배경: Meta 공식 블로그 「Introducing Muse Ember」 / 우측: Martijn Boer · Public domain · Nvidia G70 GPU 다이 (Wikimedia Commons)</div>
+  </section>
+
   <!-- 17 small models price -->
   <section class="slide" data-notes="Muse Ember는 Meta가 11월 9일 출시한 Muse 계열의 가장 작은 멀티모달 모델로, OpenRouter ID는 meta/muse-ember입니다. 1M 컨텍스트를 지원하며 가중치는 공개하지 않습니다. 세 모델 모두 기본 구간 가격이 입력 $0.10, 출력 $0.50(100만 토큰당)으로 같습니다. 그런데 Artificial Analysis 과업당 비용은 Ember 약 $0.14, Haiku 5.5 약 $0.41, Luna 약 $0.15로 갈립니다. '같은 점수에 비용 3분의 1'이라는 주장은 Ember가 과업당 출력 토큰을 약 3분의 1만 쓰기 때문에 나온 결과입니다. 장문 프롬프트 요금: Ember는 200K 초과 시 $0.30/$1.50, Haiku는 100K 초과 시 $0.50/$2.50, Luna는 272K까지 기본 요금이고 초과 시 인상. 컨텍스트: Ember 1M, Haiku 1M, Luna는 공개 자료로 확인하지 못함. 출력 속도(AA): Ember 449 tok/s, Haiku 확인 불가, Luna 102 tok/s.">
     <div class="kicker" data-a="left">04 · 소형 모델 3종</div>
@@ -1385,6 +1444,14 @@
     <div class="gloss" data-a="fade" style="--d:9" aria-label="약어 풀이"><span><b>AA</b><em>Artificial Analysis</em> · AI 모델 독립 측정 업체</span><span><b>ms</b><em>millisecond</em> · 1,000분의 1초</span><span><b>K</b><em>천</em> · 200K = 20만 토큰</span></div>
   </section>
 
+  <section class="slide s-photo" data-notes="다섯 번째 주제는 Claude Code의 Projects 업데이트입니다. 능동형 코디네이터, /btw와 /fork, 스레드 공유, 요금과 한도를 봅니다.">
+    <div class="ph soft" style="background-image:url(img/ch5-projects-art.jpg)" aria-hidden="true"></div><div class="ph-shade"></div><figure class="ph-card" data-a="right" style="--d:2"><img src="img/ch5-projects-demo.gif" alt="Claude Projects 데모 화면"></figure>
+    <div class="bign" data-a="left">05</div>
+    <h2 data-a style="--d:1">Claude Projects</h2>
+    <p class="sub" data-a style="--d:2">코디네이터가 일을 쪼개 병렬 스레드에 맡기는 구조</p>
+    <div class="credit">배경·우측: Anthropic 공식 블로그 「Projects redesigned」</div>
+  </section>
+
   <!-- 20 Claude Projects -->
   <section class="slide" data-hook="projects" data-notes="배경(9월 17일): Anthropic은 Projects를 '폴더'에서 '대화'로 재설계했습니다. 하나의 코디네이터 대화가 작업을 쪼개 병렬 스레드에 맡기는 구조입니다. 각 스레드는 저장소 사본과 Git 브랜치를 따로 가진 완전한 Claude Code 클라우드 세션으로, 노트북을 덮어도 계속 실행됩니다. Anthropic 설명: 'Claude scopes the request, delegates the work, coordinates parallel threads, reviews the outputs, and assembles the finished result.' 11월 13일 업데이트(@ClaudeDevs, 22:51 UTC): 능동형 코디네이터 — 'The coordinator is now much more proactive. It answers your questions in the project chat and gives you updates on the status of your ongoing threads.' /btw와 /fork가 프로젝트 안에서도 작동합니다(/btw는 곁가지 주제를 별도 스레드로 분리, /fork는 현재 스레드에서 갈라져 새 스레드). 읽기 전용 스레드 공유: 로그인한 Claude 사용자에게 링크로 공유 가능, 로컬 컴퓨터 접근 권한이 있는 스레드는 공유 불가. 기타: 스레드 리마인더, 스레드 패널의 최근 항목 행과 아티팩트 썸네일. 왼쪽 그림은 구조를 보여 주기 위한 개념도입니다.">
     <div class="kicker" data-a="left">05 · Claude Projects</div>
@@ -1432,6 +1499,14 @@
       <div class="card ok" data-a style="--d:6"><div class="num">롤아웃</div><p style="font-size:17px"><b>공개 베타</b><br>Pro 월 $20 · Max 월 $100</p></div>
       <div class="card rumor" data-a style="--d:7"><span class="badge rumor">1차 출처 미확인</span><p style="font-size:16px">대기자 명단 · 일반 채팅·Cowork 확장 일정 · Enterprise 프로젝트 태그</p></div>
     </div>
+  </section>
+
+  <section class="slide s-photo" data-notes="여섯 번째 주제는 ChatGPT Wallet입니다. dots 에이전트가 결제까지 하는 방식과 이용 조건, 남은 위험을 봅니다.">
+    <div class="ph" style="background-image:url(img/ch6-terminal.jpg)" aria-hidden="true"></div><div class="ph-shade"></div><figure class="ph-card" data-a="right" style="--d:2"><img src="img/ch6-tap-to-pay.jpg" alt="휴대폰으로 결제 단말기에 결제하는 손"></figure>
+    <div class="bign" data-a="left">06</div>
+    <h2 data-a style="--d:1">ChatGPT Wallet</h2>
+    <p class="sub" data-a style="--d:2">에이전트가 대신 결제하는 시대, 카드번호 대신 토큰으로</p>
+    <div class="credit">배경: RuinDig/Yuki Uchida · CC BY 4.0 (Wikimedia Commons) / 우측: Pavel Danilyuk · Pexels License</div>
   </section>
 
   <!-- 22 Wallet flow -->
@@ -1486,6 +1561,14 @@
           <div class="st"><b>지금</b>건별 승인</div><div class="ar">→</div><div class="st hi"><b>‘위임’ 기능</b>건별 승인 없음 = 위험 분기점</div>
         </div></div>
     </div>
+  </section>
+
+  <section class="slide s-photo" data-notes="일곱 번째 주제는 Anthropic IPO입니다. 공모 조건, 기업가치 계산, S-1 재무, 위험 요인, SpaceX와의 비교를 봅니다. 사실 정리이며 투자 권유가 아닙니다.">
+    <div class="ph" style="background-image:url(img/ch7-nasdaq-night.jpg)" aria-hidden="true"></div><div class="ph-shade"></div><figure class="ph-card" data-a="right" style="--d:2"><img src="img/ch7-s1-cover.jpg" alt="Anthropic S-1/A 표지"></figure>
+    <div class="bign" data-a="left">07</div>
+    <h2 data-a style="--d:1">Anthropic IPO</h2>
+    <p class="sub" data-a style="--d:2">11월 18일 공모가 확정, 19일 나스닥 ANT 거래 시작</p>
+    <div class="credit">배경: Roman SUZUKI · CC BY 3.0 · Nasdaq MarketSite (Wikimedia Commons) / 우측: SEC EDGAR · Anthropic PBC Form S-1/A (Amendment No. 2) 표지</div>
   </section>
 
   <!-- 24 IPO structure -->
@@ -1654,23 +1737,6 @@
     <div class="gloss" data-a="fade" style="--d:8" aria-label="약어 풀이"><span><b>CEO</b><em>Chief Executive Officer</em> · 최고경영자</span><span><b>GPU</b><em>Graphics Processing Unit</em> · AI 학습·추론 연산용 칩</span><span><b>S-1</b><em>Form S-1</em> · 미국 증권신고서</span></div>
   </section>
 
-  <!-- 29 caveats -->
-  <section class="slide" data-notes="이 브리핑은 2026년 11월 16일까지의 보도를 기준으로 했습니다. Ignite(11월 17일~), Anthropic 공모가 확정(11월 18일), 수능 당일(11월 19일)에는 상황이 크게 바뀔 수 있습니다. 모델 벤치마크 상당수는 벤더가 직접 발표했거나 벤더가 골라 실은 수치입니다. Artificial Analysis 수치는 실시간 스냅샷이라 수시로 바뀝니다. 다음 항목은 1차 출처로 확인하지 못했습니다: Claude Projects 대기자 명단과 Enterprise 태그, ChatGPT Wallet 수수료 정책과 경쟁 구도, Haiku 5.5의 출력 한도. Anthropic IPO 부분은 사실 정리이며 투자 권유가 아닙니다.">
-    <div class="kicker" data-a="left" style="color:var(--coral)">Caveats</div>
-    <h2 data-a style="--d:1">읽기 전에 <em>주의할 점</em></h2>
-    <div class="cols c2" style="margin-top:30px">
-      <div class="card hotc" data-a style="--d:2"><div class="num" style="color:#ff8a63">기준일 · 2026.11.16</div>
-        <p>이번 주 안에 상황이 크게 바뀔 수 있음</p>
-        <div class="conds"><span class="chip">11/17~ Ignite</span><span class="chip">11/18 Anthropic 공모가 확정</span><span class="chip">11/19 수능 · ANT 거래 시작</span></div></div>
-      <div class="card vendor" data-a style="--d:3"><span class="badge vendor">벤더 수치</span>
-        <p>모델 벤치마크 상당수는 <b>벤더가 직접 발표</b>했거나 <b>벤더가 골라 실은</b> 수치. Artificial Analysis 수치는 <b>실시간 스냅샷</b>이라 수시로 바뀜</p></div>
-      <div class="card rumor" data-a style="--d:4"><span class="badge rumor">1차 출처로 확인 못 함</span>
-        <ul><li>Claude Projects 대기자 명단 · Enterprise 태그</li><li>ChatGPT Wallet 수수료 정책 · 경쟁 구도</li><li>Haiku 5.5의 출력 한도</li></ul></div>
-      <div class="card judge" data-a style="--d:5"><span class="badge judge">투자 권유 아님</span>
-        <p>Anthropic IPO 부분은 공개 자료와 보도를 정리한 <b>사실 정리</b>입니다. Polymarket 가격 등은 시장의 기대일 뿐 보장이 아닙니다</p></div>
-    </div>
-  </section>
-
   <!-- 30 summary -->
   <section class="slide" data-notes="일곱 줄 요약과 이번 주 일정입니다. 11월 17일 Ignite 개막과 Nvidia 실적, 18일 Anthropic 공모가 확정, 19일 ANT 거래 시작과 수능, 12월 1일 Gemini Argon·Carbon 가격 인상과 Copilot 단독 구매 오퍼가 이어집니다.">
     <div class="kicker" data-a="left">Summary</div>
@@ -1695,7 +1761,7 @@
 <nav class="hud" aria-label="슬라이드 이동">
   <a href="../" title="아카이브로">← Archive</a>
   <button type="button" id="prev" aria-label="이전 슬라이드">‹</button>
-  <span class="count" id="count">1 / 30</span>
+  <span class="count" id="count">1 / 36</span>
   <button type="button" id="next" aria-label="다음 슬라이드">›</button>
   <button type="button" id="notesBtn" title="발표자 노트 (N)">N</button>
   <button type="button" id="fsBtn" title="전체 화면 (F)">⛶</button>

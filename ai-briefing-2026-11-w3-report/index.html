@@ -687,6 +687,22 @@ blockquote.q p { margin: 0; }
 @media (max-width: 760px) and (min-width: 561px) { .tl.c4 { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: 34px; } .tl.c4::before, .tl.c4 .ln { display: none; } }
 @media (max-width: 560px) { .tl.c4, .tl.c5 { grid-template-columns: minmax(0, 1fr); row-gap: 22px; } }
 
+
+/* chapter image banners (shared with the slide deck's chapter covers) */
+.ch-banner { position: relative; margin: 22px 0 6px; height: 250px; border-radius: 18px; overflow: hidden; background: #0c1524; border: 1px solid var(--line); }
+.ch-banner .bg { position: absolute; inset: -6%; background-size: cover; background-position: center; animation: chDrift 22s ease-in-out infinite alternate; }
+.ch-banner .bg.soft { filter: blur(12px) saturate(1.1) brightness(.75); inset: -10%; }
+.ch-banner .shade { position: absolute; inset: 0; background: linear-gradient(90deg, rgba(12,21,36,.88) 0%, rgba(12,21,36,.55) 45%, rgba(12,21,36,.2) 100%); }
+.ch-banner .cnum { position: absolute; left: 26px; bottom: 16px; font: 800 72px/1 Inter, sans-serif; letter-spacing: -.04em; color: rgba(213,168,68,.92); }
+.ch-banner img { position: absolute; right: 24px; top: 24px; height: calc(100% - 48px); width: auto; max-width: 56%; object-fit: cover; object-position: top; border-radius: 12px; border: 1px solid rgba(243,239,228,.2); box-shadow: 0 18px 40px rgba(0,0,0,.45); }
+.ch-credit { display: block; font-size: 12px; line-height: 1.5; color: var(--ink-3); margin: 0 0 20px; }
+@keyframes chDrift { 0% { transform: scale(1.04) translate(0, 0); } 50% { transform: scale(1.12) translate(-2%, 1%); } 100% { transform: scale(1.08) translate(2%, -1.5%); } }
+@media (max-width: 560px) { .ch-banner { height: 190px; } .ch-banner .cnum { font-size: 48px; left: 18px; bottom: 12px; } .ch-banner img { right: 14px; top: 14px; height: calc(100% - 28px); max-width: 60%; } }
+@media (prefers-reduced-motion: reduce) { .ch-banner .bg, .hero-ph { animation: none; } }
+.hero-ph { position: absolute; right: 0; top: 0; bottom: 0; width: 62%; background-size: cover; background-position: center; opacity: .5; -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 55%); mask-image: linear-gradient(90deg, transparent 0%, #000 55%); pointer-events: none; }
+.hero-in { position: relative; z-index: 1; }
+@media (max-width: 760px) { .hero-ph { width: 100%; opacity: .28; -webkit-mask-image: linear-gradient(180deg, #000 0%, transparent 75%); mask-image: linear-gradient(180deg, #000 0%, transparent 75%); } }
+.ignite-what { margin: 12px 0; padding: 12px 16px; border-radius: 12px; border: 1px solid var(--line); background: var(--paper); font-size: 16px; line-height: 1.65; }
 </style>
 <script>document.documentElement.classList.add('js');try{var t=localStorage.getItem('archive-theme');if(t)document.documentElement.dataset.theme=t;}catch(e){}try{var lq=/[?&]launch\b/.test(location.search),ls=sessionStorage.getItem('archive-launch');if(lq||ls===location.pathname){document.documentElement.classList.add('launched');if(!lq)sessionStorage.removeItem('archive-launch');}}catch(e){}</script>
 </head>
@@ -704,11 +720,12 @@ blockquote.q p { margin: 0; }
 </header>
 
 <div class="hero gutter" id="hero">
+  <div class="hero-ph" style="background-image:url(../ai-briefing-2026-11-w3/img/title-seoul-night.jpg)" aria-hidden="true"></div>
   <div class="hero-in">
     <div class="kicker rv" style="--d:0ms">Weekly Tech · AI Briefing · 2026.11 W3</div>
     <h1 class="rv" style="--d:120ms">2026년 11월 셋째 주<br><em>테크·AI 브리핑</em></h1>
     <p class="lede rv" style="--d:260ms">이번 주 가장 중요한 두 사건은 <b>Anthropic IPO</b>와 <b>AI 시험 부정행위</b>입니다. Anthropic은 11월 18일 공모가를 확정하고 19일 나스닥에서 ANT로 거래를 시작할 예정이며, 공모 규모는 최대 644억 달러, 동시 사모를 합하면 904억 달러입니다.<sup class="fn"><a href="#s1" title="How to Buy Anthropic Stock: ANT at $70-$78, Trading 19 Nov - FourWeekMBA">1</a>,<a href="#s2" title="Anthropic IPO six times oversubscribed as it targets a $64.4B raise; pricing set for 18 No">2</a></sup> 국내에서는 세무사 시험 수석 합격자가 초소형 카메라와 생성형 AI로 부정행위를 했다고 자백했고, 정부가 국가자격시험 전수조사와 수능 감독 강화에 나섰습니다.<sup class="fn"><a href="#s3" title="정부, 올해 국가자격시험 전수조사…세무사 수석 합격취소 추진 : 네이트 뉴스">3</a></sup></p>
-    <div class="meta rv" style="--d:380ms"><span>📄 7개 주제</span><span>⏱ 약 20분 읽기</span><span>🔗 출처 115건</span><span>📅 11월 16일까지의 보도 기준</span></div>
+    <div class="meta rv" style="--d:380ms"><span>📄 7개 주제</span><span>⏱ 약 20분 읽기</span><span>🔗 출처 115건</span><span>📅 11월 16일까지의 보도 기준</span><span style="opacity:.6">배경 사진: NASA JSC · Public domain</span></div>
 
     <div class="shift week rv" style="--d:480ms" aria-label="이번 주 주요 일정">
       <div class="rail"><i></i></div><div class="glow"></div>
@@ -739,6 +756,8 @@ blockquote.q p { margin: 0; }
       <span class="sec-label"><span class="num">01</span> · 시험 관리</span>
       <h2>AI 부정행위: 세무사 수석 합격자 자백 사건과 수능 대응</h2>
       <p class="standfirst">제63회 세무사 시험 수석 합격자가 <b>초소형 카메라와 생성형 AI</b>로 부정행위를 했다고 자백했습니다. 시험장 감독은 이를 잡지 못했고, 시행 기관은 자백 직전까지 "특이사항 없음"이었습니다. 사흘 뒤 수능을 앞두고 정부 대응이 한꺼번에 쏟아졌습니다.</p>
+      <figure class="ch-banner" style="margin-bottom:6px"><div class="bg" style="background-image:url(../ai-briefing-2026-11-w3/img/ch1-suneung-pen.jpg)" aria-hidden="true"></div><div class="shade"></div><div class="cnum" aria-hidden="true">01</div><img src="../ai-briefing-2026-11-w3/img/ch1-thermal.jpg" alt="전자 부품 열화상 이미지" loading="lazy"></figure>
+      <small class="ch-credit">배경: 고려 · CC BY 4.0 · 2018학년도 수능 컴퓨터용 사인펜과 샤프 / 우측: Mister rf · CC BY-SA 4.0 · 열화상 이미지 (Wikimedia Commons)</small>
 
       <h3><span class="hn">1.1</span>확인된 사실 <span class="okc">확정</span></h3>
       <ul class="dots">
@@ -870,6 +889,8 @@ blockquote.q p { margin: 0; }
       <span class="sec-label"><span class="num">02</span> · 11월 중순 기준</span>
       <h2>Microsoft 365 Copilot: 과금 일정은 엇갈리고, 모델 선택은 넓어지고</h2>
       <p class="standfirst">Copilot의 <b>사용량 기반 과금(UBB)</b>이 언제부터 기본으로 켜지는지가 문서마다 다릅니다. 판매 채널에 따라 일정이 갈리고, 같은 채널 안에서도 공지가 바뀌었습니다. 그사이 모델 선택기에는 Claude와 GPT 최신 모델이 들어왔습니다.</p>
+      <figure class="ch-banner" style="margin-bottom:6px"><div class="bg soft" style="background-image:url(../ai-briefing-2026-11-w3/img/ch2-copilot-models.jpg)" aria-hidden="true"></div><div class="shade"></div><div class="cnum" aria-hidden="true">02</div><img src="../ai-briefing-2026-11-w3/img/ch2-copilot-plugins.jpg" alt="Copilot 플러그인 메뉴 화면" loading="lazy"></figure>
+      <small class="ch-credit">배경: Microsoft Tech Community 「More Models, One Copilot」 / 우측: 「Plugins at Microsoft Ignite 2026」</small>
 
       <h3><span class="hn">2.1</span>사용량 기반 과금(UBB): 일정이 엇갈림</h3>
       <ul class="dots">
@@ -935,6 +956,7 @@ blockquote.q p { margin: 0; }
       </div>
 
       <h3><span class="hn">2.4</span>Ignite 2026 (11월 17~20일, 샌프란시스코)</h3>
+      <p class="ignite-what"><strong>Ignite란?</strong> Microsoft가 매년 여는 IT 관리자·개발자 대상 최대 기술 콘퍼런스입니다. Microsoft 365·Azure·Copilot의 신기능과 로드맵을 이 자리에서 발표합니다.</p>
       <div class="callout"><span class="tag">아직 열리지 않음</span><p><strong>작성 시점(11월 16일)에는 아직 열리지 않았습니다.</strong> 그래서 확정된 신기능은 없습니다.<sup class="fn"><a href="#s37" title="November 2026 announcements - Partner Center announcements">37</a>,<a href="#s40" title="Microsoft Ignite 2026 Dates: 17-20 Nov, Passes and Sessions">40</a>,<a href="#s46" title="Microsoft Ignite 2026 Preview: Copilot, AI Agent Security and What IT Admins Should Watch">46</a>,<a href="#s47" title="Microsoft Ignite 2026 Preview: What to Expect for Copilot and Frontier Transformation - Th">47</a></sup> 공개된 세션 카탈로그로 보면 Copilot 앱의 진화(Chat·Cowork·Code·Autopilot 통합, BRK201), 플러그인 레지스트리, Copilot Connectors, 비용과 거버넌스가 핵심 주제로 예상됩니다.<sup class="fn"><a href="#s40" title="Microsoft Ignite 2026 Dates: 17-20 Nov, Passes and Sessions">40</a>,<a href="#s48" title="Plugins at Microsoft Ignite 2026">48</a></sup></p></div>
       <div class="callout ok"><span class="tag">권고</span><p>기본 적용 일정과 관계없이, 관리자 센터 '비용 관리'에서 <strong>지출 정책과 사용자별 크레딧 한도를 지금 설정</strong>해 두는 것이 안전합니다.</p></div>
       <aside class="gloss" aria-label="약어 풀이"><span class="tag">이 장의 약어</span>
@@ -956,6 +978,8 @@ blockquote.q p { margin: 0; }
       <span class="sec-label"><span class="num">03</span> · Google</span>
       <h2>Gemini 4: Argon, Carbon, Hydrogen 비교와 Krypton · Helix 유출</h2>
       <p class="standfirst">Gemini 4 세 모델이 모두 정식 공개됐습니다. 가장 늦게 나온 <b>Hydrogen</b>이 가격·속도에서 앞서고, <b>Carbon</b>은 가장 어려운 작업용 상한으로 남습니다. 위로는 아직 아무도 확인하지 않은 <b>Krypton</b>, 아래로는 Flash-Lite 자리의 <b>Helix</b> 유출이 겹쳐 있습니다.</p>
+      <figure class="ch-banner" style="margin-bottom:6px"><div class="bg soft" style="background-image:url(../ai-briefing-2026-11-w3/img/ch3-gemini-app.jpg)" aria-hidden="true"></div><div class="shade"></div><div class="cnum" aria-hidden="true">03</div><img src="../ai-briefing-2026-11-w3/img/ch3-gemini-hydrogen.jpg" alt="Gemini 4 Hydrogen 공식 이미지" loading="lazy"></figure>
+      <small class="ch-credit">배경: Google 공식 블로그 「Gemini 4 Argon is now available in the Gemini app」 / 우측: 「Introducing Gemini 4 Hydrogen」</small>
 
       <h3><span class="hn">3.1</span>공식 출시 일정 <span class="okc">확정</span></h3>
       <div class="tbl-wrap" data-cards="rows">
@@ -1070,6 +1094,8 @@ blockquote.q p { margin: 0; }
       <span class="sec-label"><span class="num">04</span> · 소형 모델</span>
       <h2>소형 모델 비교: Muse Ember, Claude Haiku 5.5, GPT-6 Luna</h2>
       <p class="standfirst">세 모델의 기본 토큰 단가는 <b>입력 $0.10, 출력 $0.50</b>(100만 토큰당)으로 똑같습니다. 그런데 과업 하나를 끝내는 비용은 세 배 가까이 벌어집니다. 다만 그 비교표를 고른 것은 Meta입니다.</p>
+      <figure class="ch-banner" style="margin-bottom:6px"><div class="bg soft" style="background-image:url(../ai-briefing-2026-11-w3/img/ch4-muse-ember.jpg)" aria-hidden="true"></div><div class="shade"></div><div class="cnum" aria-hidden="true">04</div><img src="../ai-briefing-2026-11-w3/img/ch4-gpu-die.jpg" alt="Nvidia G70 GPU 다이 사진" loading="lazy"></figure>
+      <small class="ch-credit">배경: Meta 공식 블로그 「Introducing Muse Ember」 / 우측: Martijn Boer · Public domain · Nvidia G70 GPU 다이 (Wikimedia Commons)</small>
       <ul class="dots">
         <li><strong>Muse Ember:</strong> Meta가 11월 9일 출시한 Muse 계열의 가장 작은 멀티모달 모델로, OpenRouter ID는 <code>meta/muse-ember</code>입니다. 1M 컨텍스트를 지원하며 가중치는 공개하지 않습니다.<sup class="fn"><a href="#s76" title="Muse Ember vs Claude Haiku 5.5 vs GPT-6 Luna on a real app job">76</a>,<a href="#s77" title="Meta's Muse Ember: A Low-Cost AI Model for Agents">77</a>,<a href="#s78" title="Muse Ember: Meta's $0.10 Subagent Model vs Haiku 5.5 and Luna">78</a>,<a href="#s79" title="Meta Muse Ember: Price, Benchmarks and the 200K Catch">79</a></sup></li>
         <li><strong>같은 토큰 단가:</strong> 세 모델 모두 기본 구간의 가격이 입력 $0.10, 출력 $0.50(100만 토큰당)으로 같습니다.<sup class="fn"><a href="#s78" title="Muse Ember: Meta's $0.10 Subagent Model vs Haiku 5.5 and Luna">78</a></sup></li>
@@ -1141,6 +1167,8 @@ blockquote.q p { margin: 0; }
       <span class="sec-label"><span class="num">05</span> · Claude Code</span>
       <h2>Claude Projects 업데이트: 코디네이터가 먼저 말을 건다</h2>
       <p class="standfirst">Projects는 하나의 코디네이터 대화가 일을 쪼개 <b>병렬 스레드</b>에 맡기는 구조입니다. 11월 13일 업데이트로 코디네이터가 능동적으로 바뀌었고, 스레드를 다루는 명령과 공유 기능이 더해졌습니다.</p>
+      <figure class="ch-banner" style="margin-bottom:6px"><div class="bg soft" style="background-image:url(../ai-briefing-2026-11-w3/img/ch5-projects-art.jpg)" aria-hidden="true"></div><div class="shade"></div><div class="cnum" aria-hidden="true">05</div><img src="../ai-briefing-2026-11-w3/img/ch5-projects-demo.gif" alt="Claude Projects 데모 화면" loading="lazy"></figure>
+      <small class="ch-credit">배경·우측: Anthropic 공식 블로그 「Projects redesigned」</small>
       <ul class="dots">
         <li><strong>배경(9월 17일):</strong> Anthropic은 Projects를 '폴더'에서 '대화'로 재설계했습니다. 하나의 코디네이터 대화가 작업을 쪼개 병렬 스레드에 맡기는 구조입니다. 각 스레드는 저장소 사본과 Git 브랜치를 따로 가진 완전한 Claude Code 클라우드 세션으로, 노트북을 덮어도 계속 실행됩니다.<sup class="fn"><a href="#s83" title="Claude Code Projects: One Chat Directs Parallel Threads">83</a>,<a href="#s84" title="Anthropic Launches Claude Code Projects in Beta: Parallel Cloud Sessions That Keep Running">84</a></sup> Anthropic의 설명은 이렇습니다: <span class="en-q">"Claude scopes the request, delegates the work, coordinates parallel threads, reviews the outputs, and assembles the finished result."</span><sup class="fn"><a href="#s85" title="Anthropic's new Claude Code feature could drain your plan before lunch - The New Stack">85</a></sup></li>
       </ul>
@@ -1184,6 +1212,8 @@ blockquote.q p { margin: 0; }
       <span class="sec-label"><span class="num">06</span> · OpenAI · 11월 13일 출시</span>
       <h2>ChatGPT Wallet: 에이전트가 결제하되, 매번 내 지문으로</h2>
       <p class="standfirst">OpenAI가 9월 29일 DevDay에서 공개한 상시 실행형 에이전트 <b>'dots'</b>가 사용자 대신 결제까지 할 수 있게 하는 기능입니다. 현재는 dots 대화 안에서만 작동하고, 일반 ChatGPT, ChatGPT Work, Codex에서는 아직 쓸 수 없습니다.<sup class="fn"><a href="#s91" title="OpenAI Launches ChatGPT Wallet Allowing AI Agents to Make Purchases for Users">91</a>,<a href="#s92" title="ChatGPT Wallet Lets Dots Pay, US Pro Users Only">92</a></sup></p>
+      <figure class="ch-banner" style="margin-bottom:6px"><div class="bg" style="background-image:url(../ai-briefing-2026-11-w3/img/ch6-terminal.jpg)" aria-hidden="true"></div><div class="shade"></div><div class="cnum" aria-hidden="true">06</div><img src="../ai-briefing-2026-11-w3/img/ch6-tap-to-pay.jpg" alt="휴대폰으로 결제 단말기에 결제하는 손" loading="lazy"></figure>
+      <small class="ch-credit">배경: RuinDig/Yuki Uchida · CC BY 4.0 (Wikimedia Commons) / 우측: Pavel Danilyuk · Pexels License</small>
 
       <div class="fig" data-fig="wallet">
         <div class="fig-h"><span class="t">결제 한 건이 흘러가는 길</span><button class="replay" type="button" data-replay>다시 재생</button></div>
@@ -1236,6 +1266,8 @@ blockquote.q p { margin: 0; }
       <span class="sec-label"><span class="num">07</span> · 11.18 공모가 · 11.19 상장 예정</span>
       <h2>Anthropic IPO: 사상 최대 조달, 엇갈리는 기업가치 계산</h2>
       <p class="standfirst">11월 18일 공모가를 확정하고 11월 19일 나스닥에서 <b>ANT</b>로 거래를 시작할 예정입니다. 공모와 동시 사모를 합치면 <b>최대 904억 달러</b>로 사상 최대 규모입니다.</p>
+      <figure class="ch-banner" style="margin-bottom:6px"><div class="bg" style="background-image:url(../ai-briefing-2026-11-w3/img/ch7-nasdaq-night.jpg)" aria-hidden="true"></div><div class="shade"></div><div class="cnum" aria-hidden="true">07</div><img src="../ai-briefing-2026-11-w3/img/ch7-s1-cover.jpg" alt="Anthropic S-1/A 표지" loading="lazy"></figure>
+      <small class="ch-credit">배경: Roman SUZUKI · CC BY 3.0 · Nasdaq MarketSite (Wikimedia Commons) / 우측: SEC EDGAR · Anthropic PBC Form S-1/A (Amendment No. 2) 표지</small>
       <p class="notice">이 섹션은 사실 정리이며 투자 권유가 아닙니다.</p>
 
       <h3><span class="hn">7.1</span>공모 조건 (S-1/A, 11월 10일 제출)</h3>
