@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="description" content="Anthropic IPO, 세무사 시험 AI 부정행위와 수능 대책, MS365 Copilot 과금, Gemini 4 Argon·Carbon·Hydrogen, 소형 모델 3종, Claude Projects, ChatGPT Wallet을 스크롤로 읽는 상세 리포트">
+<meta name="description" content="Anthropic IPO, 세무사 시험 AI 부정행위와 수능 대책, 11월 12~14일 MS365 전 세계 장애, Gemini 4 Argon·Carbon·Hydrogen, 소형 모델 3종, Claude Projects, ChatGPT Wallet을 스크롤로 읽는 상세 리포트">
 <title>2026년 11월 셋째 주 테크·AI 브리핑</title>
 <link rel="icon" href="../favicon.ico" sizes="any">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -376,7 +376,7 @@ footer.site a { color: var(--ink-2); }
 @media (max-width: 640px) { .gloss { padding: 14px 4px 4px; } .gloss dl > div { grid-template-columns: 1fr; gap: 0; } .gloss em { display: block; margin: 0; } }
 
 /* ================= additions for the weekly briefing ================= */
-.shift.week { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+.shift.week { grid-template-columns: repeat(6, minmax(0, 1fr)); }
 .shift.week .st { padding-right: 14px; }
 .shift.week .st h3 { font-size: clamp(15px, 1.6vw, 18px); }
 .shift.week .st.new::before { background: #0c1524; box-shadow: none; }
@@ -541,34 +541,11 @@ blockquote.q p { margin: 0; }
   .chain .nd svg { margin: 0; grid-row: span 2; }
 }
 
-/* UBB lanes */
-.lanes2 { position: relative; padding-top: 22px; }
-.lanes2 .mo { position: absolute; top: 0; left: 132px; right: 0; height: 18px; }
-.lanes2 .mo span { position: absolute; top: 0; font: 600 11px/1 var(--mono); color: var(--ink-3); transform: translateX(2px); white-space: nowrap; }
-.lanes2 .mo span::before { content: ""; position: absolute; left: -2px; top: 14px; width: 1px; height: var(--hh, 200px); background: var(--line); }
-.ln2 { display: grid; grid-template-columns: 120px minmax(0, 1fr); gap: 12px; align-items: center; margin: 10px 0; transition: opacity .3s; }
-.ln2 .who { font-size: 13px; font-weight: 700; line-height: 1.3; }
-.ln2 .who small { display: block; font-weight: 500; color: var(--ink-3); font-size: 11.5px; }
-.ln2 .trk { position: relative; height: 34px; border-radius: 8px; background: var(--paper-2); }
-.ln2 .band { position: absolute; top: 5px; bottom: 5px; border-radius: 6px; display: flex; align-items: center; padding: 0 6px; font: 700 10.5px/1.1 var(--sans); color: var(--ink); overflow: hidden; white-space: nowrap; }
-.ln2 .band.opt { background: repeating-linear-gradient(135deg, var(--blue-soft) 0 6px, transparent 6px 10px); border: 1px dashed var(--blue); color: var(--blue); }
-.ln2 .band.def { background: var(--coral-soft); border: 1px solid var(--coral); color: var(--coral); }
-.ln2 .band.fu { background: var(--violet-soft); border: 1px solid var(--violet); color: var(--violet); }
-.ln2 .mk { position: absolute; top: 50%; width: 22px; height: 22px; margin: -11px 0 0 -11px; border-radius: 50%; background: var(--paper); border: 2px solid var(--gold); display: grid; place-items: center; font: 700 10.5px/1 var(--mono); color: var(--gold); z-index: 1; }
-.ln2 .mk.x { border-color: var(--coral); border-style: dashed; color: var(--coral); text-decoration: line-through; }
-.lanes2 .today { position: absolute; top: 14px; bottom: -6px; width: 0; border-left: 2px solid var(--coral); z-index: 2; pointer-events: none; }
-.lanes2 .today span { position: absolute; top: -14px; left: -1px; transform: translateX(-50%); font: 700 10.5px/1 var(--sans); color: #fff; background: var(--coral); padding: 2px 5px; border-radius: 4px; white-space: nowrap; }
-.lanes2.focus-csp .ln2:not(.csp), .lanes2.focus-dir .ln2:not(.dir) { opacity: .3; }
+/* numbered legend lists */
 .leg2 { list-style: none; margin: 16px 0 0; padding: 0; display: grid; gap: 6px; font-size: 13.5px; line-height: 1.55; color: var(--ink-2); }
 .leg2 li { display: grid; grid-template-columns: 26px minmax(0, 1fr); gap: 8px; align-items: start; }
 .leg2 li i { font: 700 11px/22px var(--mono); width: 22px; height: 22px; border-radius: 50%; text-align: center; border: 1.5px solid var(--gold); color: var(--gold); font-style: normal; }
 .leg2 li.x i { border-color: var(--coral); border-style: dashed; color: var(--coral); }
-@media (max-width: 560px) {
-  .lanes2 .mo { left: 0; }
-  .ln2 { grid-template-columns: minmax(0, 1fr); gap: 4px; margin: 8px 0 12px; }
-  .ln2 .who small { display: inline; margin-left: 6px; }
-  .ln2 .band { font-size: 9.5px; padding: 0 4px; }
-}
 
 /* sliders */
 .sl { display: grid; gap: 6px; font-size: 13.5px; color: var(--ink-2); margin-bottom: 12px; }
@@ -679,14 +656,85 @@ blockquote.q p { margin: 0; }
 .fig { --ca: #c8714f; --cg: #1f9d63; --co: #5b6577; --cm: #3a7be0; --cx: #b9b2a1; }
 :root[data-theme="dark"] .fig { --ca: #d98a6a; --cg: #4cc38a; --co: #b7c0d2; --cm: #6aa8ff; --cx: #4a5670; }
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .fig { --ca: #d98a6a; --cg: #4cc38a; --co: #b7c0d2; --cm: #6aa8ff; --cx: #4a5670; } }
-.ln2 .band { padding-left: 14px; }
-.ln2 .band.def:first-child, .ln2 .trk > .band { text-overflow: ellipsis; }
-.ln2 .who { position: relative; z-index: 3; background: var(--paper); }
 .chk label > span { flex: 1; min-width: 0; }
 .tl.c4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 @media (max-width: 760px) and (min-width: 561px) { .tl.c4 { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: 34px; } .tl.c4::before, .tl.c4 .ln { display: none; } }
 @media (max-width: 560px) { .tl.c4, .tl.c5 { grid-template-columns: minmax(0, 1fr); row-gap: 22px; } }
 
+
+/* 02 MS365 outage */
+.ddw { overflow: hidden; }
+#ddSvg { width: 100%; height: auto; display: block; overflow: visible; font-family: var(--sans); }
+#ddSvg .g { stroke: var(--line); } #ddSvg .ax { stroke: var(--ink-3); }
+#ddSvg text { fill: var(--ink-2); font-size: 12px; } #ddSvg .xl { font: 600 11.5px var(--mono); fill: var(--ink-3); } #ddSvg .yl { fill: var(--ink-3); }
+#ddSvg .st { stroke: var(--coral); stroke-width: 1.5; stroke-dasharray: 4 4; } #ddSvg .stl { fill: var(--coral); font-weight: 700; font-size: 11.5px; }
+#ddSvg .pk { stroke: var(--gold); stroke-width: 1.5; stroke-dasharray: 6 5; } #ddSvg .pkl { fill: var(--gold); font-weight: 700; }
+#ddSvg .ln { fill: none; stroke: var(--coral); stroke-width: 3; stroke-linejoin: round; stroke-linecap: round; stroke-dasharray: 1; stroke-dashoffset: 1; }
+#ddSvg .ar { fill: var(--coral-soft); opacity: 0; transition: opacity .6s; }
+#ddSvg .pt { opacity: 0; cursor: pointer; outline: none; }
+#ddSvg .pt circle { fill: var(--coral); stroke: var(--paper); stroke-width: 2; } #ddSvg .pt circle.hit { fill: transparent; stroke: none; }
+#ddSvg .pt text { fill: var(--ink); font-weight: 700; font-size: 13px; }
+@media (max-width: 560px) { #ddSvg .xl { font-size: 10.5px; } #ddSvg .pkl { font-size: 11px; } }
+#ddSvg .pt.on circle:not(.hit), #ddSvg .pt:focus-visible circle:not(.hit) { stroke: var(--gold); stroke-width: 3; }
+.drawn #ddSvg .ln { stroke-dashoffset: 0; transition: stroke-dashoffset 1.4s var(--ease); }
+.drawn #ddSvg .ar { opacity: .8; transition-delay: 1s; } .drawn #ddSvg .pt { opacity: 1; transition: opacity .3s var(--d); }
+.svcg { display: flex; flex-wrap: wrap; gap: 6px; }
+.svcg .sv { appearance: none; font: 600 13px/1.3 var(--sans); padding: 7px 10px; border-radius: 9px; cursor: pointer; border: 1px solid; color: var(--ink); min-height: 34px; transition: opacity .25s, box-shadow .2s; }
+.svcg .sv.bad { background: var(--coral-soft); border-color: color-mix(in srgb, var(--coral) 55%, transparent); }
+.svcg .sv.part { background: var(--gold-soft); border-color: color-mix(in srgb, var(--gold) 60%, transparent); }
+.svcg .sv.ok { background: var(--green-soft); border-color: color-mix(in srgb, var(--green) 55%, transparent); }
+.svcg .sv.unk { background: var(--paper-2); border-color: var(--line); border-style: dashed; color: var(--ink-2); }
+.svcg .sv[aria-pressed="true"] { box-shadow: 0 0 0 2px var(--gold); }
+.svcg .sv.dim { opacity: .25; }
+.otl-strip { position: relative; padding-top: 22px; margin: 4px 0 6px; }
+.otl-strip .days { position: absolute; top: 0; left: 0; right: 0; height: 18px; }
+.otl-strip .days span { position: absolute; top: 0; font: 600 11px/1 var(--mono); color: var(--ink-3); white-space: nowrap; }
+.otl-strip .days span.dl { transform: translateX(-50%); }
+.otl-strip .days span.dl::after { content: ""; position: absolute; left: 50%; top: 14px; width: 1px; height: 46px; background: var(--line); }
+.otl-strip .trk { position: relative; height: 46px; border-radius: 10px; background: var(--paper-2); }
+.otl-strip .span { position: absolute; top: 14px; height: 10px; border-radius: 5px; background: color-mix(in srgb, var(--coral) 35%, transparent); }
+.otl-strip .cf { position: absolute; top: 4px; bottom: 4px; border: 1.5px dashed var(--coral); border-radius: 6px; background: repeating-linear-gradient(135deg, transparent 0 5px, color-mix(in srgb, var(--coral-soft) 80%, transparent) 5px 8px); }
+.otl-strip .mk { appearance: none; position: absolute; top: 50%; width: 22px; height: 22px; margin: -11px 0 0 -11px; padding: 0; border-radius: 50%; background: var(--paper); border: 2px solid var(--gold); display: grid; place-items: center; font: 700 10px/1 var(--mono); color: var(--gold); z-index: 1; cursor: pointer; transition: transform .3s var(--ease), opacity .3s; }
+.otl-strip .mk.bad { border-color: var(--coral); color: var(--coral); }
+.otl-strip .mk.x { border-style: dashed; border-color: var(--ink-3); color: var(--ink-3); }
+.otl-strip .mk.key { background: var(--gold); color: var(--paper); }
+.otl-strip .mk.on { transform: scale(1.25); box-shadow: 0 0 0 3px var(--gold-soft); z-index: 2; }
+.otl-strip .mk.pre { opacity: 0; transform: scale(.4); }
+.otl-strip .mk.lo { top: 76%; }
+.otl-strip .trk { height: 56px; }
+.otl-strip .mk:not(.lo) { top: 34%; }
+.otl-list { margin-top: 18px; }
+.otl-list li { padding: 3px 6px; border-radius: 8px; transition: background .2s; }
+.otl-list li.on { background: var(--gold-soft); }
+.otl-list li.key i { background: var(--gold); color: var(--paper); }
+.otl-list .tm { font-family: var(--mono); font-size: 12.5px; color: var(--ink); }
+.otl-list small { color: var(--ink-3); font-size: 11.5px; }
+@media (max-width: 560px) { .otl-strip .mk { width: 18px; height: 18px; margin: -9px 0 0 -9px; font-size: 8.5px; } .otl-strip .days span { font-size: 10px; } }
+.hcd { display: grid; grid-template-columns: 150px minmax(0, 1fr); gap: 18px; align-items: center; }
+.hcq { border: 1.5px solid var(--gold); background: var(--gold-soft); border-radius: 14px; padding: 12px; text-align: center; transition: background .3s, border-color .3s; }
+.hcq b { display: block; font-size: 14px; } .hcq small { display: block; font-size: 11.5px; color: var(--ink-2); line-height: 1.4; }
+.hcq svg { width: 100%; height: 26px; margin-top: 6px; } .hcq path { fill: none; stroke: var(--gold); stroke-width: 2; stroke-linejoin: round; }
+.hcq.bad { border-color: var(--coral); background: var(--coral-soft); } .hcq.bad path { stroke: var(--coral); }
+.hcq.alt { border-color: var(--green); background: var(--green-soft); } .hcq.alt path { stroke: var(--green); }
+.hcs { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 8px; }
+.hcs i { position: relative; height: 46px; border-radius: 8px; border: 1.5px solid var(--green); background: var(--green-soft); transition: transform .45s var(--ease), opacity .45s, background .3s, border-color .3s; }
+.hcs i b { position: absolute; left: 7px; top: 7px; width: 7px; height: 7px; border-radius: 50%; background: var(--green); }
+.hcs i em { position: absolute; left: 7px; bottom: 7px; height: 6px; width: 0; max-width: calc(100% - 14px); border-radius: 3px; background: var(--green); transition: width .45s var(--ease), background .3s; }
+.hcs i.hot { border-color: var(--coral); background: var(--coral-soft); } .hcs i.hot b, .hcs i.hot em { background: var(--coral); }
+.hcs i.down { opacity: .35; transform: translateY(6px); border-style: dashed; border-color: var(--coral); background: transparent; } .hcs i.down b { background: var(--coral); }
+.hcm { display: flex; flex-wrap: wrap; gap: 6px 20px; margin-top: 14px; font-size: 13.5px; color: var(--ink-2); }
+.hcm b { font-family: var(--mono); color: var(--ink); }
+@media (max-width: 560px) { .hcd { grid-template-columns: minmax(0, 1fr); gap: 12px; } .hcs { gap: 5px; } .hcs i { height: 38px; } }
+.slab { position: relative; margin: 6px 0 0; }
+.slab .bar { display: flex; height: 34px; border-radius: 9px; overflow: hidden; }
+.slab .bar i { display: grid; place-items: center; font: 700 12px/1 var(--mono); font-style: normal; color: var(--ink); }
+.slab .z0 { width: 1.2%; background: var(--paper-2); } .slab .z25 { width: 10.8%; background: var(--gold-soft); } .slab .z50 { width: 48%; background: color-mix(in srgb, var(--coral) 35%, var(--paper)); } .slab .z100 { width: 40%; background: var(--coral); color: #fff !important; }
+.slab .ndl { position: absolute; top: -7px; bottom: -7px; width: 4px; margin-left: -2px; border-radius: 2px; background: var(--ink); box-shadow: 0 0 0 2px var(--paper); transition: left .25s var(--ease); }
+.slat { position: relative; height: 36px; margin-top: 8px; }
+.slat.up { height: 18px; margin: 4px 0 2px; }
+.slat span { position: absolute; top: 0; transform: translateX(-50%); font: 600 11.5px/1.35 var(--mono); color: var(--ink-3); text-align: center; white-space: nowrap; }
+.slat span small { display: block; font: 500 11px var(--sans); }
+.slat span.st, .slat.up span { transform: none; } .slat span.end { transform: translateX(-100%); }
 
 /* chapter image banners (shared with the slide deck's chapter covers) */
 .ch-banner { position: relative; margin: 22px 0 6px; height: 250px; border-radius: 18px; overflow: hidden; background: #0c1524; border: 1px solid var(--line); }
@@ -703,6 +751,21 @@ blockquote.q p { margin: 0; }
 .hero-in { position: relative; z-index: 1; }
 @media (max-width: 760px) { .hero-ph { width: 100%; opacity: .28; -webkit-mask-image: linear-gradient(180deg, #000 0%, transparent 75%); mask-image: linear-gradient(180deg, #000 0%, transparent 75%); } }
 .ignite-what { margin: 12px 0; padding: 12px 16px; border-radius: 12px; border: 1px solid var(--line); background: var(--paper); font-size: 16px; line-height: 1.65; }
+
+  /* AA index screenshot with Gemini columns highlighted */
+  .aa-shot { position: relative; margin: 0; border-radius: 18px; overflow: hidden; background: #fff; border: 1px solid rgba(243,239,228,.18); box-shadow: 0 24px 60px rgba(0,0,0,.4); }
+  .aa-shot img { display: block; width: 100%; height: auto; }
+  .aa-shot svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+  .aa-shot .aa-dim { fill: rgba(12,21,36,.42); opacity: 0; transition: opacity .8s ease .9s; }
+  .aa-shot .aa-ring { fill: none; stroke: #d5a844; stroke-width: 4; opacity: 0; transition: opacity .6s ease 1.2s; }
+  .aa-shot .aa-tag rect { fill: #d5a844; } .aa-shot .aa-tag text { font: 800 17px "Pretendard Variable", Inter, sans-serif; fill: #0c1524; }
+  .aa-shot .aa-tag { opacity: 0; transition: opacity .6s ease 1.5s; }
+  .is-active .aa-shot .aa-dim, .aa-shot.in .aa-dim { opacity: 1; }
+  .is-active .aa-shot .aa-ring, .is-active .aa-shot .aa-tag, .aa-shot.in .aa-ring, .aa-shot.in .aa-tag { opacity: 1; }
+  .aa-shot.in .aa-ring { animation: aaPulse 2.6s ease-in-out 2s infinite; }
+  @keyframes aaPulse { 0%, 100% { stroke-opacity: 1; } 50% { stroke-opacity: .45; } }
+  @media (prefers-reduced-motion: reduce) { .aa-shot .aa-ring { animation: none !important; } }
+.aa-cap { font-size: 13px; color: var(--ink-3); margin-top: 8px; }
 </style>
 <script>document.documentElement.classList.add('js');try{var t=localStorage.getItem('archive-theme');if(t)document.documentElement.dataset.theme=t;}catch(e){}try{var lq=/[?&]launch\b/.test(location.search),ls=sessionStorage.getItem('archive-launch');if(lq||ls===location.pathname){document.documentElement.classList.add('launched');if(!lq)sessionStorage.removeItem('archive-launch');}}catch(e){}</script>
 </head>
@@ -724,15 +787,16 @@ blockquote.q p { margin: 0; }
   <div class="hero-in">
     <div class="kicker rv" style="--d:0ms">Weekly Tech · AI Briefing · 2026.11 W3</div>
     <h1 class="rv" style="--d:120ms">2026년 11월 셋째 주<br><em>테크·AI 브리핑</em></h1>
-    <p class="lede rv" style="--d:260ms">이번 주 가장 중요한 두 사건은 <b>Anthropic IPO</b>와 <b>AI 시험 부정행위</b>입니다. Anthropic은 11월 18일 공모가를 확정하고 19일 나스닥에서 ANT로 거래를 시작할 예정이며, 공모 규모는 최대 644억 달러, 동시 사모를 합하면 904억 달러입니다.<sup class="fn"><a href="#s1" title="How to Buy Anthropic Stock: ANT at $70-$78, Trading 19 Nov - FourWeekMBA">1</a>,<a href="#s2" title="Anthropic IPO six times oversubscribed as it targets a $64.4B raise; pricing set for 18 No">2</a></sup> 국내에서는 세무사 시험 수석 합격자가 초소형 카메라와 생성형 AI로 부정행위를 했다고 자백했고, 정부가 국가자격시험 전수조사와 수능 감독 강화에 나섰습니다.<sup class="fn"><a href="#s3" title="정부, 올해 국가자격시험 전수조사…세무사 수석 합격취소 추진 : 네이트 뉴스">3</a></sup></p>
-    <div class="meta rv" style="--d:380ms"><span>📄 7개 주제</span><span>⏱ 약 20분 읽기</span><span>🔗 출처 115건</span><span>📅 11월 16일까지의 보도 기준</span><span style="opacity:.6">배경 사진: NASA JSC · Public domain</span></div>
+    <p class="lede rv" style="--d:260ms">이번 주 가장 중요한 두 사건은 <b>Anthropic IPO</b>와 <b>AI 시험 부정행위</b>입니다. Anthropic은 11월 18일 공모가를 확정하고 19일 나스닥에서 ANT로 거래를 시작할 예정이며, 공모 규모는 최대 644억 달러, 동시 사모를 합하면 904억 달러입니다.<sup class="fn"><a href="#s1" title="How to Buy Anthropic Stock: ANT at $70-$78, Trading 19 Nov - FourWeekMBA">1</a>,<a href="#s2" title="Anthropic IPO six times oversubscribed as it targets a $64.4B raise; pricing set for 18 No">2</a></sup> 국내에서는 세무사 시험 수석 합격자가 초소형 카메라와 생성형 AI로 부정행위를 했다고 자백했고, 정부가 국가자격시험 전수조사와 수능 감독 강화에 나섰습니다.<sup class="fn"><a href="#s3" title="정부, 올해 국가자격시험 전수조사…세무사 수석 합격취소 추진 : 네이트 뉴스">3</a></sup> 11월 12~14일에는 Microsoft 365가 약 하루 동안 전 세계에서 멈췄습니다.<sup class="fn"><a href="#s121" title="2026 Microsoft outage - Wikipedia">121</a>,<a href="#s122" title="Microsoft 365 outage: was it a cyberattack? What we know - Ransomnews">122</a></sup></p>
+    <div class="meta rv" style="--d:380ms"><span>📄 7개 주제</span><span>⏱ 약 22분 읽기</span><span>🔗 출처 123건</span><span>📅 11월 16일까지의 보도 기준</span><span style="opacity:.6">배경 사진: NASA JSC · Public domain</span></div>
 
     <div class="shift week rv" style="--d:480ms" aria-label="이번 주 주요 일정">
       <div class="rail"><i></i></div><div class="glow"></div>
       <div class="st old"><div class="n">11.12</div><h3>Gemini 4 Hydrogen 출시</h3><p>발표 당일 정식 공개(GA). Carbon은 11.10 GA.</p></div>
+      <div class="st old hot"><div class="n">11.12–14</div><h3>MS365 전 세계 장애</h3><p>Exchange에서 시작해 약 하루. 70여 개국 신고, 원인은 예비 설명뿐.</p></div>
       <div class="st old"><div class="n">11.13</div><h3>ChatGPT Wallet · Projects 업데이트</h3><p>dots가 결제까지. Claude Projects 코디네이터가 능동형으로.</p></div>
       <div class="st old hot"><div class="n">11.15</div><h3>세무사 수석 자백</h3><p>같은 날 청와대·노동부 긴급대책회의, 국가자격시험 전수조사 결정.</p></div>
-      <div class="st new"><div class="n">11.17–20<em>예정</em></div><h3>Microsoft Ignite 2026</h3><p>샌프란시스코. 작성 시점에는 아직 열리지 않았습니다.</p></div>
+      <div class="st new"><div class="n">11.17–20<em>예정</em></div><h3>Microsoft Ignite 2026</h3><p>Microsoft 365·Azure·Copilot 신기능을 발표하는 연례 행사. 샌프란시스코, 작성 시점엔 미개최.</p></div>
       <div class="st new"><div class="n">11.18–19<em>예정</em></div><h3>ANT 공모가 · 상장 / 수능</h3><p>18일 공모가 확정, 19일 나스닥 거래 시작. 같은 19일 수능.</p></div>
     </div>
 
@@ -741,7 +805,7 @@ blockquote.q p { margin: 0; }
       <a href="#ipo"><b data-count="6" data-pre="약 " data-suf="배">0</b><span>초과청약 (Bloomberg, 소식통 인용)</span></a>
       <a href="#cheat"><b data-count="1312" data-suf="곳">0</b><span>스마트안경 전담 요원 배치 수능 시험장</span></a>
       <a href="#gemini"><b data-count="1.87" data-dec="2" data-pre="$">0</b><span>Gemini 4 Hydrogen 과업당 비용 (AA, high)</span></a>
-      <a href="#small"><b data-count="0.14" data-dec="2" data-pre="$">0</b><span>Muse Ember 과업당 비용 (AA, 벤더 발표 자료)</span></a>
+      <a href="#m365"><b data-count="70" data-suf="+개국">0</b><span>MS365 장애 신고가 나온 나라 (Wikipedia·Ransomnews)</span></a>
     </div>
   </div>
 </div>
@@ -884,91 +948,184 @@ blockquote.q p { margin: 0; }
       </aside>
     </section>
 
-    <!-- ================= 2. M365 Copilot ================= -->
-    <section id="m365" data-n="02" data-t="MS365 Copilot">
-      <span class="sec-label"><span class="num">02</span> · 11월 중순 기준</span>
-      <h2>Microsoft 365 Copilot: 과금 일정은 엇갈리고, 모델 선택은 넓어지고</h2>
-      <p class="standfirst">Copilot의 <b>사용량 기반 과금(UBB)</b>이 언제부터 기본으로 켜지는지가 문서마다 다릅니다. 판매 채널에 따라 일정이 갈리고, 같은 채널 안에서도 공지가 바뀌었습니다. 그사이 모델 선택기에는 Claude와 GPT 최신 모델이 들어왔습니다.</p>
-      <figure class="ch-banner" style="margin-bottom:6px"><div class="bg soft" style="background-image:url(../ai-briefing-2026-11-w3/img/ch2-copilot-models.jpg)" aria-hidden="true"></div><div class="shade"></div><div class="cnum" aria-hidden="true">02</div><img src="../ai-briefing-2026-11-w3/img/ch2-copilot-plugins.jpg" alt="Copilot 플러그인 메뉴 화면" loading="lazy"></figure>
-      <small class="ch-credit">배경: Microsoft Tech Community 「More Models, One Copilot」 / 우측: 「Plugins at Microsoft Ignite 2026」</small>
+    <!-- ================= 2. MS365 장애 ================= -->
+    <section id="m365" data-n="02" data-t="MS365 장애">
+      <span class="sec-label"><span class="num">02</span> · 11월 12~14일</span>
+      <h2>Microsoft 365 장애: Exchange에서 시작해 약 하루, 원인은 아직 ‘예비 설명’</h2>
+      <p class="standfirst">11월 12일(미국 시간) Exchange Online에서 시작된 장애가 Outlook, Teams 일정, Copilot, Defender 등으로 번졌습니다. 70개국 이상에서 신고가 쏟아졌고, 완전 복구까지 <b>약 하루</b>가 걸렸습니다. Microsoft는 사이버공격이 아니라 <b>네트워크 용량 업그레이드 중 생긴 문제</b>라는 예비 설명만 내놓았고, 사후 보고서는 아직입니다.</p>
+      <figure class="ch-banner" style="margin-bottom:6px"><div class="bg" style="background-image:url(../ai-briefing-2026-11-w3/img/ch2-servers.jpg)" aria-hidden="true"></div><div class="shade"></div><div class="cnum" aria-hidden="true">02</div><img src="../ai-briefing-2026-11-w3/img/ch2-servers.jpg" alt="파란 조명이 켜진 데이터센터 서버 랙" loading="lazy" style="object-position:center"></figure>
+      <small class="ch-credit">배경·우측: BalticServers.com · CC BY-SA 3.0 · 데이터센터 서버 랙 (Wikimedia Commons)</small>
+      <div class="callout"><span class="tag">시간 표기</span><p>출처들은 UTC나 미국 동부 시간(ET, 11월은 UTC−5)으로 적었습니다. 이 장의 한국 시간(KST)은 <strong>모두 UTC에 9시간을 더한 단순 환산값</strong>이며, 한국 영향을 다룬 출처는 찾지 못했습니다.</p></div>
 
-      <h3><span class="hn">2.1</span>사용량 기반 과금(UBB): 일정이 엇갈림</h3>
+      <h3><span class="hn">2.1</span>무슨 일이 있었나 <span class="okc">확정</span></h3>
       <ul class="dots">
-        <li><strong>원래 계획:</strong> Microsoft는 9월 16일 CSP 파트너들에게, 11월 2일부터 CSP로 새로 구매하는 Copilot Business 라이선스에 UBB를 기본 적용한다고 알렸습니다. 과금은 M365 청구서가 아니라 연결된 Azure 구독으로 나가며, 기본 한도는 사용자당 월 4,000 Copilot Credits(약 40달러)이고 관리자가 조정할 수 있습니다.<sup class="fn"><a href="#s30" title="Microsoft 365 Copilot Usage-Based Billing: Nov 2 Checklist - IT GOAT">30</a>,<a href="#s31" title="Copilot Business (CSP): Usage-Based Billing Default in 2027">31</a></sup></li>
-        <li><strong>변경 보도:</strong> 11월 6일 업데이트된 Microsoft FAQ를 인용한 보도에 따르면, CSP 기본 적용은 <strong>Microsoft 회계연도 2027년 3분기(FY27 Q3, 2027년 1~3월)로 연기</strong>됐고 11월 11일 현재는 선택(opt-in) 방식입니다(o365hq, vissensa).<sup class="fn"><a href="#s31" title="Copilot Business (CSP): Usage-Based Billing Default in 2027">31</a>,<a href="#s32" title="Microsoft 365 Copilot Usage-Based Billing Changes">32</a></sup></li>
-        <li><strong>엇갈리는 공지:</strong> 반면 메시지센터 공지 MC1476200은 "11월 중순부터 Microsoft에서 직접 구매하는 신규 테넌트"에는 기본 적용된다고 밝혔습니다.<sup class="fn"><a href="#s33" title="MC1476200: Microsoft 365 Copilot Usage-Based Billing">33</a></sup> <strong>즉 판매 채널(CSP인지 직접 구매인지)에 따라 일정이 다르고, 문서끼리도 충돌</strong>합니다. 테넌트별로 확인이 필요합니다.</li>
+        <li><strong>장애 번호 두 개:</strong> 근원은 Exchange Online 장애 <code>EX1550543</code>이고, 여러 서비스를 묶은 통합 공지가 <code>MO1550821</code>입니다.<sup class="fn"><a href="#s116" title="Massive Microsoft 365 outage disrupts Outlook, Teams, Copilot worldwide - BleepingComputer">116</a>,<a href="#s119" title="Microsoft 365 outage Nov 2026: what broke and why - System Design Academy">119</a>,<a href="#s120" title="Microsoft 365 Outage Nov 2026: Resolved, Cause, Next Steps - EpiFive">120</a>,<a href="#s122" title="Microsoft 365 outage: was it a cyberattack? What we know - Ransomnews">122</a></sup></li>
+        <li><strong>시작 시각:</strong> EX1550543의 영향은 11월 12일 <strong>16:17 UTC</strong>(한국 시간 13일 01:17, 환산)에 시작됐습니다.<sup class="fn"><a href="#s119" title="Microsoft 365 outage Nov 2026: what broke and why - System Design Academy">119</a>,<a href="#s120" title="Microsoft 365 Outage Nov 2026: Resolved, Cause, Next Steps - EpiFive">120</a></sup> MO1550821은 <strong>18:26 UTC</strong>(13일 03:26 KST, 환산)에 열렸습니다.<sup class="fn"><a href="#s116" title="Massive Microsoft 365 outage disrupts Outlook, Teams, Copilot worldwide - BleepingComputer">116</a>,<a href="#s118" title="What Caused the Microsoft 365 Outage of November 12, 2026 - Control Plane">118</a>,<a href="#s119" title="Microsoft 365 outage Nov 2026: what broke and why - System Design Academy">119</a>,<a href="#s120" title="Microsoft 365 Outage Nov 2026: Resolved, Cause, Next Steps - EpiFive">120</a></sup> <span class="unv">출처 간 차이</span> Wikipedia는 시작을 17:00~18:00 UTC로 적습니다.<sup class="fn"><a href="#s121" title="2026 Microsoft outage - Wikipedia">121</a></sup></li>
+        <li><strong>지역:</strong> Microsoft는 처음에 미주 지역을 언급했다가, 이후 어느 지역이든 영향을 받을 수 있다고 밝혔습니다.<sup class="fn"><a href="#s116" title="Massive Microsoft 365 outage disrupts Outlook, Teams, Copilot worldwide - BleepingComputer">116</a>,<a href="#s117" title="Massive Microsoft 365 Outage Impacts Exchange Online, Teams, SharePoint, Copilot, and Defender XDR Users - Cyber Security News">117</a>,<a href="#s120" title="Microsoft 365 Outage Nov 2026: Resolved, Cause, Next Steps - EpiFive">120</a></sup></li>
+        <li><strong>앞선 Teams 장애:</strong> 같은 날 14:45~15:53 UTC에 별도의 Teams 장애 <code>TM1550488</code>이 있었고, 원인은 “리소스 경합”이었습니다. Microsoft는 이번 장애와 관련이 있는지 밝히지 않았습니다.<sup class="fn"><a href="#s116" title="Massive Microsoft 365 outage disrupts Outlook, Teams, Copilot worldwide - BleepingComputer">116</a>,<a href="#s118" title="What Caused the Microsoft 365 Outage of November 12, 2026 - Control Plane">118</a>,<a href="#s120" title="Microsoft 365 Outage Nov 2026: Resolved, Cause, Next Steps - EpiFive">120</a></sup></li>
       </ul>
 
-      <div class="fig" data-fig="ubb">
-        <div class="fig-h"><span class="t">UBB 기본 적용 일정, 채널별로 보기</span><span class="s">축은 11월을 확대해 그렸습니다</span></div>
-        <div class="ctl-row"><span class="lab">강조</span><div class="seg" id="ubbSeg"><button type="button" data-v="all" aria-pressed="true">전체</button><button type="button" data-v="csp" aria-pressed="false">CSP 구매</button><button type="button" data-v="dir" aria-pressed="false">Microsoft 직접 구매</button></div></div>
-        <div class="lanes2" id="lanes2">
-          <div class="mo" id="ubbMo"></div>
-          <div class="ln2 csp"><div class="who">CSP 신규 구매<small>Copilot Business</small></div><div class="trk" data-lane="csp"></div></div>
-          <div class="ln2 dir"><div class="who">직접 구매<small>신규 테넌트</small></div><div class="trk" data-lane="dir"></div></div>
-          <div class="ln2 fu"><div class="who">Copilot Chat<small>fair use 한도</small></div><div class="trk" data-lane="fu"></div></div>
-          <div class="ln2 etc"><div class="who">구매 조건<small>신규 오퍼</small></div><div class="trk" data-lane="etc"></div></div>
-          <div class="today" id="ubbToday"><span>11.16 작성 시점</span></div>
-        </div>
-        <ol class="leg2" id="ubbLeg"></ol>
-        <div class="out warn" id="ubbOut"></div>
+      <h3><span class="hn">2.2</span>얼마나 컸나: 70개국 이상, 신고 최고 14만 건 안팎</h3>
+      <p>70개국 이상에서 장애 신고가 나왔습니다.<sup class="fn"><a href="#s121" title="2026 Microsoft outage - Wikipedia">121</a>,<a href="#s122" title="Microsoft 365 outage: was it a cyberattack? What we know - Ransomnews">122</a></sup> Ransomnews가 인용한 Al Jazeera에 따르면 13일 07:00 UTC 기준 72개국에서 Outlook 신고가 43,000건을 넘었습니다.<sup class="fn"><a href="#s122" title="Microsoft 365 outage: was it a cyberattack? What we know - Ransomnews">122</a></sup> Microsoft는 영향을 받은 계정 수를 밝히지 않았습니다.<sup class="fn"><a href="#s122" title="Microsoft 365 outage: was it a cyberattack? What we know - Ransomnews">122</a></sup></p>
+      <div class="kv">
+        <div><b>70+개국</b><span>신고가 나온 나라 (Wikipedia, Ransomnews)</span></div>
+        <div><b>약 13.8만~14만</b><span>Downdetector Outlook 신고 최고치 (Reuters 138,058 / CP24 약 14만)</span></div>
+        <div><b>43,000+</b><span>72개국 Outlook 신고 (13일 07:00 UTC, Al Jazeera)</span></div>
+        <div><b>약 4억 3,000만</b><span>M365 전체 이용자 · 장애 규모 아님 (Wikipedia)</span></div>
       </div>
 
+      <div class="fig" data-fig="dd">
+        <div class="fig-h"><span class="t">Downdetector Outlook 신고 수 (11월 12일)</span><button class="replay" type="button" data-replay>다시 재생</button></div>
+        <div class="ctl-row"><span class="lab">시간 기준</span><div class="seg" id="ddSeg"><button type="button" data-v="et" aria-pressed="true">미국 동부(ET)</button><button type="button" data-v="utc" aria-pressed="false">UTC</button><button type="button" data-v="kst" aria-pressed="false">KST 환산</button></div></div>
+        <div class="ddw"><svg id="ddSvg" viewBox="0 0 640 300" role="img" aria-label="Outlook 신고 수: 미국 동부 시간 오후 1시 9분 약 12만 9천 건, 3시 15분 약 6만 3천, 5시 41분 약 3만 7천, 밤 11시 약 2만. 최고치는 약 13만 8천에서 14만 건이며 시각은 확인되지 않음"></svg></div>
+        <div class="out" id="ddOut">점을 눌러 보면 시각과 출처가 나옵니다.</div>
+        <figcaption>Downdetector는 이용자가 직접 올린 신고 수로, Microsoft가 집계한 수치가 아닙니다. 최고치(Reuters 138,058건, CP24 약 14만 건)는 시각이 확인되지 않아 점선으로만 표시했습니다. 시작선은 EX1550543 영향 시작(16:17 UTC)입니다. 자료: Ransomnews, EpiFive<sup class="fn"><a href="#s120" title="Microsoft 365 Outage Nov 2026: Resolved, Cause, Next Steps - EpiFive">120</a>,<a href="#s122" title="Microsoft 365 outage: was it a cyberattack? What we know - Ransomnews">122</a></sup>.</figcaption>
+      </div>
+      <p>신고는 미국 동부 시간 12일 오후 1시 9분 약 12만 9,000건, 최고치는 Reuters 기준 약 13만 8,058건(EpiFive 인용), CP24 기준 약 14만 건(Ransomnews 인용)이었습니다. 이후 오후 3시 15분 약 6만 3,000건, 5시 41분 약 3만 7,000건, 밤 11시 약 2만 건으로 줄었습니다.<sup class="fn"><a href="#s120" title="Microsoft 365 Outage Nov 2026: Resolved, Cause, Next Steps - EpiFive">120</a>,<a href="#s122" title="Microsoft 365 outage: was it a cyberattack? What we know - Ransomnews">122</a></sup> 참고로 Microsoft 365 전체 이용자는 약 4억 3,000만 명으로,<sup class="fn"><a href="#s121" title="2026 Microsoft outage - Wikipedia">121</a></sup> 이 숫자는 장애 규모가 아니라 서비스 전체 규모입니다.</p>
+
+      <h3><span class="hn">2.3</span>무엇이 멈췄고, 무엇은 됐나</h3>
+      <p>MO1550821 공지에 오른 서비스는 System Design Academy 집계로 Exchange 외 18개, The Register(Control Plane 인용) 집계로 약 15개입니다.<sup class="fn"><a href="#s118" title="What Caused the Microsoft 365 Outage of November 12, 2026 - Control Plane">118</a>,<a href="#s119" title="Microsoft 365 outage Nov 2026: what broke and why - System Design Academy">119</a></sup> 같은 Teams 안에서도 기능에 따라 결과가 달랐습니다.</p>
+      <div class="fig" data-fig="svc">
+        <div class="fig-h"><span class="t">서비스별 영향 (MO1550821 목록 기준)</span><span class="s">항목을 누르면 설명</span></div>
+        <div class="ctl-row"><span class="lab">보기</span><div class="seg" id="svcSeg"><button type="button" data-v="all" aria-pressed="true">전체</button><button type="button" data-v="biz" aria-pressed="false">업무용</button><button type="button" data-v="con" aria-pressed="false">개인 계정</button></div></div>
+        <div class="svcg" id="svcGrid"></div>
+        <div class="legend"><span><i style="background:var(--coral)"></i>실패·지연</span><span><i style="background:var(--gold)"></i>일부 기능만 실패</span><span><i style="background:var(--green)"></i>계속 작동</span><span><i style="background:var(--ink-3)"></i>영향 확인 안 됨</span></div>
+        <div class="out" id="svcOut"></div>
+      </div>
       <ul class="dots">
-        <li><strong>과금 대상 기능:</strong> Copilot Cowork, Work IQ APIs, GitHub Copilot Harness입니다.<sup class="fn"><a href="#s34" title="Microsoft Ignite 2026: Copilot Renewal Costs, Usage-Based Billing and the Missing Seat Cou">34</a>,<a href="#s35" title="Automatic Usage-Based Billing Is Coming to Microsoft 365 Copilot Business">35</a></sup> 11월 초부터는 GPT-6 Astra, Claude Fable 5.1 같은 'UBB 모델'이 Chat과 Word·Excel·PowerPoint의 모델 선택기에 나타납니다. 쓰려면 Copilot 라이선스, UBB 활성화, 크레딧 할당이 모두 필요합니다.<sup class="fn"><a href="#s36" title="Microsoft 365 November 2026 Updates: Copilot UBB, Code and Teams">36</a></sup></li>
-        <li><strong>12월 1일부터:</strong> M365 기본 구독 없이도 Copilot과 Copilot Business 신규 오퍼를 구매할 수 있습니다.<sup class="fn"><a href="#s34" title="Microsoft Ignite 2026: Copilot Renewal Costs, Usage-Based Billing and the Missing Seat Cou">34</a></sup></li>
+        <li><strong>Exchange Online · Outlook:</strong> 웹, 데스크톱(MAPI), ActiveSync, REST 등 여러 연결 방식으로 메일함에 연결할 수 없었고, “메일 전달이 지연될 수 있다”고 공지됐습니다.<sup class="fn"><a href="#s119" title="Microsoft 365 outage Nov 2026: what broke and why - System Design Academy">119</a>,<a href="#s120" title="Microsoft 365 Outage Nov 2026: Resolved, Cause, Next Steps - EpiFive">120</a></sup></li>
+        <li><strong>Teams:</strong> 통화, 회의, 채팅, 채널 메시지는 영향을 받지 않았습니다. 반면 일정, 예약, 초대와 일부 Copilot 기능은 실패했습니다.<sup class="fn"><a href="#s119" title="Microsoft 365 outage Nov 2026: what broke and why - System Design Academy">119</a>,<a href="#s120" title="Microsoft 365 Outage Nov 2026: Resolved, Cause, Next Steps - EpiFive">120</a></sup></li>
+        <li><strong>SharePoint Online:</strong> SharePoint에 직접 저장된 파일은 계속 쓸 수 있었습니다.<sup class="fn"><a href="#s119" title="Microsoft 365 outage Nov 2026: what broke and why - System Design Academy">119</a>,<a href="#s120" title="Microsoft 365 Outage Nov 2026: Resolved, Cause, Next Steps - EpiFive">120</a></sup></li>
+        <li><strong>그 밖에 목록에 오른 서비스:</strong> Microsoft 365 Copilot, Defender XDR, Defender for Office 365, Purview, Planner, To Do, Intune, Power BI, Fabric, Graph API, Universal Print, Windows 365(Customer Key), M365 Education, M365 앱, 관리 센터.<sup class="fn"><a href="#s119" title="Microsoft 365 outage Nov 2026: what broke and why - System Design Academy">119</a>,<a href="#s120" title="Microsoft 365 Outage Nov 2026: Resolved, Cause, Next Steps - EpiFive">120</a></sup></li>
+        <li><strong>개인 계정:</strong> Outlook.com, OneDrive, OneNote, To Do, Teams, 개인 계정용 웹 M365도 영향을 받았습니다.<sup class="fn"><a href="#s119" title="Microsoft 365 outage Nov 2026: what broke and why - System Design Academy">119</a></sup></li>
+        <li><strong>Azure:</strong> Azure 상태 페이지에는 활성 이벤트가 없었고, Microsoft는 Azure 워크로드 영향을 확인하지 않았습니다.<sup class="fn"><a href="#s118" title="What Caused the Microsoft 365 Outage of November 12, 2026 - Control Plane">118</a></sup></li>
       </ul>
 
-      <h3><span class="hn">2.2</span>Copilot Chat 공정 사용(fair use) 한도</h3>
-      <p>Microsoft Partner Center 공식 공지에 따르면, Copilot 라이선스가 없는 사용자의 Copilot Chat 추가 기능에 공정 사용 한도가 새로 적용됩니다. M365 좌석이 2,000석 이하인 조직은 <strong>11월 2일</strong>, 그보다 큰 조직은 <strong>11월 9일</strong>부터입니다.<sup class="fn"><a href="#s37" title="November 2026 announcements - Partner Center announcements">37</a></sup></p>
+      <h3><span class="hn">2.4</span>복구 타임라인: 약 하루, 끝난 시각은 엇갈림</h3>
+      <div class="fig" data-fig="otl">
+        <div class="fig-h"><span class="t">장애와 복구, 시간 순서대로</span><button class="replay" type="button" data-replay>다시 재생</button></div>
+        <div class="ctl-row"><span class="lab">시간 기준</span><div class="seg" id="otlSeg"><button type="button" data-v="utc" aria-pressed="true">UTC</button><button type="button" data-v="kst" aria-pressed="false">KST 환산</button></div></div>
+        <div class="otl-strip" id="otlStrip"><div class="days" id="otlDays"></div><div class="trk"><i class="span" id="otlSpan"></i></div></div>
+        <ol class="leg2 otl-list" id="otlList"></ol>
+        <figcaption>번호를 누르면 해당 항목이 강조됩니다. 막대는 12일 14:00 UTC부터 14일 06:00 UTC까지를 같은 비율로 그렸고, 빨간 점선 칸은 끝난 시각에 대한 출처 간 차이입니다. 미국 동부 시간으로 발표된 항목(오후 2시 6분, 오후 8시 6분)은 UTC로 바꿔 적었습니다.</figcaption>
+      </div>
+      <ul class="dots">
+        <li><strong>대응 순서:</strong> 미국 동부 시간 12일 오후 2시 6분(19:06 UTC) 모든 배포와 구성 변경을 멈췄습니다. 오후 8시 6분(13일 01:06 UTC)에는 장애 시작과 시점이 겹치는 최근 네트워크 구성 변경을 되돌렸습니다. 이어 대체 헬스체크 방식으로 바꾸고, 지역 간에 트래픽을 다시 나누고, 서버를 재시작·재구축하고, 가상머신(VM)을 늘리고, 영향받은 서버로 가는 트래픽을 제한했습니다.<sup class="fn"><a href="#s116" title="Massive Microsoft 365 outage disrupts Outlook, Teams, Copilot worldwide - BleepingComputer">116</a>,<a href="#s119" title="Microsoft 365 outage Nov 2026: what broke and why - System Design Academy">119</a>,<a href="#s120" title="Microsoft 365 Outage Nov 2026: Resolved, Cause, Next Steps - EpiFive">120</a>,<a href="#s122" title="Microsoft 365 outage: was it a cyberattack? What we know - Ransomnews">122</a></sup></li>
+        <li><strong>단계적 복귀:</strong> 서버를 한꺼번에가 아니라 단계적으로 되돌렸습니다. Microsoft는 이 방식이 “더 오래 걸렸지만” “안정적인 복구”였다고 설명했습니다. 인프라 일부에 적용한 패치는 더 많은 지역으로 넓혔습니다.<sup class="fn"><a href="#s116" title="Massive Microsoft 365 outage disrupts Outlook, Teams, Copilot worldwide - BleepingComputer">116</a>,<a href="#s119" title="Microsoft 365 outage Nov 2026: what broke and why - System Design Academy">119</a>,<a href="#s120" title="Microsoft 365 Outage Nov 2026: Resolved, Cause, Next Steps - EpiFive">120</a>,<a href="#s122" title="Microsoft 365 outage: was it a cyberattack? What we know - Ransomnews">122</a></sup></li>
+        <li><strong>메일 유실 방지:</strong> 지연된 메일이 사라지지 않도록 메일 타임아웃 기간을 <strong>48시간</strong>으로 늘렸습니다.<sup class="fn"><a href="#s116" title="Massive Microsoft 365 outage disrupts Outlook, Teams, Copilot worldwide - BleepingComputer">116</a>,<a href="#s117" title="Massive Microsoft 365 Outage Impacts Exchange Online, Teams, SharePoint, Copilot, and Defender XDR Users - Cyber Security News">117</a>,<a href="#s118" title="What Caused the Microsoft 365 Outage of November 12, 2026 - Control Plane">118</a>,<a href="#s122" title="Microsoft 365 outage: was it a cyberattack? What we know - Ransomnews">122</a></sup></li>
+        <li><strong>회복 경과(13일, UTC):</strong> 04:36 일부 지역 부분 복구,<sup class="fn"><a href="#s121" title="2026 Microsoft outage - Wikipedia">121</a>,<a href="#s122" title="Microsoft 365 outage: was it a cyberattack? What we know - Ransomnews">122</a></sup> 09:24 초기 안정화, 12:09 유럽 진전,<sup class="fn"><a href="#s122" title="Microsoft 365 outage: was it a cyberattack? What we know - Ransomnews">122</a></sup> 13:32 북미 개선과 “아시아태평양의 고무적인 복구 신호”,<sup class="fn"><a href="#s117" title="Massive Microsoft 365 Outage Impacts Exchange Online, Teams, SharePoint, Copilot, and Defender XDR Users - Cyber Security News">117</a>,<a href="#s122" title="Microsoft 365 outage: was it a cyberattack? What we know - Ransomnews">122</a></sup> 14:17 메일 대기열이 “정상 수준에 근접”,<sup class="fn"><a href="#s122" title="Microsoft 365 outage: was it a cyberattack? What we know - Ransomnews">122</a></sup> 22:00 확장 모니터링.<sup class="fn"><a href="#s120" title="Microsoft 365 Outage Nov 2026: Resolved, Cause, Next Steps - EpiFive">120</a></sup> 14일 02:17 회복 지속 확인, 04:17 상태 “serviceRestored”(14일 13:17 KST, 환산).<sup class="fn"><a href="#s120" title="Microsoft 365 Outage Nov 2026: Resolved, Cause, Next Steps - EpiFive">120</a></sup></li>
+      </ul>
+      <div class="callout unvb"><span class="tag">끝난 시각 · 출처마다 다름</span><p>EpiFive가 정리한 Microsoft 기록은 머리말과 본문에 13일 <strong>04:10 UTC</strong>와 <strong>16:10 UTC</strong>가 섞여 있습니다.<sup class="fn"><a href="#s120" title="Microsoft 365 Outage Nov 2026: Resolved, Cause, Next Steps - EpiFive">120</a></sup> Wikipedia는 “11월 14일 아침까지 완전 복구”로 적습니다.<sup class="fn"><a href="#s121" title="2026 Microsoft outage - Wikipedia">121</a></sup> 흔히 “약 하루”, “거의 24시간의 장애”로 묘사됩니다.<sup class="fn"><a href="#s121" title="2026 Microsoft outage - Wikipedia">121</a>,<a href="#s122" title="Microsoft 365 outage: was it a cyberattack? What we know - Ransomnews">122</a></sup></p></div>
 
-      <div class="fig" data-fig="org">
-        <div class="fig-h"><span class="t">우리 조직에 대입해 보기</span><span class="s">원문 기준값을 그대로 곱한 단순 계산</span></div>
-        <div class="two">
-          <label class="sl"><span>M365 좌석 수 <b id="seatL">1,500석</b></span><input type="range" id="seatIn" min="100" max="10000" step="100" value="1500" aria-label="M365 좌석 수"></label>
-          <label class="sl"><span>UBB를 쓰는 Copilot 사용자 수 <b id="userL">50명</b></span><input type="range" id="userIn" min="1" max="500" step="1" value="50" aria-label="UBB 사용자 수"></label>
+      <h3><span class="hn">2.5</span>Microsoft가 밝힌 경위: 헬스체크와 ‘보안 연결’ 과부하 <span class="vend">Microsoft 설명</span></h3>
+      <ul class="dots">
+        <li>초기 공지: “사용자가 여러 연결 방식으로 Exchange Online 메일함에 연결하지 못할 수 있다.”<sup class="fn"><a href="#s120" title="Microsoft 365 Outage Nov 2026: Resolved, Cause, Next Steps - EpiFive">120</a></sup></li>
+        <li><strong>트래픽 급증이 아니었습니다.</strong> Microsoft는 “여러 서버가 예기치 않게 사용할 수 없게 된 것”이 문제라고 했습니다.<sup class="fn"><a href="#s116" title="Massive Microsoft 365 outage disrupts Outlook, Teams, Copilot worldwide - BleepingComputer">116</a>,<a href="#s118" title="What Caused the Microsoft 365 Outage of November 12, 2026 - Control Plane">118</a>,<a href="#s120" title="Microsoft 365 Outage Nov 2026: Resolved, Cause, Next Steps - EpiFive">120</a></sup> 서버들이 자동 헬스체크에 실패해 서비스에서 빠졌고, 이 실패는 “서버 상태를 처리하는 특정 구성 요소에서 비롯됐을 수 있다”고 설명했습니다.<sup class="fn"><a href="#s118" title="What Caused the Microsoft 365 Outage of November 12, 2026 - Control Plane">118</a>,<a href="#s119" title="Microsoft 365 outage Nov 2026: what broke and why - System Design Academy">119</a>,<a href="#s120" title="Microsoft 365 Outage Nov 2026: Resolved, Cause, Next Steps - EpiFive">120</a></sup></li>
+        <li>서버의 핵심 프로세스 가운데 “보안 연결 수립”을 맡은 프로세스가 과부하됐고, 되돌린 서버도 트래픽을 받기 시작하면 다시 응답하지 않을 수 있었습니다.<sup class="fn"><a href="#s118" title="What Caused the Microsoft 365 Outage of November 12, 2026 - Control Plane">118</a>,<a href="#s119" title="Microsoft 365 outage Nov 2026: what broke and why - System Design Academy">119</a>,<a href="#s120" title="Microsoft 365 Outage Nov 2026: Resolved, Cause, Next Steps - EpiFive">120</a></sup> 그래서 대체 헬스체크, 트래픽 제한, 단계적 복귀로 대응했습니다.</li>
+      </ul>
+      <div class="fig" data-fig="hc">
+        <div class="fig-h"><span class="t">헬스체크가 서버를 빼고, 남은 서버가 버티지 못하기까지</span><button class="replay" type="button" data-replay>다시 재생</button></div>
+        <div class="ctl-row"><span class="lab">단계</span><div class="seg" id="hcSeg"><button type="button" data-v="0" aria-pressed="true">정상</button><button type="button" data-v="1" aria-pressed="false">① 이탈</button><button type="button" data-v="2" aria-pressed="false">② 과부하</button><button type="button" data-v="3" aria-pressed="false">③ 재발</button><button type="button" data-v="4" aria-pressed="false">④ 단계적 복귀</button></div></div>
+        <div class="hcd" id="hcd">
+          <div class="hcq" id="hcq"><b>헬스체크</b><small>서버 상태 처리 구성 요소</small><svg viewBox="0 0 60 24" aria-hidden="true"><path d="M2 12h12l4-9 6 18 5-12 3 3h26"/></svg></div>
+          <div class="hcs" id="hcs"></div>
         </div>
+        <div class="hcm"><span>남은 서버 <b id="hcUp">18 / 18</b></span><span>서버당 연결 부하 <b id="hcLd">45%</b></span></div>
+        <div class="out" id="hcOut"></div>
+        <figcaption>Microsoft 공지의 설명을 단순화한 도해입니다. 서버 수, 빠지는 순서, 부하 수치는 이해를 돕기 위한 예시입니다.</figcaption>
+      </div>
+
+      <h3><span class="hn">2.6</span>예비 원인과 배제된 것</h3>
+      <p>Microsoft는 BleepingComputer에 이렇게 밝혔습니다.<sup class="fn"><a href="#s116" title="Massive Microsoft 365 outage disrupts Outlook, Teams, Copilot worldwide - BleepingComputer">116</a>,<a href="#s120" title="Microsoft 365 Outage Nov 2026: Resolved, Cause, Next Steps - EpiFive">120</a></sup></p>
+      <blockquote class="q"><p>“This was a technical issue not related to cyber or AI / agents. The incident was introduced by an issue during an earlier network capacity upgrade that surfaced following a recent network change.”</p></blockquote>
+      <p>우리말로 옮기면 “사이버나 AI·에이전트와 관련 없는 기술적 문제였다. 앞선 <mark>네트워크 용량 업그레이드</mark> 중 생긴 문제가 최근 네트워크 변경 뒤에 드러났다”는 뜻입니다. <span class="vend">예비 설명</span></p>
+      <ul class="dots">
+        <li><strong>악의적 활동:</strong> 13일 03:34 UTC 공지에서 “악의적 활동의 결과라는 징후는 없다”고 밝혔습니다.<sup class="fn"><a href="#s119" title="Microsoft 365 outage Nov 2026: what broke and why - System Design Academy">119</a>,<a href="#s120" title="Microsoft 365 Outage Nov 2026: Resolved, Cause, Next Steps - EpiFive">120</a></sup></li>
+        <li><strong>AI 에이전트:</strong> 관련 없다고 했습니다.<sup class="fn"><a href="#s116" title="Massive Microsoft 365 outage disrupts Outlook, Teams, Copilot worldwide - BleepingComputer">116</a>,<a href="#s120" title="Microsoft 365 Outage Nov 2026: Resolved, Cause, Next Steps - EpiFive">120</a></sup></li>
+        <li><strong>트래픽 급증·DoS:</strong> 아니라고 했습니다.<sup class="fn"><a href="#s116" title="Massive Microsoft 365 outage disrupts Outlook, Teams, Copilot worldwide - BleepingComputer">116</a>,<a href="#s120" title="Microsoft 365 Outage Nov 2026: Resolved, Cause, Next Steps - EpiFive">120</a>,<a href="#s122" title="Microsoft 365 outage: was it a cyberattack? What we know - Ransomnews">122</a></sup></li>
+      </ul>
+
+      <h3><span class="hn">2.7</span>확인되지 않은 주장 <span class="unv">미확인</span></h3>
+      <div class="callout unvb"><span class="tag">루머 · 미확인 · 출처 간 충돌</span>
+        <p><strong>Azure 가상 네트워크(VNet) 구성 변경:</strong> The Verge가 전한 내용(Ransomnews 인용)으로, Microsoft가 확인하지 않았습니다.<sup class="fn"><a href="#s122" title="Microsoft 365 outage: was it a cyberattack? What we know - Ransomnews">122</a></sup></p>
+        <p><strong>“결함 있는 서버 업데이트”:</strong> Wikipedia의 설명으로,<sup class="fn"><a href="#s121" title="2026 Microsoft outage - Wikipedia">121</a></sup> Microsoft가 밝힌 “네트워크 용량 업그레이드”와 충돌합니다.<sup class="fn"><a href="#s116" title="Massive Microsoft 365 outage disrupts Outlook, Teams, Copilot worldwide - BleepingComputer">116</a>,<a href="#s120" title="Microsoft 365 Outage Nov 2026: Resolved, Cause, Next Steps - EpiFive">120</a></sup></p>
+        <p><strong>Patch Tuesday 연관:</strong> 이틀 전 정기 보안 업데이트와 연결 짓는 시각이 있지만 Microsoft는 아무 연관도 언급하지 않았습니다.<sup class="fn"><a href="#s121" title="2026 Microsoft outage - Wikipedia">121</a></sup></p>
+        <p><strong>사이버공격설:</strong> Microsoft는 거듭 악의적 활동의 징후가 없다고 했습니다.<sup class="fn"><a href="#s119" title="Microsoft 365 outage Nov 2026: what broke and why - System Design Academy">119</a>,<a href="#s120" title="Microsoft 365 Outage Nov 2026: Resolved, Cause, Next Steps - EpiFive">120</a>,<a href="#s122" title="Microsoft 365 outage: was it a cyberattack? What we know - Ransomnews">122</a></sup></p>
+        <p><strong>DNS·443 포트 문제:</strong> Microsoft Q&amp;A 커뮤니티의 사용자 주장으로, 검증되지 않았습니다.<sup class="fn"><a href="#s123" title="Microsoft outage November 2026 - Microsoft Q&amp;A (사용자 스레드, 공식 답변 아님)">123</a></sup></p></div>
+
+      <h3><span class="hn">2.8</span>사과와 후속 조치: 사후 보고서(PIR)는 아직</h3>
+      <ul class="dots">
+        <li>Microsoft: “이번 장애로 고객과 파트너에게 불편을 끼친 데 대해 깊이 사과드립니다.”<sup class="fn"><a href="#s116" title="Massive Microsoft 365 outage disrupts Outlook, Teams, Copilot worldwide - BleepingComputer">116</a></sup></li>
+        <li>Charles Lamanna 부사장: “무슨 일이 있었는지, 비슷한 문제를 앞으로 어떻게 막을지 팀이 검토하고 있다.”<sup class="fn"><a href="#s116" title="Massive Microsoft 365 outage disrupts Outlook, Teams, Copilot worldwide - BleepingComputer">116</a>,<a href="#s118" title="What Caused the Microsoft 365 Outage of November 12, 2026 - Control Plane">118</a></sup></li>
+        <li><strong>PIR:</strong> 마지막 공지에서 “2영업일 안에 예비 사후 보고서를 제공하겠다”고 했지만 14일 현재 공개되지 않았습니다.<sup class="fn"><a href="#s120" title="Microsoft 365 Outage Nov 2026: Resolved, Cause, Next Steps - EpiFive">120</a></sup> EpiFive는 16일이 있는 주 초를 예상하는데, <span class="unv">Microsoft가 밝힌 날짜는 아님</span> EpiFive의 해석입니다.<sup class="fn"><a href="#s120" title="Microsoft 365 Outage Nov 2026: Resolved, Cause, Next Steps - EpiFive">120</a></sup></li>
+      </ul>
+
+      <h3><span class="hn">2.9</span>한국과 아시아태평양</h3>
+      <ul class="dots">
+        <li><strong>한국:</strong> 확인한 출처 가운데 한국 피해를 다룬 곳은 없습니다. 위의 한국 시간은 모두 UTC+9 단순 환산입니다.</li>
+        <li><strong>아시아태평양:</strong> Microsoft는 13일 13:32 UTC 무렵 “아시아태평양의 고무적인 복구 신호”를 언급했습니다.<sup class="fn"><a href="#s117" title="Massive Microsoft 365 Outage Impacts Exchange Online, Teams, SharePoint, Copilot, and Defender XDR Users - Cyber Security News">117</a>,<a href="#s122" title="Microsoft 365 outage: was it a cyberattack? What we know - Ransomnews">122</a></sup> 호주 내무장관 Tony Burke는 Microsoft가 이번 일을 사이버공격으로 보지 않는다고 전했습니다.<sup class="fn"><a href="#s120" title="Microsoft 365 Outage Nov 2026: Resolved, Cause, Next Steps - EpiFive">120</a>,<a href="#s122" title="Microsoft 365 outage: was it a cyberattack? What we know - Ransomnews">122</a></sup> Wikipedia는 일본, 필리핀, 싱가포르, 호주의 공공 부문 영향을 적고 있습니다(2차 출처).<sup class="fn"><a href="#s121" title="2026 Microsoft outage - Wikipedia">121</a></sup></li>
+        <li><span class="unv">검증 안 된 추정</span> Wikipedia가 인용한 Anderson Economic Group의 손실 추정은 약 70억 달러입니다.<sup class="fn"><a href="#s121" title="2026 Microsoft outage - Wikipedia">121</a></sup></li>
+      </ul>
+
+      <h3><span class="hn">2.10</span>관리자가 지금 할 일</h3>
+      <p><span class="okc">Microsoft 안내와 연결된 항목</span></p>
+      <ul class="dots">
+        <li>Microsoft 365 관리 센터의 <strong>상태 › 서비스 상태</strong>에서 EX1550543과 MO1550821을 확인합니다. 관리 센터가 열리지 않으면 <code>status.cloud.microsoft</code>를 봅니다.<sup class="fn"><a href="#s117" title="Massive Microsoft 365 Outage Impacts Exchange Online, Teams, SharePoint, Copilot, and Defender XDR Users - Cyber Security News">117</a>,<a href="#s119" title="Microsoft 365 outage Nov 2026: what broke and why - System Design Academy">119</a>,<a href="#s120" title="Microsoft 365 Outage Nov 2026: Resolved, Cause, Next Steps - EpiFive">120</a>,<a href="#s122" title="Microsoft 365 outage: was it a cyberattack? What we know - Ransomnews">122</a></sup></li>
+        <li>서비스 상태 메일 알림을 켜거나 Graph의 <code>serviceAnnouncement</code>를 연동해 두면 다음 장애를 빨리 알 수 있습니다.<sup class="fn"><a href="#s120" title="Microsoft 365 Outage Nov 2026: Resolved, Cause, Next Steps - EpiFive">120</a></sup></li>
+      </ul>
+      <p><span class="vend">제3자(보안·IT 업체) 권고</span></p>
+      <ul class="dots">
+        <li><strong>메시지 추적</strong>으로 메일이 늦은 것인지 사라진 것인지 확인하고, 반송 알림(NDR)을 살핍니다.<sup class="fn"><a href="#s118" title="What Caused the Microsoft 365 Outage of November 12, 2026 - Control Plane">118</a>,<a href="#s120" title="Microsoft 365 Outage Nov 2026: Resolved, Cause, Next Steps - EpiFive">120</a></sup></li>
+        <li>SLA 청구에 쓸 수 있도록 영향 시간을 <strong>UTC로 기록</strong>합니다.<sup class="fn"><a href="#s120" title="Microsoft 365 Outage Nov 2026: Resolved, Cause, Next Steps - EpiFive">120</a></sup></li>
+        <li><strong>“메일함을 복구하라”는 피싱</strong>을 조심합니다. Microsoft는 사용자가 할 조치가 없다고 했습니다.<sup class="fn"><a href="#s119" title="Microsoft 365 outage Nov 2026: what broke and why - System Design Academy">119</a>,<a href="#s120" title="Microsoft 365 Outage Nov 2026: Resolved, Cause, Next Steps - EpiFive">120</a>,<a href="#s122" title="Microsoft 365 outage: was it a cyberattack? What we know - Ransomnews">122</a></sup></li>
+        <li>포털이 멈췄던 시간대의 Defender XDR 경보와 로그인 기록을 다시 봅니다.<sup class="fn"><a href="#s122" title="Microsoft 365 outage: was it a cyberattack? What we know - Ransomnews">122</a></sup></li>
+        <li>오류를 우회하려고 MFA나 조건부 액세스를 느슨하게 풀지 않습니다.<sup class="fn"><a href="#s122" title="Microsoft 365 outage: was it a cyberattack? What we know - Ransomnews">122</a></sup></li>
+        <li>메일·Teams가 막혔을 때 쓸 두 번째 소통 채널을 마련해 둡니다.<sup class="fn"><a href="#s118" title="What Caused the Microsoft 365 Outage of November 12, 2026 - Control Plane">118</a></sup></li>
+      </ul>
+
+      <h3><span class="hn">2.11</span>SLA 크레딧: 자동이 아니다</h3>
+      <p>Exchange Online SLA에서 다운타임은 사용자가 OWA로 메일을 보내거나 받을 수 없는 시간입니다. 월 가동률이 <strong>99.9% 미만이면 25%, 99% 미만이면 50%, 95% 미만이면 100%</strong> 서비스 크레딧입니다. 크레딧은 <strong>자동으로 지급되지 않으며</strong>, 11월분은 <strong>2026년 12월 31일까지</strong> 청구해야 합니다. CSP로 구매한 고객은 파트너를 통해 청구합니다.<sup class="fn"><a href="#s120" title="Microsoft 365 Outage Nov 2026: Resolved, Cause, Next Steps - EpiFive">120</a>,<a href="#s122" title="Microsoft 365 outage: was it a cyberattack? What we know - Ransomnews">122</a></sup> 11월에는 약 7시간 12분을 넘으면 99% 아래로, 약 36시간을 넘으면 95% 아래로 내려갑니다.<sup class="fn"><a href="#s122" title="Microsoft 365 outage: was it a cyberattack? What we know - Ransomnews">122</a></sup></p>
+      <div class="fig" data-fig="sla">
+        <div class="fig-h"><span class="t">다운타임을 넣어 보는 SLA 크레딧 구간</span><span class="s">11월 = 30일 = 720시간</span></div>
+        <label class="sl"><span>우리 테넌트의 11월 다운타임 <b id="slaHL">24시간</b></span><input type="range" id="slaIn" min="0" max="60" step="0.25" value="24" aria-label="11월 다운타임(시간)"></label>
+        <div class="slat up"><span style="left:1.2%">99.9% 선 · 43분</span></div>
+        <div class="slab"><div class="bar"><i class="z0"></i><i class="z25">25%</i><i class="z50">50%</i><i class="z100">100%</i></div><div class="ndl" id="slaNdl"></div></div>
+        <div class="slat"><span style="left:0" class="st">0</span><span style="left:12%">99% 선<small>7시간 12분</small></span><span style="left:60%">95% 선<small>36시간</small></span><span style="left:100%" class="end">60시간</span></div>
         <div class="kv" style="margin-bottom:0">
-          <div><b id="fuDate">11월 2일</b><span>Copilot Chat fair use 한도 적용 시작</span></div>
-          <div><b id="capC">200,000</b><span>기본 한도 합계 (Copilot Credits / 월)</span></div>
-          <div><b id="capD">약 $2,000</b><span>기본 한도 합계를 달러로 (사용자당 약 $40)</span></div>
+          <div><b id="slaUp">96.67%</b><span>11월 가동률</span></div>
+          <div><b id="slaCr">50%</b><span>서비스 크레딧 구간</span></div>
+          <div><b id="slaLeft">12시간</b><span id="slaLeftL">다음 구간(95% 미만)까지 남은 다운타임</span></div>
         </div>
-        <p class="note">기본 한도는 사용자당 월 4,000 Copilot Credits(약 40달러)이며 관리자가 조정할 수 있습니다. 위 합계는 모든 사용자가 기본 한도를 다 쓸 때의 상한을 단순 곱셈한 값이고, 실제 청구액이나 가격 정책 전체를 뜻하지 않습니다.</p>
+        <div class="out" id="slaOut"></div>
+        <p class="note">가동률 = (720시간 − 다운타임) ÷ 720시간으로 계산한 예시입니다. 실제 크레딧은 테넌트별로 측정한 다운타임과 계약 조건에 따라 정해지고, 보도된 장애 길이(약 하루)가 그대로 다운타임이 되는 것은 아닙니다.</p>
       </div>
+      <div class="callout ok"><span class="tag">권고</span><p>장애 시간을 UTC로 정리하고 메시지 추적 결과를 남겨 두면 크레딧 청구 근거가 됩니다. 마감은 <strong>12월 31일</strong>입니다.</p></div>
 
-      <h3><span class="hn">2.3</span>Copilot Code, Cowork, 모델 선택</h3>
-      <p>9월에 Home, Code, Autopilot을 포함한 '새 Copilot'이 발표됐습니다.<sup class="fn"><a href="#s38" title="AI at Work Roadmap">38</a></sup> Copilot Code는 11월에 Frontier 프로그램 대상으로 롤아웃 중이고, Autopilot은 비공개 프리뷰 단계입니다.<sup class="fn"><a href="#s36" title="Microsoft 365 November 2026 Updates: Copilot UBB, Code and Teams">36</a>,<a href="#s39" title="Microsoft Ignite kicks off Nov. 17 with Copilot expected to take center stage">39</a>,<a href="#s40" title="Microsoft Ignite 2026 Dates: 17-20 Nov, Passes and Sessions">40</a></sup></p>
-      <div class="fig" data-fig="models">
-        <div class="fig-h"><span class="t">Copilot 모델 선택기에 들어온 모델</span></div>
-        <div class="tl c4"><span class="ln"></span>
-          <div class="ev rv" style="--d:200ms"><span class="dt">9.22</span><h6>Claude Opus 5.5 · GPT-6 Sol</h6><p>Word·Excel·PowerPoint·Chat·Cowork·Copilot Studio에 롤아웃 시작.<sup class="fn"><a href="#s41" title="More Models, One Copilot">41</a>,<a href="#s42" title="When You Cannot Select Claude Opus 5.5 or GPT-6 Sol in Copilot: Verification Steps and How">42</a></sup></p></div>
-          <div class="ev rv" style="--d:500ms"><span class="dt">9.30</span><h6>GPT-6.1 Sol · Claude Sonnet 5.5</h6><p>추가.<sup class="fn"><a href="#s43" title="Microsoft 365 Copilot Adds Claude Opus 5.5 and GPT-6 Sol Models">43</a></sup></p></div>
-          <div class="ev rv ghost" style="--d:800ms"><span class="dt">사용자 보고</span><h6>Word에 Grok 4.5</h6><p>보이기 시작했다는 사용자 보고.<sup class="fn"><a href="#s44" title="GPT-6 Sol vs Opus 5.5 vs Grok 4.5: I Tested the New Models in Microsoft 365 Copilot">44</a></sup></p></div>
-          <div class="ev rv" style="--d:1100ms"><span class="dt">설정</span><h6>Anthropic 모델은 관리자가 켜야</h6><p>별도 활성화 필요.<sup class="fn"><a href="#s42" title="When You Cannot Select Claude Opus 5.5 or GPT-6 Sol in Copilot: Verification Steps and How">42</a>,<a href="#s45" title="The AI Models in Microsoft 365 Copilot: GPT-6, Claude Opus 5.5 and Grok Explained - IQ IT">45</a></sup></p></div>
-        </div>
-      </div>
-
-      <p><strong>독립 테스트:</strong> 한 사용자가 Cowork에서 같은 과제를 돌려 비교했습니다. Opus 5.5가 더 완성도 높은 덱과 엑셀 결과물을 만들었고, 비용은 약 10달러였습니다(Sol은 약 7달러).<sup class="fn"><a href="#s44" title="GPT-6 Sol vs Opus 5.5 vs Grok 4.5: I Tested the New Models in Microsoft 365 Copilot">44</a></sup> <strong>표본이 하나뿐인 테스트라 참고용</strong>입니다.</p>
-      <div class="fig" data-fig="cowork">
-        <div class="fig-h"><span class="t">Cowork 같은 과제 1회 비용</span><span class="s">표본 1개 · 참고용</span></div>
-        <div class="hb" id="coworkBars"></div>
-        <figcaption>결과물 완성도는 Opus 5.5가 더 높았다는 테스터의 평가입니다(자료 44).</figcaption>
-      </div>
-
-      <h3><span class="hn">2.4</span>Ignite 2026 (11월 17~20일, 샌프란시스코)</h3>
-      <p class="ignite-what"><strong>Ignite란?</strong> Microsoft가 매년 여는 IT 관리자·개발자 대상 최대 기술 콘퍼런스입니다. Microsoft 365·Azure·Copilot의 신기능과 로드맵을 이 자리에서 발표합니다.</p>
-      <div class="callout"><span class="tag">아직 열리지 않음</span><p><strong>작성 시점(11월 16일)에는 아직 열리지 않았습니다.</strong> 그래서 확정된 신기능은 없습니다.<sup class="fn"><a href="#s37" title="November 2026 announcements - Partner Center announcements">37</a>,<a href="#s40" title="Microsoft Ignite 2026 Dates: 17-20 Nov, Passes and Sessions">40</a>,<a href="#s46" title="Microsoft Ignite 2026 Preview: Copilot, AI Agent Security and What IT Admins Should Watch">46</a>,<a href="#s47" title="Microsoft Ignite 2026 Preview: What to Expect for Copilot and Frontier Transformation - Th">47</a></sup> 공개된 세션 카탈로그로 보면 Copilot 앱의 진화(Chat·Cowork·Code·Autopilot 통합, BRK201), 플러그인 레지스트리, Copilot Connectors, 비용과 거버넌스가 핵심 주제로 예상됩니다.<sup class="fn"><a href="#s40" title="Microsoft Ignite 2026 Dates: 17-20 Nov, Passes and Sessions">40</a>,<a href="#s48" title="Plugins at Microsoft Ignite 2026">48</a></sup></p></div>
-      <div class="callout ok"><span class="tag">권고</span><p>기본 적용 일정과 관계없이, 관리자 센터 '비용 관리'에서 <strong>지출 정책과 사용자별 크레딧 한도를 지금 설정</strong>해 두는 것이 안전합니다.</p></div>
+      <h3><span class="hn">2.12</span>비교해 볼 만한 이전 장애</h3>
+      <ul class="dots">
+        <li>2026년 7월 Microsoft 365 장애(Teams, SharePoint, Copilot)도 네트워크 구성 변경과 관련이 있었습니다.<sup class="fn"><a href="#s117" title="Massive Microsoft 365 Outage Impacts Exchange Online, Teams, SharePoint, Copilot, and Defender XDR Users - Cyber Security News">117</a></sup> 다만 이번 장애와 원인이 이어진다는 근거는 없습니다.</li>
+        <li>2025년 10월 29일 Azure Front Door 장애는 성격이 다른 사건입니다.<sup class="fn"><a href="#s118" title="What Caused the Microsoft 365 Outage of November 12, 2026 - Control Plane">118</a></sup></li>
+      </ul>
       <aside class="gloss" aria-label="약어 풀이"><span class="tag">이 장의 약어</span>
         <dl>
-        <div><dt>UBB</dt><dd><em>Usage-Based Billing</em>사용량 기반 과금. 좌석당 정액이 아니라 쓴 만큼 크레딧으로 청구</dd></div>
-        <div><dt>M365</dt><dd><em>Microsoft 365</em>Word·Excel·Teams 등을 묶은 Microsoft의 업무용 구독 서비스</dd></div>
-        <div><dt>CSP</dt><dd><em>Cloud Solution Provider</em>Microsoft 제품을 재판매하고 청구·지원을 맡는 파트너 프로그램</dd></div>
-        <div><dt>FAQ</dt><dd><em>Frequently Asked Questions</em>자주 묻는 질문 문서</dd></div>
-        <div><dt>FY27 Q3</dt><dd><em>Fiscal Year 2027, 3rd Quarter</em>Microsoft 회계연도 2027년 3분기. 달력으로는 2027년 1~3월</dd></div>
-        <div><dt>MC</dt><dd><em>Message Center</em>M365 관리자 센터의 공지 게시판. MC1476200은 공지 번호</dd></div>
+        <div><dt>UTC</dt><dd><em>Coordinated Universal Time</em>협정 세계시. 한국 시간은 UTC+9</dd></div>
+        <div><dt>ET</dt><dd><em>Eastern Time</em>미국 동부 시간. 11월(표준시)에는 UTC−5</dd></div>
+        <div><dt>KST</dt><dd><em>Korea Standard Time</em>한국 표준시. UTC+9</dd></div>
+        <div><dt>M365</dt><dd><em>Microsoft 365</em>Word·Excel·Outlook·Teams 등을 묶은 Microsoft의 업무용 구독 서비스</dd></div>
+        <div><dt>MAPI</dt><dd><em>Messaging Application Programming Interface</em>데스크톱 Outlook이 Exchange 메일함에 붙을 때 쓰는 연결 방식</dd></div>
+        <div><dt>REST</dt><dd><em>Representational State Transfer</em>웹 주소로 데이터를 주고받는 API 방식</dd></div>
+        <div><dt>XDR</dt><dd><em>Extended Detection and Response</em>여러 보안 신호를 모아 위협을 탐지·대응하는 제품군. Defender XDR은 Microsoft 제품</dd></div>
         <div><dt>API</dt><dd><em>Application Programming Interface</em>다른 프로그램이 기능을 코드로 불러 쓰는 창구</dd></div>
-        <div><dt>GPT</dt><dd><em>Generative Pre-trained Transformer</em>OpenAI 모델 계열의 이름</dd></div>
+        <div><dt>VM</dt><dd><em>Virtual Machine</em>가상머신. 물리 서버 위에 띄우는 가상의 서버</dd></div>
+        <div><dt>DoS</dt><dd><em>Denial of Service</em>서비스 거부 공격. 트래픽을 퍼부어 서비스를 마비시키는 공격</dd></div>
+        <div><dt>VNet</dt><dd><em>Virtual Network</em>Azure의 가상 네트워크</dd></div>
+        <div><dt>DNS</dt><dd><em>Domain Name System</em>도메인 이름을 IP 주소로 바꿔 주는 인터넷 주소 체계</dd></div>
+        <div><dt>PIR</dt><dd><em>Post-Incident Report</em>장애가 끝난 뒤 원인과 재발 방지책을 정리해 내는 사후 보고서</dd></div>
+        <div><dt>NDR</dt><dd><em>Non-Delivery Report</em>메일이 전달되지 못했을 때 돌아오는 반송 알림</dd></div>
+        <div><dt>SLA</dt><dd><em>Service Level Agreement</em>서비스 수준 계약. 가동률을 약속하고 못 지키면 크레딧으로 보상</dd></div>
+        <div><dt>MFA</dt><dd><em>Multi-Factor Authentication</em>비밀번호에 휴대전화 승인 등을 더하는 다중 인증</dd></div>
+        <div><dt>OWA</dt><dd><em>Outlook on the Web</em>웹 브라우저로 쓰는 Outlook</dd></div>
+        <div><dt>CSP</dt><dd><em>Cloud Solution Provider</em>Microsoft 제품을 재판매하고 청구·지원을 맡는 파트너 프로그램</dd></div>
         </dl>
       </aside>
     </section>
@@ -1038,6 +1195,11 @@ blockquote.q p { margin: 0; }
         <li class="unv-li">참고로 Carbon은 출시 당시 AA 1위였지만, 11월 9일 Claude Fable 5.2(65점)가 1위를 차지했다는 2차 보도가 있습니다 <span class="unv">미검증</span>.<sup class="fn"><a href="#s69" title="Gemini 4 Carbon: Who Can Use It, Pricing, and Benchmarks">69</a></sup></li>
       </ul>
 
+            <figure class="fig aa-fig" style="padding:14px">
+        <div class="fig-h"><span class="t">AA Intelligence Index 전체 순위 속 Gemini 4</span><span class="okc">Carbon 2위 · Hydrogen 7위</span></div>
+        <div class="aa-shot" id="aaShot"><img src="../ai-briefing-2026-11-w3/img/ch3-aa-index.png" width="1218" height="533" alt="Artificial Analysis Intelligence Index v5.0.1 막대 그래프. Gemini 4 Carbon(high) 60점, Gemini 4 Hydrogen(xhigh) 54점 강조" loading="lazy"><svg viewBox="0 0 1218 533" preserveAspectRatio="none" aria-hidden="true"><defs><mask id="aaMaskRep"><rect width="1218" height="533" fill="#fff"/><rect x="94" y="221" width="48" height="252" rx="8" fill="#000"/><rect x="284" y="235" width="48" height="238" rx="8" fill="#000"/></mask></defs><rect class="aa-dim" width="1218" height="533" mask="url(#aaMaskRep)"/><rect class="aa-ring" x="94" y="221" width="48" height="252" rx="8"/><rect class="aa-ring" x="284" y="235" width="48" height="238" rx="8"/><g class="aa-tag"><rect x="43.0" y="177" width="150" height="30" rx="15"/><text x="118.0" y="198" text-anchor="middle">Carbon 60 · 2위</text></g><g class="aa-tag"><rect x="233.0" y="191" width="150" height="30" rx="15"/><text x="308.0" y="212" text-anchor="middle">Hydrogen 54 · 7위</text></g></svg></div>
+        <figcaption class="aa-cap">출처: Artificial Analysis Intelligence Index v5.0.1 화면 캡처(741개 중 29개 모델 표시). 강조 표시는 이 문서에서 추가했습니다. Carbon(high) 60점은 1위 Claude Fable 5.2(max) 65점 다음 2위, Hydrogen(xhigh) 54점은 7위입니다. Argon(high, 50점)은 이 화면 선택에 들어 있지 않습니다. 실시간 스냅샷이라 순위는 바뀔 수 있습니다.</figcaption>
+      </figure>
       <h3><span class="hn">3.3</span>Krypton 유출 <span class="unv">모두 미확인</span></h3>
       <div class="fig" data-fig="krypton" style="border-style:dashed;border-color:color-mix(in srgb,var(--coral) 55%,var(--line))">
         <div class="fig-h"><span class="t">Krypton 유출 타임라인</span><span class="unv">Google 확인 없음</span></div>
@@ -1078,7 +1240,6 @@ blockquote.q p { margin: 0; }
         <dl>
         <div><dt>GA</dt><dd><em>General Availability</em>정식 일반 공개. 프리뷰·한정 공개를 끝내고 누구나 쓸 수 있게 된 상태</dd></div>
         <div><dt>AA</dt><dd><em>Artificial Analysis</em>AI 모델의 성능·가격·속도를 독립 측정해 공개하는 평가 사이트</dd></div>
-        <div><dt>UTC</dt><dd><em>Coordinated Universal Time</em>협정 세계시. 한국 시간은 UTC+9</dd></div>
         <div><dt>tok/s</dt><dd><em>tokens per second</em>초당 출력 토큰 수. 글을 뽑아내는 속도</dd></div>
         <div><dt>1M</dt><dd><em>1 Million tokens</em>100만 토큰. 200K는 20만 토큰</dd></div>
         <div><dt>HLE</dt><dd><em>Humanity's Last Exam</em>여러 분야 최고난도 문제로 구성된 벤치마크</dd></div>
@@ -1156,6 +1317,7 @@ blockquote.q p { margin: 0; }
       </div>
       <aside class="gloss" aria-label="약어 풀이"><span class="tag">이 장의 약어</span>
         <dl>
+        <div><dt>GPT</dt><dd><em>Generative Pre-trained Transformer</em>OpenAI 모델 계열의 이름</dd></div>
         <div><dt>K</dt><dd><em>Kilo (thousand) tokens</em>천 토큰 단위. 200K는 20만 토큰</dd></div>
         <div><dt>ms</dt><dd><em>millisecond</em>1,000분의 1초</dd></div>
         </dl>
@@ -1384,10 +1546,12 @@ blockquote.q p { margin: 0; }
       <h2>주의사항</h2>
       <ul class="dots">
         <li>이 문서는 <strong>2026년 11월 16일까지의 보도</strong>를 기준으로 했습니다. Ignite(11월 17일~), Anthropic 공모가 확정(11월 18일), 수능 당일(11월 19일)에는 상황이 크게 바뀔 수 있습니다.</li>
+        <li>MS365 장애의 원인은 Microsoft의 <strong>예비 설명</strong>까지만 나왔습니다. 예비 사후 보고서(PIR)가 나오면 원인 설명과 종료 시각이 달라질 수 있고, 한국 시간은 모두 UTC+9 단순 환산입니다. SLA 크레딧은 자동 지급이 아니며 11월분 청구 마감은 12월 31일입니다.<sup class="fn"><a href="#s120" title="Microsoft 365 Outage Nov 2026: Resolved, Cause, Next Steps - EpiFive">120</a></sup></li>
         <li>모델 벤치마크 상당수는 <strong>벤더가 직접 발표했거나 벤더가 골라 실은 수치</strong>입니다. Artificial Analysis 수치는 실시간 스냅샷이라 수시로 바뀝니다.</li>
         <li class="unv-li">다음 항목은 1차 출처로 확인하지 못했습니다: Claude Projects 대기자 명단과 Enterprise 태그, ChatGPT Wallet 수수료 정책과 경쟁 구도, Haiku 5.5의 출력 한도.</li>
         <li>Anthropic IPO 섹션은 사실 정리이며 <strong>투자 권유가 아닙니다.</strong></li>
       </ul>
+      <p class="ignite-what"><strong>Ignite란?</strong> Microsoft가 매년 여는 IT 관리자·개발자 대상 최대 기술 콘퍼런스입니다. Microsoft 365·Azure·Copilot의 신기능과 로드맵을 이 자리에서 발표합니다. 올해는 11월 17~20일 샌프란시스코에서 열리며, 작성 시점(11월 16일)에는 아직 열리지 않아 확정된 발표가 없습니다.<sup class="fn"><a href="#s40" title="Microsoft Ignite 2026 Dates: 17-20 Nov, Passes and Sessions">40</a></sup></p>
       <p class="endnote">이 페이지는 「2026년 11월 셋째 주 테크·AI 브리핑」의 내용을 웹 읽기용으로 다시 구성한 것입니다. 수치와 사실 관계는 브리핑을 따랐고, 도해와 계산기는 이해를 돕기 위해 새로 만들었습니다. 계산기 결과는 원문의 기준값을 곱하거나 뺀 단순 계산입니다. 같은 내용을 한 장씩 넘기며 보려면 <a href="../ai-briefing-2026-11-w3/">슬라이드형</a>을 열어 보세요.</p>
     </section>
 
@@ -1518,6 +1682,14 @@ blockquote.q p { margin: 0; }
         <li id="s113"><a href="https://artificialwatch.com/model/gemini-helix" target="_blank" rel="noopener">Gemini Helix release date: leaks &amp; launch alerts · ArtificialWatch</a><span class="dom">artificialwatch.com</span></li>
         <li id="s114"><a href="https://x.com/LuminaBench/status/2120241412050481407" target="_blank" rel="noopener">Lumina on X: "Gemini 4 Helix might be Google's new Flash lite tier model"</a><span class="dom">x.com</span></li>
         <li id="s115"><a href="https://www.orcarouter.ai/blog/gemini-4-flash-hydrogen-leak" target="_blank" rel="noopener">Gemini 4 Flash Leak: 5 Hydrogen Checkpoints, No Model ID</a><span class="dom">orcarouter.ai</span></li>
+        <li id="s116"><a href="https://www.bleepingcomputer.com/news/microsoft/massive-microsoft-365-outage-disrupts-outlook-teams-copilot-worldwide/" target="_blank" rel="noopener">Massive Microsoft 365 outage disrupts Outlook, Teams, Copilot worldwide - BleepingComputer</a><span class="dom">bleepingcomputer.com</span></li>
+        <li id="s117"><a href="https://cybersecuritynews.com/massive-microsoft-365-outage/" target="_blank" rel="noopener">Massive Microsoft 365 Outage Impacts Exchange Online, Teams, SharePoint, Copilot, and Defender XDR Users - Cyber Security News</a><span class="dom">cybersecuritynews.com</span></li>
+        <li id="s118"><a href="https://controlplane.com/blog/post/microsoft-365-outage-november-2026-cause" target="_blank" rel="noopener">What Caused the Microsoft 365 Outage of November 12, 2026 - Control Plane</a><span class="dom">controlplane.com</span></li>
+        <li id="s119"><a href="https://www.systemdesign.academy/explained/microsoft-365-outage" target="_blank" rel="noopener">Microsoft 365 outage Nov 2026: what broke and why - System Design Academy</a><span class="dom">systemdesign.academy</span></li>
+        <li id="s120"><a href="https://www.epifive.com/blog/microsoft-365-outage-november-2026-what-to-do" target="_blank" rel="noopener">Microsoft 365 Outage Nov 2026: Resolved, Cause, Next Steps - EpiFive</a><span class="dom">epifive.com</span></li>
+        <li id="s121"><a href="https://en.wikipedia.org/wiki/2026_Microsoft_outage" target="_blank" rel="noopener">2026 Microsoft outage - Wikipedia</a><span class="dom">en.wikipedia.org</span></li>
+        <li id="s122"><a href="https://ransomnews.com/microsoft-365-outage-cyberattack-november-2026/" target="_blank" rel="noopener">Microsoft 365 outage: was it a cyberattack? What we know - Ransomnews</a><span class="dom">ransomnews.com</span></li>
+        <li id="s123"><a href="https://learn.microsoft.com/en-us/answers/questions/6069789/microsoft-outage-november-2026" target="_blank" rel="noopener">Microsoft outage November 2026 - Microsoft Q&amp;A (사용자 스레드, 공식 답변 아님)</a><span class="dom">learn.microsoft.com</span></li>
       </ol>
     </section>
   </article>
@@ -1634,62 +1806,177 @@ blockquote.q p { margin: 0; }
   tglInit($('#detBtn'), on => { det = on; chainUpd(); });
   tglInit($('#burstBtn'), on => { burst = on; chainUpd(); });
 
-  /* 2. UBB lanes — piecewise axis that stretches November */
-  const SEG = [['2026-09-01', 0], ['2026-10-01', 10], ['2026-11-01', 18], ['2026-12-01', 62], ['2027-01-01', 72], ['2027-04-01', 100]].map(([d, p]) => [new Date(d + 'T00:00:00Z').getTime(), p]);
-  const X = d => { const t = new Date(d + 'T00:00:00Z').getTime(); for (let i = 1; i < SEG.length; i++) if (t <= SEG[i][0]) { const [t0, p0] = SEG[i - 1], [t1, p1] = SEG[i]; return p0 + (t - t0) / (t1 - t0) * (p1 - p0); } return 100; };
-  const UBB = {
-    csp: { marks: [['2026-09-16', 1], ['2026-11-02', 2, 'x'], ['2026-11-06', 3]], bands: [['2026-11-06', '2027-01-01', 'opt', 'opt-in(선택)'], ['2027-01-01', '2027-04-01', 'def', '기본 적용 (FY27 Q3, 보도)']] },
-    dir: { marks: [['2026-11-14', 4]], bands: [['2026-11-15', '2027-04-01', 'def', '신규 테넌트 기본 적용 (MC1476200)']] },
-    fu: { marks: [['2026-11-02', 5], ['2026-11-09', 6]], bands: [] },
-    etc: { marks: [['2026-12-01', 7]], bands: [] }
-  };
-  const LEG = [
-    [1, '9.16 · Microsoft가 CSP 파트너에 공지: 11월 2일부터 CSP 신규 Copilot Business 라이선스에 UBB 기본 적용, Azure 구독으로 과금, 사용자당 월 4,000 Credits(약 $40) 기본 한도', 30],
-    [2, '11.2 · 원래 계획된 CSP 기본 적용일 (이후 연기 보도)', 31, 'x'],
-    [3, '11.6 · Microsoft FAQ 업데이트를 인용한 보도: CSP 기본 적용은 FY27 Q3(2027년 1~3월)로 연기, 11월 11일 현재 opt-in', '31, 32'],
-    [4, '11월 중순 · MC1476200: Microsoft에서 직접 구매하는 신규 테넌트에는 기본 적용', 33],
-    [5, '11.2 · Copilot Chat fair use 한도 적용 (M365 2,000석 이하 조직)', 37],
-    [6, '11.9 · 같은 한도, 2,000석 초과 조직', 37],
-    [7, '12.1 · M365 기본 구독 없이도 Copilot·Copilot Business 신규 오퍼 구매 가능', 34]
-  ];
+  /* 2. MS365 outage — time helpers (KST is UTC+9 arithmetic, ET in November is UTC−5) */
+  const hhmm = d => String(d.getUTCHours()).padStart(2, '0') + ':' + String(d.getUTCMinutes()).padStart(2, '0');
+  const shiftT = (iso, h) => new Date(new Date(iso + 'Z').getTime() + h * 3600e3);
+  const fmtT = (iso, z, day = true) => { const off = { utc: 0, kst: 9, et: -5 }[z], d = shiftT(iso, off); return (day ? d.getUTCDate() + '일 ' : '') + hhmm(d) + (z === 'kst' ? ' KST' : z === 'et' ? ' ET' : ' UTC'); };
   const fnHtml = s => `<sup class="fn">${String(s).split(', ').map(n => `<a href="#s${n}">${n}</a>`).join(',')}</sup>`;
-  $$('#lanes2 .trk').forEach(trk => {
-    const L = UBB[trk.dataset.lane];
-    trk.innerHTML = L.bands.map(([a, b, c, t]) => `<span class="band ${c}" style="left:${X(a)}%;width:${X(b) - X(a)}%">${t}</span>`).join('') +
-      L.marks.map(([d, n, c]) => `<span class="mk ${c || ''}" style="left:${X(d)}%" title="${LEG[n - 1][1]}">${n}</span>`).join('');
-  });
-  $('#ubbMo').innerHTML = [['2026-09-01', '9월'], ['2026-10-01', '10월'], ['2026-11-01', '11월'], ['2026-12-01', '12월'], ['2027-01-01', '2027.1~3']].map(([d, t]) => `<span style="left:${X(d)}%">${t}</span>`).join('');
-  $('#ubbLeg').innerHTML = LEG.map(([n, t, s, c]) => `<li class="${c || ''}"><i>${n}</i><span>${t}${fnHtml(s)}</span></li>`).join('');
-  function placeToday() {
-    const trk = $('#lanes2 .trk'), box = $('#lanes2').getBoundingClientRect(), r = trk.getBoundingClientRect();
-    $('#ubbToday').style.left = (r.left - box.left + r.width * X('2026-11-16') / 100) + 'px';
-    $('#ubbMo').style.left = (r.left - box.left) + 'px';
-    $('#ubbMo').style.width = r.width + 'px'; $('#ubbMo').style.right = 'auto';
-    $$('#ubbMo span').forEach(s => s.style.setProperty('--hh', (box.height - 14) + 'px'));
+
+  /* 2. Downdetector curve */
+  const DD = [
+    { t: '2026-11-12T18:09', v: 129000, l: '약 12.9만', s: '122', d: '미국 동부 시간 오후 1시 9분, Outlook 신고 약 129,000건' },
+    { t: '2026-11-12T20:15', v: 63000, l: '6.3만', s: '122', d: '오후 3시 15분, 약 63,000건으로 감소' },
+    { t: '2026-11-12T22:41', v: 37000, l: '3.7만', s: '122', d: '오후 5시 41분, 약 37,000건' },
+    { t: '2026-11-13T04:00', v: 20000, l: '2만', s: '122', d: '밤 11시, 약 20,000건' }
+  ];
+  const ddT0 = new Date('2026-11-12T16:00Z').getTime(), ddT1 = new Date('2026-11-13T05:00Z').getTime();
+  let ddZ = 'et', ddW = 640;
+  const ddX = iso => 56 + (new Date(iso + 'Z').getTime() - ddT0) / (ddT1 - ddT0) * (ddW - 72), ddY = v => 252 - v / 150000 * 222;
+  function ddDraw(animate) {
+    ddW = Math.max(300, Math.min(760, Math.round($('.ddw').clientWidth || 640))); const nar = ddW < 520;
+    $('#ddSvg').setAttribute('viewBox', `0 0 ${ddW} 290`);
+    const pts = DD.map(p => [ddX(p.t), ddY(p.v)]);
+    const line = pts.map((p, i) => (i ? 'L' : 'M') + p[0].toFixed(1) + ' ' + p[1].toFixed(1)).join(' ');
+    const ticks = ['2026-11-12T17:00', '2026-11-12T20:00', '2026-11-12T23:00', '2026-11-13T02:00', '2026-11-13T05:00'];
+    $('#ddSvg').innerHTML =
+      [50000, 100000].map(v => `<line class="g" x1="56" x2="${ddW - 16}" y1="${ddY(v)}" y2="${ddY(v)}"/><text class="yl" x="50" y="${ddY(v) + 4}" text-anchor="end">${v / 10000}만</text>`).join('') +
+      `<line class="ax" x1="56" x2="${ddW - 16}" y1="252" y2="252"/>` +
+      `<line class="st" x1="${ddX('2026-11-12T16:17')}" x2="${ddX('2026-11-12T16:17')}" y1="22" y2="252"/><text class="stl" x="${ddX('2026-11-12T16:17') + 6}" y="${nar ? 30 : 244}">${nar ? '시작' : '영향 시작'} ${fmtT('2026-11-12T16:17', ddZ, false).replace(/ (ET|UTC|KST)$/, nar ? '' : ' $1')}</text>` +
+      `<line class="pk" x1="56" x2="${ddW - 16}" y1="${ddY(139000)}" y2="${ddY(139000)}"/><text class="pkl" x="${ddW - 16}" y="${ddY(139000) - 8}" text-anchor="end">최고치 약 13.8만~14만 · 시각 미상</text>` +
+      `<path class="ar" d="${line} L${pts[3][0].toFixed(1)} 252 L${pts[0][0].toFixed(1)} 252 Z"/><path class="ln" pathLength="1" d="${line}"/>` +
+      DD.map((p, i) => `<g class="pt" tabindex="0" role="button" data-i="${i}" style="--d:${500 + i * 260}ms" aria-label="${p.d}"><circle cx="${pts[i][0]}" cy="${pts[i][1]}" r="14" class="hit"/><circle cx="${pts[i][0]}" cy="${pts[i][1]}" r="6"/><text x="${pts[i][0] + (i ? 10 : -10)}" y="${pts[i][1] + (i ? -10 : 20)}" text-anchor="${i ? (i === 3 ? 'middle' : 'start') : 'end'}">${p.l}</text></g>`).join('') +
+      ticks.map((t, i) => { const off = { utc: 0, kst: 9, et: -5 }[ddZ], dd = shiftT(t, off).getUTCDate(), pd = i ? shiftT(ticks[i - 1], off).getUTCDate() : -1; if (nar && i % 2) return ''; const lab = nar ? (i === 0 || dd !== shiftT(ticks[i - 2], off).getUTCDate() ? dd + '일 ' : '') + hhmm(shiftT(t, off)) : fmtT(t, ddZ, dd !== pd); return `<text class="xl" x="${ddX(t)}" y="274" text-anchor="${i === 4 ? 'end' : i === 0 && nar ? 'start' : 'middle'}">${lab}</text>`; }).join('');
+    const fig = $('[data-fig="dd"]'); fig.classList.toggle('drawn', !animate);
+    if (animate) { fig.classList.remove('drawn'); requestAnimationFrame(() => requestAnimationFrame(() => fig.classList.add('drawn'))); }
+    $$('#ddSvg .pt').forEach(g => { const show = () => { const p = DD[+g.dataset.i]; $$('#ddSvg .pt').forEach(x => x.classList.toggle('on', x === g)); $('#ddOut').innerHTML = `<b>${fmtT(p.t, ddZ)}</b> · ${p.d}${ddZ === 'kst' ? ' (KST 환산)' : ''}.${fnHtml(p.s)}`; }; g.addEventListener('click', show); g.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); show(); } }); });
   }
-  placeToday(); addEventListener('resize', placeToday);
-  const UBBTXT = {
-    all: '<b>11월 16일 현재:</b> 판매 채널(CSP인지 직접 구매인지)에 따라 일정이 다르고, 문서끼리도 충돌합니다. 테넌트별로 확인이 필요합니다.',
-    csp: '<b>CSP 구매:</b> 9월 공지대로라면 11월 2일부터 기본 적용이었지만, 11월 6일 FAQ를 인용한 보도에 따르면 FY27 Q3(2027년 1~3월)로 연기됐고 11월 11일 현재 opt-in입니다.',
-    dir: '<b>Microsoft 직접 구매:</b> MC1476200에 따르면 11월 중순부터 신규 테넌트에는 기본 적용됩니다. CSP 연기 보도와 일정이 다릅니다.'
+  segInit($('#ddSeg'), v => { ddZ = v; ddDraw(false); });
+  ddDraw(false);
+  let ddRw = innerWidth; addEventListener('resize', () => { if (innerWidth !== ddRw) { ddRw = innerWidth; ddDraw(false); } });
+  HOOKS.dd = () => ddDraw(true);
+
+  /* 2. services */
+  const SVC = [
+    ['Exchange Online · Outlook', 'bad', 'biz', '웹, 데스크톱(MAPI), ActiveSync, REST 등 여러 방식으로 메일함에 연결할 수 없었고 “메일 전달이 지연될 수 있다”고 공지됐습니다.', '119, 120'],
+    ['Teams 통화 · 회의', 'ok', 'biz', '통화와 회의는 영향을 받지 않았습니다.', '119, 120'],
+    ['Teams 채팅 · 채널 메시지', 'ok', 'biz', '채팅과 채널 메시지도 정상이었습니다.', '119, 120'],
+    ['Teams 일정 · 예약 · 초대', 'bad', 'biz', '같은 Teams 안에서도 일정, 예약, 초대와 일부 Copilot 기능은 실패했습니다.', '119, 120'],
+    ['SharePoint Online', 'part', 'biz', 'SharePoint에 직접 저장된 파일은 계속 쓸 수 있었습니다.', '119, 120'],
+    ['Microsoft 365 Copilot', 'bad', 'biz', 'MO1550821 영향 목록에 올랐습니다.', '119, 120'],
+    ['Defender XDR', 'bad', 'biz', 'MO1550821 영향 목록에 올랐습니다. 포털이 멈춘 시간대의 경보를 다시 보라는 제3자 권고가 있습니다.', '119, 120, 122'],
+    ['Defender for Office 365', 'bad', 'biz', 'MO1550821 영향 목록에 올랐습니다.', '119, 120'],
+    ['Purview', 'bad', 'biz', 'MO1550821 영향 목록에 올랐습니다.', '119, 120'],
+    ['Planner · To Do', 'bad', 'biz', 'MO1550821 영향 목록에 올랐습니다.', '119, 120'],
+    ['Intune', 'bad', 'biz', 'MO1550821 영향 목록에 올랐습니다.', '119, 120'],
+    ['Power BI · Fabric', 'bad', 'biz', 'MO1550821 영향 목록에 올랐습니다.', '119, 120'],
+    ['Graph API', 'bad', 'biz', 'MO1550821 영향 목록에 올랐습니다.', '119, 120'],
+    ['Universal Print', 'bad', 'biz', 'MO1550821 영향 목록에 올랐습니다.', '119, 120'],
+    ['Windows 365 (Customer Key)', 'bad', 'biz', 'Customer Key를 쓰는 Windows 365가 목록에 올랐습니다.', '119, 120'],
+    ['M365 Education · M365 앱', 'bad', 'biz', 'MO1550821 영향 목록에 올랐습니다.', '119, 120'],
+    ['관리 센터', 'bad', 'biz', '관리 센터도 목록에 올랐습니다. 열리지 않으면 status.cloud.microsoft를 확인하라는 안내가 있습니다.', '117, 119, 120, 122'],
+    ['Outlook.com', 'bad', 'con', '개인 계정의 Outlook.com도 영향을 받았습니다.', '119'],
+    ['OneDrive · OneNote', 'bad', 'con', '개인 계정의 OneDrive와 OneNote도 영향을 받았습니다.', '119'],
+    ['To Do · Teams (개인)', 'bad', 'con', '개인 계정의 To Do와 Teams도 영향을 받았습니다.', '119'],
+    ['웹용 M365 (개인)', 'bad', 'con', '개인 계정용 웹 M365도 영향을 받았습니다.', '119'],
+    ['Azure', 'unk', 'biz', 'Azure 상태 페이지에는 활성 이벤트가 없었고, Microsoft는 Azure 워크로드 영향을 확인하지 않았습니다.', '118']
+  ];
+  const SVCL = { bad: '실패·지연', part: '일부 기능만 실패', ok: '계속 작동', unk: '영향 확인 안 됨' };
+  $('#svcGrid').innerHTML = SVC.map(([n, st, g], i) => `<button type="button" class="sv ${st}" data-g="${g}" data-i="${i}" aria-pressed="false">${n}</button>`).join('');
+  const svcShow = i => { const [n, st, , d, s] = SVC[i]; $$('#svcGrid .sv').forEach(b => b.setAttribute('aria-pressed', String(+b.dataset.i === i))); $('#svcOut').innerHTML = `<b>${n}</b> · ${SVCL[st]}. ${d}${fnHtml(s)}`; $('#svcOut').className = 'out' + (st === 'ok' ? ' good' : st === 'bad' ? ' warn' : ''); };
+  $$('#svcGrid .sv').forEach(b => b.addEventListener('click', () => svcShow(+b.dataset.i)));
+  segInit($('#svcSeg'), v => $$('#svcGrid .sv').forEach(b => b.classList.toggle('dim', v !== 'all' && b.dataset.g !== v)));
+  svcShow(3);
+
+  /* 2. recovery timeline with UTC / KST toggle */
+  const OTL = [
+    ['2026-11-12T14:45', 'Teams 별도 장애 TM1550488 (~15:53 UTC, “리소스 경합”). 이번 장애와의 관련 여부는 Microsoft 미발표', '116, 118, 120', 'x', '2026-11-12T15:53'],
+    ['2026-11-12T16:17', 'EX1550543 Exchange Online 영향 시작', '119, 120', 'bad'],
+    ['2026-11-12T18:26', 'MO1550821 통합 공지. 처음엔 미주 지역 언급 → 이후 “어느 지역이든 영향 가능”', '116, 117, 118, 119, 120'],
+    ['2026-11-12T19:06', '모든 배포·구성 변경 중단 (미국 동부 오후 2시 6분)', '116, 119, 120, 122'],
+    ['2026-11-13T01:06', '장애 시작과 시점이 겹치는 최근 네트워크 구성 변경 되돌림 (미국 동부 오후 8시 6분) → 대체 헬스체크, 트래픽 재분산, 서버 재시작·재구축, VM 추가, 트래픽 제한', '116, 119, 120, 122'],
+    ['2026-11-13T03:34', '“악의적 활동의 결과라는 징후는 없다”', '119, 120'],
+    ['2026-11-13T04:36', '일부 지역 부분 복구', '121, 122'],
+    ['2026-11-13T09:24', '초기 안정화', '122'],
+    ['2026-11-13T12:09', '유럽에서 진전', '122'],
+    ['2026-11-13T13:32', '북미 개선 · “아시아태평양의 고무적인 복구 신호”', '117, 122'],
+    ['2026-11-13T14:17', '메일 대기열 “정상 수준에 근접”', '122'],
+    ['2026-11-13T22:00', '확장 모니터링', '120'],
+    ['2026-11-14T02:17', '회복 지속 확인', '120'],
+    ['2026-11-14T04:17', '상태 serviceRestored', '120', 'key']
+  ];
+  const otT0 = new Date('2026-11-12T14:00Z').getTime(), otT1 = new Date('2026-11-14T06:00Z').getTime();
+  const otX = iso => (new Date(iso + 'Z').getTime() - otT0) / (otT1 - otT0) * 100;
+  let otZ = 'utc';
+  function otlDraw() {
+    const days = otZ === 'kst' ? [['2026-11-12T15:00', '13일'], ['2026-11-13T15:00', '14일']] : [['2026-11-13T00:00', '13일'], ['2026-11-14T00:00', '14일']];
+    $('#otlDays').innerHTML = days.map(([d, t]) => `<span class="dl" style="left:${otX(d)}%">${t} 00:00</span>`).join('');
+    const trk = $('#otlStrip .trk'), LO = [], thr = 24 / Math.max(200, trk.clientWidth || 600) * 100;
+    OTL.forEach(([t], i) => { LO[i] = i > 0 && otX(t) - otX(OTL[i - 1][0]) < thr && !LO[i - 1]; });
+    $$('.mk, .cf', trk).forEach(e => e.remove());
+    trk.insertAdjacentHTML('beforeend', `<i class="cf" style="left:${otX('2026-11-13T04:10')}%;width:${otX('2026-11-13T16:10') - otX('2026-11-13T04:10')}%" title="끝난 시각 기록 충돌: 13일 04:10 vs 16:10 UTC"></i>` +
+      OTL.map(([t, , , c, t2], i) => `<button type="button" class="mk ${c || ''}${LO[i] ? ' lo' : ''}" style="left:${otX(t)}%" data-i="${i}" aria-label="${i + 1}번: ${fmtT(t, otZ)}">${i + 1}</button>`).join(''));
+    $('#otlSpan').style.left = otX('2026-11-12T16:17') + '%'; $('#otlSpan').style.width = (otX('2026-11-14T04:17') - otX('2026-11-12T16:17')) + '%';
+    $('#otlList').innerHTML = OTL.map(([t, d, s, c, t2], i) => `<li class="${c === 'x' ? 'x' : ''}${c === 'key' ? ' key' : ''}" data-i="${i}"><i>${i + 1}</i><span><b class="tm">${t2 ? fmtT(t, otZ).replace(/ (UTC|KST)$/, '') + '~' + fmtT(t2, otZ, fmtT(t2, otZ).slice(0, 3) !== fmtT(t, otZ).slice(0, 3)) : fmtT(t, otZ)}</b>${otZ === 'kst' ? '<small> 환산</small>' : ''} · ${d}${fnHtml(s)}</span></li>`).join('') +
+      `<li class="x cfl"><i>?</i><span><b class="tm">끝난 시각</b> · Microsoft 기록 안에서 ${fmtT('2026-11-13T04:10', otZ)}와 ${fmtT('2026-11-13T16:10', otZ)}가 섞여 있음, Wikipedia는 “14일 아침 완전 복구”${fnHtml('120, 121')}</span></li>`;
+    $$('.mk', trk).forEach(b => b.addEventListener('click', () => { const i = +b.dataset.i; $$('#otlList li').forEach(li => li.classList.toggle('on', li.dataset.i === String(i))); $$('.mk', trk).forEach(x => x.classList.toggle('on', x === b)); }));
+  }
+  segInit($('#otlSeg'), v => { otZ = v; otlDraw(); });
+  otlDraw();
+  let otRw = innerWidth; addEventListener('resize', () => { if (innerWidth !== otRw) { otRw = innerWidth; otlDraw(); } });
+  HOOKS.otl = async (fig, tk) => {
+    const mks = $$('#otlStrip .mk'), lis = $$('#otlList li');
+    mks.forEach(m => m.classList.add('pre')); lis.forEach(l => l.classList.remove('on'));
+    for (let i = 0; i < mks.length; i++) { if (tk.dead) return; mks[i].classList.remove('pre'); await wait(140); }
   };
-  const ubbFocus = v => { $('#lanes2').className = 'lanes2' + (v === 'all' ? '' : ' focus-' + v); $('#ubbOut').innerHTML = UBBTXT[v]; };
-  segInit($('#ubbSeg'), ubbFocus); ubbFocus('all');
 
-  /* 2. org check */
-  function org() {
-    const seats = +$('#seatIn').value, users = +$('#userIn').value;
-    $('#seatL').textContent = seats.toLocaleString('en-US') + '석'; $('#userL').textContent = users.toLocaleString('en-US') + '명';
-    $('#fuDate').textContent = seats <= 2000 ? '11월 2일' : '11월 9일';
-    $('#capC').textContent = (users * 4000).toLocaleString('en-US');
-    $('#capD').textContent = '약 $' + (users * 40).toLocaleString('en-US');
+  /* 2. health-check diagram */
+  const HC = Array.from({ length: 18 }, () => ({ up: true }));
+  $('#hcs').innerHTML = HC.map((_, i) => `<i data-i="${i}"><b></b><em></em></i>`).join('');
+  const HCDROP = [3, 14, 8, 0, 11, 16, 5, 9, 2, 13], HCMORE = [7, 12];
+  const HCTXT = [
+    '<b>정상:</b> 18대가 요청을 나눠 받습니다. 서버마다 ‘보안 연결 수립’ 프로세스가 연결을 처리합니다.',
+    '<b>① 헬스체크 실패 → 서버 이탈:</b> “여러 서버가 예기치 않게 사용할 수 없게” 됐고, 자동 헬스체크에 실패한 서버가 서비스에서 빠졌습니다. 실패는 “서버 상태를 처리하는 특정 구성 요소”에서 비롯됐을 수 있다고 Microsoft는 설명했습니다.' + fnHtml('118, 119, 120'),
+    '<b>② 과부하:</b> 남은 서버로 연결이 몰리면서 ‘보안 연결 수립’을 맡은 핵심 프로세스가 과부하됐습니다.' + fnHtml('118, 119, 120'),
+    '<b>③ 재발:</b> 되돌린 서버도 트래픽을 받기 시작하면 다시 응답하지 않을 수 있었습니다.' + fnHtml('118, 119, 120'),
+    '<b>④ 단계적 복귀:</b> 최근 네트워크 구성 변경을 되돌리고 대체 헬스체크로 바꾼 뒤, 트래픽을 제한하며 서버를 단계적으로 되돌렸습니다. Microsoft는 “더 오래 걸렸지만” “안정적인 복구”였다고 했습니다.' + fnHtml('116, 119, 120, 122')
+  ];
+  function hcRender(stage, demand = 18 * .45) {
+    const n = HC.filter(h => h.up).length, ld = Math.min(1, demand / Math.max(1, n));
+    $$('#hcs i').forEach((el, i) => { const up = HC[i].up; el.className = up ? (ld >= .95 ? 'hot' : '') : 'down'; el.querySelector('em').style.width = (up ? ld * 100 : 0) + '%'; });
+    $('#hcq').className = 'hcq' + (stage === 4 ? ' alt' : stage >= 1 && stage <= 3 ? ' bad' : '');
+    $('#hcUp').textContent = n + ' / 18'; $('#hcLd').textContent = Math.round(ld * 100) + '%';
+    $('#hcOut').innerHTML = HCTXT[stage]; $('#hcOut').className = 'out' + (stage === 4 ? ' good' : stage ? ' warn' : '');
+    $$('#hcSeg button').forEach(b => b.setAttribute('aria-pressed', String(+b.dataset.v === stage)));
   }
-  $('#seatIn').addEventListener('input', org); $('#userIn').addEventListener('input', org); org();
+  const hcSet = st => {
+    HC.forEach(h => h.up = true);
+    if (st >= 1 && st <= 3) HCDROP.forEach(i => HC[i].up = false);
+    if (st === 2 || st === 3) HCMORE.forEach(i => HC[i].up = false);
+    hcRender(st, st === 4 ? 18 * .45 * .9 : undefined);
+  };
+  let hcRun = null;
+  $$('#hcSeg button').forEach(b => b.addEventListener('click', () => { if (hcRun) hcRun.dead = true; hcSet(+b.dataset.v); }));
+  hcSet(0);
+  HOOKS.hc = async (fig, tk) => {
+    hcRun = tk; hcSet(0); await wait(900);
+    for (const i of HCDROP) { if (tk.dead) return; HC[i].up = false; hcRender(1); await wait(260); }
+    await wait(700); if (tk.dead) return;
+    for (const i of HCMORE) { HC[i].up = false; hcRender(2); await wait(600); if (tk.dead) return; }
+    await wait(900); if (tk.dead) return;
+    [3, 14, 8, 0].forEach(i => HC[i].up = true); hcRender(3); await wait(900); if (tk.dead) return;
+    [3, 14, 8, 0].forEach(i => HC[i].up = false); hcRender(3); await wait(1200); if (tk.dead) return;
+    hcRender(4, 4);
+    const back = [...HCDROP, ...HCMORE];
+    for (let k = 0; k < back.length; k += 2) { if (tk.dead) return; back.slice(k, k + 2).forEach(i => HC[i].up = true); hcRender(4, Math.min(18 * .45 * .9, HC.filter(h => h.up).length * .6)); await wait(550); }
+    hcRender(4, 18 * .45 * .9);
+  };
 
-  HOOKS.cowork = () => bars($('#coworkBars'), [
-    { l: 'Claude Opus 5.5', sub: '결과물 완성도 더 높음', v: 10, txt: '약 $10', c: 'var(--ca)' },
-    { l: 'GPT-6 Sol', v: 7, txt: '약 $7', c: 'var(--co)' }
-  ], 12);
+  /* 2. SLA credit calculator */
+  function sla() {
+    const h = +$('#slaIn').value, up = (720 - h) / 720 * 100;
+    const cr = up < 95 ? 100 : up < 99 ? 50 : up < 99.9 ? 25 : 0;
+    const next = up >= 99.9 ? [0.72, '99.9% 미만'] : up >= 99 ? [7.2, '99% 미만'] : up >= 95 ? [36, '95% 미만'] : null;
+    const hm = x => { const m = Math.round(x * 60), hr = Math.floor(m / 60), mi = m % 60; return (hr ? hr + '시간' : '') + (hr && mi ? ' ' : '') + (mi || !hr ? mi + '분' : ''); };
+    $('#slaHL').textContent = h ? hm(h) : '0분';
+    $('#slaUp').textContent = up.toFixed(2) + '%';
+    $('#slaCr').textContent = cr + '%';
+    $('#slaLeft').textContent = next ? hm(Math.max(0.01, next[0] - h)).replace(/^0분$/, '1분 미만') : '—';
+    $('#slaLeftL').textContent = next ? `다음 구간(${next[1]})까지 남은 다운타임` : '이미 최고 구간(100%)';
+    $('#slaNdl').style.left = (h / 60 * 100) + '%';
+    $('#slaOut').innerHTML = cr ? `월 가동률 <b>${up.toFixed(2)}%</b> → 크레딧 <b>${cr}%</b> 구간. 자동 지급이 아니므로 <b>12월 31일까지 청구</b>해야 합니다(CSP 고객은 파트너 통해).${fnHtml('120, 122')}` : `월 가동률 <b>${up.toFixed(2)}%</b>로 99.9% 이상이라 크레딧 구간이 아닙니다.`;
+    $('#slaOut').className = 'out' + (cr ? ' warn' : '');
+  }
+  $('#slaIn').addEventListener('input', sla); sla();
 
   /* 3. Gemini */
   const GC = { h: 'var(--green)', a: 'var(--blue)', c: 'var(--violet)' };
@@ -1977,6 +2264,12 @@ blockquote.q p { margin: 0; }
   addEventListener('scroll', onScroll, { passive: true }); addEventListener('resize', onScroll); onScroll();
   top.onclick = () => scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' });
 })();
+</script>
+<script>
+(() => { const el = document.getElementById('aaShot'); if (!el) return;
+  if (!('IntersectionObserver' in window)) { el.classList.add('in'); return; }
+  const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { el.classList.add('in'); io.disconnect(); } }), { threshold: .35 });
+  io.observe(el); })();
 </script>
 </body>
 </html>
