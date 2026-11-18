@@ -9,6 +9,9 @@
  *   #bg-land   sky gradient, texture, stars, sun/moon — redrawn about once a minute
  *   #bg-sea    the sea, one canvas pixel per cell, masked into a dot grid by CSS; animated
  *   #bg-cloud  pixel clouds that drift and stream away from the mouse; animated
+ * Weather (:root[data-weather], set by the page from the local forecast; ?weather=rain to preview: clear, partly,
+ * cloudy, fog, drizzle, rain, snow, storm) greys the sky, thickens the cloud deck, hides the sun, and adds rain
+ * streaks that splash on the sea, horizon fog, snow in any season, or lightning.
  * Seasons (:root[data-season], set by the page; ?season=winter to preview) tint the palette, move
  * sunrise and sunset, thicken or thin the clouds, raise a seasonal shoreline on the horizon (blossom hills,
  * green islands, autumn foliage, snowy peaks) and drop fluttering petals, swinging leaves or snow (petals and leaves
@@ -59,6 +62,26 @@
   const MONTH_SEASON = ['winter', 'winter', 'spring', 'spring', 'spring', 'summer', 'summer', 'summer', 'autumn', 'autumn', 'autumn', 'winter'];
   const seasonKey = () => SEASONS[params.get('season')] ? params.get('season') : SEASONS[root.dataset.season] ? root.dataset.season : MONTH_SEASON[new Date().getMonth()];
   const season = () => SEASONS[seasonKey()];
+
+  /* ── weather (:root[data-weather], set by the page from the local forecast; ?weather=rain to preview)
+     grey: how far the sky and sea fade toward overcast grey · cloud: lower = more cloud · band: how far the
+     cloud deck reaches toward the horizon · sun: sun/moon disk visible · cdark: darker cloud bellies ·
+     wind: cloud drift speed · rain: falling streaks (per = cells per drop) and pockmarks on the sea ·
+     fog: banks of dithered mist along the horizon · storm: lightning ── */
+  const WX = {
+    clear:   { grey: 0,   cloud: 0,    band: 1,   sun: 1, glint: 1,   cdark: 0,   wind: 1 },
+    partly:  { grey: .08, cloud: -.07, band: 1.4, sun: 1, glint: .9,  cdark: .05, wind: 1.2 },
+    cloudy:  { grey: .4,  cloud: -.17, band: 2.3, sun: 0, glint: .25, cdark: .25, wind: 1.4 },
+    fog:     { grey: .5,  cloud: -.04, band: 1.5, sun: 0, glint: .15, cdark: 0,   wind: .6, fog: .85, pale: 1 },
+    drizzle: { grey: .42, cloud: -.17, band: 2.4, sun: 0, glint: .2,  cdark: .3,  wind: 1.5, rain: { per: 150, speed: 1.5, len: 2, slant: .12, dimple: .004 } },
+    rain:    { grey: .52, cloud: -.21, band: 2.7, sun: 0, glint: .12, cdark: .42, wind: 1.9, rain: { per: 55, speed: 2.4, len: 3, slant: .3, dimple: .01 } },
+    snow:    { grey: .36, cloud: -.16, band: 2.3, sun: 0, glint: .3,  cdark: .12, wind: 1.1, snow: 1 },
+    storm:   { grey: .64, cloud: -.25, band: 3,   sun: 0, glint: .08, cdark: .6,  wind: 3,   rain: { per: 32, speed: 3, len: 4, slant: .55, dimple: .016 }, storm: 1 },
+  };
+  const wxKey = () => WX[params.get('weather')] ? params.get('weather') : WX[root.dataset.weather] ? root.dataset.weather : 'clear';
+  const wx = () => WX[wxKey()];
+  // what falls from the sky: snow weather brings snow in any season, rain washes the petals and leaves away
+  const fallCfg = () => { const w = wx(); if (w.snow) return { ...SEASONS.winter.fall, per: 110 }; if (w.rain) return null; return season().fall; };
   // stretch the clock so the season's sunrise/sunset land on the palette's 6:00 / 19:00
   function seasonHour(h) {
     const { rise, set } = season();
@@ -78,6 +101,15 @@
     dayLight = daylight;
     const tint = season().tint;
     for (const key in tint) out[key] = mix(out[key], tint[key][0], tint[key][1] * (key === 'hl' ? 1 : .35 + .65 * daylight));
+    // weather: overcast greys the sky and sea (fog turns them pale), rain clouds get dark bellies, stars hide
+    const w = wx();
+    if (w.grey) {
+      const grey = w.pale ? mix([70, 76, 92], [204, 208, 214], daylight) : mix([52, 58, 76], [160, 168, 180], daylight);
+      for (const key of ['skyTop', 'skyBot', 'glow', 'cloud', 'cloud2', 'cloudEdge']) out[key] = mix(out[key], grey, w.grey);
+      for (const key of ['seaDeep', 'seaMid', 'seaLight', 'foam', 'glint']) out[key] = mix(out[key], mix(grey, [20, 30, 44], .45), w.grey * .7);
+    }
+    if (w.cdark) { const belly = mix([34, 38, 52], [112, 120, 134], daylight); for (const key of ['cloud', 'cloud2', 'cloudEdge']) out[key] = mix(out[key], belly, w.cdark); }
+    if (!w.sun) out.stars *= .08;
     if (isDark()) for (const key in out) if (Array.isArray(out[key]) && key !== 'hl') out[key] = out[key].map((v, i) => v * .55 + [14, 16, 40][i] * .3);
     return out;
   }
@@ -147,7 +179,7 @@
         const x = i / cols, bay = BAYER[(j & 3) * 4 + (i & 3)];
         let c = base;
         // soft glow around the sun, dithered into bands
-        if (sunPos) {
+        if (sunPos && wx().sun) {
           const ex = (x - sunPos.x) * W / H, ey = y - sunPos.y, d = Math.sqrt(ex * ex + ey * ey);
           const gw = Math.max(0, 1 - d / .34); if (gw * .9 > bay * .6 + .15) c = mix(c, pal.glow, Math.min(.55, gw * .7));
         }
@@ -177,8 +209,7 @@
         gl.fillStyle = css(d > R - 1 ? mix(fill, pal.glow, .35) : fill); gl.fillRect(i * C, j * C, C, C);
       }
     };
-    disk(sunPos, [255, 236, 170]);
-    disk(moonPos, [244, 240, 222], true);
+    if (wx().sun) { disk(sunPos, [255, 236, 170]); disk(moonPos, [244, 240, 222], true); }
     drawLand();
   }
 
@@ -263,7 +294,8 @@
     const cDeep = pack(deep), cMid = pack(mid), cLight = pack(light), cFoam = pack(pal.foam), cGlint = pack(pal.glint);
     const cHaze = pack(mix(light, pal.skyBot, .55));
     const glintX = sunPos ? sunPos.x : moonPos ? moonPos.x : null;
-    const glintStrength = (sunPos ? Math.sin(Math.PI * sunPos.p) * .6 + .4 : moonPos ? .55 : 0) * (season().glint || 1);
+    const glintStrength = (sunPos ? Math.sin(Math.PI * sunPos.p) * .6 + .4 : moonPos ? .55 : 0) * (season().glint || 1) * wx().glint;
+    const rn = wx().rain, fr = Math.floor(t * 7) * 131;
     while (ripples.length && now - ripples[0].t0 > 2600) ripples.shift();
     for (let j = seaRow0; j < rows; j++) {
       const depth = (j - seaRow0) / Math.max(1, rows - seaRow0);   // 0 at the horizon, 1 at the bottom
@@ -290,6 +322,7 @@
           const gx = (i / cols - glintX) * W / H, wdt = .012 + depth * .09;
           if (Math.exp(-(gx * gx) / (wdt * wdt)) * glintStrength > .35 + bay * .4 && v > .45) c = cGlint;
         }
+        if (rn && hash(i * 3 + fr, j * 7 - fr) > 1 - rn.dimple * (.4 + depth)) c = cFoam;   // raindrops pocking the sea
         seaBuf[j * cols + i] = c;
       }
     }
@@ -302,9 +335,9 @@
     while (gusts.length && gusts[0].life < .05) gusts.shift();
     cloudBuf.fill(0);
     const C0 = pack(pal.cloud), C1 = pack(pal.cloud2), CE = pack(pal.cloudEdge, 230);
-    const lastRow = Math.floor(rows * (HZ - .02)), cv = season().cloud;
+    const w = wx(), lastRow = Math.floor(rows * (HZ - .02)), cv = season().cloud + w.cloud, bw = .16 * w.band;
     for (let j = 0; j < lastRow; j++) {
-      const y = j / rows, band = 1 - Math.abs(y - .22) / .16;
+      const y = j / rows, band = 1 - Math.abs(y - .22) / bw;
       for (let i = 0; i < cols; i++) {
         const k = j * cols + i, x = i / cols;
         let ox = dx[k] * .965, oy = dy[k] * .965;
@@ -314,21 +347,24 @@
         }
         dx[k] = ox; dy[k] = oy;
         if (band <= -.5) continue;
-        const v = fbm((x - ox) * 3 - t * .018 + 31, (y - oy) * 5 + 7, 4) + band * .38;
+        const v = fbm((x - ox) * 3 - t * .018 * w.wind + 31, (y - oy) * 5 + 7, 4) + band * .38;
         const bay = BAYER[(j & 3) * 4 + (i & 3)];
         if (v > .86 + cv - bay * .06) cloudBuf[k] = v > .95 + cv ? C0 : C1;
         else if (v > .8 + cv - bay * .05) cloudBuf[k] = CE;
       }
     }
+    drawFog(t);
     drawFall(t);
+    drawRain(t);
     drawFauna(t);
+    drawStorm(t);
     gc.putImageData(cloudImg, 0, 0);
   }
 
   /* ── falling petals / leaves / snow, drawn into the cloud layer so they share its dot grid ── */
   let flakes = [], flakeKey = '';
   function seedFall() {
-    const f = season().fall; flakeKey = seasonKey() + cols + 'x' + rows;
+    const f = fallCfg(); flakeKey = seasonKey() + wxKey() + cols + 'x' + rows;
     flakes = [];
     if (!f) return;
     const n = Math.round(cols * rows / f.per);
@@ -384,8 +420,8 @@
   // a spot on a cover's edge that a nearer cover hides is no place to settle
   const hidden = (L, x, y) => ledges.some(o => o.z > L.z && inQuad(o.poly, x, y));
   function drawFall(t) {
-    if (flakeKey !== seasonKey() + cols + 'x' + rows) seedFall();
-    const f = season().fall; if (!f) return;
+    if (flakeKey !== seasonKey() + wxKey() + cols + 'x' + rows) seedFall();
+    const f = fallCfg(); if (!f) return;
     const dim = isDark() ? .72 : 1;
     const tone = (c, k = 1, a = 255) => pack(hex(c).map(v => v * dim * k), a);
     const cols8 = f.colors.map(c => tone(c));
@@ -495,6 +531,83 @@
     }
   }
 
+  /* ── weather layers, drawn into the cloud layer so they share its dot grid ── */
+  // fog: dithered mist banks drifting along the horizon, thickest right on it
+  function drawFog(t) {
+    const w = wx(); if (!w.fog) return;
+    const col = pack(mix(pal.cloud, pal.skyBot, .45), 235), thin = pack(mix(pal.cloud, pal.skyBot, .7), 150);
+    const j0 = Math.max(0, Math.floor(rows * (HZ - .36))), j1 = Math.min(rows, Math.ceil(rows * (HZ + .24)));
+    for (let j = j0; j < j1; j++) {
+      const y = j / rows, d = y < HZ ? (HZ - y) / .36 : (y - HZ) / .24, fall = Math.pow(Math.max(0, 1 - d), .9);
+      for (let i = 0; i < cols; i++) {
+        const k = j * cols + i; if (cloudBuf[k]) continue;
+        const n = fbm(i / 16 - t * .04, j / 4.5 + 3, 2);
+        const dens = w.fog * fall * (.55 + .9 * n), bay = BAYER[(j & 3) * 4 + (i & 3)];
+        if (bay < dens - .1) cloudBuf[k] = col; else if (bay < dens + .2) cloudBuf[k] = thin;
+      }
+    }
+  }
+
+  // rain: slanted streaks that fall from the cloud deck to a spot on the sea and splash
+  let drops = [], dropKey = '';
+  const newDrop = (r, y) => ({ x: Math.random() * (cols + rows * r.slant) - rows * r.slant * .5, y, sp: r.speed * (.7 + Math.random() * .6),
+    land: seaRow0 + 1 + Math.random() * (rows - seaRow0), splash: 0 });
+  function drawRain(t) {
+    const r = wx().rain;
+    if (dropKey !== wxKey() + cols + 'x' + rows) {
+      dropKey = wxKey() + cols + 'x' + rows; drops = [];
+      if (r) for (let k = 0, n = Math.round(cols * rows / r.per); k < n; k++) drops.push(newDrop(r, Math.random() * rows));
+    }
+    if (!r) return;
+    const dim = isDark() ? .7 : 1, base = mix([206, 218, 236], pal.skyBot, .25).map(v => v * dim);
+    const streak = pack(base, 190), tip = pack(base.map(v => Math.min(255, v * 1.12)), 235), foam = pack(pal.foam.map(v => v * dim), 230);
+    const put = (i, j, c) => { i = Math.round(i); j = Math.round(j); if (i >= 0 && i < cols && j >= 0 && j < rows) cloudBuf[j * cols + i] = c; };
+    for (const p of drops) {
+      if (p.splash) {
+        put(p.x - 1, p.y - 1, foam); put(p.x + 1, p.y - 1, foam);
+        if (!reducedMq.matches && --p.splash === 0) Object.assign(p, newDrop(r, -r.len - Math.random() * rows * .15));
+        continue;
+      }
+      if (!reducedMq.matches) { p.y += p.sp; p.x += p.sp * r.slant; }
+      if (p.y >= p.land) { p.y = Math.round(p.land); p.splash = 3; continue; }
+      for (let k = 0; k < r.len; k++) put(p.x - k * r.slant, p.y - k, k ? streak : tip);
+    }
+  }
+
+  // storm: now and then the sky flashes (twice, quickly) and a pixel bolt forks down to the sea
+  let nextBolt = 0, boltAt = -1e9, bolt = [];
+  function drawStorm(t) {
+    if (!wx().storm) return;
+    if (!nextBolt) nextBolt = t + 2 + Math.random() * 4;
+    if (t > nextBolt && !reducedMq.matches) {
+      boltAt = t; nextBolt = t + 5 + Math.random() * 11; bolt = [];
+      // strike either side of the covers
+      let x = cols * (Math.random() < .5 ? .05 + Math.random() * .25 : .7 + Math.random() * .25), y = Math.floor(rows * (.12 + Math.random() * .08));
+      const end = seaRow0, main = [];
+      while (y < end) { main.push([x, y]); y++; x += Math.random() < .3 ? (Math.random() < .5 ? -1 : 1) : 0; }
+      bolt = main;
+      // a branch peeling off partway down
+      const at = main[Math.floor(main.length * (.3 + Math.random() * .3))];
+      if (at) { let [bx, by] = at; const dir = Math.random() < .5 ? -1 : 1; for (let k = 0; k < main.length * .3; k++) { by++; bx += Math.random() < .55 ? dir : 0; bolt.push([bx, by]); } }
+    }
+    const age = t - boltAt;
+    const on = age < .12 || (age > .2 && age < .34);
+    if (!on) return;
+    // light up the whole sky: empty cells get a pale wash, cloud cells are lifted toward white
+    const fade = 1 - age / .34, glow = pack([228, 234, 255], Math.round(90 * fade)), lift = .45 * fade;
+    for (let j = 0; j < seaRow0; j++) for (let i = 0; i < cols; i++) {
+      const k = j * cols + i, v = cloudBuf[k];
+      if (!v) { cloudBuf[k] = glow; continue; }
+      const r = v & 255, g = (v >>> 8) & 255, b = (v >>> 16) & 255;
+      cloudBuf[k] = pack([r + (236 - r) * lift, g + (240 - g) * lift, b + (255 - b) * lift], v >>> 24);
+    }
+    const core = pack([255, 252, 230], 255), edge = pack([196, 206, 255], 200);
+    for (const [x, y] of bolt) {
+      const i = Math.round(x), j = Math.round(y); if (i < 1 || i >= cols - 1 || j < 0 || j >= rows) continue;
+      cloudBuf[j * cols + i] = core; cloudBuf[j * cols + i - 1] = edge; cloudBuf[j * cols + i + 1] = edge;
+    }
+  }
+
   /* ── summer: gulls across the day sky, fireflies over the night shore ── */
   let gulls = [], flies = [], faunaKey = '';
   const GULL = [
@@ -506,14 +619,14 @@
   const newGull = x => { const dir = Math.random() < .5 ? 1 : -1;
     return { x: x ?? Math.random() * cols, y: rows * (.1 + Math.random() * .3), v: (.16 + Math.random() * .2) * dir, ph: Math.random() * 6.28, small: Math.random() < .4 }; };
   function seedFauna() {
-    faunaKey = seasonKey() + cols + 'x' + rows; gulls = []; flies = [];
-    if (seasonKey() !== 'summer') return;
+    faunaKey = seasonKey() + wxKey() + cols + 'x' + rows; gulls = []; flies = [];
+    if (seasonKey() !== 'summer' || wx().rain || wx().fog || wx().snow) return;
     for (let k = 0; k < 6; k++) gulls.push(newGull());
     const n = Math.round(cols * rows / 1000);
     for (let k = 0; k < n; k++) flies.push({ x: Math.random() * cols, y: seaRow0 - rows * (.01 + Math.random() * .2), ph: Math.random() * 6.28, f: .6 + Math.random() * 1.1 });
   }
   function drawFauna(t) {
-    if (faunaKey !== seasonKey() + cols + 'x' + rows) seedFauna();
+    if (faunaKey !== seasonKey() + wxKey() + cols + 'x' + rows) seedFauna();
     if (!gulls.length) return;
     const dim = isDark() ? .72 : 1, P = c => pack(hex(c).map(v => v * dim)), moving = !reducedMq.matches;
     const put = (i, j, c) => { i = Math.round(i); j = Math.round(j); if (i >= 0 && i < cols && j >= 0 && j < seaRow0) cloudBuf[j * cols + i] = c; };
@@ -561,7 +674,7 @@
   document.addEventListener('visibilitychange', () => { lastSky = -1e9; wake(); });
   darkMq.addEventListener('change', redraw);
   reducedMq.addEventListener('change', wake);
-  new MutationObserver(() => { lastSky = -1e9; frame(performance.now()); }).observe(root, { attributes: true, attributeFilter: ['data-theme', 'data-season'] });
+  new MutationObserver(() => { lastSky = -1e9; frame(performance.now()); }).observe(root, { attributes: true, attributeFilter: ['data-theme', 'data-season', 'data-weather'] });
   new MutationObserver(wake).observe(body, { attributes: true, attributeFilter: ['class'] });
   // reduced motion still gets the right time of day
   setInterval(() => { if (reducedMq.matches && visible()) frame(performance.now()); }, 60000);
