@@ -4,18 +4,18 @@ window.ITEMS = [
   {
     "href": "ai-briefing-2026-11-w3-report/",
     "title": "2026년 11월 셋째 주 테크·AI 브리핑 (스크롤형)",
-    "desc": "AI 시험 부정행위(세무사 수석 자백·수능 대책), MS365 장애(11월 12~14일 전 세계), Gemini 4 Argon·Carbon·Hydrogen과 Krypton 유출, 소형 모델 3종, Claude Projects, ChatGPT Wallet, Anthropic IPO, 피클 vs 부이까지 출처와 함께 정리한 상세 리포트. 정부 대응 일정표, 신호 경로 도해, MS365 장애 복구 타임라인과 SLA 크레딧 계산기, Gemini·소형 모델 비교, IPO 공모가 계산기 등 직접 조작하는 그림 포함.",
+    "desc": "AI 시험 부정행위(세무사 수석 자백·수능 대책), Microsoft 365 장애(11월 12~14일 전 세계), Gemini 4 Argon·Carbon·Hydrogen과 Krypton·Helix·Oxygen 유출, 소형 모델 3종, Claude Projects, ChatGPT Wallet, Anthropic IPO, 피클 vs 부이까지 출처와 함께 정리한 상세 리포트. 정부 대응 일정표, 신호 경로 도해, Microsoft 365 장애 복구 타임라인과 SLA 크레딧 계산기, Gemini·소형 모델 비교, IPO 공모가 계산기 등 직접 조작하는 그림 포함.",
     "type": "리포트",
-    "tags": ["AI 동향", "주간 브리핑", "IPO", "MS365 장애", "Gemini"],
+    "tags": ["AI 동향", "주간 브리핑", "IPO", "Microsoft 365 장애", "Gemini"],
     "date": "2026-11-16",
     "thumb": "thumbs/ai-briefing-2026-11-w3-report.jpg"
   },
   {
     "href": "ai-briefing-2026-11-w3/",
     "title": "2026년 11월 셋째 주 테크·AI 브리핑 (슬라이드형)",
-    "desc": "Anthropic IPO, AI 시험 부정행위, MS365 장애, Gemini 4, 소형 모델 3종, Claude Projects, ChatGPT Wallet, 피클 vs 부이를 37장으로 정리. 장마다 사진 표지, 확정·루머·판단·벤더 수치 배지, 움직이는 도해와 약어 풀이, 폰 세로 화면 대응. Speaker Notes(N), Fullscreen(F).",
+    "desc": "Anthropic IPO, AI 시험 부정행위, Microsoft 365 장애, Gemini 4, 소형 모델 3종, Claude Projects, ChatGPT Wallet, 피클 vs 부이를 38장으로 정리. 장마다 사진 표지, 확정·루머·판단·벤더 수치 배지, 움직이는 도해와 약어 풀이, 폰 세로 화면 대응. Speaker Notes(N), Fullscreen(F).",
     "type": "슬라이드",
-    "tags": ["AI 동향", "주간 브리핑", "IPO", "MS365 장애", "Gemini"],
+    "tags": ["AI 동향", "주간 브리핑", "IPO", "Microsoft 365 장애", "Gemini"],
     "date": "2026-11-16",
     "thumb": "thumbs/ai-briefing-2026-11-w3.jpg"
   },
