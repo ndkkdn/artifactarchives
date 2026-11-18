@@ -8,8 +8,7 @@ window.ITEMS = [
     "type": "리포트",
     "tags": ["AI 동향", "주간 브리핑", "IPO", "MS365 장애", "Gemini"],
     "date": "2026-11-16",
-    "thumb": "thumbs/ai-briefing-2026-11-w3-report.jpg",
-    "hidden": true
+    "thumb": "thumbs/ai-briefing-2026-11-w3-report.jpg"
   },
   {
     "href": "ai-briefing-2026-11-w3/",
