@@ -288,6 +288,7 @@
   /* ── admin (hidden unless body.admin) ──── */
   .admin-only { display: none !important; }
   body.admin .admin-only { display: flex !important; }
+  body.admin .tg-btn.admin-only { display: grid !important; }
   .pill {
     appearance: none; border: 0; background: var(--btn); height: 30px; padding: 0 12px; border-radius: 999px; cursor: pointer;
     font-weight: 500; font-size: 13px; color: var(--text); transition: background .3s; white-space: nowrap;
@@ -476,6 +477,9 @@
         <button type="button" class="tg-btn" id="themeBtn" aria-label="테마 전환" title="테마 전환">
           <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="8" cy="8" r="6"/><path d="M8 2a6 6 0 000 12z" fill="currentColor"/></svg>
         </button>
+        <a class="tg-btn admin-only" id="sampleBtn" href="samples/slide-template.html" target="_blank" rel="noopener" aria-label="샘플 템플릿 (관리자 전용, 새 탭)" title="샘플 템플릿 · 관리자 전용">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" width="16" height="16" aria-hidden="true"><rect x="1.8" y="2.6" width="8.4" height="5.6" rx="1"/><rect x="5.8" y="7.8" width="8.4" height="5.6" rx="1" fill="var(--btn, transparent)"/><path d="M8 10h4.2M8 11.6h2.6"/></svg>
+        </a>
         <button type="button" class="tg-btn season-btn" id="seasonBtn" aria-label="배경 전환" title="배경 전환">
           <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" width="16" height="16" aria-hidden="true"></svg>
         </button>
