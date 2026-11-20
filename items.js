@@ -2,6 +2,16 @@
 // 직접 고칠 때도 JSON 형식(따옴표 붙은 키)을 유지해 주세요.
 window.ITEMS = [
   {
+    "href": "agent-platform-report/",
+    "title": "Agent Demo에서 Agent Platform으로 (스크롤 타입)",
+    "desc": "AI 에이전트를 데모에서 운영 가능한 플랫폼으로 만드는 다섯 축(오케스트레이션, 도구·권한, 메모리·작업 상태, 관측·평가, 게이트웨이·거버넌스)을 7개 장으로 풀어 쓴 리포트. 요청 경로가 움직이는 플랫폼 구조도, Plan→Act→Observe 루프, 체크포인트 복구 비교, 위험도별 권한 단계, Trace 예시, 회귀 평가 흐름, 운영 문제 지도와 설계 질문, 눌러 보는 용어 풀이.",
+    "type": "리포트",
+    "tags": ["AI 에이전트", "아키텍처", "MCP", "LLM"],
+    "date": "2026-11-20",
+    "thumb": "thumbs/agent-platform-report.jpg",
+    "hidden": false
+  },
+  {
     "href": "agent-platform-slides/",
     "title": "Agent Demo에서 Agent Platform으로 (슬라이드 타입)",
     "desc": "AI 에이전트를 데모에서 운영 가능한 플랫폼으로 만드는 다섯 축(오케스트레이션, 도구·권한, 메모리·작업 상태, 관측·평가, 게이트웨이·거버넌스)을 16장으로 정리. 움직이는 플랫폼 구조도, Plan→Act→Observe 루프, 체크포인트 복구 비교, 위험도별 권한 단계, 운영 문제 지도. 차콜·세이지 어스톤 테마와 배민 한나Pro·고도체, 폰 세로 화면 대응. Speaker Notes(N), Fullscreen(F).",
