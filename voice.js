@@ -39,14 +39,32 @@
   };
   rate = +store.get('archive-voice-rate') || 1;
 
-  /* ── pick a Korean voice; prefer natural ones over novelty voices ── */
-  function pickVoice() {
-    const ko = synth.getVoices().filter(v => /^ko/i.test(v.lang));
-    if (!ko.length) return null;
-    const good = /Yuna|Sora|Google|Heami|SunHi|InJoon|Hyunsu|Natural|Online/i;
-    const novelty = /Grandma|Grandpa|Rocko|Eddy|Flo|Reed|Sandy|Shelley/i;
-    return ko.find(v => good.test(v.name) && !novelty.test(v.name)) || ko.find(v => !novelty.test(v.name)) || ko[0];
+  /* ── Korean voices, best first: neural/online > premium/enhanced > Google > named system voices ── */
+  const NOVELTY = /Grandma|Grandpa|Rocko|Eddy|Flo|Reed|Sandy|Shelley|Bad News|Bells|Bubbles|Jester|Organ|Trinoids|Whisper|Zarvox|Superstar|Wobble|Bahh|Boing|Cellos|Junior|Ralph|Fred|Albert|Kathy/i;
+  function score(v) {
+    const n = v.name;
+    if (NOVELTY.test(n)) return -10;
+    let s = 0;
+    if (/Natural|Neural/i.test(n)) s = 50;
+    else if (/Online/i.test(n)) s = 45;
+    else if (/Premium|프리미엄/i.test(n)) s = 40;
+    else if (/Enhanced|향상/i.test(n)) s = 35;
+    else if (/Google/i.test(n)) s = 30;
+    else if (/Yuna|Sora|Heami|SunHi|InJoon|Hyunsu|Minsu|Jimin|Seoyeon/i.test(n)) s = 20;
+    return s + (v.localService ? 0 : 1);
   }
+  function koVoices() {
+    const ko = synth.getVoices().filter(v => /^ko/i.test(v.lang)).sort((a, b) => score(b) - score(a) || a.name.localeCompare(b.name));
+    const real = ko.filter(v => score(v) >= 0);                  // drop joke voices unless nothing else exists
+    return real.length ? real : ko;
+  }
+  function pickVoice() {
+    const ko = koVoices();
+    if (!ko.length) return null;
+    const saved = store.get('archive-voice-name');
+    return ko.find(v => v.voiceURI === saved || v.name === saved) || ko[0];
+  }
+  const shortName = v => v.name.replace(/^(Microsoft|Google)\s+/i, m => /Google/i.test(m) ? 'Google ' : '').replace(/\s*[-–]\s*(Korean|한국어).*$/i, '').replace(/\s*\((Korean|한국어).*$/i, '').trim();
 
   /* ── collect what to read ── */
   function textOf(el) {
@@ -163,8 +181,10 @@
 .vx-bar .vx-pp{background:var(--gold,#d5a844);color:#111}
 .vx-bar .vx-pp:hover{background:var(--gold,#d5a844);filter:brightness(1.08)}
 .vx-bar .vx-rate{font:600 12.5px/1 var(--mono,ui-monospace,monospace);min-width:48px}
+.vx-bar .vx-voice{max-width:150px;height:32px;padding:0 6px;border:1px solid var(--line,#ccc);border-radius:8px;background:var(--paper,#fff);color:inherit;font:inherit;font-size:12.5px;cursor:pointer}
+.vx-bar .vx-voice[hidden]{display:none}
 .vx-bar .vx-where{max-width:220px;padding:0 6px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;color:var(--ink-2,#666)}
-@media (max-width:520px){.vx-bar .vx-where{display:none}.vx-top .lbl{display:none}}
+@media (max-width:520px){.vx-bar{gap:2px;padding:5px 6px}.vx-bar button{min-width:36px;height:38px;padding:0 6px}.vx-bar .vx-rate{min-width:42px}.vx-bar .vx-voice{max-width:92px}.vx-bar .vx-where{display:none}.vx-top .lbl{display:none}}
 @media print{.vx-bar,.vx-top,.vx-sec{display:none!important}}`;
 
   function button(cls, label, html, fn) {
@@ -173,7 +193,7 @@
     b.addEventListener('click', e => { e.stopPropagation(); fn(); });
     return b;
   }
-  let topBtn, ppBtn, rateBtn, whereEl;
+  let topBtn, ppBtn, rateBtn, whereEl, voiceSel;
   function buildUI() {
     const st = document.createElement('style'); st.textContent = CSS; document.head.appendChild(st);
 
@@ -207,8 +227,18 @@
       if (playing) { hush(); playing = true; speakNext(); }      // re-read the current sentence at the new speed
       renderUI();
     });
+    voiceSel = document.createElement('select');
+    voiceSel.className = 'vx-voice'; voiceSel.setAttribute('aria-label', '목소리'); voiceSel.title = '목소리';
+    voiceSel.addEventListener('change', () => {
+      const v = koVoices().find(x => x.voiceURI === voiceSel.value);
+      if (!v) return;
+      voice = v; store.set('archive-voice-name', v.voiceURI);
+      if (playing) { hush(); playing = true; speakNext(); }      // re-read the current sentence in the new voice
+    });
+    fillVoices();
+    synth.addEventListener('voiceschanged', fillVoices);
     whereEl = document.createElement('span'); whereEl.className = 'vx-where'; whereEl.setAttribute('aria-live', 'polite');
-    ui.append(button('', '이전 단락', ICON.prev, () => step(-1)), ppBtn, button('', '다음 단락', ICON.next, () => step(1)), rateBtn, whereEl, button('', '읽기 닫기', ICON.x, close));
+    ui.append(button('', '이전 단락', ICON.prev, () => step(-1)), ppBtn, button('', '다음 단락', ICON.next, () => step(1)), rateBtn, voiceSel, whereEl, button('', '읽기 닫기', ICON.x, close));
     document.body.appendChild(ui);
 
     addEventListener('keydown', e => { if (e.key === 'Escape' && ui && !ui.hidden) close(); });
@@ -216,6 +246,19 @@
     addEventListener('keydown', e => { if (['ArrowUp', 'ArrowDown', 'PageUp', 'PageDown', 'Home', 'End', ' '].includes(e.key)) userScrollAt = Date.now(); });
     addEventListener('pagehide', () => synth.cancel());
     renderUI();
+  }
+  function fillVoices() {
+    const ko = koVoices();
+    if (!ko.length) return;
+    if (!store.get('archive-voice-name') || !ko.some(v => v.voiceURI === voice.voiceURI)) voice = pickVoice();   // better voices can arrive late
+    voiceSel.innerHTML = '';
+    ko.forEach((v, k) => {
+      const o = document.createElement('option');
+      o.value = v.voiceURI; o.textContent = shortName(v) + (k === 0 && score(v) > 0 ? ' · 추천' : '');
+      o.selected = v.voiceURI === voice.voiceURI;
+      voiceSel.appendChild(o);
+    });
+    voiceSel.hidden = ko.length < 2;
   }
   function showUI() { if (ui) ui.hidden = false; }
   function renderUI() {
