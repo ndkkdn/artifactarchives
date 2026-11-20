@@ -1,0 +1,1184 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>표지·본문 슬라이드 시안</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Gowun+Batang:wght@400;700&family=Noto+Sans+KR:wght@400;500;700;900&family=Noto+Serif+KR:wght@500;700;900&display=swap">
+<style>
+/* Layout: page chrome stays quiet and neutral; each concept is a row of three 16:9 slides that scale with container units */
+:root {
+  /* palette (fixed — the slides themselves) */
+  --terra: #C6533A;
+  --peach: #F9D1B8;
+  --mari: #F1A24A;
+  --slate: #5A6B7A;
+  --esp: #2B2220;
+  /* palette 2 */
+  --brick: #B5493A;
+  --linen: #F2E6D8;
+  --walnut: #6B4A3A;
+  --sage: #A9B2A2;
+  --char: #2B2B2B;
+  --f-batang: "Gowun Batang", "Noto Serif KR", Georgia, serif;
+
+  /* page chrome (theme-aware) */
+  --bg: #F1EDEA;
+  --surface: #FFFFFF;
+  --fg: #2B2220;
+  --muted: #6E6460;
+  --line: #DDD5D0;
+
+  --f-serif: "Noto Serif KR", "Nanum Myeongjo", Georgia, serif;
+  --f-sans: "Noto Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
+  --f-display: "Black Han Sans", "Noto Sans KR", "Apple SD Gothic Neo", sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #171211; --surface: #221B19; --fg: #EFE6E0; --muted: #A89C96; --line: #3A302D;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #171211; --surface: #221B19; --fg: #EFE6E0; --muted: #A89C96; --line: #3A302D;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--f-sans);
+  line-height: 1.6;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 48px 80px;
+}
+.wrap { max-width: 1280px; margin: 0 auto; display: flex; flex-direction: column; gap: 72px; }
+
+/* header */
+header { display: flex; flex-direction: column; gap: 20px; }
+header h1 { margin: 0; font-size: clamp(26px, 3.4vw, 38px); font-weight: 900; letter-spacing: -0.02em; text-wrap: balance; }
+header p { margin: 0; color: var(--muted); max-width: 62ch; }
+.swatches { display: flex; flex-wrap: wrap; gap: 8px; }
+.sw { display: flex; align-items: center; gap: 8px; padding: 6px 12px 6px 6px; border: 1px solid var(--line); border-radius: 999px; background: var(--surface); font-size: 13px; font-variant-numeric: tabular-nums; }
+.sw i { width: 22px; height: 22px; border-radius: 50%; display: block; }
+
+/* concept section */
+.concept { display: flex; flex-direction: column; gap: 20px; }
+.concept-head { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 320px); gap: 24px; align-items: end; border-top: 1px solid var(--line); padding-top: 20px; }
+.concept-head .eyebrow { font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); font-weight: 700; }
+.concept-head h2 { margin: 4px 0 6px; font-size: clamp(22px, 2.6vw, 30px); font-weight: 900; letter-spacing: -0.01em; }
+.concept-head p { margin: 0; color: var(--muted); font-size: 15px; max-width: 60ch; }
+.ratio { display: flex; flex-direction: column; gap: 6px; font-size: 12px; color: var(--muted); }
+.ratio-bar { display: flex; height: 14px; border-radius: 3px; overflow: hidden; border: 1px solid var(--line); }
+.ratio-legend { display: flex; flex-wrap: wrap; gap: 4px 12px; font-variant-numeric: tabular-nums; }
+
+.slides { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+@media (max-width: 900px) { .slides { grid-template-columns: minmax(0, 1fr); } .concept-head { grid-template-columns: minmax(0, 1fr); } }
+figure { margin: 0; display: flex; flex-direction: column; gap: 8px; }
+figcaption { font-size: 12px; color: var(--muted); letter-spacing: 0.04em; }
+
+.slide {
+  container-type: inline-size;
+  aspect-ratio: 16 / 9;
+  max-width: 100%;
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+  border-radius: 6px;
+  box-shadow: 0 1px 2px rgba(0,0,0,.08), 0 8px 24px -12px rgba(0,0,0,.25);
+}
+.slide > .in { position: absolute; inset: 0; padding: 6cqw 6.5cqw; display: flex; flex-direction: column; }
+
+/* ---------- 1. Warm Editorial ---------- */
+.ed { background: var(--peach); color: var(--esp); font-family: var(--f-sans); }
+.ed .kicker { font-size: 2cqw; letter-spacing: .18em; font-weight: 700; color: var(--terra); }
+.ed .title { font-family: var(--f-serif); font-weight: 900; font-size: 7cqw; line-height: 1.22; letter-spacing: -0.02em; margin-top: auto; }
+.ed .hl { background: linear-gradient(transparent 62%, var(--mari) 62%, var(--mari) 92%, transparent 92%); }
+.ed .foot { display: flex; justify-content: space-between; align-items: end; margin-top: 4cqw; padding-top: 2cqw; border-top: .25cqw solid var(--terra); font-size: 1.9cqw; color: var(--slate); }
+.ed .foot b { color: var(--esp); font-weight: 700; }
+.ed .cols { display: grid; grid-template-columns: 1fr 1.25fr; gap: 5cqw; flex: 1; }
+.ed h3 { font-family: var(--f-serif); font-weight: 900; font-size: 4.6cqw; line-height: 1.3; margin: 1.5cqw 0 0; letter-spacing: -0.02em; }
+.ed .lede { font-size: 1.9cqw; color: var(--slate); margin-top: 2.5cqw; line-height: 1.7; }
+.ed ol { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; justify-content: center; gap: 2.4cqw; }
+.ed li { display: grid; grid-template-columns: 5cqw 1fr; gap: 1.5cqw; padding-bottom: 2.2cqw; border-bottom: .15cqw solid rgba(43,34,32,.18); }
+.ed li:last-child { border-bottom: 0; }
+.ed li .n { font-family: var(--f-serif); font-weight: 900; color: var(--terra); font-size: 3.4cqw; line-height: 1; }
+.ed li strong { display: block; font-size: 2.3cqw; font-weight: 700; }
+.ed li span { display: block; font-size: 1.75cqw; color: var(--slate); line-height: 1.55; margin-top: .4cqw; }
+.ed .pg { position: absolute; right: 6.5cqw; bottom: 4cqw; font-family: var(--f-serif); font-size: 1.8cqw; color: var(--terra); }
+
+/* ---------- 2. Dark Sunset ---------- */
+.dk { background: var(--esp); color: var(--peach); font-family: var(--f-sans); }
+.dk .sun { position: absolute; width: 70cqw; height: 70cqw; right: -18cqw; bottom: -38cqw; border-radius: 50%;
+  background: radial-gradient(circle at 50% 40%, var(--mari) 0%, var(--terra) 45%, rgba(198,83,58,0) 70%); opacity: .85; filter: blur(1.5cqw); }
+.dk .horizon { position: absolute; left: 0; right: 0; bottom: 0; height: 22cqw; background: linear-gradient(to top, rgba(43,34,32,.95), rgba(43,34,32,0)); }
+.dk .in { z-index: 1; }
+.dk .tag { display: inline-flex; align-self: flex-start; gap: 1cqw; align-items: center; font-size: 1.8cqw; letter-spacing: .12em; font-weight: 700; color: var(--mari); }
+.dk .tag::before { content: ""; width: 3cqw; height: .3cqw; background: var(--terra); }
+.dk .title { margin-top: auto; font-weight: 900; font-size: 8.4cqw; line-height: 1.08; letter-spacing: -0.035em; }
+.dk .sub { font-size: 2.2cqw; margin-top: 2cqw; opacity: .8; }
+.dk .meta { margin-top: 4cqw; font-size: 1.7cqw; color: #9AA6B1; letter-spacing: .04em; }
+.dk .big { display: grid; grid-template-columns: 1.2fr 1fr; gap: 4cqw; flex: 1; align-items: center; }
+.dk .num { font-weight: 900; font-size: 19cqw; line-height: .9; letter-spacing: -0.05em; color: var(--mari); font-variant-numeric: tabular-nums; }
+.dk .num small { font-size: .45em; letter-spacing: -0.02em; }
+.dk .num-label { font-size: 2.6cqw; font-weight: 700; margin-top: 2cqw; }
+.dk .num-note { font-size: 1.7cqw; opacity: .65; margin-top: .8cqw; }
+.dk .cards { display: flex; flex-direction: column; gap: 1.8cqw; }
+.dk .card { background: var(--slate); border-radius: 1.2cqw; padding: 2.2cqw 2.6cqw; display: flex; flex-direction: column; gap: 1cqw; }
+.dk .card .k { font-size: 1.6cqw; opacity: .85; }
+.dk .card .v { font-size: 3.4cqw; font-weight: 900; font-variant-numeric: tabular-nums; letter-spacing: -0.02em; }
+.dk .bar { height: .9cqw; background: rgba(249,209,184,.18); border-radius: 1cqw; overflow: hidden; }
+.dk .bar i { display: block; height: 100%; background: var(--terra); border-radius: 1cqw; }
+.dk h3 { margin: 0; font-size: 3.6cqw; font-weight: 900; letter-spacing: -0.02em; }
+.dk .chart { flex: 1; margin-top: 2cqw; }
+
+/* ---------- 3. Retro Color Block ---------- */
+.rt { font-family: var(--f-sans); }
+.rt.cover { background: var(--terra); color: var(--peach); }
+.rt .arches { position: absolute; right: -6cqw; bottom: -2cqw; width: 58cqw; }
+.rt .title { font-family: var(--f-display); font-size: 10cqw; line-height: 1.02; letter-spacing: -0.01em; margin-top: auto; }
+.rt .chip { align-self: flex-start; font-size: 1.8cqw; font-weight: 900; letter-spacing: .1em; background: var(--esp); color: var(--mari); padding: .9cqw 2cqw; border-radius: 10cqw; }
+.rt .sub { font-size: 2.1cqw; font-weight: 500; margin-top: 2cqw; max-width: 46cqw; }
+.rt.split { display: grid; grid-template-columns: 42% 58%; }
+.rt.split .l { background: var(--slate); color: var(--peach); padding: 6cqw 5cqw; display: flex; flex-direction: column; position: relative; overflow: hidden; }
+.rt.split .r { background: var(--peach); color: var(--esp); padding: 6cqw 5.5cqw; display: flex; flex-direction: column; justify-content: center; gap: 2.4cqw; }
+.rt.split h3 { font-family: var(--f-display); font-weight: 400; font-size: 5.6cqw; line-height: 1.1; margin: auto 0 0; position: relative; }
+.rt.split .l .dot { position: absolute; top: -10cqw; left: -10cqw; width: 30cqw; height: 30cqw; border-radius: 50%; background: var(--mari); }
+.rt.split .l .dot2 { position: absolute; top: 2cqw; left: 12cqw; width: 10cqw; height: 10cqw; border-radius: 50%; background: var(--terra); }
+.rt .pill { display: flex; gap: 2cqw; align-items: center; border: .35cqw solid var(--esp); border-radius: 10cqw; padding: 1.4cqw 2.4cqw; background: #FDE7D8; }
+.rt .pill b { font-family: var(--f-display); font-weight: 400; font-size: 3cqw; color: var(--terra); min-width: 8cqw; }
+.rt .pill span { font-size: 1.9cqw; font-weight: 700; line-height: 1.4; }
+.rt.chart { background: var(--peach); color: var(--esp); }
+.rt.chart .in { flex-direction: row; gap: 5cqw; align-items: center; }
+.rt.chart h3 { font-family: var(--f-display); font-weight: 400; font-size: 5cqw; line-height: 1.1; margin: 0 0 3cqw; }
+.rt .legend { display: flex; flex-direction: column; gap: 1.6cqw; font-size: 1.9cqw; font-weight: 700; }
+.rt .legend div { display: flex; align-items: center; gap: 1.4cqw; font-variant-numeric: tabular-nums; }
+.rt .legend i { width: 2.6cqw; height: 2.6cqw; border-radius: 50%; border: .3cqw solid var(--esp); }
+.rt .legend em { font-style: normal; margin-left: auto; padding-left: 3cqw; }
+.rt .donut { width: 38cqw; flex: none; }
+
+.rule { border: 1px solid var(--line); background: var(--surface); border-radius: 8px; padding: 12px 14px; font-size: 13px; color: var(--muted); line-height: 1.6; }
+.rule b { color: var(--fg); display: block; margin-bottom: 2px; }
+
+/* ---------- G. Title emphasis ---------- */
+.gt { font-family: var(--f-sans); }
+.gt.g1 { background: var(--terra); color: var(--peach); }
+.gt .top { display: flex; justify-content: space-between; font-size: 1.8cqw; font-weight: 700; letter-spacing: .12em; color: var(--esp); position: relative; z-index: 1; }
+.gt .g1sub { position: relative; z-index: 1; margin-top: 2cqw; font-size: 2.2cqw; font-weight: 500; }
+.gt .giant { position: absolute; left: -1.5cqw; bottom: -6.5cqw; font-family: var(--f-display); font-size: 33cqw; line-height: 1; letter-spacing: -0.03em; color: var(--peach); white-space: nowrap; }
+.gt.g2 { background: var(--peach); color: var(--esp); }
+.gt .statement { margin: auto 0; font-weight: 900; font-size: 7.6cqw; line-height: 1.22; letter-spacing: -0.04em; text-wrap: balance; }
+.gt .statement span { color: var(--terra); }
+.gt .by { display: flex; justify-content: space-between; font-size: 1.8cqw; color: var(--slate); }
+.gt.g3 { background: var(--esp); color: var(--peach); }
+.gt .outline { position: absolute; left: 3cqw; top: 50%; transform: translateY(-50%); font-weight: 900; font-size: 42cqw; line-height: 1; letter-spacing: -0.06em; color: transparent; -webkit-text-stroke: .35cqw var(--mari); }
+.gt .g3text { margin: auto 0 0 auto; width: 40cqw; position: relative; }
+.gt .g3text small { font-size: 1.8cqw; letter-spacing: .14em; color: var(--mari); font-weight: 700; }
+.gt .g3text h3 { margin: 1cqw 0 0; font-size: 5.6cqw; font-weight: 900; line-height: 1.15; letter-spacing: -0.03em; }
+
+/* ---------- H. Body emphasis ---------- */
+.rd { background: var(--linen); color: var(--char); font-family: var(--f-sans); }
+.rd .kick { font-size: 1.6cqw; letter-spacing: .16em; color: var(--brick); font-weight: 700; }
+.rd h3 { font-family: var(--f-serif); font-weight: 700; font-size: 3.6cqw; line-height: 1.3; margin: 1cqw 0 2.2cqw; letter-spacing: -0.02em; }
+.rd .body2 { column-count: 2; column-gap: 4cqw; font-family: var(--f-serif); font-size: 1.6cqw; line-height: 1.85; }
+.rd .body2 p { margin: 0 0 1.2cqw; }
+.rd .body2 p:first-child::first-letter { float: left; font-size: 5.2cqw; line-height: 1; font-weight: 900; color: var(--brick); margin: .3cqw 1cqw 0 0; }
+.rd .ann { display: grid; grid-template-columns: 1fr 25cqw; gap: 4cqw; flex: 1; align-items: center; }
+.rd .ann p { font-family: var(--f-serif); font-size: 2.7cqw; line-height: 1.85; margin: 0; letter-spacing: -0.01em; }
+.rd mark { background: none; color: inherit; box-shadow: inset 0 -0.9cqw 0 rgba(181,73,58,.28); }
+.rd sup { color: var(--brick); font-family: var(--f-sans); font-weight: 700; font-size: .55em; }
+.rd .notes { display: flex; flex-direction: column; gap: 2cqw; border-left: .2cqw solid var(--sage); padding-left: 2.4cqw; font-size: 1.5cqw; color: var(--walnut); line-height: 1.6; }
+.rd .notes b { color: var(--brick); margin-right: .6cqw; }
+.rd .sum { display: grid; grid-template-columns: 1fr 1fr; gap: 4cqw; flex: 1; margin-top: 2cqw; }
+.rd .sum .key { font-family: var(--f-serif); font-weight: 700; font-size: 3.9cqw; line-height: 1.45; letter-spacing: -0.02em; align-self: center; }
+.rd .sum ul { margin: 0; padding: 3cqw; list-style: none; background: rgba(169,178,162,.38); border-radius: .8cqw; display: flex; flex-direction: column; justify-content: center; gap: 1.8cqw; font-size: 1.8cqw; line-height: 1.55; }
+.rd .sum li { padding-left: 2.4cqw; position: relative; }
+.rd .sum li::before { content: ""; position: absolute; left: 0; top: .85cqw; width: 1cqw; height: 1cqw; background: var(--brick); border-radius: 50%; }
+
+/* ---------- I. Image emphasis ---------- */
+.im { background: var(--esp); color: var(--peach); font-family: var(--f-sans); }
+.im .scene { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.im .shade { position: absolute; inset: 0; background: linear-gradient(to top, rgba(43,34,32,.88) 0%, rgba(43,34,32,0) 58%); }
+.im .ph { position: absolute; top: 2.6cqw; right: 2.6cqw; z-index: 2; font-size: 1.35cqw; letter-spacing: .08em; padding: .5cqw 1.2cqw; border: .15cqw dashed #F9D1B8; border-radius: .5cqw; color: #F9D1B8; background: rgba(43,34,32,.4); }
+.im .in { z-index: 1; justify-content: flex-end; }
+.im .title { font-weight: 900; font-size: 6.4cqw; line-height: 1.15; letter-spacing: -0.03em; }
+.im .cap { font-size: 1.8cqw; margin-top: 1.4cqw; opacity: .88; }
+.im.mosaic { background: var(--peach); padding: 2cqw; display: grid; grid-template-columns: 1.7fr 1fr; grid-template-rows: 1fr 1fr auto; gap: 1.4cqw; }
+.im .tile { position: relative; overflow: hidden; border-radius: .6cqw; min-height: 0; }
+.im .tile.big { grid-row: 1 / 3; }
+.im .tile .ph { top: 1.4cqw; right: 1.4cqw; font-size: 1.15cqw; }
+.im .mcap { grid-column: 1 / 3; display: flex; justify-content: space-between; align-items: baseline; color: var(--esp); font-size: 1.7cqw; padding: .2cqw .6cqw 0; }
+.im .mcap b { font-size: 2.6cqw; font-weight: 900; letter-spacing: -0.02em; }
+.im.duo { background: var(--peach); color: var(--esp); display: grid; grid-template-columns: 56% 44%; }
+.im.duo .pic { position: relative; overflow: hidden; }
+.im.duo .txt { padding: 5cqw 5cqw 5cqw 4.5cqw; display: flex; flex-direction: column; justify-content: center; gap: 2cqw; }
+.im.duo .k { font-size: 1.6cqw; letter-spacing: .14em; font-weight: 700; color: var(--terra); }
+.im.duo h3 { margin: 0; font-weight: 900; font-size: 4.2cqw; line-height: 1.22; letter-spacing: -0.03em; }
+.im.duo p { margin: 0; font-size: 1.75cqw; line-height: 1.7; }
+
+/* ---------- J. Data emphasis ---------- */
+.nw { background: var(--char); color: var(--linen); font-family: var(--f-sans); }
+.nw .label { font-size: 1.7cqw; letter-spacing: .16em; color: var(--sage); font-weight: 700; }
+.nw .waf-wrap { display: grid; grid-template-columns: 30cqw 1fr; gap: 5cqw; align-items: center; flex: 1; }
+.nw .waffle { display: grid; grid-template-columns: repeat(10, 1fr); gap: .8cqw; }
+.nw .waffle i { aspect-ratio: 1; border-radius: 50%; background: var(--walnut); }
+.nw .waffle i.on { background: var(--sage); }
+.nw .bignum { font-weight: 900; font-size: 8.4cqw; line-height: 1.05; letter-spacing: -0.04em; }
+.nw .bignum em { font-style: normal; color: var(--sage); }
+.nw .desc { font-size: 2.2cqw; margin-top: 2cqw; line-height: 1.5; }
+.nw .src { font-size: 1.5cqw; margin-top: 2cqw; color: var(--sage); }
+.nw.vs { display: grid; grid-template-columns: 1fr 1fr; }
+.nw.vs .half { padding: 5.5cqw; display: flex; flex-direction: column; justify-content: space-between; }
+.nw.vs .a { background: var(--walnut); color: var(--linen); }
+.nw.vs .b { background: var(--sage); color: var(--char); }
+.nw.vs .lbl { font-size: 1.8cqw; font-weight: 700; letter-spacing: .12em; }
+.nw.vs .n { font-weight: 900; font-size: 17cqw; line-height: .9; letter-spacing: -0.05em; font-variant-numeric: tabular-nums; }
+.nw.vs .n small { font-size: .3em; letter-spacing: 0; margin-left: .6cqw; }
+.nw.vs .t { font-size: 1.9cqw; line-height: 1.5; }
+.nw.vs .arrow { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); width: 8cqw; height: 8cqw; border-radius: 50%; background: var(--brick); color: var(--linen); display: grid; place-items: center; font-size: 3.4cqw; font-weight: 900; }
+.nw h3 { margin: 1.2cqw 0 0; font-size: 3.6cqw; font-weight: 900; letter-spacing: -0.02em; }
+
+/* ---------- K. Flow emphasis ---------- */
+.pm { background: var(--linen); color: var(--char); font-family: var(--f-sans); }
+.pm .kick { font-size: 1.6cqw; letter-spacing: .16em; font-weight: 700; color: var(--walnut); }
+.pm h3 { margin: 1cqw 0 0; font-family: var(--f-serif); font-weight: 700; font-size: 4.2cqw; letter-spacing: -0.02em; }
+.pm .agenda { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.6cqw; margin-top: auto; }
+.pm .ag { border-top: .35cqw solid var(--char); padding: 1.6cqw 0 0; display: flex; flex-direction: column; gap: 1cqw; min-height: 22cqw; }
+.pm .ag .no { font-family: var(--f-serif); font-weight: 900; font-size: 6cqw; line-height: 1; color: var(--walnut); }
+.pm .ag strong { font-size: 2.1cqw; }
+.pm .ag span { font-size: 1.55cqw; color: var(--walnut); line-height: 1.5; }
+.pm .ag.now { background: var(--brick); color: var(--linen); border-top-color: var(--brick); padding: 1.6cqw; border-radius: 0 0 .8cqw .8cqw; }
+.pm .ag.now .no, .pm .ag.now span { color: var(--linen); }
+.pm .road { position: relative; flex: 1; display: grid; grid-template-columns: repeat(4, 1fr); margin-top: 1cqw; }
+.pm .road::before { content: ""; position: absolute; left: 0; right: 0; top: 50%; height: .3cqw; margin-top: -.15cqw; background: var(--walnut); }
+.pm .q { position: relative; display: grid; grid-template-rows: 1fr auto 1fr; padding: 0 1.2cqw; }
+.pm .q .node { width: 2.4cqw; height: 2.4cqw; border-radius: 50%; background: var(--linen); border: .4cqw solid var(--walnut); }
+.pm .q .c { font-size: 1.55cqw; line-height: 1.5; color: var(--walnut); padding: 1.4cqw 0; }
+.pm .q .c small { display: block; font-size: 1.45cqw; letter-spacing: .1em; font-weight: 700; }
+.pm .q .c b { display: block; font-size: 2.1cqw; color: var(--char); margin: .3cqw 0; }
+.pm .q .up { align-self: end; }
+.pm .q .down { grid-row: 3; align-self: start; }
+.pm .q.now .node { background: var(--brick); border-color: var(--brick); box-shadow: 0 0 0 1cqw rgba(181,73,58,.22); }
+.pm .q.now .c small { color: var(--brick); }
+.pm.flow { background: var(--walnut); color: var(--linen); }
+.pm.flow .kick { color: var(--sage); }
+.pm .steps { display: flex; align-items: stretch; margin: auto 0; }
+.pm .step { flex: 1; min-width: 0; background: var(--linen); color: var(--char); border-radius: 1cqw; padding: 2.2cqw 2cqw; display: flex; flex-direction: column; gap: .8cqw; }
+.pm .step .s { font-size: 1.45cqw; font-weight: 700; letter-spacing: .1em; color: var(--walnut); }
+.pm .step strong { font-size: 2.2cqw; line-height: 1.3; }
+.pm .step span { font-size: 1.5cqw; line-height: 1.5; color: var(--walnut); }
+.pm .step.last { background: var(--sage); }
+.pm .step.last .s, .pm .step.last span { color: var(--char); }
+.pm .arr { flex: 0 0 3.6cqw; display: grid; place-items: center; color: var(--sage); font-size: 2.8cqw; font-weight: 900; }
+
+/* palette group heading */
+.pgroup { display: flex; flex-direction: column; gap: 14px; padding: 28px; border-radius: 10px; background: var(--surface); border: 1px solid var(--line); }
+.pgroup .pnum { font-size: 12px; letter-spacing: .14em; font-weight: 700; color: var(--muted); }
+.pgroup h2 { margin: 0; font-size: clamp(22px, 2.8vw, 30px); font-weight: 900; letter-spacing: -0.01em; }
+.pgroup p { margin: 0; color: var(--muted); max-width: 70ch; font-size: 15px; }
+.group { display: flex; flex-direction: column; gap: 64px; }
+
+/* ---------- D. Linen & Ink ---------- */
+.ln { background: var(--linen); color: var(--char); font-family: var(--f-sans); }
+.ln .side { position: absolute; top: 0; right: 0; bottom: 0; width: 28%; background: var(--sage); }
+.ln .seal { position: absolute; right: calc(28% - 6cqw); top: 9cqw; width: 12cqw; height: 12cqw; border-radius: 50%; background: var(--brick); color: var(--linen); display: grid; place-items: center; font-family: var(--f-serif); font-weight: 700; font-size: 2.4cqw; letter-spacing: .06em; z-index: 1; }
+.ln .in { z-index: 1; }
+.ln .small { font-size: 1.7cqw; letter-spacing: .2em; color: var(--walnut); font-weight: 500; }
+.ln .title { margin-top: auto; font-family: var(--f-serif); font-weight: 500; font-size: 6.4cqw; line-height: 1.3; letter-spacing: -0.02em; max-width: 60cqw; }
+.ln .sub { margin-top: 2.4cqw; font-size: 1.9cqw; color: var(--walnut); max-width: 56cqw; }
+.ln h3 { font-family: var(--f-serif); font-weight: 500; font-size: 4.2cqw; margin: 1.6cqw 0 0; letter-spacing: -0.02em; }
+.ln .three { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3cqw; margin-top: auto; }
+.ln .three div { border-top: .3cqw solid var(--sage); padding-top: 2cqw; display: flex; flex-direction: column; gap: 1cqw; }
+.ln .three i { width: 1.4cqw; height: 1.4cqw; border-radius: 50%; background: var(--brick); }
+.ln .three strong { font-size: 2.3cqw; font-weight: 700; }
+.ln .three span { font-size: 1.7cqw; color: var(--walnut); line-height: 1.6; }
+.ln .pgno { position: absolute; left: 6.5cqw; bottom: 3.6cqw; font-size: 1.5cqw; color: var(--walnut); letter-spacing: .14em; }
+
+/* ---------- E. Charcoal Study ---------- */
+.cs { background: var(--char); color: var(--linen); font-family: var(--f-sans);
+  background-image: linear-gradient(rgba(169,178,162,.07) 1px, transparent 1px), linear-gradient(90deg, rgba(169,178,162,.07) 1px, transparent 1px);
+  background-size: 6.25cqw 6.25cqw; }
+.cs .rail { position: absolute; left: 0; top: 0; bottom: 0; width: 1.6cqw; background: var(--brick); }
+.cs .label { font-size: 1.7cqw; letter-spacing: .16em; color: var(--sage); font-weight: 700; }
+.cs .title { margin-top: auto; font-weight: 900; font-size: 7.2cqw; line-height: 1.15; letter-spacing: -0.03em; }
+.cs .title em { font-style: normal; color: var(--sage); }
+.cs .sub { margin-top: 2.4cqw; font-size: 1.9cqw; opacity: .75; }
+.cs h3 { margin: 1.4cqw 0 0; font-size: 3.8cqw; font-weight: 900; letter-spacing: -0.02em; }
+.cs .kpis { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2cqw; margin-top: auto; }
+.cs .kpi { background: var(--walnut); border-radius: .8cqw; padding: 2.6cqw 2.4cqw; display: flex; flex-direction: column; gap: .8cqw; }
+.cs .kpi .k { font-size: 1.6cqw; opacity: .85; }
+.cs .kpi .v { font-size: 5cqw; font-weight: 900; letter-spacing: -0.03em; font-variant-numeric: tabular-nums; line-height: 1.1; }
+.cs .kpi .d { font-size: 1.6cqw; font-weight: 700; color: var(--char); background: var(--sage); align-self: flex-start; padding: .3cqw 1.2cqw; border-radius: 10cqw; font-variant-numeric: tabular-nums; }
+
+/* ---------- F. Earth Craft ---------- */
+.ec { font-family: var(--f-sans); }
+.ec.cover { background: var(--sage); color: var(--char); }
+.ec .blob { position: absolute; border-radius: 58% 42% 55% 45% / 48% 60% 40% 52%; }
+.ec .b1 { width: 44cqw; height: 40cqw; right: -6cqw; top: -8cqw; background: var(--brick); }
+.ec .b2 { width: 30cqw; height: 28cqw; right: 20cqw; bottom: -12cqw; background: var(--walnut); border-radius: 45% 55% 40% 60% / 55% 45% 55% 45%; }
+.ec .b3 { width: 16cqw; height: 15cqw; right: 8cqw; bottom: 8cqw; background: var(--linen); border-radius: 50% 50% 42% 58% / 60% 44% 56% 40%; }
+.ec .in { z-index: 1; }
+.ec .stamp { align-self: flex-start; font-size: 1.7cqw; font-weight: 700; letter-spacing: .12em; border: .25cqw solid var(--char); padding: .7cqw 1.8cqw; border-radius: 10cqw; }
+.ec .title { margin-top: auto; font-family: var(--f-batang); font-weight: 700; font-size: 8cqw; line-height: 1.15; letter-spacing: -0.02em; }
+.ec .sub { margin-top: 2cqw; font-size: 2cqw; font-weight: 500; }
+.ec.quote { background: var(--walnut); color: var(--linen); }
+.ec.quote .mark { font-family: var(--f-batang); font-size: 18cqw; line-height: .7; color: var(--brick); height: 9cqw; }
+.ec.quote blockquote { margin: 2cqw 0 0; font-family: var(--f-batang); font-size: 4.4cqw; line-height: 1.5; letter-spacing: -0.02em; text-wrap: balance; }
+.ec.quote cite { margin-top: auto; font-style: normal; font-size: 1.9cqw; color: var(--sage); display: flex; align-items: center; gap: 1.4cqw; }
+.ec.quote cite::before { content: ""; width: 4cqw; height: .25cqw; background: var(--sage); }
+.ec.bars { background: var(--linen); color: var(--char); }
+.ec.bars h3 { margin: 0; font-family: var(--f-batang); font-weight: 700; font-size: 4.2cqw; letter-spacing: -0.02em; }
+.ec.bars .cap { font-size: 1.7cqw; color: var(--walnut); margin-top: .6cqw; }
+
+.note { font-size: 13px; color: var(--muted); border-left: 2px solid var(--line); padding-left: 12px; max-width: 70ch; }
+footer { font-size: 13px; color: var(--muted); border-top: 1px solid var(--line); padding-top: 20px; }
+@media (prefers-reduced-motion: no-preference) {
+  .slide { transition: transform .25s ease; }
+  .slide:hover { transform: translateY(-3px); }
+}
+
+/* ===== 한글 웹폰트 (눈누 jsDelivr CDN) ===== */
+@font-face { font-family: "KHangangJang"; font-display: swap;
+  src: local("SeoulHangangCM"), local("서울한강 장체 M"), local("SeoulHangang CM"), local("SeoulHangangJangM"),
+       url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_two@1.0/SeoulHangangM.woff") format("woff"); }
+@font-face { font-family: "KHangang"; font-display: swap; src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_two@1.0/SeoulHangangM.woff") format("woff"); }
+@font-face { font-family: "KDuggobi"; font-display: swap; src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/2406@1.0/HSDuggobi.woff2") format("woff2"); }
+@font-face { font-family: "KKkotgil"; font-display: swap; src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_three@1.6/SangSangFlowerRoad.woff") format("woff"); }
+@font-face { font-family: "KGodo"; font-display: swap; unicode-range: U+1100-11FF, U+3130-318F, U+AC00-D7A3;  font-weight: 400;
+  src: local("Godo M"), local("GodoM"), local("고도 M"), url("https://cdn.jsdelivr.net/gh/projectnoonnu/2409-1@1.0/godoRoundedR.woff2") format("woff2"); }
+@font-face { font-family: "KGodo"; font-display: swap; unicode-range: U+1100-11FF, U+3130-318F, U+AC00-D7A3;  font-weight: 300; src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/2409-1@1.0/godoRoundedL.woff2") format("woff2"); }
+@font-face { font-family: "KGodoMaum"; font-display: swap; unicode-range: U+1100-11FF, U+3130-318F, U+AC00-D7A3;  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_one@1.0/godoMaum.woff") format("woff"); }
+@font-face { font-family: "KBMDohyeon"; font-display: swap; src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_one@1.0/BMDOHYEON.woff") format("woff"); }
+@font-face { font-family: "KBMHanna"; font-display: swap; src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_seven@1.2/BMHANNAPro.woff") format("woff"); }
+@font-face { font-family: "KBMEuljiro"; font-display: swap; src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_twelve@1.2/BMEULJIRO.woff") format("woff"); }
+@font-face { font-family: "KBMJua"; font-display: swap; src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_one@1.0/BMJUA.woff") format("woff"); }
+@font-face { font-family: "KBMYeonsung"; font-display: swap; src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_one@1.0/BMYEONSUNG.woff") format("woff"); }
+@font-face { font-family: "KBMKirang"; font-display: swap; src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_one@1.0/BMKIRANGHAERANG.woff") format("woff"); }
+@font-face { font-family: "KTvn"; font-display: swap; src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_two@1.0/OTEnjoystoriesBA.woff") format("woff"); }
+@font-face { font-family: "KEbs"; font-display: swap; font-weight: 400; src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_one@1.0/EBSHunminjeongeum.woff") format("woff"); }
+@font-face { font-family: "KEbs"; font-display: swap; font-weight: 700; src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_one@1.0/EBSHunminjeongeumSBA.woff") format("woff"); }
+@font-face { font-family: "KEbsSaeron"; font-display: swap; src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_one@1.0/EBSHMJESaeronRA.woff") format("woff"); }
+@font-face { font-family: "KEbsJsk"; font-display: swap; src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_one@1.0/EBSJSKMedium.woff") format("woff"); }
+
+:root {
+  --k-fb: "Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans KR", sans-serif;
+  --k-hangang-jang: "KHangangJang", "KHangang", "Noto Serif KR", serif;
+  --k-hangang: "KHangang", "Noto Serif KR", serif;
+  --k-duggobi: "KDuggobi", var(--k-fb);
+  --k-kkotgil: "KKkotgil", var(--k-fb);
+  --k-godo: "KGodo", var(--k-fb);
+  --k-godomaum: "KGodoMaum", var(--k-fb);
+  --k-dohyeon: "KBMDohyeon", var(--k-fb);
+  --k-hanna: "KBMHanna", var(--k-fb);
+  --k-euljiro: "KBMEuljiro", var(--k-fb);
+  --k-jua: "KBMJua", var(--k-fb);
+  --k-yeonsung: "KBMYeonsung", var(--k-fb);
+  --k-kirang: "KBMKirang", var(--k-fb);
+  --k-tvn: "KTvn", var(--k-fb);
+  --k-ebs: "KEbs", var(--k-fb);
+  --k-saeron: "KEbsSaeron", var(--k-fb);
+  --k-jsk: "KEbsJsk", "Noto Serif KR", serif;
+}
+
+/* 폰트 표시 칩 */
+.fontchip { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+.fontchip span { font-size: 12px; padding: 3px 10px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); color: var(--fg); }
+.fontchip span b { color: var(--muted); font-weight: 500; margin-right: 4px; }
+
+/* 폰트 견본 */
+.specimens { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr)); gap: 16px; }
+.spec { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 22px; display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+.spec .meta { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+.spec h3 { margin: 0; font-size: 16px; font-weight: 700; }
+.spec .src { font-size: 12px; color: var(--muted); }
+.spec .big { font-size: clamp(30px, 4vw, 42px); line-height: 1.2; letter-spacing: -0.01em; overflow-wrap: anywhere; }
+.spec .para { font-size: 16px; line-height: 1.7; margin: 0; }
+.spec .roles { display: flex; flex-wrap: wrap; gap: 6px; font-size: 12px; }
+.spec .roles span { padding: 2px 9px; border-radius: 999px; background: var(--bg); border: 1px solid var(--line); }
+.spec .sub { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; }
+.spec .sub div { border-top: 1px solid var(--line); padding-top: 8px; display: flex; flex-direction: column; gap: 2px; }
+.spec .sub small { font-size: 11px; color: var(--muted); font-family: var(--f-sans); }
+.spec .sub span { font-size: 22px; line-height: 1.3; }
+.spec .warn { font-size: 12px; color: var(--muted); border-left: 2px solid var(--terra); padding-left: 10px; }
+
+/* ===== 시안별 폰트 적용 ===== */
+/* 단일 굵기 디스플레이 폰트는 가짜 굵게를 막기 위해 400으로 */
+:is(#c-a,[data-sec="c-a"]) .ed { font-family: var(--k-ebs); }
+:is(#c-a,[data-sec="c-a"]) .ed .title, :is(#c-a,[data-sec="c-a"]) .ed h3 { font-family: var(--k-hangang-jang); font-weight: 400; }
+:is(#c-a,[data-sec="c-a"]) .ed li .n, :is(#c-a,[data-sec="c-a"]) .ed .pg { font-family: var(--k-hangang); font-weight: 400; }
+:is(#c-a,[data-sec="c-a"]) svg [font-family] { font-family: var(--k-ebs); }
+
+:is(#c-b,[data-sec="c-b"]) .dk { font-family: var(--k-ebs); }
+:is(#c-b,[data-sec="c-b"]) .dk .title, :is(#c-b,[data-sec="c-b"]) .dk .num, :is(#c-b,[data-sec="c-b"]) .dk h3, :is(#c-b,[data-sec="c-b"]) .dk .card .v { font-family: var(--k-dohyeon); font-weight: 400; }
+:is(#c-b,[data-sec="c-b"]) svg [font-family] { font-family: var(--k-ebs); }
+
+:is(#c-c,[data-sec="c-c"]) .rt { font-family: var(--k-jua); }
+:is(#c-c,[data-sec="c-c"]) .rt .title, :is(#c-c,[data-sec="c-c"]) .rt h3, :is(#c-c,[data-sec="c-c"]) .rt .pill b, :is(#c-c,[data-sec="c-c"]) .rt .chip { font-family: var(--k-duggobi); font-weight: 400; }
+:is(#c-c,[data-sec="c-c"]) .rt .sub, :is(#c-c,[data-sec="c-c"]) .rt .pill span, :is(#c-c,[data-sec="c-c"]) .rt .legend { font-weight: 400; }
+:is(#c-c,[data-sec="c-c"]) svg text { font-family: var(--k-jua); }
+:is(#c-c,[data-sec="c-c"]) .donut text:first-of-type { font-family: var(--k-duggobi); }
+
+:is(#c-d,[data-sec="c-d"]) .ln { font-family: var(--k-jsk); }
+:is(#c-d,[data-sec="c-d"]) .ln .title, :is(#c-d,[data-sec="c-d"]) .ln h3, :is(#c-d,[data-sec="c-d"]) .ln .seal { font-family: var(--k-hangang); font-weight: 400; }
+:is(#c-d,[data-sec="c-d"]) .ln .three strong { font-weight: 400; font-size: 2.5cqw; }
+:is(#c-d,[data-sec="c-d"]) svg [font-family] { font-family: var(--k-jsk); }
+
+:is(#c-e,[data-sec="c-e"]) .cs { font-family: var(--k-godo); }
+:is(#c-e,[data-sec="c-e"]) .cs .title, :is(#c-e,[data-sec="c-e"]) .cs h3, :is(#c-e,[data-sec="c-e"]) .cs .kpi .v { font-family: var(--k-hanna); font-weight: 400; }
+:is(#c-e,[data-sec="c-e"]) svg [font-family] { font-family: var(--k-godo); }
+
+:is(#c-f,[data-sec="c-f"]) .ec { font-family: var(--k-godomaum); }
+:is(#c-f,[data-sec="c-f"]) .ec .title, :is(#c-f,[data-sec="c-f"]) .ec.bars h3, :is(#c-f,[data-sec="c-f"]) .ec .stamp { font-family: var(--k-kkotgil); font-weight: 400; }
+:is(#c-f,[data-sec="c-f"]) .ec.quote blockquote { font-family: var(--k-godomaum); font-size: 5cqw; line-height: 1.45; }
+:is(#c-f,[data-sec="c-f"]) .ec.quote .mark { font-family: var(--k-kkotgil); }
+:is(#c-f,[data-sec="c-f"]) .ec .sub, :is(#c-f,[data-sec="c-f"]) .ec.quote cite { font-size: 2.3cqw; font-weight: 400; }
+:is(#c-f,[data-sec="c-f"]) svg [font-family] { font-family: var(--k-godomaum); font-weight: 400; }
+
+:is(#c-g,[data-sec="c-g"]) .gt { font-family: var(--k-ebs); }
+:is(#c-g,[data-sec="c-g"]) .gt .giant, :is(#c-g,[data-sec="c-g"]) .gt .outline, :is(#c-g,[data-sec="c-g"]) .gt .g3text h3 { font-family: var(--k-euljiro); font-weight: 400; }
+:is(#c-g,[data-sec="c-g"]) .gt .statement { font-family: var(--k-dohyeon); font-weight: 400; letter-spacing: -0.02em; }
+
+:is(#c-h,[data-sec="c-h"]) .rd, :is(#c-h,[data-sec="c-h"]) .rd .body2, :is(#c-h,[data-sec="c-h"]) .rd .ann p { font-family: var(--k-jsk); }
+:is(#c-h,[data-sec="c-h"]) .rd h3, :is(#c-h,[data-sec="c-h"]) .rd .sum .key { font-family: var(--k-saeron); font-weight: 400; }
+:is(#c-h,[data-sec="c-h"]) .rd .body2 p:first-child::first-letter { font-family: var(--k-saeron); font-weight: 400; }
+:is(#c-h,[data-sec="c-h"]) .rd .notes, :is(#c-h,[data-sec="c-h"]) .rd .kick { font-family: var(--k-ebs); }
+
+:is(#c-i,[data-sec="c-i"]) .im { font-family: var(--k-godo); }
+:is(#c-i,[data-sec="c-i"]) .im .title, :is(#c-i,[data-sec="c-i"]) .im h3, :is(#c-i,[data-sec="c-i"]) .im .mcap b { font-family: var(--k-tvn); font-weight: 400; }
+
+:is(#c-j,[data-sec="c-j"]) .nw { font-family: var(--k-ebs); }
+:is(#c-j,[data-sec="c-j"]) .nw .bignum, :is(#c-j,[data-sec="c-j"]) .nw.vs .n, :is(#c-j,[data-sec="c-j"]) .nw h3, :is(#c-j,[data-sec="c-j"]) .nw.vs .arrow { font-family: var(--k-hanna); font-weight: 400; }
+:is(#c-j,[data-sec="c-j"]) svg [font-family] { font-family: var(--k-ebs); }
+:is(#c-j,[data-sec="c-j"]) svg text[font-weight="900"] { font-family: var(--k-hanna); font-weight: 400; }
+
+:is(#c-k,[data-sec="c-k"]) .pm { font-family: var(--k-godo); }
+:is(#c-k,[data-sec="c-k"]) .pm h3 { font-family: var(--k-yeonsung); font-weight: 400; font-size: 4.8cqw; }
+:is(#c-k,[data-sec="c-k"]) .pm .ag .no, :is(#c-k,[data-sec="c-k"]) .pm .step .s { font-family: var(--k-kirang); font-weight: 400; }
+:is(#c-k,[data-sec="c-k"]) .pm .step .s { font-size: 1.9cqw; letter-spacing: .04em; }
+:is(#c-k,[data-sec="c-k"]) .pm .ag strong, :is(#c-k,[data-sec="c-k"]) .pm .step strong, :is(#c-k,[data-sec="c-k"]) .pm .q .c b { font-family: var(--k-yeonsung); font-weight: 400; font-size: 2.6cqw; }
+
+/* ===== 보정 ===== */
+body { word-break: keep-all; overflow-wrap: break-word; }
+.fontchip { margin-bottom: 8px; }
+:is(#c-c,[data-sec="c-c"]) .rt .title { font-size: 8.4cqw; line-height: 1.18; }
+:is(#c-c,[data-sec="c-c"]) .rt.split h3 { line-height: 1.22; }
+:is(#c-c,[data-sec="c-c"]) .rt.chart h3 { line-height: 1.2; }
+:is(#c-f,[data-sec="c-f"]) .ec .title { font-size: 9.6cqw; line-height: 1.2; }
+:is(#c-j,[data-sec="c-j"]) .nw.vs .arrow { font-family: var(--k-fb); }
+.spec .para.lg { font-size: 21px; }
+
+
+/* ---------- cover + body pairs ---------- */
+.slides { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
+@media (max-width: 900px) { .slides { grid-template-columns: minmax(0, 1fr); } }
+.foot { display: flex; justify-content: space-between; align-items: baseline; }
+/* H cover */
+.rd.cover .in { justify-content: flex-end; }
+.rd.cover::before { content: ""; position: absolute; left: 6.5cqw; right: 6.5cqw; top: 6cqw; height: .25cqw; background: var(--char); }
+.rd.cover .kick { margin-bottom: auto; padding-top: 1.6cqw; }
+.rd.cover h3 { font-size: 6.4cqw; line-height: 1.22; margin: 0 0 2.2cqw; }
+.rd.cover .lede { font-size: 2cqw; line-height: 1.7; margin: 0 0 4cqw; max-width: 60cqw; color: var(--walnut); }
+.rd.cover .foot { border-top: .15cqw solid var(--sage); padding-top: 1.6cqw; font-size: 1.6cqw; color: var(--walnut); }
+.rd.cover .foot b { color: var(--brick); }
+/* I cover */
+.im .itop { position: absolute; top: 3cqw; left: 6.5cqw; font-size: 1.6cqw; letter-spacing: .16em; font-weight: 700; color: var(--peach); }
+/* J cover */
+.nw.cover .cv { flex: 1; display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 4cqw; }
+.nw.cover .cvt h3 { margin: 0; font-size: 6.6cqw; line-height: 1.15; }
+.nw.cover .cvt p { margin: 2cqw 0 0; font-size: 2.2cqw; color: var(--sage); }
+.nw.cover .cvn { display: flex; flex-direction: column; align-items: flex-end; font-weight: 900; font-size: 20cqw; line-height: .9; letter-spacing: -0.05em; color: var(--sage); }
+.nw.cover .cvn small { font-size: .28em; letter-spacing: 0; }
+.nw.cover .cvn span { font-size: 1.8cqw; letter-spacing: 0; color: var(--linen); margin-top: 1.4cqw; font-weight: 400; }
+.nw.cover .cvn { display: grid; grid-template-columns: auto auto; align-items: baseline; justify-items: end; }
+.nw.cover .cvn span { grid-column: 1 / 3; }
+.nw.cover .foot { border-top: .15cqw solid var(--walnut); padding-top: 1.6cqw; font-size: 1.6cqw; color: var(--sage); }
+/* K cover */
+.pm.cover h3 { font-size: 6.4cqw; line-height: 1.2; margin-top: 2cqw; }
+.pm .track { position: relative; display: grid; grid-template-columns: repeat(4, 1fr); margin-top: auto; margin-bottom: 3.2cqw; }
+.pm .track::before { content: ""; position: absolute; left: 1.2cqw; right: 0; top: 1.2cqw; height: .3cqw; margin-top: -.15cqw; background: var(--walnut); }
+.pm .tk { position: relative; display: flex; flex-direction: column; gap: .6cqw; }
+.pm .tk .node { width: 2.4cqw; height: 2.4cqw; border-radius: 50%; background: var(--linen); border: .4cqw solid var(--walnut); box-sizing: border-box; margin-bottom: 1cqw; }
+.pm .tk small { font-size: 1.45cqw; letter-spacing: .1em; font-weight: 700; color: var(--walnut); }
+.pm .tk b { font-size: 2.1cqw; }
+.pm .tk.now .node { background: var(--brick); border-color: var(--brick); box-shadow: 0 0 0 1cqw rgba(181,73,58,.22); }
+.pm .tk.now small { color: var(--brick); }
+.pm.cover .foot { border-top: .15cqw solid var(--sage); padding-top: 1.6cqw; font-size: 1.6cqw; color: var(--walnut); }
+/* fonts for new covers */
+:is(#c-h,[data-sec="c-h"]) .rd.cover .lede, :is(#c-h,[data-sec="c-h"]) .rd.cover .foot { font-family: var(--k-jsk); }
+:is(#c-j,[data-sec="c-j"]) .nw.cover .cvn { font-family: var(--k-hanna); font-weight: 400; }
+:is(#c-k,[data-sec="c-k"]) .pm.cover h3 { font-size: 6.4cqw; }
+:is(#c-k,[data-sec="c-k"]) .pm .tk small { font-family: var(--k-kirang); font-weight: 400; font-size: 1.9cqw; letter-spacing: .04em; }
+:is(#c-k,[data-sec="c-k"]) .pm .tk b { font-family: var(--k-yeonsung); font-weight: 400; font-size: 2.6cqw; }
+:is(#c-h,[data-sec="c-h"]) .rd .body2 { font-size: 2.05cqw; line-height: 1.8; }
+:is(#c-h,[data-sec="c-h"]) .rd .body2 p:first-child::first-letter { font-size: 6cqw; }
+
+/* ---------- lightbox ---------- */
+.slides .slide { cursor: zoom-in; transition: transform .15s ease, box-shadow .15s ease; }
+.slides .slide:hover { transform: translateY(-2px); box-shadow: 0 2px 4px rgba(0,0,0,.1), 0 14px 32px -12px rgba(0,0,0,.4); }
+.slides .slide:focus-visible { outline: 3px solid #F1A24A; outline-offset: 3px; }
+.lb { position: fixed; inset: 0; z-index: 100; background: #140F0E; display: none; flex-direction: column; align-items: center; justify-content: center; gap: 14px; padding: 16px; }
+.lb.open { display: flex; }
+.lb-stage { width: min(94vw, calc((100vh - 110px) * 16 / 9)); }
+.lb-stage .slide { cursor: default; border-radius: 8px; box-shadow: 0 20px 60px rgba(0,0,0,.5); }
+.lb-bar { display: flex; align-items: center; gap: 12px; color: #F2E6D8; font-size: 14px; width: min(94vw, calc((100vh - 110px) * 16 / 9)); }
+.lb-bar .lb-cap { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.lb button { background: rgba(242,230,216,.12); color: #F2E6D8; border: 1px solid rgba(242,230,216,.25); border-radius: 999px; min-width: 40px; height: 40px; padding: 0 14px; font: inherit; font-size: 15px; cursor: pointer; }
+.lb button:hover { background: rgba(242,230,216,.24); }
+body.lb-on { overflow: hidden; }
+</style>
+<style>.sample-nav{position:sticky;top:0;z-index:50;display:flex;gap:6px;flex-wrap:wrap;justify-content:center;padding:10px 16px;background:rgba(20,15,14,.92);backdrop-filter:blur(8px);font:600 13px/1 "Pretendard Variable",system-ui,sans-serif}.sample-nav a{color:#F2E6D8;text-decoration:none;padding:8px 14px;border-radius:999px;border:1px solid rgba(242,230,216,.25)}.sample-nav a[aria-current]{background:#F2E6D8;color:#2B2220;border-color:#F2E6D8}</style>
+</head>
+<body>
+<nav class="sample-nav" aria-label="시안 페이지"><a href="slide-template.html">팔레트 시안 11종</a><a href="slide-fonts.html">한글 폰트 적용</a><a href="slide-cover-body.html" aria-current="page">표지 · 본문 짝</a></nav>
+
+<div class="wrap">
+  <header>
+    <h1>시안 11종의 표지와 본문</h1>
+    <p>시안마다 첫 장(표지)과 본문 슬라이드 한 장을 짝지어 보여 드립니다. 표지가 따로 없던 H·J·K는 같은 디자인 규칙으로 표지를 새로 만들었고, I는 전면 사진 슬라이드를 표지로 바꿨습니다. 폰트 조합은 앞서 만든 한글 폰트 시안과 같으며, 슬라이드 속 내용과 숫자는 모두 예시입니다.</p>
+  </header>
+
+  <section class="concept" id="fonts">
+    <div class="pgroup">
+      <span class="pnum">FONTS</span>
+      <h2>적용한 한글 폰트 7종</h2>
+      <p>요청하신 일곱 가지 폰트 계열을 아래 시안 11종의 타이틀, 본문, 숫자에 나눠 적용했습니다. 각 시안 제목 아래에 어떤 폰트를 어디에 썼는지 표시해 두었습니다.</p>
+    </div>
+    <div class="specimens">
+      <div class="spec">
+        <div class="meta"><h3>서울한강 장체</h3><span class="src">서울시 · 적용 시안 A, D</span></div>
+        <div class="big" style="font-family:var(--k-hangang-jang)">강물처럼 흐르는 문장</div>
+        <p class="para" style="font-family:var(--k-hangang)">서울의 강을 닮은 명조 계열 서체입니다. 붓의 흐름이 남아 있어 제목에 품위를 더합니다.</p>
+        <div class="roles"><span>타이틀</span><span>잡지형 표지</span><span>인용 숫자</span></div>
+        <div class="warn">장체는 공개 웹폰트 CDN에 없어 같은 계열인 서울한강체 M으로 보여 드립니다. 컴퓨터에 서울한강 장체가 설치돼 있으면 장체가 먼저 적용됩니다.</div>
+      </div>
+      <div class="spec">
+        <div class="meta"><h3>HS두꺼비체</h3><span class="src">HS폰트 · 적용 시안 C</span></div>
+        <div class="big" style="font-family:var(--k-duggobi)">뜨거워지는 하루</div>
+        <p class="para" style="font-family:var(--k-duggobi)">통통하고 굵은 획이 레트로 포스터 느낌을 냅니다.</p>
+        <div class="roles"><span>타이틀</span><span>행사 표지</span><span>짧은 라벨</span></div>
+      </div>
+      <div class="spec">
+        <div class="meta"><h3>꽃길체</h3><span class="src">상상토끼 꽃길 · 적용 시안 F</span></div>
+        <div class="big" style="font-family:var(--k-kkotgil)">흙에서 식탁까지</div>
+        <p class="para lg" style="font-family:var(--k-kkotgil)">부드러운 곡선의 손글씨 느낌 서체입니다. 따뜻한 브랜드 제목에 어울립니다.</p>
+        <div class="roles"><span>타이틀</span><span>감성 문구</span><span>스탬프</span></div>
+      </div>
+      <div class="spec">
+        <div class="meta"><h3>고도체</h3><span class="src">고도몰 · 적용 시안 E, F, I, K</span></div>
+        <div class="big" style="font-family:var(--k-godo)">읽기 편한 둥근 고딕</div>
+        <div class="sub">
+          <div><small>고도 라운드 R</small><span style="font-family:var(--k-godo)">본문용 둥근 고딕</span></div>
+          <div><small>고도 라운드 L</small><span style="font-family:var(--k-godo);font-weight:300">가벼운 캡션</span></div>
+          <div><small>고도 마음체</small><span style="font-family:var(--k-godomaum)">손으로 쓴 마음</span></div>
+        </div>
+        <div class="roles"><span>본문</span><span>캡션</span><span>인용문</span></div>
+        <div class="warn">고도 M·B는 공개 웹폰트 CDN에 없어 같은 고도 계열인 고도 라운드로 보여 드립니다. 컴퓨터에 고도 M이 설치돼 있으면 고도 M이 먼저 적용됩니다.</div>
+      </div>
+      <div class="spec">
+        <div class="meta"><h3>배달의민족</h3><span class="src">우아한형제들 · 적용 시안 B, C, E, G, J, K</span></div>
+        <div class="big" style="font-family:var(--k-dohyeon)">한 장에 한 메시지</div>
+        <div class="sub">
+          <div><small>도현체</small><span style="font-family:var(--k-dohyeon)">38% 상승</span></div>
+          <div><small>한나Pro</small><span style="font-family:var(--k-hanna)">412억 매출</span></div>
+          <div><small>을지로체</small><span style="font-family:var(--k-euljiro)">따뜻함</span></div>
+          <div><small>주아체</small><span style="font-family:var(--k-jua)">오늘의 진행</span></div>
+          <div><small>연성체</small><span style="font-family:var(--k-yeonsung)">수선 로드맵</span></div>
+          <div><small>기랑해랑체</small><span style="font-family:var(--k-kirang)">STEP 1 2 3</span></div>
+        </div>
+        <div class="roles"><span>타이틀</span><span>큰 숫자</span><span>번호</span></div>
+      </div>
+      <div class="spec">
+        <div class="meta"><h3>tvN 즐거운이야기체</h3><span class="src">CJ ENM · 적용 시안 I</span></div>
+        <div class="big" style="font-family:var(--k-tvn)">해 질 녘, 제주의 색</div>
+        <p class="para lg" style="font-family:var(--k-tvn)">예능 자막처럼 경쾌한 서체입니다. 사진 위에 얹는 짧은 제목에 잘 맞습니다.</p>
+        <div class="roles"><span>타이틀</span><span>사진 캡션</span><span>강조 문구</span></div>
+      </div>
+      <div class="spec">
+        <div class="meta"><h3>EBS 서체</h3><span class="src">EBS · 적용 시안 A, B, D, G, H, J</span></div>
+        <div class="big" style="font-family:var(--k-saeron)">읽히는 글이 주인공</div>
+        <div class="sub">
+          <div><small>훈민정음</small><span style="font-family:var(--k-ebs)">본문 고딕</span></div>
+          <div><small>훈민정음 SB</small><span style="font-family:var(--k-ebs);font-weight:700">굵은 강조</span></div>
+          <div><small>훈민정음 새론</small><span style="font-family:var(--k-saeron)">보고서 제목</span></div>
+          <div><small>주시경</small><span style="font-family:var(--k-jsk)">긴 문장 명조</span></div>
+        </div>
+        <div class="roles"><span>본문</span><span>보고서 제목</span><span>각주</span></div>
+      </div>
+    </div>
+  </section>
+
+
+  <div class="group">
+  <div class="pgroup">
+    <span class="pnum">PALETTE 1</span>
+    <h2>선명한 노을</h2>
+    <p>채도가 높은 주황 계열이라 밝고 에너지가 있습니다. 발표, 런칭, 행사처럼 시선을 끌어야 하는 자료에 잘 맞습니다.</p>
+    <div class="swatches">
+      <span class="sw"><i style="background:#C6533A"></i>#C6533A 테라코타</span>
+      <span class="sw"><i style="background:#F9D1B8"></i>#F9D1B8 피치</span>
+      <span class="sw"><i style="background:#F1A24A"></i>#F1A24A 마리골드</span>
+      <span class="sw"><i style="background:#5A6B7A"></i>#5A6B7A 슬레이트</span>
+      <span class="sw"><i style="background:#2B2220"></i>#2B2220 에스프레소</span>
+    </div>
+  </div>
+
+  <!-- ================= 1 ================= -->
+  <section class="concept" id="c-a">
+    <div class="concept-head">
+      <div>
+        <div class="eyebrow">시안 A · 밝은 테마</div>
+        <h2>Warm Editorial</h2>
+        <div class="fontchip"><span><b>타이틀</b>서울한강 장체</span><span><b>본문</b>EBS 훈민정음</span></div>
+        <p>피치 배경에 세리프 제목을 얹은 잡지 같은 구성입니다. 여백을 넓게 두어 글이 많은 브랜드 소개서나 리서치 보고서에 잘 맞습니다.</p>
+      </div>
+      <div class="ratio">
+        <div class="ratio-bar"><i style="flex:60;background:#F9D1B8"></i><i style="flex:28;background:#2B2220"></i><i style="flex:8;background:#C6533A"></i><i style="flex:3;background:#5A6B7A"></i><i style="flex:1;background:#F1A24A"></i></div>
+        <div class="ratio-legend"><span>피치 60</span><span>에스프레소 28</span><span>테라코타 8</span><span>슬레이트·마리골드 4</span></div>
+      </div>
+    </div>
+    <div class="slides">
+      <figure>
+        <div class="slide ed"><div class="in">
+          <div class="kicker">2027 BRAND REPORT</div>
+          <div class="title">따뜻한 브랜드는<br>어떻게 <span class="hl">기억</span>되는가</div>
+          <div class="foot"><span><b>브랜드전략팀</b> · 2026년 11월</span><span>Vol. 03</span></div>
+        </div></div>
+        <figcaption>표지</figcaption>
+      </figure>
+      <figure>
+        <div class="slide ed"><div class="in">
+          <div class="cols">
+            <div>
+              <div class="kicker">CHAPTER 02</div>
+              <h3>고객이 머무는<br>세 가지 순간</h3>
+              <p class="lede">구매 여정에서 이탈이 가장 적은 접점을 고객 인터뷰 42건에서 골랐습니다.</p>
+            </div>
+            <ol>
+              <li><span class="n">1</span><div><strong>첫 개봉</strong><span>포장을 여는 10초가 브랜드 인상을 정합니다.</span></div></li>
+              <li><span class="n">2</span><div><strong>첫 문의</strong><span>답변 속도보다 말투를 더 오래 기억합니다.</span></div></li>
+              <li><span class="n">3</span><div><strong>재구매 알림</strong><span>떨어질 때쯤 오는 알림은 광고로 느끼지 않습니다.</span></div></li>
+            </ol>
+          </div>
+          <div class="pg">12</div>
+        </div></div>
+        <figcaption>본문 · 2단 구성</figcaption>
+      </figure>
+    </div>
+    <p class="note">마리골드는 표지의 "기억" 밑줄처럼 형광펜 역할로만 씁니다. 피치 배경 위 글자로 쓰면 대비가 1.5:1이라 읽기 어렵습니다.</p>
+  </section>
+
+  <!-- ================= 2 ================= -->
+  <section class="concept" id="c-b">
+    <div class="concept-head">
+      <div>
+        <div class="eyebrow">시안 B · 어두운 테마</div>
+        <h2>Dark Sunset</h2>
+        <div class="fontchip"><span><b>타이틀·숫자</b>배민 도현체</span><span><b>본문</b>EBS 훈민정음</span></div>
+        <p>에스프레소 배경 위로 노을빛 원이 떠오르는 키노트 스타일입니다. 한 장에 메시지 하나와 큰 숫자를 두어 무대 발표나 피치덱에 어울립니다.</p>
+      </div>
+      <div class="ratio">
+        <div class="ratio-bar"><i style="flex:68;background:#2B2220"></i><i style="flex:18;background:#F9D1B8"></i><i style="flex:6;background:#F1A24A"></i><i style="flex:4;background:#C6533A"></i><i style="flex:4;background:#5A6B7A"></i></div>
+        <div class="ratio-legend"><span>에스프레소 68</span><span>피치 18</span><span>마리골드 6</span><span>테라코타·슬레이트 8</span></div>
+      </div>
+    </div>
+    <div class="slides">
+      <figure>
+        <div class="slide dk"><div class="sun"></div><div class="horizon"></div><div class="in">
+          <div class="tag">PRODUCT LAUNCH</div>
+          <div class="title">Sunrise<br>2027</div>
+          <div class="sub">아침 루틴을 다시 설계하는 구독 서비스</div>
+          <div class="meta">2026.11.16 · 서울 성수 쇼케이스</div>
+        </div></div>
+        <figcaption>표지</figcaption>
+      </figure>
+      <figure>
+        <div class="slide dk"><div class="in">
+          <div class="big">
+            <div>
+              <div class="num">38<small>%</small></div>
+              <div class="num-label">재구매율 상승</div>
+              <div class="num-note">베타 3개월, 전년 같은 기간 대비</div>
+            </div>
+            <div class="cards">
+              <div class="card"><span class="k">월 활성 구독자</span><span class="v">12,400</span><div class="bar"><i style="width:78%"></i></div></div>
+              <div class="card"><span class="k">해지율</span><span class="v">2.1%</span><div class="bar"><i style="width:21%"></i></div></div>
+            </div>
+          </div>
+        </div></div>
+        <figcaption>본문 · 큰 숫자 하나</figcaption>
+      </figure>
+    </div>
+    <p class="note">숫자와 KPI는 마리골드(배경 대비 약 7:1), 본문은 피치(약 11:1)로 씁니다. 테라코타는 글자가 아닌 진행 바와 도형에만 씁니다.</p>
+  </section>
+
+  <!-- ================= 3 ================= -->
+  <section class="concept" id="c-c">
+    <div class="concept-head">
+      <div>
+        <div class="eyebrow">시안 C · 컬러 블록</div>
+        <h2>Retro Color Block</h2>
+        <div class="fontchip"><span><b>타이틀</b>HS두꺼비체</span><span><b>본문</b>배민 주아체</span></div>
+        <p>다섯 색을 큰 면으로 나누고 아치와 원을 반복하는 70년대 레트로 구성입니다. 워크숍, 캠페인, 사내 행사처럼 분위기가 중요한 자료에 어울립니다.</p>
+      </div>
+      <div class="ratio">
+        <div class="ratio-bar"><i style="flex:30;background:#C6533A"></i><i style="flex:30;background:#F9D1B8"></i><i style="flex:18;background:#5A6B7A"></i><i style="flex:12;background:#F1A24A"></i><i style="flex:10;background:#2B2220"></i></div>
+        <div class="ratio-legend"><span>테라코타 30</span><span>피치 30</span><span>슬레이트 18</span><span>마리골드 12</span><span>에스프레소 10</span></div>
+      </div>
+    </div>
+    <div class="slides">
+      <figure>
+        <div class="slide rt cover">
+          <svg class="arches" viewBox="0 0 400 220" aria-hidden="true">
+            <path d="M20 220 A180 180 0 0 1 380 220 Z" fill="#F1A24A"/>
+            <path d="M70 220 A130 130 0 0 1 330 220 Z" fill="#F9D1B8"/>
+            <path d="M120 220 A80 80 0 0 1 280 220 Z" fill="#5A6B7A"/>
+            <path d="M165 220 A35 35 0 0 1 235 220 Z" fill="#2B2220"/>
+          </svg>
+          <div class="in">
+            <div class="chip">TEAM WORKSHOP</div>
+            <div class="title">같이<br>뜨거워지는<br>하루</div>
+            <div class="sub">2026 하반기 크리에이티브 워크숍</div>
+          </div>
+        </div>
+        <figcaption>표지 · 테라코타 전면</figcaption>
+      </figure>
+      <figure>
+        <div class="slide rt split">
+          <div class="l"><span class="dot"></span><span class="dot2"></span><h3>오늘의<br>진행 순서</h3></div>
+          <div class="r">
+            <div class="pill"><b>10:00</b><span>아이스브레이킹<br>팀별 키워드 카드 뽑기</span></div>
+            <div class="pill"><b>13:30</b><span>아이디어 스프린트<br>90분 동안 시안 3개</span></div>
+            <div class="pill"><b>16:00</b><span>공유와 투표<br>팀당 5분 발표</span></div>
+          </div>
+        </div>
+        <figcaption>본문 · 좌우 분할</figcaption>
+      </figure>
+    </div>
+    <p class="note">테라코타 위 피치나 흰 글자는 대비가 약 4.5:1로 아슬아슬합니다. 이 시안처럼 굵고 큰 제목에만 쓰고, 작은 본문은 피치 면 위에 에스프레소로 둡니다.</p>
+  </section>
+
+  </div>
+
+  <!-- ================= PALETTE 2 ================= -->
+  <div class="group">
+  <div class="pgroup">
+    <span class="pnum">PALETTE 2</span>
+    <h2>차분한 흙과 리넨</h2>
+    <p>채도를 낮춘 벽돌색과 세이지가 중심이라 차분하고 성숙한 인상입니다. 브랜드북, 전략 보고서, 라이프스타일 콘텐츠처럼 신뢰와 여유가 필요한 자료에 잘 맞습니다.</p>
+    <div class="swatches">
+      <span class="sw"><i style="background:#B5493A"></i>#B5493A 벽돌</span>
+      <span class="sw"><i style="background:#F2E6D8"></i>#F2E6D8 리넨</span>
+      <span class="sw"><i style="background:#6B4A3A"></i>#6B4A3A 월넛</span>
+      <span class="sw"><i style="background:#A9B2A2"></i>#A9B2A2 세이지</span>
+      <span class="sw"><i style="background:#2B2B2B"></i>#2B2B2B 차콜</span>
+    </div>
+  </div>
+
+  <!-- ================= D ================= -->
+  <section class="concept" id="c-d">
+    <div class="concept-head">
+      <div>
+        <div class="eyebrow">시안 D · 밝은 미니멀</div>
+        <h2>Linen &amp; Ink</h2>
+        <div class="fontchip"><span><b>타이틀</b>서울한강체</span><span><b>본문</b>EBS 주시경</span></div>
+        <p>리넨 바탕에 가는 세리프와 넓은 여백을 쓰고, 벽돌색은 도장처럼 한 점만 찍습니다. 브랜드북, 포트폴리오, 제품 소개서에 어울립니다.</p>
+      </div>
+      <div class="ratio">
+        <div class="ratio-bar"><i style="flex:58;background:#F2E6D8"></i><i style="flex:20;background:#A9B2A2"></i><i style="flex:12;background:#2B2B2B"></i><i style="flex:7;background:#6B4A3A"></i><i style="flex:3;background:#B5493A"></i></div>
+        <div class="ratio-legend"><span>리넨 58</span><span>세이지 20</span><span>차콜 12</span><span>월넛 7</span><span>벽돌 3</span></div>
+      </div>
+    </div>
+    <div class="slides">
+      <figure>
+        <div class="slide ln"><div class="side"></div><div class="seal">2027</div><div class="in">
+          <div class="small">BRAND BOOK</div>
+          <div class="title">느리게 만드는<br>생활의 도구</div>
+          <div class="sub">오래 쓰고, 고쳐 쓰는 물건에 대한 기록</div>
+        </div></div>
+        <figcaption>표지 · 세이지 면과 벽돌 도장</figcaption>
+      </figure>
+      <figure>
+        <div class="slide ln"><div class="in">
+          <div class="small">PRINCIPLES</div>
+          <h3>우리가 지키는 세 가지</h3>
+          <div class="three">
+            <div><i></i><strong>오래 가는 소재</strong><span>원목과 리넨, 놋쇠처럼 쓸수록 길드는 재료만 고릅니다.</span></div>
+            <div><i></i><strong>손에 맞는 크기</strong><span>한 손으로 들고 옮길 수 있는지 먼저 확인합니다.</span></div>
+            <div><i></i><strong>고칠 수 있는 구조</strong><span>나사 하나로 분해되고 부품을 따로 팝니다.</span></div>
+          </div>
+          <div class="pgno" style="position:static;margin-top:3cqw">04 / 24</div>
+        </div></div>
+        <figcaption>본문 · 3단 원칙</figcaption>
+      </figure>
+    </div>
+    <p class="note">본문은 리넨 위 차콜(대비 약 11.5:1), 보조 글은 월넛(약 6.4:1)으로 씁니다. 세이지는 리넨 위 글자로 쓰면 1.8:1이라 면과 선에만 씁니다.</p>
+  </section>
+
+  <!-- ================= E ================= -->
+  <section class="concept" id="c-e">
+    <div class="concept-head">
+      <div>
+        <div class="eyebrow">시안 E · 어두운 테마</div>
+        <h2>Charcoal Study</h2>
+        <div class="fontchip"><span><b>타이틀·숫자</b>배민 한나Pro</span><span><b>본문</b>고도체</span></div>
+        <p>차콜 바탕에 옅은 모눈을 깔고 세이지로 지표를 읽게 하는 전략 문서 스타일입니다. 경영 보고, 사업 계획, 투자자 미팅에 어울립니다.</p>
+      </div>
+      <div class="ratio">
+        <div class="ratio-bar"><i style="flex:62;background:#2B2B2B"></i><i style="flex:18;background:#F2E6D8"></i><i style="flex:10;background:#6B4A3A"></i><i style="flex:6;background:#A9B2A2"></i><i style="flex:4;background:#B5493A"></i></div>
+        <div class="ratio-legend"><span>차콜 62</span><span>리넨 18</span><span>월넛 10</span><span>세이지 6</span><span>벽돌 4</span></div>
+      </div>
+    </div>
+    <div class="slides">
+      <figure>
+        <div class="slide cs"><div class="rail"></div><div class="in">
+          <div class="label">FY2027 STRATEGY</div>
+          <div class="title">성장을 받치는<br><em>세 개의 축</em></div>
+          <div class="sub">경영진 보고 · 2026년 4분기</div>
+        </div></div>
+        <figcaption>표지 · 왼쪽 벽돌 레일</figcaption>
+      </figure>
+      <figure>
+        <div class="slide cs"><div class="in">
+          <div class="label">KEY METRICS</div>
+          <h3>2026년 핵심 지표</h3>
+          <div class="kpis">
+            <div class="kpi"><span class="k">연 매출</span><span class="v">412억</span><span class="d">+18%</span></div>
+            <div class="kpi"><span class="k">영업이익률</span><span class="v">14.2%</span><span class="d">+2.6%p</span></div>
+            <div class="kpi"><span class="k">고객 유지율</span><span class="v">91%</span><span class="d">+4%p</span></div>
+          </div>
+        </div></div>
+        <figcaption>본문 · 월넛 KPI 카드</figcaption>
+      </figure>
+    </div>
+    <p class="note">차콜 위에서 벽돌색은 대비가 2.7:1이라 글자로 쓰지 않고 표지의 레일처럼 면으로만 씁니다. 차콜 위 강조 글자는 세이지(약 6.5:1)가 안전합니다.</p>
+  </section>
+
+  <!-- ================= F ================= -->
+  <section class="concept" id="c-f">
+    <div class="concept-head">
+      <div>
+        <div class="eyebrow">시안 F · 유기적 형태</div>
+        <h2>Earth Craft</h2>
+        <div class="fontchip"><span><b>타이틀</b>꽃길체</span><span><b>인용·본문</b>고도 마음체</span></div>
+        <p>세이지 바탕에 손으로 빚은 듯한 둥근 형태를 겹치고, 붓글씨 느낌의 바탕체로 따뜻함을 더합니다. 식음료, 친환경, 로컬 브랜드에 어울립니다.</p>
+      </div>
+      <div class="ratio">
+        <div class="ratio-bar"><i style="flex:34;background:#A9B2A2"></i><i style="flex:28;background:#F2E6D8"></i><i style="flex:20;background:#6B4A3A"></i><i style="flex:10;background:#B5493A"></i><i style="flex:8;background:#2B2B2B"></i></div>
+        <div class="ratio-legend"><span>세이지 34</span><span>리넨 28</span><span>월넛 20</span><span>벽돌 10</span><span>차콜 8</span></div>
+      </div>
+    </div>
+    <div class="slides">
+      <figure>
+        <div class="slide ec cover"><span class="blob b1"></span><span class="blob b2"></span><span class="blob b3"></span><div class="in">
+          <div class="stamp">LOCAL FOOD PROJECT</div>
+          <div class="title">흙에서<br>식탁까지</div>
+          <div class="sub">2027 봄 시즌 파트너 제안서</div>
+        </div></div>
+        <figcaption>표지 · 겹친 유기적 형태</figcaption>
+      </figure>
+      <figure>
+        <div class="slide ec quote"><div class="in">
+          <div class="mark">“</div>
+          <blockquote>좋은 재료는 멀리서 오지 않습니다.<br>오늘 아침 밭에서 옵니다.</blockquote>
+          <cite>김포 들녘농장 · 3대째 농부</cite>
+        </div></div>
+        <figcaption>본문 · 인용 슬라이드</figcaption>
+      </figure>
+    </div>
+    <p class="note">월넛 위 리넨 글자는 대비 약 6.4:1이라 인용문처럼 긴 문장에도 편합니다. 세이지 바탕 위 글자는 차콜(약 6.5:1)로 씁니다.</p>
+  </section>
+  </div>
+
+  <!-- ================= PART 3 ================= -->
+  <div class="group">
+  <div class="pgroup">
+    <span class="pnum">PART 3</span>
+    <h2>무엇을 강조할지에 따라 달라지는 구성</h2>
+    <p>같은 팔레트라도 강조할 대상이 다르면 화면 구성 자체가 달라집니다. 타이틀, 본문, 이미지, 데이터, 흐름을 하나씩 주인공으로 세운 시안 5종입니다. G와 I는 팔레트 1, H·J·K는 팔레트 2를 썼습니다.</p>
+  </div>
+
+  <!-- ================= G ================= -->
+  <section class="concept" id="c-g">
+    <div class="concept-head">
+      <div>
+        <div class="eyebrow">시안 G · 타이틀 강조 · 팔레트 1</div>
+        <h2>Giant Type</h2>
+        <div class="fontchip"><span><b>큰 글자</b>배민 을지로체</span><span><b>선언 문장</b>배민 도현체</span><span><b>본문</b>EBS 훈민정음</span></div>
+        <p>글자 자체를 그래픽으로 씁니다. 화면 밖으로 넘칠 만큼 큰 단어, 한 문장만 놓은 선언 슬라이드, 외곽선 숫자로 챕터를 나눕니다. 캠페인 런칭과 키노트 오프닝에 맞습니다.</p>
+      </div>
+      <div class="rule"><b>강조 규칙</b>한 장에 문장 하나만 둡니다. 강조할 단어 하나만 색을 바꾸고 나머지는 모두 한 색으로 둡니다.</div>
+    </div>
+    <div class="slides">
+      <figure>
+        <div class="slide gt g1"><div class="giant">따뜻함</div><div class="in">
+          <div class="top"><span>BRAND CAMPAIGN 2027</span><span>1 / 18</span></div>
+          <div class="g1sub">올겨울 캠페인 런칭 발표</div>
+        </div></div>
+        <figcaption>표지 · 화면을 넘치는 단어</figcaption>
+      </figure>
+      <figure>
+        <div class="slide gt g2"><div class="in">
+          <div class="statement">사람들은 제품이 아니라 그날의 <span>기분</span>을 삽니다.</div>
+          <div class="by"><span>캠페인 핵심 메시지</span><span>03</span></div>
+        </div></div>
+        <figcaption>본문 · 한 문장 선언, 한 단어 강조</figcaption>
+      </figure>
+    </div>
+    <p class="note">제목 크기를 본문의 4배 이상으로 키우면 크기 차이만으로 위계가 생깁니다. 색은 오히려 덜 써야 큰 글자가 돋보입니다.</p>
+  </section>
+
+  <!-- ================= H ================= -->
+  <section class="concept" id="c-h">
+    <div class="concept-head">
+      <div>
+        <div class="eyebrow">시안 H · 본문 강조 · 팔레트 2</div>
+        <h2>Reading Room</h2>
+        <div class="fontchip"><span><b>타이틀</b>EBS 훈민정음 새론</span><span><b>본문</b>EBS 주시경</span></div>
+        <p>읽히는 글이 주인공인 구성입니다. 2단 본문과 드롭캡, 형광펜 밑줄과 각주, 한 장 요약을 씁니다. 미리 배포하는 보고서, 대표 편지, 리서치 결과 공유에 맞습니다.</p>
+      </div>
+      <div class="rule"><b>강조 규칙</b>본문은 세리프로 줄 간격을 넉넉히 둡니다. 강조는 글자색 대신 반투명 밑줄로 하고, 근거는 각주로 뺍니다.</div>
+    </div>
+    <div class="slides">
+      <figure>
+        <div class="slide rd cover"><div class="in">
+          <div class="kick">ANNUAL LETTER · 2027</div>
+          <h3>왜 새 제품보다<br>수선을 먼저 하는가</h3>
+          <p class="lede">지난 1년 동안 고객 인터뷰 42건을 다시 읽고 내린 결론을 주주와 동료에게 전합니다.</p>
+          <div class="foot"><span><b>대표이사 편지</b> · 2026년 11월</span><span>읽는 시간 6분</span></div>
+        </div></div>
+        <figcaption>표지 · 세리프 제목과 한 줄 머리글</figcaption>
+      </figure>
+      <figure>
+        <div class="slide rd"><div class="in">
+          <div class="kick">LETTER · 대표 편지</div>
+          <h3>왜 새 제품보다 수선을 먼저 하는가</h3>
+          <div class="body2">
+            <p>좋은 보고서는 숫자보다 문장이 먼저 기억됩니다. 지난 1년 동안 고객 인터뷰 42건을 다시 읽으면서 가장 자주 들은 말은 "오래 써도 질리지 않는다"였습니다. 이 말은 디자인보다 소재와 수선 경험에서 나왔습니다.</p>
+            <p>그래서 내년에는 신제품 수를 줄이고 기존 제품의 수선 서비스를 넓히려 합니다. 접수부터 반송까지 걸리는 기간을 14일에서 3일로 줄이는 것이 첫 목표입니다.</p>
+            <p>이 변화는 매출보다 신뢰를 먼저 쌓는 선택입니다. 다음 장부터 근거와 실행 계획을 차례로 설명합니다.</p>
+          </div>
+        </div></div>
+        <figcaption>본문 · 에세이 · 2단 본문과 드롭캡</figcaption>
+      </figure>
+    </div>
+    <p class="note">본문 슬라이드는 발표용보다 읽기용에 가깝습니다. 화면에 띄울 때는 글자를 줄이고 같은 내용을 배포 자료로 따로 주는 편이 좋습니다.</p>
+  </section>
+
+  <!-- ================= I ================= -->
+  <section class="concept" id="c-i">
+    <div class="concept-head">
+      <div>
+        <div class="eyebrow">시안 I · 이미지 강조 · 팔레트 1</div>
+        <h2>Full Bleed</h2>
+        <div class="fontchip"><span><b>타이틀</b>tvN 즐거운이야기체</span><span><b>본문</b>고도체</span></div>
+        <p>사진이 화면을 채우고 글은 그 위에 얹습니다. 전면 사진, 사진 모음, 사진과 글을 반씩 나눈 구성으로 여행, 공간, 제품 무드보드에 맞습니다.</p>
+      </div>
+      <div class="rule"><b>강조 규칙</b>사진은 팔레트 톤으로 보정합니다. 글자는 사진 아래쪽 어두운 그라디언트 위에만 올려 가독성을 지킵니다.</div>
+    </div>
+    <div class="slides">
+      <figure>
+        <div class="slide im">
+          <svg class="scene" viewBox="0 0 160 90" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+            <defs><linearGradient id="skyA" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5A6B7A"/><stop offset=".5" stop-color="#C6533A"/><stop offset=".85" stop-color="#F1A24A"/></linearGradient></defs>
+            <rect width="160" height="90" fill="url(#skyA)"/>
+            <circle cx="112" cy="56" r="12" fill="#F9D1B8"/>
+            <path d="M0 58 Q25 46 55 56 T110 58 T160 50 V90 H0Z" fill="#C6533A"/>
+            <path d="M0 66 Q40 56 80 66 T160 62 V90 H0Z" fill="#5A6B7A"/>
+            <path d="M0 75 Q50 66 100 76 T160 74 V90 H0Z" fill="#2B2220"/>
+          </svg>
+          <div class="shade"></div><span class="ph">이미지 자리</span>
+          <div class="in"><div class="itop">JEJU CAMPAIGN 2027</div><div class="title">해 질 녘,<br>제주의 색</div><div class="cap">2027 봄 캠페인 무드 제안 · 브랜드디자인팀 · 2026년 11월</div></div>
+        </div>
+        <figcaption>표지 · 전면 사진 위 제목</figcaption>
+      </figure>
+      <figure>
+        <div class="slide im duo">
+          <div class="pic">
+            <svg class="scene" viewBox="0 0 90 90" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+              <defs>
+                <linearGradient id="skyD" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F1A24A"/><stop offset="1" stop-color="#F9D1B8"/></linearGradient>
+                <clipPath id="archD"><path d="M22 90 V45 A23 23 0 0 1 68 45 V90 Z"/></clipPath>
+              </defs>
+              <rect width="90" height="90" fill="#C6533A"/>
+              <g clip-path="url(#archD)">
+                <rect width="90" height="90" fill="url(#skyD)"/>
+                <circle cx="52" cy="60" r="9" fill="#C6533A"/>
+                <path d="M0 74 Q40 64 90 76 V90 H0Z" fill="#5A6B7A"/>
+              </g>
+              <rect y="86" width="90" height="4" fill="#2B2220" opacity=".35"/>
+            </svg>
+            <span class="ph">이미지 자리</span>
+          </div>
+          <div class="txt">
+            <span class="k">MOOD</span>
+            <h3>창가에 드는<br>오후의 색</h3>
+            <p>매장 창가에 드는 오후 빛을 기준으로 조명과 소재 색을 정했습니다. 사진은 피치 톤으로 보정해 글자 면과 자연스럽게 이어지게 합니다.</p>
+          </div>
+        </div>
+        <figcaption>본문 · 사진과 글 반반 · 무드 설명</figcaption>
+      </figure>
+    </div>
+    <p class="note">이미지 자리는 팔레트 색으로 그린 임시 그림입니다. 실제 사진을 넣을 때도 하이라이트를 피치, 그림자를 에스프레소 쪽으로 보정하면 슬라이드 전체 톤이 맞습니다.</p>
+  </section>
+
+  <!-- ================= J ================= -->
+  <section class="concept" id="c-j">
+    <div class="concept-head">
+      <div>
+        <div class="eyebrow">시안 J · 데이터 강조 · 팔레트 2</div>
+        <h2>Number Wall</h2>
+        <div class="fontchip"><span><b>숫자·타이틀</b>배민 한나Pro</span><span><b>본문</b>EBS 훈민정음</span></div>
+        <p>숫자 하나를 그림으로 바꿔 보여 줍니다. 100칸 점 그래프, 전후 비교, 주석을 단 추이 그래프로 성과 보고나 투자 설명회에 맞습니다.</p>
+      </div>
+      <div class="rule"><b>강조 규칙</b>한 장에 메시지가 되는 숫자는 하나만 둡니다. 그래프에는 그 숫자를 설명하는 주석 하나만 붙입니다.</div>
+    </div>
+    <div class="slides">
+      <figure>
+        <div class="slide nw cover"><div class="in">
+          <div class="label">2026 PERFORMANCE REVIEW</div>
+          <div class="cv">
+            <div class="cvt"><h3>수선이 만든<br>두 번째 구매</h3><p>2026년 수선 서비스 성과 보고</p></div>
+            <div class="cvn">2.3<small>배</small><span>수선 고객의 재구매율</span></div>
+          </div>
+          <div class="foot"><span>고객경험본부 · 2026년 11월</span><span>예시 데이터</span></div>
+        </div></div>
+        <figcaption>표지 · 제목 옆에 대표 숫자 하나</figcaption>
+      </figure>
+      <figure>
+        <div class="slide nw"><div class="in">
+          <div class="label">REPAIR SATISFACTION</div>
+          <div class="waf-wrap">
+            <div class="waffle" data-on="68" role="img" aria-label="100명 중 68명"></div>
+            <div>
+              <div class="bignum"><em>10명 중 7명</em>이<br>다시 맡깁니다</div>
+              <div class="desc">수선 서비스를 한 번 이용한 고객 중 68%가 1년 안에 다시 이용했습니다.</div>
+              <div class="src">예시 데이터 · 2026년 이용 고객 3,400명</div>
+            </div>
+          </div>
+        </div></div>
+        <figcaption>본문 · 점 그래프 · 비율을 사람 수로</figcaption>
+      </figure>
+    </div>
+    <p class="note">표지에서는 대표 숫자 하나만 세이지로 크게 키우고, 본문에서는 그 숫자를 점 그래프로 다시 보여 줍니다. 벽돌색은 차콜 위에서 대비가 낮아 글자에는 쓰지 않습니다.</p>
+  </section>
+
+  <!-- ================= K ================= -->
+  <section class="concept" id="c-k">
+    <div class="concept-head">
+      <div>
+        <div class="eyebrow">시안 K · 흐름 강조 · 팔레트 2</div>
+        <h2>Process Map</h2>
+        <div class="fontchip"><span><b>타이틀</b>배민 연성체</span><span><b>번호</b>배민 기랑해랑체</span><span><b>본문</b>고도체</span></div>
+        <p>순서와 단계가 주인공입니다. 현재 위치를 표시한 목차, 분기별 로드맵, 단계별 프로세스로 실행 계획, 온보딩, 프로젝트 킥오프에 맞습니다.</p>
+      </div>
+      <div class="rule"><b>강조 규칙</b>지금 이야기하는 단계 하나만 벽돌색으로 칠합니다. 나머지 단계는 같은 모양, 같은 색으로 둡니다.</div>
+    </div>
+    <div class="slides">
+      <figure>
+        <div class="slide pm cover"><div class="in">
+          <div class="kick">PROJECT KICKOFF</div>
+          <h3>수선 3일 프로젝트<br>킥오프</h3>
+          <div class="track">
+            <div class="tk now"><span class="node"></span><small>1분기</small><b>거점 추가</b></div>
+            <div class="tk"><span class="node"></span><small>2분기</small><b>부품 배치</b></div>
+            <div class="tk"><span class="node"></span><small>3분기</small><b>문자 안내</b></div>
+            <div class="tk"><span class="node"></span><small>4분기</small><b>3일 달성</b></div>
+          </div>
+          <div class="foot"><span>운영혁신팀 · 2026년 11월</span><span>1 / 14</span></div>
+        </div></div>
+        <figcaption>표지 · 1년 일정을 한 줄로 미리 보기</figcaption>
+      </figure>
+      <figure>
+        <div class="slide pm flow"><div class="in">
+          <div class="kick">PROCESS</div>
+          <h3>수선은 이렇게 진행됩니다</h3>
+          <div class="steps">
+            <div class="step"><span class="s">STEP 1</span><strong>접수</strong><span>앱에서 사진 3장과 증상 입력</span></div>
+            <div class="arr">→</div>
+            <div class="step"><span class="s">STEP 2</span><strong>수거</strong><span>가까운 거점 기사가 방문</span></div>
+            <div class="arr">→</div>
+            <div class="step"><span class="s">STEP 3</span><strong>수선</strong><span>부품 교체와 품질 확인</span></div>
+            <div class="arr">→</div>
+            <div class="step last"><span class="s">STEP 4</span><strong>반송</strong><span>3일 안에 문 앞까지</span></div>
+          </div>
+        </div></div>
+        <figcaption>본문 · 프로세스 · 마지막 단계에 도착점 표시</figcaption>
+      </figure>
+    </div>
+    <p class="note">표지에 1년 일정을 한 줄로 미리 보여 주고, 본문에서는 마지막 단계만 세이지로 칠해 도착점을 표시합니다. 지금 단계 하나만 벽돌색으로 칠하는 규칙은 표지에도 똑같이 적용합니다.</p>
+  </section>
+  </div>
+
+  <script>
+    document.querySelectorAll('.waffle').forEach(function (w) {
+      var on = parseInt(w.dataset.on, 10) || 0;
+      for (var i = 0; i < 100; i++) {
+        var d = document.createElement('i');
+        if (i < on) d.className = 'on';
+        w.appendChild(d);
+      }
+    });
+  </script>
+
+  <footer>폰트는 눈누(projectnoonnu)의 jsDelivr CDN에서 불러오므로 인터넷이 연결돼 있어야 제대로 보입니다. 서울한강 장체와 고도 M은 CDN에 없어 같은 계열 서체로 대신 보여 드리며, 컴퓨터에 설치돼 있으면 원래 서체가 먼저 적용됩니다. 상업적으로 쓰기 전에는 각 서체의 라이선스를 확인해 주세요.</footer>
+</div>
+
+<div class="lb" role="dialog" aria-modal="true" aria-label="슬라이드 크게 보기">
+  <div class="lb-stage"></div>
+  <div class="lb-bar">
+    <button type="button" class="lb-prev" aria-label="이전 슬라이드">←</button>
+    <span class="lb-cap"></span>
+    <span class="lb-count"></span>
+    <button type="button" class="lb-next" aria-label="다음 슬라이드">→</button>
+    <button type="button" class="lb-close" aria-label="닫기">닫기 ✕</button>
+  </div>
+</div>
+<script>
+(function () {
+  var slides = Array.prototype.slice.call(document.querySelectorAll('.slides .slide'));
+  var lb = document.querySelector('.lb'), stage = lb.querySelector('.lb-stage');
+  var cap = lb.querySelector('.lb-cap'), cnt = lb.querySelector('.lb-count');
+  var cur = -1, last = null;
+  function label(i) {
+    var sec = slides[i].closest('.concept');
+    var eb = sec.querySelector('.eyebrow'), h = sec.querySelector('h2');
+    var fc = slides[i].closest('figure').querySelector('figcaption');
+    return (eb ? eb.textContent.split('·')[0].trim() + ' ' : '') + (h ? h.textContent : '') + (fc ? '  —  ' + fc.textContent : '');
+  }
+  function show(i) {
+    cur = (i + slides.length) % slides.length;
+    stage.innerHTML = '';
+    stage.setAttribute('data-sec', slides[i < 0 ? 0 : cur].closest('.concept').id);
+    var c = slides[cur].cloneNode(true);
+    c.removeAttribute('tabindex'); c.removeAttribute('role');
+    stage.appendChild(c);
+    cap.textContent = label(cur);
+    cnt.textContent = (cur + 1) + ' / ' + slides.length;
+  }
+  function open(i) { last = document.activeElement; show(i); lb.classList.add('open'); document.body.classList.add('lb-on'); lb.querySelector('.lb-close').focus(); }
+  function close() { lb.classList.remove('open'); document.body.classList.remove('lb-on'); stage.innerHTML = ''; if (last) last.focus(); }
+  slides.forEach(function (s, i) {
+    s.setAttribute('tabindex', '0'); s.setAttribute('role', 'button');
+    s.setAttribute('aria-label', '크게 보기: ' + label(i));
+    s.addEventListener('click', function () { open(i); });
+    s.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(i); } });
+  });
+  lb.querySelector('.lb-prev').addEventListener('click', function () { show(cur - 1); });
+  lb.querySelector('.lb-next').addEventListener('click', function () { show(cur + 1); });
+  lb.querySelector('.lb-close').addEventListener('click', close);
+  lb.addEventListener('click', function (e) { if (e.target === lb) close(); });
+  document.addEventListener('keydown', function (e) {
+    if (!lb.classList.contains('open')) return;
+    if (e.key === 'Escape') close();
+    else if (e.key === 'ArrowRight') show(cur + 1);
+    else if (e.key === 'ArrowLeft') show(cur - 1);
+  });
+})();
+</script>
+</body>
+</html>
