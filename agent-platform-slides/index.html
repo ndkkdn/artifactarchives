@@ -1,0 +1,1575 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Agent Demo에서 Agent Platform으로</title>
+<meta name="description" content="AI 에이전트를 데모에서 운영 가능한 플랫폼으로 만들기 위한 다섯 축(오케스트레이션, 도구·권한, 메모리·작업 상태, 관측·평가, 게이트웨이·거버넌스)을 16장으로 정리한 슬라이드.">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<link rel="icon" href="../favicon.ico">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<!-- Design system extracted verbatim from ai-briefing-2026-11-w3. Component-specific blocks (od, ddc, sla, chain,
+     pj, drain, stack, s1fin, art-*) are kept so patterns copied from references/example-w3.html keep working. -->
+<style>
+  :root {
+    --bg: #2B2B2B; --bg-2: #122038; --card: rgba(242,230,216, .045); --card-2: rgba(242,230,216, .08);
+    --line: rgba(242,230,216, .12); --ink: #F2E6D8; --ink-2: rgba(242,230,216, .7); --ink-3: rgba(242,230,216, .44);
+    --gold: #A9B2A2; --coral: #f0542a; --blue: #6aa8ff; --green: #4cc38a; --red: #ff6b6b; --violet: #a98bff;
+    --c-ant: #d08a6a; --c-oai: #b7c0d2; --c-meta: #6aa8ff;
+    --ease: cubic-bezier(.2, .8, .2, 1);
+    color-scheme: dark;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; background: var(--bg); color: var(--ink); overflow: hidden; }
+  body { font-family: "Pretendard Variable", Pretendard, Inter, system-ui, sans-serif; -webkit-font-smoothing: antialiased; word-break: keep-all; }
+  .mono { font-family: "JetBrains Mono", ui-monospace, monospace; }
+  .en { font-family: Inter, "Pretendard Variable", sans-serif; }
+  #bgfx { position: fixed; inset: 0; width: 100%; height: 100%; }
+
+  /* ── fixed 1600×900 stage, scaled to fit ── */
+  .deck { position: fixed; left: 50%; top: 50%; width: 1600px; height: 900px; transform-origin: 0 0; }
+  .slide {
+    position: absolute; inset: 0; padding: 92px 110px 96px; display: flex; flex-direction: column;
+    opacity: 0; visibility: hidden; transform: translateX(40px); transition: opacity .5s var(--ease), transform .6s var(--ease), visibility 0s .6s;
+  }
+  .slide.is-active { opacity: 1; visibility: visible; transform: none; transition: opacity .5s var(--ease), transform .6s var(--ease); }
+  .slide.is-past { transform: translateX(-40px); }
+
+  /* entrance choreography: every [data-a] child plays when its slide becomes active */
+  .slide [data-a] { opacity: 0; }
+  .slide.is-active [data-a] { animation: var(--anim, rise) .8s var(--ease) both; animation-delay: calc(140ms + var(--d, 0) * 110ms); }
+  [data-a="fade"] { --anim: fade; } [data-a="left"] { --anim: fromLeft; } [data-a="right"] { --anim: fromRight; } [data-a="pop"] { --anim: pop; }
+  @keyframes rise { from { opacity: 0; transform: translateY(28px); } to { opacity: 1; transform: none; } }
+  @keyframes fade { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes fromLeft { from { opacity: 0; transform: translateX(-40px); } to { opacity: 1; transform: none; } }
+  @keyframes fromRight { from { opacity: 0; transform: translateX(40px); } to { opacity: 1; transform: none; } }
+  @keyframes pop { 0% { opacity: 0; transform: scale(.85); } 70% { opacity: 1; transform: scale(1.03); } 100% { opacity: 1; transform: none; } }
+
+  /* ── type ── */
+  .kicker { display: inline-flex; align-items: center; gap: 10px; font: 600 18px/1 Inter, "Pretendard Variable", sans-serif; letter-spacing: .14em; text-transform: uppercase; color: var(--gold); }
+  .kicker::before { content: ""; width: 28px; height: 2px; background: currentColor; }
+  h1, h2, h3 { margin: 0; font-weight: 700; letter-spacing: -.035em; }
+  h2 { font-size: 54px; line-height: 1.18; margin-top: 16px; }
+  /* slide titles: Paperlogy (SIL OFL, via jsDelivr/project noonnu) */
+  @font-face { font-family: "Paperlogy"; font-weight: 700; font-style: normal; font-display: swap; src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/2408-3@1.0/Paperlogy-7Bold.woff2") format("woff2"); }
+  h1, h2 { font-family: "Paperlogy", "Pretendard Variable", Pretendard, Inter, sans-serif; letter-spacing: -.03em; }
+  h1 { font-weight: 800; }
+  h2 em, h1 em { font-style: normal; color: var(--gold); }
+  .lead { font-size: 25px; line-height: 1.6; color: var(--ink-2); margin: 18px 0 0; max-width: 1180px; }
+  .lead b, .body b { color: var(--ink); font-weight: 600; }
+  .body { font-size: 21px; line-height: 1.6; color: var(--ink-2); margin: 0; }
+  .small { font-size: 16px; color: var(--ink-3); line-height: 1.55; }
+  .small b { color: var(--ink-2); }
+  .chip { display: inline-flex; align-items: center; gap: 8px; padding: 8px 16px; border-radius: 999px; background: var(--card-2); border: 1px solid var(--line); font-size: 18px; color: var(--ink-2); white-space: nowrap; }
+  .chip.gold { color: #1b1606; background: var(--gold); border-color: transparent; font-weight: 600; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 22px; padding: 26px 28px; }
+  .card h3 { font-size: 25px; letter-spacing: -.025em; }
+  .card .num { font: 700 14px/1.3 "JetBrains Mono", "Pretendard Variable", monospace; color: var(--gold); letter-spacing: .06em; }
+  .card p { margin: 10px 0 0; font-size: 18px; line-height: 1.55; color: var(--ink-2); }
+  .card p b, .card li b { color: var(--ink); }
+  .card ul { margin: 10px 0 0; padding-left: 20px; font-size: 18px; line-height: 1.55; color: var(--ink-2); }
+  .card li + li { margin-top: 6px; }
+  .row { display: flex; gap: 28px; }
+  .grow { flex: 1; min-width: 0; }
+  .src { position: absolute; left: 110px; bottom: 44px; font-size: 15px; color: var(--ink-3); max-width: 900px; }
+  .cols { display: grid; gap: 22px; }
+  .c2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .c3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .c4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .c5 { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+  .c3w { grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr) minmax(0, 1fr); }
+
+  /* ── status badges: confirmed / rumor / judgment / vendor numbers ── */
+  .badge { display: inline-flex; align-items: center; gap: 6px; font: 700 14px/1.2 "Pretendard Variable", Inter, sans-serif; letter-spacing: .02em; padding: 5px 11px; border-radius: 999px; white-space: nowrap; vertical-align: middle; }
+  .badge.ok { background: rgba(76,195,138,.16); color: var(--green); border: 1px solid rgba(76,195,138,.45); }
+  .badge.ok::before { content: "✓"; }
+  .badge.rumor { color: #ff8a63; border: 1.5px dashed rgba(240,84,42,.8); background: repeating-linear-gradient(-45deg, rgba(240,84,42,.18) 0 6px, rgba(240,84,42,.05) 6px 12px); }
+  .badge.rumor::before { content: "?"; font-weight: 800; }
+  .badge.judge { background: rgba(169,178,162,.16); color: var(--gold); border: 1px solid rgba(169,178,162,.5); }
+  .badge.judge::before { content: "◆"; font-size: 11px; }
+  .badge.vendor { background: rgba(106,168,255,.14); color: var(--blue); border: 1px solid rgba(106,168,255,.45); }
+  .badge.vendor::before { content: "!"; font-weight: 800; }
+  .badge.warn { background: rgba(240,84,42,.14); color: #ff8a63; border: 1px solid rgba(240,84,42,.5); }
+  .card.ok { border-color: rgba(76,195,138,.45); background: linear-gradient(160deg, rgba(76,195,138,.10), rgba(76,195,138,.02)); }
+  .card.rumor { border: 1.5px dashed rgba(240,84,42,.65); background: repeating-linear-gradient(-45deg, rgba(240,84,42,.07) 0 10px, rgba(240,84,42,.015) 10px 20px); }
+  .card.judge { border-color: rgba(169,178,162,.55); background: linear-gradient(160deg, rgba(169,178,162,.14), rgba(169,178,162,.02)); }
+  .card.vendor { border-color: rgba(106,168,255,.4); background: linear-gradient(160deg, rgba(106,168,255,.08), rgba(106,168,255,.01)); }
+  .card.hotc { border-color: rgba(240,84,42,.45); background: rgba(240,84,42,.06); }
+  .ustamp { position: absolute; display: inline-block; border: 3px solid var(--coral); color: var(--coral); font: 800 19px/1 "Pretendard Variable", sans-serif; letter-spacing: .06em; padding: 7px 12px; border-radius: 8px; transform: rotate(-7deg) scale(1.7); opacity: 0; pointer-events: none; background: rgba(43,43,43,.6); }
+  .is-active .ustamp { animation: stamp .45s var(--ease) var(--sd, 1.8s) both; }
+  @keyframes stamp { to { opacity: .95; transform: rotate(-7deg) scale(1); } }
+
+  /* ── chrome ── */
+  .progress { position: fixed; left: 0; top: 0; height: 3px; background: var(--gold); width: 0; transition: width .5s var(--ease); z-index: 5; }
+  .hud { position: fixed; right: max(18px, env(safe-area-inset-right)); bottom: max(16px, env(safe-area-inset-bottom)); display: flex; gap: 8px; align-items: center; z-index: 5; }
+  .hud button, .hud a { appearance: none; border: 0; height: 38px; min-width: 38px; padding: 0 12px; border-radius: 999px; background: rgba(242,230,216,.08); color: var(--ink-2);
+    font: 500 14px Inter, "Pretendard Variable", sans-serif; cursor: pointer; display: inline-grid; place-items: center; text-decoration: none; backdrop-filter: blur(8px); }
+  .hud button:hover, .hud a:hover { background: rgba(242,230,216,.16); color: var(--ink); }
+  .hud .count { font: 500 14px "JetBrains Mono", monospace; color: var(--ink-3); padding: 0 6px; white-space: nowrap; }
+  .notes { position: fixed; left: 50%; bottom: 70px; transform: translateX(-50%); width: min(920px, calc(100vw - 32px)); max-height: 60vh; overflow-y: auto; z-index: 6; display: none;
+    background: rgba(30,28,27, .94); border: 1px solid var(--line); border-radius: 16px; padding: 18px 22px; font-size: 16px; line-height: 1.65; color: var(--ink-2); }
+  .notes.show { display: block; }
+  .notes b { color: var(--gold); font-weight: 600; margin-right: 6px; }
+  :focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
+
+  /* ── glossary strip (abbreviations) ── */
+  .gloss { margin-top: auto; padding-top: 12px; border-top: 1px solid var(--line); display: flex; flex-wrap: wrap; gap: 4px 26px; font-size: 14.5px; line-height: 1.5; color: var(--ink-3); position: relative; z-index: 1; }
+  .gloss span { max-width: 100%; }
+  .gloss b { font: 700 13.5px "JetBrains Mono", monospace; color: var(--gold); margin-right: 8px; }
+  .gloss em { font-style: normal; color: var(--ink-2); }
+  .slide:has(.src) .gloss { margin-bottom: 12px; }
+
+  /* ── 01 title ── */
+  .s-title { justify-content: center; }
+  @font-face { font-family: "Paperlogy"; font-weight: 800; font-style: normal; font-display: swap; src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/2408-3@1.0/Paperlogy-8ExtraBold.woff2") format("woff2"); }
+  .s-title h1 { font-family: "Paperlogy", "Pretendard Variable", Pretendard, Inter, sans-serif; font-weight: 800; font-size: 100px; line-height: 1.12; letter-spacing: -.035em; margin-top: 26px; }
+  .s-title .lead { font-size: 27px; margin-top: 28px; }
+  .s-title .chips { display: flex; gap: 12px; margin-top: 48px; flex-wrap: wrap; }
+  .s-title .date { position: absolute; right: 110px; top: 92px; font: 500 18px "JetBrains Mono", "Pretendard Variable", monospace; color: var(--ink-3); }
+
+  /* ── agenda ── */
+  .agenda { display: grid; grid-template-columns: 1fr 1fr; gap: 0 48px; margin: 34px 0 0; padding: 0; }
+  .agenda li { list-style: none; display: flex; gap: 22px; align-items: baseline; padding: 18px 0; border-bottom: 1px solid var(--line); }
+  .agenda .n { font: 700 21px "JetBrains Mono", monospace; color: var(--gold); width: 38px; flex: none; }
+  .agenda .t { font-size: 28px; font-weight: 600; letter-spacing: -.02em; }
+  .agenda .d { font-size: 18px; color: var(--ink-3); margin-top: 5px; }
+  .agenda li.warn .n, .agenda li.warn .t { color: var(--coral); }
+
+  /* ── TL;DR ── */
+  .tldr { display: grid; grid-template-columns: 1.1fr 1fr 1fr; gap: 22px; margin-top: 34px; }
+  .tldr .card { padding: 24px 26px; }
+  .tldr ul { font-size: 18px; line-height: 1.55; }
+  .tldr li + li { margin-top: 10px; }
+
+  /* ── horizontal bars ── */
+  .hbars { display: flex; flex-direction: column; gap: 10px; }
+  .hbar { display: grid; grid-template-columns: var(--lw, 150px) minmax(0, 1fr) var(--vw, 100px); gap: 12px; align-items: center; font-size: 17px; color: var(--ink-2); }
+  .hbar .nm { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .hbar .tr { height: var(--bh, 22px); border-radius: 7px; background: var(--card-2); overflow: hidden; position: relative; }
+  .hbar .tr i { position: absolute; left: 0; top: 0; bottom: 0; width: 0; border-radius: inherit; background: var(--c, var(--blue)); transition: width 1.2s var(--ease); }
+  .hbar .tr i.rng { background: repeating-linear-gradient(-45deg, var(--c, var(--blue)) 0 5px, transparent 5px 10px); opacity: .9; }
+  .is-active .hbar .tr i { width: var(--w); transition-delay: calc(var(--bd, .6s) + var(--k, 0) * .12s); }
+  .hbar .v { font: 700 17px "JetBrains Mono", "Pretendard Variable", monospace; color: var(--ink); text-align: right; white-space: nowrap; }
+  .hbar.best .nm, .hbar.best .v { color: var(--gold); }
+  .legend { display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: 15px; color: var(--ink-3); }
+  .legend i { display: inline-block; width: 12px; height: 12px; border-radius: 3px; margin-right: 6px; vertical-align: -1px; }
+
+  /* ── vertical column bars ── */
+  .vbars { display: flex; align-items: flex-end; gap: 12px; height: var(--vh, 190px); border-bottom: 1px solid var(--line); margin-top: 10px; }
+  .vbars .b { flex: 1; min-width: 0; height: 100%; display: flex; flex-direction: column; justify-content: flex-end; position: relative; }
+  .vbars .b i { display: block; height: 0; border-radius: 7px 7px 0 0; background: var(--c, var(--blue)); transition: height 1.1s var(--ease); }
+  .is-active .vbars .b i { height: var(--h); transition-delay: calc(var(--bd, .6s) + var(--k, 0) * .12s); }
+  .vbars .b em { position: absolute; left: 0; right: 0; bottom: calc(var(--h) + 6px); text-align: center; font: 700 16px "JetBrains Mono", monospace; font-style: normal; color: var(--ink); opacity: 0; transition: opacity .3s; white-space: nowrap; }
+  .is-active .vbars .b em { opacity: 1; transition-delay: calc(var(--bd, .6s) + .9s + var(--k, 0) * .12s); }
+  .vlab { display: flex; gap: 12px; margin-top: 8px; }
+  .vlab span { flex: 1; min-width: 0; text-align: center; font-size: 14px; color: var(--ink-3); line-height: 1.3; }
+
+  /* ── timeline ── */
+  .tline { position: relative; display: grid; grid-template-columns: repeat(var(--n, 4), minmax(0, 1fr)); gap: 24px; margin-top: 34px; padding-top: 44px; }
+  .tline .axis { position: absolute; left: 0; right: 0; top: 12px; height: 3px; background: var(--line); }
+  .tline .axis i { position: absolute; inset: 0; background: var(--gold); transform: scaleX(0); transform-origin: left; transition: transform 1.6s var(--ease); }
+  .is-active .tline .axis i { transform: scaleX(1); transition-delay: .5s; }
+  .tline .ev { position: relative; min-width: 0; }
+  .tline .ev .dot { position: absolute; left: 0; top: -43px; width: 22px; height: 22px; border-radius: 50%; background: var(--bg); border: 4px solid var(--gold); }
+  .tline .ev.key .dot { background: var(--gold); box-shadow: 0 0 0 6px rgba(169,178,162,.18); }
+  .tline .ev.bad .dot { border-color: var(--coral); background: var(--coral); }
+  .tline .ev.rum .dot { border-style: dashed; border-color: var(--coral); }
+  .tline .when { font: 700 18px "JetBrains Mono", "Pretendard Variable", monospace; color: var(--gold); }
+  .tline .ev.bad .when, .tline .ev.rum .when { color: #ff8a63; }
+  .tline .what { font-size: 18.5px; line-height: 1.5; color: var(--ink-2); margin-top: 6px; }
+  .tline .what b { color: var(--ink); }
+  .tline .q { margin-top: 8px; font-size: 16px; line-height: 1.5; color: var(--ink-2); padding-left: 12px; border-left: 3px solid var(--line); }
+  .tline .q.en { font-style: italic; }
+
+  /* ── 04 scores + exam room ── */
+  .scores { display: flex; gap: 46px; margin-top: 12px; }
+  .scores .lbl { font-size: 16px; color: var(--ink-3); }
+  .kpi { font: 800 64px/1.05 Inter, sans-serif; letter-spacing: -.04em; color: var(--ink); }
+  .kpi small { font-size: 28px; color: var(--ink-3); letter-spacing: -.02em; margin-left: 4px; }
+  .kpi.gold { color: var(--gold); }
+  .room { display: grid; grid-template-columns: repeat(5, 40px); gap: 8px; justify-content: center; padding: 14px 18px; border-radius: 14px; background: var(--bg-2); }
+  .room .podium { grid-column: 1 / -1; text-align: center; font-size: 13px; color: var(--ink-3); padding: 4px; border: 1px solid var(--line); border-radius: 6px; margin-bottom: 4px; }
+  .room i { height: 26px; border-radius: 6px; background: var(--card-2); transition: background .4s, box-shadow .4s; font: 700 11px/26px "Pretendard Variable"; font-style: normal; text-align: center; color: transparent; }
+  .is-active .room i.s1 { background: var(--coral); color: #1b0a05; transition-delay: 1.4s; box-shadow: 0 0 0 3px rgba(240,84,42,.3); }
+  .is-active .room i.s2 { background: var(--gold); color: #1b1606; transition-delay: 1.9s; box-shadow: 0 0 0 3px rgba(169,178,162,.3); }
+
+  /* ── 06 government measures ── */
+  .measures { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 14px; margin-top: 14px; }
+  .measures .m { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 16px 18px; font-size: 17px; line-height: 1.45; color: var(--ink-2); }
+  .measures .m b { display: block; font: 700 15px "JetBrains Mono"; color: var(--gold); margin-bottom: 6px; }
+  .measures .m.flag { border-style: dashed; border-color: rgba(240,84,42,.5); }
+
+  /* ── 09 signal chain ── */
+  .chain-svg { width: 100%; height: auto; display: block; margin-top: 18px; }
+  .chain-svg text { fill: #F2E6D8; font-family: "Pretendard Variable", sans-serif; }
+  .chain-svg .node rect { fill: rgba(242,230,216,.05); stroke: rgba(242,230,216,.22); stroke-width: 1.5; }
+  .chain-svg .leg { stroke: rgba(242,230,216,.25); stroke-width: 4; stroke-dasharray: 8 8; fill: none; }
+  .chain-svg .leg.bt { stroke: rgba(76,195,138,.5); transition: stroke .2s; }
+  .chain-svg .leg.bt.hit { stroke: var(--green); stroke-dasharray: none; }
+  .chain-svg .pkt { fill: var(--gold); }
+  .chain-svg .ring { fill: none; stroke: var(--green); stroke-width: 2; opacity: 0; }
+  .is-active .chain-svg .ring { animation: ring 2.4s ease-out infinite; }
+  .chain-svg .ring.r2 { animation-delay: .8s !important; } .chain-svg .ring.r3 { animation-delay: 1.6s !important; }
+  @keyframes ring { 0% { opacity: .9; r: 10; } 100% { opacity: 0; r: 70; } }
+  .chain-svg .okt { fill: var(--green) !important; font-weight: 700; }
+  .chain-v { display: none; }
+  html.portrait .chain-h { display: none; }
+  html.portrait .chain-v { display: block; margin-top: 20px; }
+  .chain-svg .not { fill: #ff8a63 !important; font-weight: 700; }
+
+
+  /* ── 13 gantt ── */
+  .gantt { display: grid; grid-template-columns: 330px minmax(0, 1fr); gap: 16px 24px; margin-top: 30px; align-items: center; }
+  .gantt .gl b { display: block; font-size: 26px; letter-spacing: -.02em; }
+  .gantt .gl small { display: block; font-size: 15px; color: var(--ink-3); line-height: 1.45; margin-top: 4px; }
+  .gantt .gt { position: relative; height: 62px; border-radius: 10px; background: var(--card); }
+  .gantt .seg { position: absolute; top: 24px; height: 26px; border-radius: 6px; transform: scaleX(0); transform-origin: left; transition: transform .9s var(--ease); }
+  .gantt .seg.pre { background: repeating-linear-gradient(-45deg, var(--c) 0 5px, transparent 5px 10px); opacity: .75; }
+  .gantt .seg.ga { background: var(--c); }
+  .is-active .gantt .seg { transform: none; transition-delay: var(--sd, .8s); }
+  .gantt .mk { position: absolute; top: 2px; font: 700 13.5px "JetBrains Mono", "Pretendard Variable", monospace; color: var(--ink-2); white-space: nowrap; transform: translateX(-2px); opacity: 0; transition: opacity .4s; }
+  .gantt .mk.r { transform: translateX(-100%); }
+  .is-active .gantt .mk { opacity: 1; transition-delay: var(--sd, 1s); }
+  .gantt .ticks { position: relative; height: 22px; grid-column: 2; }
+  .gantt .ticks span { position: absolute; top: 0; transform: translateX(-50%); font: 500 13px "JetBrains Mono"; color: var(--ink-3); }
+
+  /* ── 14 model panels ── */
+  .panels { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px 22px; margin-top: 22px; }
+  .panels .card { padding: 18px 22px 20px; }
+  .panels .card h3 { font-size: 20px; display: flex; justify-content: space-between; align-items: baseline; gap: 10px; margin-bottom: 12px; }
+  .panels .card h3 small { font: 500 14px "Pretendard Variable"; color: var(--ink-3); letter-spacing: 0; }
+  .panels .hbars { gap: 7px; }
+  .panels .hbar { --lw: 150px; --vw: 120px; --bh: 18px; font-size: 15.5px; }
+  .panels .hbar .v { font-size: 15.5px; }
+
+  /* ── 15 price toggle ── */
+  .ptog { display: inline-flex; padding: 4px; border-radius: 999px; background: var(--card-2); border: 1px solid var(--line); gap: 4px; }
+  .ptog button { appearance: none; border: 0; background: transparent; color: var(--ink-2); font: 600 16px "Pretendard Variable", sans-serif; padding: 8px 16px; border-radius: 999px; cursor: pointer; }
+  .ptog button[aria-pressed="true"] { background: var(--gold); color: #1b1606; }
+  .pchart .hbar { --lw: 170px; --vw: 92px; --bh: 20px; font-size: 16px; }
+  .pchart .hbar .tr i { width: 0; transition: width .9s var(--ease); }
+  .is-active .pchart .hbar .tr i { width: var(--w0); transition-delay: 0s; }
+  .is-active .pchart.after .hbar .tr i { width: var(--w1); }
+  .pchart .v1, .pchart.after .v0 { display: none; }
+  .pchart.after .v1 { display: inline; }
+  .pchart.after .hbar.dbl .v { color: #ff8a63; }
+  .pchart .grp { font-size: 17px; font-weight: 700; color: var(--ink); margin: 12px 0 6px; display: flex; align-items: center; gap: 10px; }
+  .pchart .grp:first-child { margin-top: 0; }
+  .pchart .grp i { width: 12px; height: 12px; border-radius: 3px; background: var(--c); }
+  .vlist { margin: 10px 0 0; padding: 0; list-style: none; font-size: 16px; line-height: 1.45; color: var(--ink-2); }
+  .vlist li { display: flex; justify-content: space-between; gap: 12px; padding: 6px 0; border-bottom: 1px dashed var(--line); }
+  .vlist li span:last-child { text-align: right; color: var(--ink); font-family: "JetBrains Mono", "Pretendard Variable", monospace; font-size: 15px; }
+
+  /* ── 16 credibility gauge ── */
+  .gauge { position: relative; height: 22px; border-radius: 11px; background: linear-gradient(90deg, rgba(240,84,42,.7), rgba(169,178,162,.7) 50%, rgba(76,195,138,.7)); margin: 18px 0 8px; }
+  .gauge .needle { position: absolute; top: -8px; bottom: -8px; width: 4px; border-radius: 2px; background: var(--ink); left: 0; transition: left 1.6s var(--ease); box-shadow: 0 0 0 3px rgba(43,43,43,.7); }
+  .is-active .gauge .needle { left: 33%; transition-delay: 1.4s; }
+  .is-active .gauge.low .needle { left: 16%; }
+  .gauge .zone { position: absolute; top: 0; bottom: 0; left: 18%; width: 30%; border: 2px solid var(--ink); border-radius: 11px; opacity: 0; transition: opacity .5s; }
+  .is-active .gauge .zone { opacity: .9; transition-delay: 2.6s; }
+  .gscale { display: flex; justify-content: space-between; font-size: 14px; color: var(--ink-3); }
+
+  /* ── 17 small models ── */
+  .sm-wrap { display: grid; grid-template-columns: minmax(0, 1fr) 60px minmax(0, 1fr); gap: 14px; align-items: stretch; margin-top: 26px; }
+  .sm-wrap .arr { display: grid; place-items: center; font-size: 40px; color: var(--gold); }
+  .sm-wrap .hbar { --lw: 170px; --vw: 140px; --bh: 26px; font-size: 18px; }
+  .sm-wrap .hbar .v { font-size: 18px; }
+  .ttab { display: grid; grid-template-columns: 200px repeat(3, minmax(0, 1fr)); margin-top: 20px; border-radius: 16px; overflow: hidden; border: 1px solid var(--line); }
+  .ttab > div { padding: 11px 16px; font-size: 16.5px; line-height: 1.4; color: var(--ink-2); border-bottom: 1px solid var(--line); background: var(--card); }
+  .ttab > div.h { font-weight: 700; color: var(--ink); background: var(--card-2); }
+  .ttab > div.rh { color: var(--ink-3); font-weight: 600; }
+  .ttab > div:nth-last-child(-n+4) { border-bottom: 0; }
+
+  /* ── 20 projects diagram ── */
+  .pj-wrap { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: 30px; margin-top: 22px; align-items: start; }
+  .pj-svg { width: 100%; height: auto; display: block; }
+  .pj-svg text { fill: #F2E6D8; font-family: "Pretendard Variable", sans-serif; }
+  .pj-svg text.cmd { fill: var(--gold); font-family: "JetBrains Mono", monospace; font-weight: 700; }
+  .pj-svg .node rect.box { fill: rgba(242,230,216,.05); stroke: rgba(242,230,216,.22); stroke-width: 1.5; }
+  .pj-svg .coord rect.box { fill: rgba(169,178,162,.14); stroke: rgba(169,178,162,.7); }
+  .pj-svg .path { fill: none; stroke: rgba(242,230,216,.2); stroke-width: 2; stroke-dasharray: 6 8; }
+  .pj-svg .pkt { fill: var(--gold); } .pj-svg .pkt.up { fill: var(--blue); }
+  .pj-svg .pbg { fill: rgba(242,230,216,.1); } .pj-svg .pfill { fill: var(--green); }
+  .pj-svg .bub rect { fill: rgba(106,168,255,.14); stroke: rgba(106,168,255,.55); }
+  .upd { display: flex; flex-direction: column; gap: 12px; }
+  .upd .card { padding: 16px 20px; }
+  .upd .card h3 { font-size: 20px; }
+  .upd .card p { font-size: 16px; margin-top: 6px; }
+  .upd code, .card code { font: 600 15px "JetBrains Mono", monospace; color: var(--gold); background: rgba(169,178,162,.12); padding: 1px 6px; border-radius: 6px; }
+
+  /* ── 21 usage drain ── */
+  .drain { display: grid; grid-template-columns: 180px minmax(0, 1fr) 120px; gap: 16px; align-items: center; font-size: 19px; color: var(--ink-2); margin-top: 18px; }
+  .drain .tank { height: 34px; border-radius: 10px; background: var(--card-2); overflow: hidden; position: relative; }
+  .drain .tank i { position: absolute; inset: 0; right: auto; width: 100%; border-radius: inherit; background: linear-gradient(90deg, var(--green), #8be3b5); transition: width 4s linear; }
+  .is-active .drain .t1 i { width: 80%; transition-delay: 1.2s; }
+  .is-active .drain .t5 i { width: 0%; transition-delay: 1.2s; background: linear-gradient(90deg, var(--coral), #ff9b7c); }
+  .drain .thr { display: flex; gap: 6px; }
+  .drain .thr i { width: 18px; height: 18px; border-radius: 5px; background: var(--blue); }
+  .drain .lab { font: 700 18px "JetBrains Mono", "Pretendard Variable", monospace; color: var(--ink); text-align: right; }
+
+  /* ── 22 wallet flow ── */
+  .wflow { display: grid; grid-template-columns: minmax(0, 1fr) 46px minmax(0, 1fr) 46px minmax(0, 1fr) 46px minmax(0, 1fr); align-items: stretch; margin-top: 28px; }
+  .wstep { background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: 18px 20px; transition: border-color .35s, background .35s, box-shadow .35s; }
+  .wstep .ic { font-size: 28px; }
+  .wstep h3 { font-size: 21px; margin-top: 8px; }
+  .wstep p { margin: 6px 0 0; font-size: 16px; line-height: 1.5; color: var(--ink-2); }
+  .wstep .tok { font: 600 14px "JetBrains Mono", monospace; color: var(--gold); margin-top: 8px; display: inline-block; padding: 2px 8px; border-radius: 6px; background: rgba(169,178,162,.12); }
+  .wstep.on { border-color: rgba(169,178,162,.75); background: rgba(169,178,162,.12); box-shadow: 0 20px 50px -28px rgba(169,178,162,.8); }
+  .wflow .ar { display: grid; place-items: center; color: var(--ink-3); font-size: 26px; transition: color .3s; }
+  .wflow .ar.on { color: var(--gold); }
+  .vault { display: flex; align-items: center; gap: 18px; margin-top: 18px; padding: 14px 22px; border-radius: 16px; border: 1px dashed rgba(76,195,138,.55); background: rgba(76,195,138,.06); font-size: 18px; color: var(--ink-2); }
+  .vault .cn { font: 700 20px "JetBrains Mono", monospace; color: var(--ink); letter-spacing: .06em; position: relative; white-space: nowrap; }
+  .vault .cn::after { content: ""; position: absolute; left: -4px; right: -4px; top: 50%; height: 3px; background: var(--green); transform: scaleX(0); transform-origin: left; transition: transform .7s var(--ease); }
+  .is-active .vault .cn::after { transform: scaleX(1); transition-delay: 1.6s; }
+  .vault b { color: var(--green); }
+  .conds { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+  .conds .chip { font-size: 15.5px; padding: 6px 12px; }
+
+  /* ── 23 delegation risk ── */
+  .risk { display: grid; grid-template-columns: minmax(0, 1fr) 60px minmax(0, 1fr); align-items: center; gap: 10px; margin-top: 12px; }
+  .risk .st { border-radius: 14px; padding: 12px 16px; font-size: 16px; line-height: 1.45; color: var(--ink-2); background: var(--card-2); }
+  .risk .st b { display: block; color: var(--ink); font-size: 17px; }
+  .risk .st.hi { border: 1.5px solid rgba(240,84,42,.6); background: rgba(240,84,42,.08); }
+  .risk .ar { text-align: center; color: #ff8a63; font-size: 26px; }
+
+  /* ── 24 IPO stack ── */
+  .stack { position: relative; height: 84px; border-radius: 14px; background: var(--card); margin-top: 52px; display: flex; overflow: visible; }
+  .stack .sg { position: relative; height: 100%; width: 0; transition: width 1.2s var(--ease); display: flex; align-items: center; padding-left: 16px; overflow: hidden; white-space: nowrap; font-size: 19px; font-weight: 700; color: #2B2B2B; }
+  .stack .sg:first-child { border-radius: 14px 0 0 14px; }
+  .stack .sg.pub { background: var(--gold); }
+  .stack .sg.pub .rng { position: absolute; right: 0; top: 0; bottom: 0; width: var(--rw); background: repeating-linear-gradient(-45deg, rgba(43,43,43,.35) 0 5px, transparent 5px 10px); }
+  .stack .sg.prv { background: var(--blue); border-radius: 0 14px 14px 0; }
+  .is-active .stack .sg.pub { width: var(--w); transition-delay: .7s; }
+  .is-active .stack .sg.prv { width: var(--w); transition-delay: 1.7s; }
+  .stack .mark { position: absolute; top: -40px; bottom: -10px; left: var(--x); border-left: 2px dashed var(--ink); opacity: 0; transition: opacity .4s; }
+  .stack .mark span { position: absolute; top: 0; left: 10px; white-space: nowrap; font-size: 17px; font-weight: 700; color: var(--ink); }
+  .is-active .stack .mark { opacity: 1; transition-delay: 2.9s; }
+  .sticks { position: relative; height: 22px; margin-top: 10px; }
+  .sticks span { position: absolute; transform: translateX(-50%); font: 500 13px "JetBrains Mono"; color: var(--ink-3); }
+  .sticks span:first-child { transform: none; }
+  .ipo-head { align-items: center; }
+  html.portrait .ipo-head { align-items: flex-start; }
+  .ipo-sum { display: flex; align-items: baseline; gap: 16px; }
+  .ipo-sum .kpi { font-size: 76px; color: var(--gold); }
+
+  /* ── 25 demand blocks ── */
+  .demand { display: flex; gap: 8px; align-items: flex-end; margin-top: 12px; }
+  .demand i { width: 34px; border-radius: 6px 6px 0 0; background: var(--card-2); height: 26px; transition: background .3s, height .5s var(--ease); }
+  .demand i.base { background: var(--ink-3); }
+  .is-active .demand i.x { background: var(--gold); height: 52px; transition-delay: calc(1.4s + var(--k) * .18s); }
+
+  /* ── 26 S-1 ── */
+  .s1fin { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 24px; margin-top: 22px; }
+  .s1fin .vbars { --vh: 200px; }
+  .s1fin .kpis { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+  .s1fin .kpis .card { padding: 16px 18px; }
+  .s1fin .kpis .kpi { font-size: 42px; }
+  .s1fin .kpis .kpi small { font-size: 20px; }
+  .s1fin .kpis p { font-size: 14.5px; margin-top: 4px; }
+  .loss { display: flex; height: 36px; border-radius: 10px; overflow: hidden; background: var(--card-2); margin-top: 10px; }
+  .loss i { width: 0; height: 100%; transition: width 1.2s var(--ease); display: block; }
+  .loss i.nc { background: repeating-linear-gradient(-45deg, rgba(240,84,42,.75) 0 6px, rgba(240,84,42,.4) 6px 12px); }
+  .loss i.rest { background: var(--coral); }
+  .is-active .loss i { width: var(--w); transition-delay: var(--ld, 1.2s); }
+
+  /* ── 28 compare ── */
+  .cmp { display: grid; grid-template-columns: 130px minmax(0, 1fr) minmax(0, 1fr); gap: 8px 12px; margin-top: 12px; align-items: center; }
+  .cmp .h { font-size: 18px; font-weight: 700; padding: 10px 14px; border-radius: 12px; background: var(--card-2); }
+  .cmp .h.ant { color: var(--c-ant); border: 1px solid rgba(208,138,106,.45); }
+  .cmp .rh { font-size: 15px; color: var(--ink-3); font-weight: 600; }
+  .cmp .c { font-size: 16px; line-height: 1.4; color: var(--ink-2); padding: 8px 4px; border-top: 1px dashed var(--line); }
+  .cmp .c b { color: var(--ink); }
+  .cmp .mbar { height: 12px; border-radius: 6px; background: var(--card-2); margin-top: 6px; overflow: hidden; }
+  .cmp .mbar i { display: block; height: 100%; width: 0; background: var(--c, var(--ink-3)); border-radius: inherit; transition: width 1.1s var(--ease); }
+  .is-active .cmp .mbar i { width: var(--w); transition-delay: calc(.8s + var(--k, 0) * .15s); }
+
+  /* ── summary ── */
+  .concl { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; margin-top: 32px; }
+  .concl .card { display: flex; flex-direction: column; gap: 8px; padding: 20px 22px; }
+  .concl .ic { font-size: 26px; }
+  .concl h3 { font-size: 21px; line-height: 1.3; }
+  .concl p { margin: 0; font-size: 15.5px; line-height: 1.5; color: var(--ink-2); }
+  .concl .cal { grid-column: span 1; }
+  .cal ol { list-style: none; margin: 4px 0 0; padding: 0; display: flex; flex-direction: column; gap: 6px; font-size: 15px; color: var(--ink-2); }
+  .cal li b { font: 700 14px "JetBrains Mono"; color: var(--gold); margin-right: 8px; }
+
+  /* ── spot illustrations (inline SVG, decorative) ── */
+  .art { position: absolute; pointer-events: none; z-index: 0; }
+  .art svg { display: block; width: 100%; height: 100%; }
+  .art .k, .chain-svg .pic { fill: none; stroke: rgba(242,230,216,.42); stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+  .art .k2 { fill: none; stroke: rgba(242,230,216,.24); stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+  .art .dash { stroke-dasharray: 2 7; }
+  .art .fc { fill: url(#sfPaper); }
+  .art .sg, .chain-svg .pic.sg { stroke: var(--gold); } .art .sc { stroke: var(--coral); } .art .sb { stroke: var(--blue); } .art .sgr, .chain-svg .pic.sgr { stroke: var(--green); } .art .sv { stroke: var(--violet); }
+  .art .sg, .art .sc, .art .sb, .art .sgr, .art .sv, .chain-svg .pic.sg, .chain-svg .pic.sgr { stroke-opacity: .75; }
+  .art .sg.fc, .chain-svg .pic.sg.fc { fill: url(#sfTintGold); } .art .sb.fc { fill: url(#sfTintBlue); } .art .sc.fc { fill: url(#sfTintCoral); } .art .sgr.fc, .chain-svg .pic.sgr.fc { fill: url(#sfTintGreen); } .chain-svg .pic.fc { fill: url(#sfPaper); }
+  .art .glow, .chain-svg .glow { filter: url(#sfGlow); }
+  .art .fg { fill: var(--gold); } .art .fco { fill: var(--coral); } .art .fgr, .chain-svg .fgr { fill: var(--green); } .art .fbg { fill: var(--bg); }
+  .art text { font-family: "Pretendard Variable", Pretendard, sans-serif; fill: rgba(242,230,216,.5); }
+  .art text.mono { font-family: "JetBrains Mono", "Pretendard Variable", monospace; }
+  .art .a, .chain-svg .a { transform-box: fill-box; transform-origin: center; }
+  .is-active .art .bob { animation: artBob 6.4s ease-in-out infinite; }
+  .is-active .art .swing { transform-origin: 50% 0; animation: artSwing 4s ease-in-out infinite; }
+  .is-active .art .blink, .is-active .chain-svg .blink { animation: artBlink 3s ease-in-out infinite; }
+  .is-active .art .pulse { animation: artPulse 3.6s ease-in-out infinite; }
+  .is-active .art .spin { animation: artSpin 32s linear infinite; }
+  .is-active .art .halo { animation: artHalo 4.8s ease-in-out infinite; }
+  @keyframes artBob { 50% { transform: translateY(-4px); } }
+  @keyframes artSwing { 0%, 100% { transform: rotate(-5deg); } 50% { transform: rotate(5deg); } }
+  @keyframes artBlink { 50% { opacity: .35; } }
+  @keyframes artPulse { 0%, 100% { opacity: .45; } 50% { opacity: .9; } }
+  @keyframes artHalo { 0%, 100% { opacity: .7; } 50% { opacity: 1; } }
+  @keyframes artSpin { to { transform: rotate(360deg); } }
+  /* 01 title */
+  .art-title { left: 1090px; top: 150px; width: 400px; height: 400px; }
+  /* 04 exam sheet */
+  .art-exam { left: 110px; top: 594px; width: 1380px; height: 148px; }
+  .art-exam .cone { transform-box: view-box; animation: none; }
+  .is-active .art-exam .cone.c1 { transform-origin: 70px 60px; animation: artSweep 6.8s ease-in-out infinite; }
+  .is-active .art-exam .cone.c2 { transform-origin: 170px 60px; animation: artSweep 6.8s ease-in-out -3.4s infinite; }
+  @keyframes artSweep { 0%, 100% { transform: rotate(-5deg); } 50% { transform: rotate(5deg); } }
+  .art-exam .ans { opacity: 0; }
+  .is-active .art-exam .ans { animation: artMark 8s ease-in-out infinite; animation-delay: calc(1.2s + var(--i) * .5s); }
+  @keyframes artMark { 0% { opacity: 0; } 7%, 78% { opacity: .95; } 94%, 100% { opacity: 0; } }
+  .is-active .art .run { animation: artRun 3.6s ease-in-out infinite, artArc 3.6s ease-in-out infinite; }
+  @keyframes artRun { 0% { transform: translateX(0); opacity: 0; } 16% { opacity: 1; } 84% { opacity: 1; } 100% { transform: translateX(var(--dx)); opacity: 0; } }
+  @keyframes artArc { 0%, 100% { translate: 0 0; } 50% { translate: 0 var(--dy, 0px); } }
+  /* 07 suneung */
+  .art-suneung { left: 110px; top: 614px; width: 1380px; height: 176px; }
+  .is-active .art-suneung .scan { animation: artScan 4.2s ease-in-out infinite; }
+  @keyframes artScan { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(92px); } }
+  .is-active .art-suneung .look .pupil { animation: artLook 3.2s ease-in-out infinite; }
+  @keyframes artLook { 0%, 100% { transform: translateX(-2px); } 50% { transform: translateX(2px); } }
+  /* 13 · 16 element tiles */
+  .art-tiles { right: 110px; top: 98px; display: flex; gap: 12px; }
+  .art-tiles svg { width: 92px; height: 92px; }
+  .art-kr { right: 110px; top: 100px; width: 304px; height: 88px; }
+  .is-active .art-kr .flick { animation: artFlick 4.4s ease-in-out infinite; }
+  @keyframes artFlick { 0%, 100% { opacity: .92; } 50% { opacity: .5; } }
+  /* 22 wallet */
+  .art-wallet { left: 110px; top: 598px; width: 1380px; height: 154px; }
+  .art-wallet .seq { opacity: 0; }
+  .is-active .art-wallet .p1 { animation: artP1 5.6s ease-in-out infinite, artP1y 5.6s ease-in-out infinite; }
+  .is-active .art-wallet .p2 { animation: artP2 5.6s ease-in-out infinite, artP2y 5.6s ease-in-out infinite; }
+  .is-active .art-wallet .fscan { animation: artFscan 5.6s ease-in-out infinite; }
+  .is-active .art-wallet .okm { animation: artOk 5.6s ease-in-out infinite; }
+  .is-active .art-wallet .tokglow { animation: artTok 5.6s ease-in-out infinite; }
+  @keyframes artP1y { 0%, 24%, 100% { translate: 0 0; } 14% { translate: 0 -9px; } }
+  @keyframes artP2y { 0%, 58%, 80%, 100% { translate: 0 0; } 70% { translate: 0 9px; } }
+  @keyframes artP1 { 0% { opacity: 0; transform: translateX(0); } 4% { opacity: 1; } 24% { opacity: 1; transform: translateX(104px); } 27%, 100% { opacity: 0; transform: translateX(104px); } }
+  @keyframes artFscan { 0%, 26% { opacity: 0; transform: translateY(0); } 30% { opacity: 1; } 50% { opacity: 1; transform: translateY(44px); } 54%, 100% { opacity: 0; transform: translateY(44px); } }
+  @keyframes artOk { 0%, 50% { opacity: 0; } 58%, 92% { opacity: 1; } 100% { opacity: 0; } }
+  @keyframes artP2 { 0%, 58% { opacity: 0; transform: translateX(0); } 62% { opacity: 1; } 80% { opacity: 1; transform: translateX(110px); } 83%, 100% { opacity: 0; transform: translateX(110px); } }
+  @keyframes artTok { 0%, 76% { opacity: .45; } 88% { opacity: 1; } 100% { opacity: .45; } }
+  /* 24 ticker */
+  .art-ticker { left: 110px; top: 640px; width: 1380px; height: 94px; }
+  .is-active .art-ticker .tape { animation: artTape 26s linear infinite; }
+  @keyframes artTape { to { transform: translateX(-1240px); } }
+  /* 27 lock-up */
+  .art-lock { left: 110px; top: 534px; width: 1380px; height: 196px; }
+  .art-lock .prog { transform-box: fill-box; transform-origin: left center; transform: scaleX(0); transition: transform 1.6s var(--ease); }
+  .is-active .art-lock .prog { transform: none; transition-delay: 1.2s; }
+  html.portrait .art { display: none; }
+  /* tall phones leave the title slide's upper half empty: show the title spot there */
+  @media (max-aspect-ratio: 1/2) { html.portrait .art-title { display: block; left: calc(50% - 150px); top: 120px; width: 300px; height: 300px; } }
+
+  /* ── phone held sideways: controls get their own lane under the stage ── */
+  .hud .alt { gap: 6px; display: inline-flex; align-items: center; }
+  .hud .alt .ico { font-size: 13px; }
+  html.portrait .hud .alt .lbl, html.short .hud .alt .lbl { display: none; }
+  html.portrait .hud #fsBtn { display: none; }
+  html.short .hud { bottom: max(8px, env(safe-area-inset-bottom)); gap: 6px; }
+  html.short .hud button, html.short .hud a { height: 34px; min-width: 34px; }
+  html.short .notes { bottom: 52px; }
+
+  /* ── phone held upright: 640-wide stage, one column ── */
+  html.portrait .hud { left: max(10px, env(safe-area-inset-left)); right: max(10px, env(safe-area-inset-right)); justify-content: center; gap: 6px; }
+  html.portrait .hud button, html.portrait .hud a { height: 40px; min-width: 40px; }
+  html.portrait .slide { padding: 64px 40px 140px; overflow-y: auto; overflow-x: hidden; overscroll-behavior: contain; scrollbar-width: none; justify-content: flex-start; }
+  html.portrait .slide::-webkit-scrollbar { display: none; }
+  html.portrait .s-title { justify-content: center; }
+  html.portrait .kicker { font-size: 15px; }
+  html.portrait h2 { font-size: 38px; line-height: 1.24; margin-top: 14px; }
+  html.portrait .lead { font-size: 20px; margin-top: 14px; }
+  html.portrait .body { font-size: 18px; }
+  html.portrait .small { font-size: 15px; }
+  html.portrait .chip { font-size: 15px; padding: 6px 12px; }
+  html.portrait .card { padding: 18px 20px; border-radius: 18px; }
+  html.portrait .card h3 { font-size: 21px; }
+  html.portrait .card p, html.portrait .card ul { font-size: 16px; }
+  html.portrait .row { flex-direction: column; gap: 16px; }
+  html.portrait .row > * { width: auto !important; }
+  html.portrait .cols { grid-template-columns: minmax(0, 1fr); gap: 14px; }
+  html.portrait .src { position: static; margin-top: 18px; font-size: 13px; }
+  html.portrait .gloss { font-size: 14.5px; gap: 6px 18px; padding-top: 12px; margin-top: 24px; }
+  html.portrait .gloss b { font-size: 13.5px; }
+  html.portrait .gloss span { display: block; }
+  html.portrait .slide:has(.src) .gloss { margin-bottom: 0; }
+  html.portrait .badge { font-size: 13px; padding: 4px 9px; }
+  html.portrait .ustamp { font-size: 16px; }
+  html.portrait .kpi { font-size: 50px; }
+  html.portrait .kpi small { font-size: 22px; }
+  /* title */
+  html.portrait .s-title h1 { font-size: 60px; }
+  html.portrait .s-title .lead { font-size: 20px; margin-top: 22px; }
+  html.portrait .s-title .chips { gap: 8px; margin-top: 30px; }
+  html.portrait .s-title .date { right: 40px; top: 64px; font-size: 15px; }
+  /* agenda */
+  html.portrait .agenda { grid-template-columns: minmax(0, 1fr); margin-top: 20px; }
+  html.portrait .agenda li { padding: 12px 0; gap: 14px; }
+  html.portrait .agenda .n { font-size: 16px; width: 28px; }
+  html.portrait .agenda .t { font-size: 22px; }
+  html.portrait .agenda .d { font-size: 15px; }
+  /* tldr */
+  html.portrait .tldr { grid-template-columns: minmax(0, 1fr); gap: 14px; margin-top: 22px; }
+  html.portrait .tldr ul { font-size: 16px; }
+  /* bars */
+  html.portrait .hbar { --lw: 118px; --vw: 84px; gap: 8px; font-size: 14.5px; }
+  html.portrait .hbar .v { font-size: 14px; }
+  html.portrait .vbars { gap: 8px; }
+  html.portrait .vbars .b em { font-size: 13px; }
+  html.portrait .vlab { gap: 8px; } html.portrait .vlab span { font-size: 12.5px; }
+  /* timeline */
+  html.portrait .tline { grid-template-columns: minmax(0, 1fr); gap: 14px; padding-top: 0; padding-left: 34px; margin-top: 24px; }
+  html.portrait .tline .axis { left: 9px; right: auto; top: 6px; bottom: 6px; width: 3px; height: auto; }
+  html.portrait .tline .axis i { transform: scaleY(0); transform-origin: top; }
+  html.portrait .is-active .tline .axis i { transform: none; }
+  html.portrait .tline .ev .dot { left: -34px; top: 0; }
+  html.portrait .tline .when { font-size: 16px; }
+  html.portrait .tline .what { font-size: 16.5px; }
+  html.portrait .tline .q { font-size: 15px; }
+  /* scores */
+  html.portrait .scores { gap: 26px; }
+  /* measures */
+  html.portrait .measures { grid-template-columns: minmax(0, 1fr); gap: 8px; }
+  html.portrait .measures .m { font-size: 15.5px; padding: 12px 14px; }
+  /* gantt */
+  html.portrait .gantt { grid-template-columns: minmax(0, 1fr); gap: 6px; margin-top: 20px; }
+  html.portrait .gantt .gl { margin-top: 10px; }
+  html.portrait .gantt .gl b { font-size: 21px; }
+  html.portrait .gantt .gl small { font-size: 13.5px; }
+  html.portrait .gantt .ticks { grid-column: 1; }
+  html.portrait .gantt .mk { font-size: 11.5px; }
+  /* panels */
+  html.portrait .panels { grid-template-columns: minmax(0, 1fr); gap: 12px; margin-top: 16px; }
+  html.portrait .panels .hbar { --lw: 112px; --vw: 104px; font-size: 13.5px; }
+  html.portrait .panels .hbar .v { font-size: 13px; }
+  html.portrait .panels .card h3 { font-size: 17px; flex-wrap: wrap; }
+  html.portrait .pchart .hbar { --lw: 104px; --vw: 76px; font-size: 14px; }
+  html.portrait .vlist { font-size: 14.5px; }
+  html.portrait .vlist li span:last-child { font-size: 13px; }
+  /* small models */
+  html.portrait .sm-wrap { grid-template-columns: minmax(0, 1fr); gap: 8px; margin-top: 18px; }
+  html.portrait .sm-wrap .arr { transform: rotate(90deg); font-size: 30px; height: 40px; width: 40px; margin: 0 auto; }
+  html.portrait .sm-wrap .hbar { --lw: 120px; --vw: 110px; font-size: 15px; }
+  html.portrait .sm-wrap .hbar .v { font-size: 14.5px; }
+  html.portrait .ttab { grid-template-columns: 82px repeat(3, minmax(0, 1fr)); }
+  html.portrait .ttab > div { padding: 8px 8px; font-size: 13px; }
+  /* projects */
+  html.portrait .pj-wrap { grid-template-columns: minmax(0, 1fr); gap: 16px; margin-top: 16px; }
+  html.portrait .upd .card h3 { font-size: 18px; }
+  html.portrait .upd .card p { font-size: 15px; }
+  html.portrait .drain { grid-template-columns: 96px minmax(0, 1fr) 70px; gap: 10px; font-size: 15px; }
+  html.portrait .drain .thr i { width: 12px; height: 12px; }
+  html.portrait .drain .lab { font-size: 14px; }
+  /* wallet */
+  html.portrait .wflow { grid-template-columns: minmax(0, 1fr); margin-top: 18px; }
+  html.portrait .wflow .ar { height: 30px; width: 30px; margin: 0 auto; transform: rotate(90deg); font-size: 22px; }
+  html.portrait .wstep { padding: 14px 16px; }
+  html.portrait .wstep h3 { font-size: 18px; }
+  html.portrait .wstep p { font-size: 15px; }
+  html.portrait .vault { flex-direction: column; align-items: flex-start; gap: 6px; font-size: 15.5px; }
+  html.portrait .vault .cn { font-size: 16px; }
+  html.portrait .risk { grid-template-columns: minmax(0, 1fr); }
+  html.portrait .risk .ar { transform: rotate(90deg); width: 30px; margin: 0 auto; }
+  /* ipo */
+  html.portrait .stack { height: 64px; margin-top: 56px; }
+  html.portrait .stack .sg { font-size: 13.5px; padding-left: 8px; }
+  html.portrait .stack .mark span { font-size: 14px; left: auto; right: 8px; }
+  html.portrait .ipo-sum { flex-wrap: wrap; }
+  html.portrait .ipo-sum .kpi { font-size: 56px; }
+  html.portrait .demand i { width: 24px; }
+  html.portrait .s1fin { grid-template-columns: minmax(0, 1fr); gap: 16px; }
+  html.portrait .s1fin .kpis .kpi { font-size: 34px; }
+  html.portrait .cmp { grid-template-columns: 74px minmax(0, 1fr) minmax(0, 1fr); gap: 6px 8px; }
+  html.portrait .cmp .h { font-size: 15px; padding: 8px 10px; }
+  html.portrait .cmp .rh { font-size: 13px; }
+  html.portrait .cmp .c { font-size: 14px; }
+  /* summary */
+  html.portrait .concl { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin-top: 20px; }
+  html.portrait .concl .card { padding: 14px 16px; }
+  html.portrait .concl h3 { font-size: 17px; }
+  html.portrait .concl p, html.portrait .cal ol { font-size: 14px; }
+  html.portrait .concl .cal { grid-column: 1 / -1; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .slide, .slide [data-a], .slide.is-active [data-a] { animation: none !important; transition: none !important; opacity: 1; transform: none; }
+    .slide:not(.is-active) { opacity: 0; }
+    *, *::before, *::after { animation-duration: .001s !important; animation-delay: 0s !important; transition-duration: .001s !important; transition-delay: 0s !important; }
+    .art *, .chain-svg .pic, .chain-svg .blink { animation: none !important; }
+    .art .ans, .art .seq.okm { opacity: 1; }
+    .art .run, .art .seq { translate: none; }
+  }
+
+  /* ── chapter openers with photos ── */
+  .ph { position: absolute; inset: -4%; background-size: cover; background-position: center; transform: scale(1.04); }
+  .is-active .ph { animation: phDrift 22s ease-in-out infinite alternate; }
+  .ph.soft { filter: blur(14px) saturate(1.1) brightness(.75); inset: -8%; }
+  @keyframes phDrift { 0% { transform: scale(1.04) translate(0, 0); } 50% { transform: scale(1.12) translate(-2%, 1%); } 100% { transform: scale(1.08) translate(2%, -1.5%); } }
+  @media (prefers-reduced-motion: reduce) { .is-active .ph { animation: none; } }
+  .ph-shade { position: absolute; inset: 0; background: linear-gradient(90deg, rgba(43,43,43,.94) 0%, rgba(43,43,43,.72) 42%, rgba(43,43,43,.25) 100%), linear-gradient(0deg, rgba(43,43,43,.85) 0%, rgba(43,43,43,0) 45%); }
+  .s-photo { justify-content: flex-end; padding-bottom: 150px; }
+  .s-photo > *:not(.ph):not(.ph-shade) { position: relative; z-index: 1; }
+  .s-photo .bign { font: 800 150px/1 Inter, sans-serif; color: rgba(169,178,162,.9); letter-spacing: -.04em; margin-bottom: 8px; }
+  .s-photo h2 { font-size: 72px; margin: 0; }
+  .s-photo .sub { font-size: 24px; color: var(--ink-2); margin-top: 18px; max-width: 900px; line-height: 1.5; }
+  .credit { position: absolute !important; left: 110px; bottom: 40px; font-size: 13px; color: rgba(242,230,216,.55); z-index: 2; max-width: 900px; }
+  .ph-card { position: absolute !important; right: 110px; top: 150px; width: 640px; margin: 0; border-radius: 22px; overflow: hidden; border: 1px solid rgba(242,230,216,.18); box-shadow: 0 30px 80px rgba(0,0,0,.5); transform: rotate(1.5deg); }
+  .ph-card img { display: block; width: 100%; max-height: 560px; object-fit: cover; object-position: top; }
+  .s-title .ph-title { position: absolute; right: 0; top: 0; bottom: 0; width: 62%; background-size: cover; background-position: center; -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 45%); mask-image: linear-gradient(90deg, transparent 0%, #000 45%); opacity: .75; }
+  .s-title .art-title { display: none !important; }
+  .ignite-what { margin-top: 10px; padding: 10px 14px; border-radius: 12px; background: rgba(242,230,216,.05); border: 1px solid var(--line); font-size: 15.5px; line-height: 1.5; color: var(--ink-2); }
+  .ignite-what b { color: var(--ink); }
+  /* ── 02 Microsoft 365 outage ── */
+  .ddc { width: 100%; height: auto; display: block; margin-top: 6px; overflow: visible; }
+  .ddc text { fill: var(--ink-2); font-family: "Pretendard Variable", Pretendard, sans-serif; }
+  .ddc text.mono { font-family: "JetBrains Mono", "Pretendard Variable", monospace; }
+  .ddc text.gold { fill: var(--gold); font-weight: 700; } .ddc text.cor { fill: #ff8a63; font-weight: 700; }
+  .ddc .grid { stroke: rgba(242,230,216,.08); } .ddc .axis { stroke: rgba(242,230,216,.3); }
+  .ddc .start { stroke: var(--coral); stroke-width: 2; stroke-dasharray: 5 5; }
+  .ddc .peak { stroke: var(--gold); stroke-width: 2; stroke-dasharray: 7 6; opacity: 0; }
+  .is-active .ddc .peak { opacity: .9; transition: opacity .6s 3s; }
+  .ddc .ln { fill: none; stroke: var(--coral); stroke-width: 3.5; stroke-linejoin: round; stroke-linecap: round; stroke-dasharray: 1; stroke-dashoffset: 1; }
+  .is-active .ddc .ln { stroke-dashoffset: 0; transition: stroke-dashoffset 1.8s var(--ease) 1s; }
+  .ddc .area { fill: rgba(240,84,42,.12); opacity: 0; } .is-active .ddc .area { opacity: 1; transition: opacity .8s 2.4s; }
+  .ddc .pt { opacity: 0; } .ddc .pt circle { fill: var(--coral); stroke: var(--bg); stroke-width: 2; } .ddc .pt text { fill: var(--ink); }
+  .is-active .ddc .pt { opacity: 1; transition: opacity .4s calc(1.1s + var(--k) * .42s); }
+  .inc { display: grid; gap: 10px; margin-top: 10px; }
+  .inc .it { display: grid; grid-template-columns: 128px minmax(0, 1fr); gap: 12px; align-items: baseline; font-size: 16.5px; color: var(--ink-2); line-height: 1.45; }
+  .inc .id { font: 700 16.5px "JetBrains Mono", monospace; color: var(--gold); }
+  .inc b { color: var(--ink); } .kst { color: var(--ink-3); font-size: 14.5px; white-space: nowrap; }
+  .svc { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: 14px; margin-top: 10px; }
+  .svc .col { display: flex; flex-wrap: wrap; gap: 6px; align-content: flex-start; }
+  .svc .svh { width: 100%; font-size: 15px; font-weight: 700; margin-bottom: 2px; }
+  .svc .bad .svh { color: #ff8a63; } .svc .ok .svh { color: var(--green); }
+  .svc span { font-size: 14.5px; line-height: 1.3; padding: 3px 9px; border-radius: 8px; color: var(--ink); opacity: 0; transform: scale(.9); transition: opacity .3s, transform .3s var(--ease); }
+  .svc .bad span { background: rgba(240,84,42,.12); border: 1px solid rgba(240,84,42,.4); }
+  .svc .ok span { background: rgba(76,195,138,.12); border: 1px solid rgba(76,195,138,.45); }
+  .is-active .svc span { opacity: 1; transform: none; transition-delay: calc(1.1s + var(--k) * .08s); }
+  .od-wrap { display: grid; grid-template-columns: minmax(0, 1fr) 520px; gap: 26px; margin-top: 16px; align-items: start; }
+  .od { width: 100%; height: auto; display: block; }
+  .od text { fill: #F2E6D8; font-family: "Pretendard Variable", Pretendard, sans-serif; }
+  .od text.cap { fill: var(--gold); }
+  .od .arr path { stroke: rgba(106,168,255,.55); stroke-width: 2; stroke-dasharray: 3 4; fill: none; }
+  .is-active .od .arr path { animation: odFlow 1s linear infinite; }
+  @keyframes odFlow { to { stroke-dashoffset: -14; } }
+  .od .hc rect { fill: rgba(169,178,162,.1); stroke: rgba(169,178,162,.7); stroke-width: 1.5; }
+  .od .hc .hcp { fill: none; stroke: var(--gold); stroke-width: 2.4; stroke-linejoin: round; stroke-linecap: round; }
+  .od .hc.bad rect { fill: rgba(240,84,42,.12); stroke: var(--coral); } .od .hc.bad .hcp { stroke: var(--coral); }
+  .od .hc.alt rect { fill: rgba(76,195,138,.12); stroke: var(--green); } .od .hc.alt .hcp { stroke: var(--green); }
+  .od .beam { stroke: var(--gold); stroke-width: 2; stroke-dasharray: 4 5; opacity: 0; transition: opacity .15s; }
+  .od .beam.on { opacity: .9; } .od .beam.fail { stroke: var(--coral); }
+  .od .srv { transition: transform .5s var(--ease), opacity .5s; }
+  .od .srv .box { fill: rgba(76,195,138,.1); stroke: rgba(76,195,138,.7); stroke-width: 1.5; transition: fill .35s, stroke .35s; }
+  .od .srv .led { fill: var(--green); transition: fill .3s; }
+  .od .srv .slot { fill: rgba(242,230,216,.1); }
+  .od .srv .ld { fill: var(--green); transition: width .5s var(--ease), fill .3s; }
+  .od .srv .ld.mid { fill: var(--gold); } .od .srv .ld.hi { fill: var(--coral); }
+  .od .srv.hot .box { fill: rgba(240,84,42,.2); stroke: var(--coral); } .od .srv.hot .led { fill: var(--coral); }
+  .od .srv.down { opacity: .3; transform: translateY(9px); }
+  .od .srv.down .box { fill: rgba(240,84,42,.06); stroke: var(--coral); stroke-dasharray: 5 4; } .od .srv.down .led { fill: var(--coral); }
+  .phs { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; margin-top: 8px; }
+  .phs span { font-size: 14.5px; line-height: 1.4; color: var(--ink-3); padding: 8px 10px; border-radius: 10px; border: 1px solid var(--line); background: var(--card); transition: color .3s, border-color .3s, background .3s; }
+  .phs span b { display: block; font: 700 13px "JetBrains Mono", monospace; color: var(--ink-3); }
+  .phs span.on { color: var(--ink); border-color: rgba(169,178,162,.7); background: rgba(169,178,162,.12); }
+  .phs span.on b { color: var(--gold); }
+  .chk { list-style: none; margin: 10px 0 0; padding: 0; display: flex; flex-direction: column; gap: 7px; font-size: 16.5px; line-height: 1.45; color: var(--ink-2); }
+  .chk li { display: grid; grid-template-columns: 18px minmax(0, 1fr); gap: 10px; }
+  .chk li::before { content: ""; width: 14px; height: 14px; margin-top: 4px; border-radius: 4px; border: 2px solid var(--gold); }
+  .chk b { color: var(--ink); }
+  .sla { margin-top: 26px; }
+  .sla-track { position: relative; }
+  .sla-bar { display: flex; height: 46px; border-radius: 10px; overflow: hidden; }
+  .sla-bar i { height: 100%; display: grid; place-items: center; font: 700 15px "JetBrains Mono", monospace; font-style: normal; color: #2B2B2B; }
+  .sla-bar .z0 { background: rgba(242,230,216,.25); } .sla-bar .z25 { background: rgba(169,178,162,.6); } .sla-bar .z50 { background: rgba(240,140,60,.8); } .sla-bar .z100 { background: var(--coral); }
+  .sla-needle { position: absolute; top: -9px; bottom: -9px; width: 4px; margin-left: -2px; border-radius: 2px; background: var(--ink); box-shadow: 0 0 0 3px rgba(43,43,43,.75); transition: left .9s var(--ease); }
+  .sla-ticks { position: relative; height: 40px; margin-top: 10px; }
+  .sla-ticks span { position: absolute; top: 0; transform: translateX(-50%); font: 500 13px/1.3 "JetBrains Mono", "Pretendard Variable", monospace; color: var(--ink-3); text-align: center; white-space: nowrap; }
+  .sla-ticks span:first-child { transform: none; } .sla-ticks span:last-child { transform: translateX(-100%); }
+  .sla-ticks small { display: block; color: var(--ink-2); font-size: 12.5px; }
+  .sla-out { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin-top: 12px; }
+  .sla-out div { background: var(--card-2); border-radius: 12px; padding: 10px 14px; }
+  .sla-out span { display: block; font-size: 13.5px; color: var(--ink-3); }
+  .sla-out b { font: 800 30px/1.15 Inter, sans-serif; letter-spacing: -.02em; color: var(--ink); font-variant-numeric: tabular-nums; }
+  .sla-out b.cr { color: var(--gold); }
+  .cal .ignite-what { margin-top: 8px; padding: 8px 10px; font-size: 13px; line-height: 1.45; }
+  html.portrait .inc .it { grid-template-columns: minmax(0, 1fr); gap: 2px; }
+  html.portrait .svc { grid-template-columns: minmax(0, 1fr); }
+  html.portrait .od-wrap { grid-template-columns: minmax(0, 1fr); gap: 14px; }
+  html.portrait .phs { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  html.portrait .phs span { font-size: 13.5px; }
+  html.portrait .chk { font-size: 15px; }
+  html.portrait .sla-out b { font-size: 22px; }
+  html.portrait .sla-out { gap: 6px; } html.portrait .sla-out div { padding: 8px 10px; }
+  html.portrait .s-photo { padding-bottom: 120px; }
+  html.portrait .s-photo .bign { font-size: 96px; } html.portrait .s-photo h2 { font-size: 48px; } html.portrait .s-photo .sub { font-size: 18px; }
+  html.portrait .slide.s-photo { justify-content: flex-end; padding-bottom: 170px; }
+  html.portrait .ph-card { left: 40px; right: 40px; top: 110px; width: auto; transform: none; } html.portrait .credit { left: 24px; bottom: 96px; font-size: 11px; max-width: 80%; }
+  html.portrait .s-title .ph-title { width: 100%; opacity: .35; -webkit-mask-image: linear-gradient(180deg, #000 0%, transparent 70%); mask-image: linear-gradient(180deg, #000 0%, transparent 70%); }
+
+  /* AA index screenshot with Gemini columns highlighted */
+  .aa-shot { position: relative; margin: 0; border-radius: 18px; overflow: hidden; background: #fff; border: 1px solid rgba(242,230,216,.18); box-shadow: 0 24px 60px rgba(0,0,0,.4); }
+  .aa-shot img { display: block; width: 100%; height: auto; }
+  .aa-shot svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+  .aa-shot .aa-dim { fill: rgba(43,43,43,.42); opacity: 0; transition: opacity .8s ease .9s; }
+  .aa-shot .aa-ring { fill: none; stroke: #A9B2A2; stroke-width: 4; opacity: 0; transition: opacity .6s ease 1.2s; }
+  .aa-shot .aa-tag rect { fill: #A9B2A2; } .aa-shot .aa-tag text { font: 800 17px "Pretendard Variable", Inter, sans-serif; fill: #2B2B2B; }
+  .aa-shot .aa-tag { opacity: 0; transition: opacity .6s ease 1.5s; }
+  .is-active .aa-shot .aa-dim, .aa-shot.in .aa-dim { opacity: 1; }
+  .is-active .aa-shot .aa-ring, .is-active .aa-shot .aa-tag, .aa-shot.in .aa-ring, .aa-shot.in .aa-tag { opacity: 1; }
+  .is-active .aa-shot .aa-ring { animation: aaPulse 2.6s ease-in-out 2s infinite; }
+  @keyframes aaPulse { 0%, 100% { stroke-opacity: 1; } 50% { stroke-opacity: .45; } }
+  @media (prefers-reduced-motion: reduce) { .aa-shot .aa-ring { animation: none !important; } }
+  .aa-grid { display: grid; grid-template-columns: minmax(0, 960px) minmax(0, 1fr); gap: 24px; margin-top: 18px; align-items: start; }
+  .aa-side .card { padding: 18px 22px; } .aa-side .card + .card { margin-top: 12px; }
+  .aa-credit { font-size: 13px; color: var(--ink-3); margin-top: 10px; }
+  html.portrait .aa-grid { grid-template-columns: minmax(0, 1fr); gap: 14px; }
+  .hud #firstBtn { display: inline-grid; place-items: center; padding: 0 10px; }
+  html.portrait .hud a[title="아카이브로"] { font-size: 0; padding: 0; width: 40px; justify-content: center; }
+  html.portrait .hud a[title="아카이브로"]::before { content: "←"; font-size: 18px; }
+  .hud #firstBtn:disabled { opacity: .35; cursor: default; background: rgba(242,230,216,.04); }
+  .scen-grid { display: grid; grid-template-columns: 700px minmax(0, 1fr); gap: 26px; margin-top: 18px; align-items: start; }
+  .scen-shot { position: relative; margin: 0; border-radius: 16px; overflow: hidden; border: 1.5px dashed rgba(240,84,42,.7); }
+  .scen-shot img { display: block; width: 100%; height: auto; }
+  .scen-shot .stamp { position: absolute; left: 14px; top: 14px; padding: 6px 12px; border-radius: 10px; background: rgba(43,43,43,.85); border: 1.5px dashed #f0542a; color: #ff8a63; font: 800 15px "Pretendard Variable", sans-serif; }
+  .scen-cap { font-size: 13px; color: var(--ink-3); margin-top: 8px; }
+  .scen-side .card { padding: 18px 22px; } .scen-side .card + .card { margin-top: 12px; }
+  .scen-side ol { margin: 8px 0 0; padding-left: 20px; font-size: 17px; line-height: 1.55; color: var(--ink-2); }
+  .scen-side ul { margin: 8px 0 0; padding-left: 18px; font-size: 16.5px; line-height: 1.55; color: var(--ink-2); }
+  html.portrait .scen-grid { grid-template-columns: minmax(0, 1fr); gap: 14px; }
+  .pv { grid-template-columns: 118px minmax(0, 1fr) minmax(0, 1fr); gap: 0 14px; margin-top: 16px; }
+  .pv .c { font-size: 17.5px; line-height: 1.45; padding: 11px 4px; }
+  .pv .rh { font-size: 16px; padding: 11px 0; border-top: 1px dashed var(--line); align-self: stretch; display: flex; align-items: center; }
+  .pv .h.pk { color: #8fd18a; border: 1px solid rgba(143,209,138,.4); } .pv .h.vy { color: #a98bff; border: 1px solid rgba(169,139,255,.45); }
+  .pv .key { background: rgba(169,178,162,.10); border-top: 1.5px solid rgba(169,178,162,.6) !important; color: var(--ink); }
+  .pv .rh.key { color: var(--gold); padding-left: 10px; border-radius: 10px 0 0 10px; }
+  .pv .c.key:last-child { border-radius: 0 10px 10px 0; }
+  html.portrait .pv { grid-template-columns: 74px minmax(0, 1fr) minmax(0, 1fr); gap: 0 8px; }
+  html.portrait .pv .c { font-size: 12.5px; } html.portrait .pv .rh { font-size: 12px; }
+
+  /* ══ 대체 테마: 팔레트 2 다크 (차콜 · 세이지 · 벽돌) + 배민 한나Pro(타이틀) · 고도체(본문) — themes.md 시안 E 조합 ══ */
+  :root {
+    --bg: #2B2B2B; --bg-2: #34302D; --card: rgba(242,230,216,.05); --card-2: rgba(242,230,216,.09);
+    --line: rgba(242,230,216,.14); --ink: #F2E6D8; --ink-2: rgba(242,230,216,.72); --ink-3: rgba(242,230,216,.46);
+    --gold: #A9B2A2; --coral: #B5493A; --blue: #6B4A3A;
+    --brick: #B5493A; --walnut: #6B4A3A; --sage: #A9B2A2; --linen: #F2E6D8; --char: #2B2B2B;
+  }
+  @font-face { font-family: "KBMHanna"; font-display: swap; unicode-range: U+0000-00B6, U+00B8-2025, U+2027-FFFF; src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_seven@1.2/BMHANNAPro.woff") format("woff"); }
+  @font-face { font-family: "KGodo"; font-display: swap; font-weight: 400; unicode-range: U+1100-11FF, U+3130-318F, U+AC00-D7A3;
+    src: local("Godo M"), local("GodoM"), local("고도 M"), url("https://cdn.jsdelivr.net/gh/projectnoonnu/2409-1@1.0/godoRoundedR.woff2") format("woff2"); }
+  body { font-family: "KGodo", "Pretendard Variable", Pretendard, Inter, system-ui, sans-serif; }
+  h1, h2, .s-title h1, .card h3, .wstep h3, .concl h3, .agenda .t { font-family: "KBMHanna", "Pretendard Variable", Pretendard, sans-serif; font-weight: 400; letter-spacing: -.01em; }
+  h2 { font-size: 56px; }
+  .s-title h1 { font-size: 104px; line-height: 1.12; }
+  .card h3 { font-size: 27px; }
+  .agenda .t { font-size: 30px; }
+  .chip.gold { color: #2B2B2B; }
+  .s-title .ph-title { opacity: .16; filter: grayscale(1) contrast(1.1); }
+  .notes { background: rgba(30,28,27,.96); }
+  .tline .ev .dot { background: var(--bg); }
+  .card.hotc { border-color: rgba(181,73,58,.6); background: rgba(181,73,58,.10); }
+  /* compare table head colours follow the palette */
+  .pv .h.pk { color: var(--ink-2); border: 1px solid var(--line); }
+  .pv .h.vy { color: var(--sage); border: 1px solid rgba(169,178,162,.55); }
+
+  /* ── 4 architecture figure ── */
+  .ap-arch { grid-template-columns: 740px minmax(0, 1fr); gap: 34px; margin-top: 20px; }
+  .ap-arch .aa-shot { border-color: rgba(242,230,216,.2); }
+  .ap-pin circle { fill: var(--brick); stroke: #fff; stroke-width: 5; }
+  .ap-pin text { font: 400 40px "KBMHanna", "Pretendard Variable", sans-serif; fill: #fff; }
+  .ap-legend { display: flex; flex-direction: column; gap: 14px; }
+  .ap-legend > div { display: grid; grid-template-columns: 48px minmax(0, 1fr); gap: 16px; align-items: start; padding: 14px 18px; border-radius: 16px; background: var(--card); border: 1px solid var(--line); }
+  .ap-legend b { width: 44px; height: 44px; border-radius: 50%; background: var(--brick); color: var(--linen); display: grid; place-items: center; font: 400 24px "KBMHanna", sans-serif; }
+  .ap-legend span { font-size: 16.5px; line-height: 1.5; color: var(--ink-2); }
+  .ap-legend strong { display: block; font: 400 23px "KBMHanna", sans-serif; color: var(--ink); margin-bottom: 2px; }
+
+  /* ── 5 orchestration loop ── */
+  .ap-loopwrap { display: grid; grid-template-columns: 470px minmax(0, 1fr); gap: 50px; align-items: center; margin-top: 18px; }
+  .ap-loop svg { width: 100%; height: auto; display: block; }
+  .ap-loop .ring { fill: none; stroke: rgba(242,230,216,.14); stroke-width: 3; }
+  .ap-loop .ring-run { fill: none; stroke: var(--sage); stroke-width: 3; stroke-dasharray: 10 14; }
+  .is-active .ap-loop .ring-run { animation: apDash 2.4s linear infinite; }
+  @keyframes apDash { to { stroke-dashoffset: -48; } }
+  .ap-loop .spin { transform-origin: 230px 230px; }
+  .is-active .ap-loop .spin { animation: apSpin 6s linear infinite; }
+  @keyframes apSpin { to { transform: rotate(360deg); } }
+  .ap-loop .pkt { fill: var(--brick); }
+  .ap-loop .nd circle { fill: #34302D; stroke: var(--sage); stroke-width: 3; }
+  .ap-loop .t { font: 400 28px "KBMHanna", "Pretendard Variable", sans-serif; fill: var(--ink); }
+  .ap-loop .s { font: 400 17px "KGodo", "Pretendard Variable", sans-serif; fill: var(--ink-2); }
+  .ap-loop .c { font: 400 22px "KGodo", "Pretendard Variable", sans-serif; fill: var(--sage); }
+  .ap-manage { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+  .ap-manage .card { padding: 30px 28px; }
+  .ap-manage .card p { font-size: 19px; }
+
+  /* ── 6 cost chips ── */
+  .ap-costs { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; margin-top: 14px; }
+  .ap-costs span { text-align: center; padding: 14px 10px; border-radius: 12px; border: 1.5px dashed rgba(181,73,58,.7); font: 400 24px "KBMHanna", sans-serif; color: var(--ink); }
+
+  /* ── 7 permission tiers ── */
+  .ap-perm { display: grid; grid-template-columns: 420px minmax(0, 1fr); gap: 28px; margin-top: 40px; align-items: stretch; }
+  .ap-perm .ap-mcp { display: flex; flex-direction: column; justify-content: center; padding: 30px 30px; }
+  .ap-perm .ap-mcp p { font-size: 21px; line-height: 1.55; }
+  .ap-tiers { display: flex; flex-direction: column; gap: 18px; }
+  .ap-tier { display: grid; grid-template-columns: 86px minmax(0, 1fr) 330px; gap: 18px; align-items: center; padding: 30px 24px; border-radius: 16px; border: 1px solid var(--line); background: var(--card); }
+  .ap-tier .lv { font: 400 22px "KBMHanna", sans-serif; text-align: center; padding: 8px 0; border-radius: 10px; }
+  .ap-tier .what b { display: block; font: 400 25px/1.3 "KBMHanna", sans-serif; color: var(--ink); }
+  .ap-tier .what span { font-size: 16px; color: var(--ink-3); }
+  .ap-tier .ctl { font-size: 17.5px; line-height: 1.45; color: var(--ink-2); }
+  .ap-tier .ctl b { color: var(--ink); }
+  .ap-tier.t1 .lv { background: rgba(169,178,162,.18); color: var(--sage); }
+  .ap-tier.t2 .lv { background: rgba(169,178,162,.4); color: var(--char); }
+  .ap-tier.t3 { border-color: rgba(181,73,58,.7); background: rgba(181,73,58,.12); }
+  .ap-tier.t3 .lv { background: var(--brick); color: var(--linen); }
+
+  /* ── 8 memory ── */
+  .ap-mem .card { display: flex; flex-direction: column; gap: 6px; }
+  .ap-mem .card p { font-size: 17.5px; }
+  .ap-mem .ap-key { border-width: 2px; }
+
+  /* ── 9 pipeline ── */
+  .ap-pipe { display: grid; grid-template-columns: 210px repeat(6, minmax(0, 1fr)); gap: 10px; align-items: stretch; margin-top: 44px; }
+  .ap-pipe .lbl { font: 400 23px/1.25 "KBMHanna", sans-serif; display: flex; flex-direction: column; justify-content: center; }
+  .ap-pipe .lbl small { font: 400 15px "KGodo", "Pretendard Variable", sans-serif; color: var(--ink-3); margin-top: 4px; }
+  .ap-pipe .lbl.bad { color: #e98f7f; } .ap-pipe .lbl.good { color: var(--sage); }
+  .ap-pipe .st { position: relative; min-height: 150px; border-radius: 14px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; font: 400 25px "KBMHanna", sans-serif; color: var(--ink-3); background: var(--card); border: 1px solid var(--line); padding: 10px; }
+  .ap-pipe .st:not(:last-child)::after { content: ""; position: absolute; right: -10px; top: 50%; width: 10px; height: 2px; background: var(--line); }
+  .ap-pipe .st em { font: 400 13.5px "KGodo", "Pretendard Variable", sans-serif; font-style: normal; color: #e98f7f; margin-top: 6px; }
+  .ap-pipe .st.rerun { color: var(--ink); background: rgba(181,73,58,.16); border: 1.5px dashed rgba(181,73,58,.8); }
+  .ap-pipe .st.rerun::before { content: "다시"; position: absolute; top: 8px; left: 10px; font: 600 12px "KGodo", "Pretendard Variable", sans-serif; color: #e98f7f; }
+  .ap-pipe .st.fail { color: var(--linen); background: var(--brick); border-color: var(--brick); }
+  .ap-pipe .st.fail::before { content: "✕ 실패"; position: absolute; top: 8px; left: 10px; font: 700 12px "Pretendard Variable", sans-serif; }
+  .ap-pipe .st.done { color: var(--ink-2); background: rgba(169,178,162,.10); border-color: rgba(169,178,162,.35); }
+  .ap-pipe .st.done::before { content: "✓ 건너뜀"; position: absolute; top: 8px; left: 10px; font: 700 12px "Pretendard Variable", sans-serif; color: var(--sage); }
+  .ap-pipe .st.retry { color: var(--char); background: var(--sage); border-color: var(--sage); }
+  .ap-pipe .st.retry::before { content: "↻ 여기부터"; position: absolute; top: 8px; left: 10px; font: 700 12px "Pretendard Variable", sans-serif; color: var(--char); }
+  .ap-pipe .st.next { color: var(--ink); border-color: rgba(169,178,162,.5); }
+  .is-active .ap-pipe .st.retry { animation: apPulse 2.4s ease-in-out 1.6s infinite; }
+  @keyframes apPulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(169,178,162,.0); } 50% { box-shadow: 0 0 0 8px rgba(169,178,162,.25); } }
+  .ap-pipe-legend { display: flex; gap: 26px; margin-top: 22px; margin-left: 220px; font-size: 15px; color: var(--ink-3); }
+  .ap-pipe-legend i { display: inline-block; width: 14px; height: 14px; border-radius: 4px; margin-right: 8px; vertical-align: -2px; }
+  .ap-pipe-legend .k-rerun { border: 1.5px dashed var(--brick); background: rgba(181,73,58,.2); }
+  .ap-pipe-legend .k-done { background: rgba(169,178,162,.25); border: 1px solid rgba(169,178,162,.5); }
+  .ap-pipe-legend .k-fail { background: var(--brick); }
+  .ap-pipe-legend .k-retry { background: var(--sage); }
+
+  /* ── 11 trace ── */
+  .ap-trace-card { position: relative; }
+  .ap-trace { display: flex; flex-direction: column; gap: 26px; margin-top: 30px; }
+  .ap-trace .r { display: grid; grid-template-columns: 200px minmax(0, 1fr) 110px; gap: 14px; align-items: center; font-size: 18px; color: var(--ink-2); }
+  .ap-trace .tr { position: relative; height: 30px; border-radius: 6px; background: var(--card); }
+  .ap-trace .tr i { position: absolute; top: 0; bottom: 0; left: var(--x); width: var(--w); border-radius: 6px; background: var(--sage); transform: scaleX(0); transform-origin: left; transition: transform .7s var(--ease); }
+  .is-active .ap-trace .tr i { transform: none; }
+  .is-active .ap-trace .r:nth-child(1) i { transition-delay: .6s; } .is-active .ap-trace .r:nth-child(2) i { transition-delay: .8s; }
+  .is-active .ap-trace .r:nth-child(3) i { transition-delay: 1s; } .is-active .ap-trace .r:nth-child(4) i { transition-delay: 1.2s; }
+  .is-active .ap-trace .r:nth-child(5) i { transition-delay: 1.4s; } .is-active .ap-trace .r:nth-child(6) i { transition-delay: 1.6s; }
+  .ap-trace .m { font-size: 14.5px; color: var(--ink-3); text-align: right; white-space: nowrap; }
+  .ap-trace .r.bad .n, .ap-trace .r.bad .m { color: #e98f7f; }
+  .ap-trace .r.bad .tr i { background: repeating-linear-gradient(-45deg, var(--brick) 0 6px, rgba(181,73,58,.45) 6px 12px); }
+  .ustamp { border-color: var(--brick); color: #e98f7f; background: rgba(43,43,43,.8); }
+
+  /* ── 12 eval ── */
+  .ap-eval { display: grid; grid-template-columns: minmax(0, 1fr) 60px 360px 60px minmax(0, 1fr); align-items: center; margin-top: 30px; }
+  .ap-eval .col { display: flex; flex-direction: column; gap: 10px; }
+  .ap-eval .col span { padding: 14px 18px; border-radius: 12px; background: var(--card); border: 1px solid var(--line); font: 400 22px "KBMHanna", sans-serif; color: var(--ink); }
+  .ap-eval .col.on span { border-color: rgba(169,178,162,.55); background: rgba(169,178,162,.10); }
+  .ap-eval .num { font: 700 14px "JetBrains Mono", "Pretendard Variable", monospace; color: var(--gold); letter-spacing: .06em; margin-bottom: 2px; }
+  .ap-eval .ar { text-align: center; font-size: 34px; color: var(--sage); font-family: "Pretendard Variable", sans-serif; }
+  .ap-eval .mid { text-align: center; padding: 34px 22px; border-radius: 22px; background: var(--sage); color: var(--char); }
+  .ap-eval .mid .num { color: var(--char); }
+  .ap-eval .mid b { display: block; font: 400 34px/1.25 "KBMHanna", sans-serif; margin-top: 8px; }
+  .ap-eval .mid small { display: block; font-size: 16px; margin-top: 10px; }
+
+  /* ── 13 gateway ── */
+  .ap-gw { margin-top: 44px; display: flex; flex-direction: column; gap: 0; }
+  .ap-gw .agents { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 12px; }
+  .ap-gw .agents span { position: relative; text-align: center; padding: 26px 8px; border-radius: 14px; background: var(--card-2); border: 1px solid var(--line); font: 400 22px "KBMHanna", sans-serif; color: var(--ink); }
+  .ap-gw .agents span::after { content: ""; position: absolute; left: 50%; bottom: -40px; height: 40px; border-left: 2px dashed rgba(169,178,162,.5); }
+  .ap-gw .agents .more { color: var(--ink-3); border-style: dashed; }
+  .ap-gw .bar { margin-top: 40px; display: flex; align-items: baseline; justify-content: center; gap: 22px; padding: 30px; border-radius: 18px; background: var(--sage); color: var(--char); }
+  .ap-gw .bar b { font: 400 36px "KBMHanna", sans-serif; }
+  .ap-gw .bar span { font-size: 19px; }
+  .ap-gw .infra { position: relative; margin-top: 40px; display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 12px; }
+  .ap-gw .infra::before { content: ""; position: absolute; left: 8%; right: 8%; top: -40px; height: 40px; border-left: 2px dashed rgba(169,178,162,.5); border-right: 2px dashed rgba(169,178,162,.5); }
+  .ap-gw .infra div { padding: 28px 18px; border-radius: 14px; background: var(--card); border: 1px solid var(--line); }
+  .ap-gw .infra b { display: block; font: 400 21px "KBMHanna", sans-serif; color: var(--ink); }
+  .ap-gw .infra span { display: block; font-size: 15px; line-height: 1.45; color: var(--ink-3); margin-top: 6px; }
+
+  /* ── 14 problem map ── */
+  .ap-map { display: grid; grid-template-columns: 300px 340px minmax(0, 1fr); margin-top: 26px; border-radius: 16px; overflow: hidden; border: 1px solid var(--line); }
+  .ap-map > div { padding: 17px 22px; font-size: 19px; line-height: 1.4; border-bottom: 1px solid var(--line); background: var(--card); color: var(--ink-2); }
+  .ap-map > div:nth-last-child(-n+3) { border-bottom: 0; }
+  .ap-map .h { background: var(--card-2); font-weight: 700; color: var(--ink); font-size: 16px; }
+  .ap-map .p { font: 400 23px "KBMHanna", sans-serif; color: #e98f7f; }
+  .ap-map .l { color: var(--sage); }
+
+  /* ── 15 questions ── */
+  .ap-q .t { font-size: 27px; }
+  .ap-q .n { font-family: "KBMHanna", sans-serif; font-size: 24px; font-weight: 400; width: 46px; }
+  .ap-q li { padding: 16px 0; }
+
+  /* ── summary icons ── */
+  .concl .ic { font: 400 26px "Pretendard Variable", sans-serif; color: var(--sage); }
+
+  /* ── phone upright ── */
+  html.portrait .s-title h1 { font-size: 58px; }
+  html.portrait .ap-arch { grid-template-columns: minmax(0, 1fr); }
+  html.portrait .ap-loopwrap { grid-template-columns: minmax(0, 1fr); gap: 18px; }
+  html.portrait .ap-loop { width: 360px; margin: 0 auto; }
+  html.portrait .ap-manage { grid-template-columns: minmax(0, 1fr); gap: 10px; }
+  html.portrait .ap-costs { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+  html.portrait .ap-costs span { font-size: 18px; }
+  html.portrait .ap-perm { grid-template-columns: minmax(0, 1fr); gap: 14px; }
+  html.portrait .ap-tier { grid-template-columns: 64px minmax(0, 1fr); gap: 10px 14px; }
+  html.portrait .ap-tier .ctl { grid-column: 1 / -1; font-size: 15.5px; }
+  html.portrait .ap-tier .what b { font-size: 20px; }
+  html.portrait .ap-pipe { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+  html.portrait .ap-pipe .lbl { grid-column: 1 / -1; }
+  html.portrait .ap-pipe .st::after { display: none; }
+  html.portrait .ap-pipe .st { min-height: 74px; font-size: 18px; }
+  html.portrait .ap-pipe-legend { margin-left: 0; flex-wrap: wrap; gap: 8px 16px; }
+  html.portrait .ap-trace .r { grid-template-columns: 120px minmax(0, 1fr); font-size: 14px; }
+  html.portrait .ap-trace .m { display: none; }
+  html.portrait .ap-trace-card .ustamp { display: none; }
+  html.portrait .ap-eval { grid-template-columns: minmax(0, 1fr); gap: 8px; }
+  html.portrait .ap-eval .ar { transform: rotate(90deg); }
+  html.portrait .ap-eval .col span { font-size: 18px; padding: 10px 14px; }
+  html.portrait .ap-gw .agents { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+  html.portrait .ap-gw .agents span { font-size: 17px; padding: 12px 6px; }
+  html.portrait .ap-gw .agents span::after, html.portrait .ap-gw .infra::before { display: none; }
+  html.portrait .ap-gw .bar { flex-direction: column; align-items: center; gap: 4px; margin-top: 14px; }
+  html.portrait .ap-gw .bar b { font-size: 28px; }
+  html.portrait .ap-gw .infra { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin-top: 14px; }
+  html.portrait .ap-map { grid-template-columns: minmax(0, 1fr); }
+  html.portrait .ap-map .h { display: none; }
+  html.portrait .ap-map > div { border-bottom: 0; padding: 4px 16px; font-size: 15px; }
+  html.portrait .ap-map .p { padding-top: 14px; font-size: 20px; border-top: 1px solid var(--line); }
+  html.portrait .ap-map .t { padding-bottom: 12px; }
+  html.portrait .ap-q .t { font-size: 21px; }
+
+  /* ── fill the 1600×900 stage: larger type for this deck ── */
+  .card { padding: 30px 32px; }
+  .card p, .card ul { font-size: 20px; line-height: 1.6; }
+  .card li + li { margin-top: 10px; }
+  .card .num { font-size: 15px; }
+  .slide > .agenda { margin-top: 44px; }
+  .slide > .agenda li { padding: 28px 0; }
+  .slide > .agenda .t { font-size: 34px; }
+  .slide > .agenda .d { font-size: 20px; margin-top: 8px; }
+  .pv .c { font-size: 21px; padding: 20px 6px; }
+  .pv .rh { font-size: 19px; padding: 20px 0; }
+  .pv .h { font-size: 22px; padding: 14px 18px; }
+  .ap-costs span { padding: 22px 10px; font-size: 27px; }
+  .ap-mem .card { min-height: 330px; }
+  .ap-mem .card h3 { font-size: 30px; margin-top: 6px; }
+  .ap-c3 .card { min-height: 360px; }
+  .ap-c3 .card h3 { font-size: 29px; margin-top: 8px; }
+  .ap-eval .col { gap: 14px; }
+  .ap-eval .col span { padding: 20px 22px; font-size: 26px; }
+  .ap-eval .mid { padding: 50px 24px; }
+  .ap-eval .mid b { font-size: 38px; }
+  .slide > .ap-q { margin-top: 40px; }
+  .slide > .ap-q li { padding: 30px 0; }
+  .ap-q .t { font-size: 31px; }
+  .concl { margin-top: 40px; }
+  .concl .card { padding: 30px 28px; min-height: 290px; gap: 12px; }
+  .concl h3 { font-size: 30px; }
+  .concl p { font-size: 19px; line-height: 1.6; }
+  .concl .ic { font-size: 34px; }
+  .ap-trace-card .num, .ap-manage .num { font-size: 15px; }
+  .ap-big-note { font-size: 24px !important; }
+  html.portrait .card p, html.portrait .card ul { font-size: 16px; }
+  html.portrait .ap-mem .card, html.portrait .ap-c3 .card, html.portrait .concl .card { min-height: 0; }
+  html.portrait .slide > .agenda li { padding: 12px 0; }
+  html.portrait .slide > .agenda .t, html.portrait .ap-q .t { font-size: 21px; }
+  html.portrait .slide > .agenda .d { font-size: 15px; }
+  html.portrait .pv .c { font-size: 13px; padding: 10px 4px; } html.portrait .pv .rh { font-size: 12.5px; } html.portrait .pv .h { font-size: 15px; }
+  html.portrait .ap-eval .col span { font-size: 18px; padding: 10px 14px; }
+  html.portrait .concl h3 { font-size: 19px; } html.portrait .concl p { font-size: 14px; }
+
+  /* ── 4 animated architecture svg ── */
+  .ap-svg { width: 100%; height: auto; display: block; margin-top: 18px; overflow: visible; }
+  .ap-svg .bx { fill: rgba(242,230,216,.05); stroke: rgba(242,230,216,.28); stroke-width: 1.5; }
+  .ap-svg .bx.gw { stroke: var(--linen); stroke-width: 2; fill: rgba(242,230,216,.09); }
+  .ap-svg .bx.core { fill: rgba(169,178,162,.16); stroke: var(--sage); stroke-width: 2.5; }
+  .ap-svg .bx.risk { fill: rgba(181,73,58,.14); stroke: rgba(181,73,58,.85); stroke-width: 2; }
+  .ap-svg .bx.mem, .ap-svg .bx.base { fill: rgba(107,74,58,.32); }
+  .ap-svg .bx.srv { fill: rgba(242,230,216,.03); stroke-dasharray: 5 4; }
+  .ap-svg .t { font: 400 20px "KBMHanna", "Pretendard Variable", sans-serif; fill: var(--ink); }
+  .ap-svg .t.lg2 { font-size: 25px; }
+  .ap-svg .t.sm { font-size: 18px; }
+  .ap-svg .s { font: 400 14.5px "KGodo", "Pretendard Variable", sans-serif; fill: var(--ink-2); }
+  .ap-svg .s.m { font-size: 16.5px; fill: var(--ink); }
+  .ap-svg .ed path { fill: none; stroke: rgba(242,230,216,.4); stroke-width: 2; }
+  .ap-svg .ed path.sg { stroke: var(--sage); }
+  .ap-svg .ed path.br { stroke: var(--brick); }
+  .ap-svg .ed path.bus { stroke: rgba(169,178,162,.55); stroke-dasharray: 6 6; }
+  .is-active .ap-svg .ed path.bus { animation: apDash 1.6s linear infinite; }
+  .ap-svg .el text { font: 400 14px "KGodo", "Pretendard Variable", sans-serif; fill: var(--ink-3); }
+  .ap-svg .el text.sgt { fill: var(--sage); }
+  .ap-svg .pin circle { fill: var(--brick); stroke: var(--bg); stroke-width: 3; }
+  .ap-svg .pin text { font: 400 16px "KBMHanna", sans-serif; fill: var(--linen); }
+  .ap-svg .lg rect { fill: rgba(242,230,216,.06); stroke: var(--line); }
+  .ap-svg .lg circle { fill: var(--brick); }
+  .ap-svg .lg .n { font: 400 15px "KBMHanna", sans-serif; fill: var(--linen); }
+  .ap-svg .lg .l { font: 400 15px "KGodo", "Pretendard Variable", sans-serif; fill: var(--ink-2); }
+  .ap-svg .loop .lr { fill: none; stroke: var(--sage); stroke-width: 2; stroke-dasharray: 5 6; }
+  .ap-svg .loop .ld { fill: var(--brick); }
+  .ap-svg .loop .lt { font: 400 15px "KBMHanna", sans-serif; fill: var(--ink); }
+  .ap-svg .loop .lt2 { font: 400 11px "Pretendard Variable", sans-serif; fill: var(--ink-2); }
+  .ap-svg .lspin { transform-box: view-box; transform-origin: 640px 212px; }
+  .is-active .ap-svg .lspin { animation: apSpin 3s linear infinite; }
+  .ap-svg .aq { transform-box: fill-box; }
+  .is-active .ap-svg .aq { animation: apAq 2.6s ease-in-out 2.2s infinite; }
+  @keyframes apAq { 50% { fill: rgba(181,73,58,.32); } }
+  /* entrance: legend, nodes, then edges, then packets */
+  .ap-svg .nd, .ap-svg .lg { opacity: 0; }
+  .is-active .ap-svg .nd, .is-active .ap-svg .lg { animation: apIn .6s var(--ease) both; animation-delay: calc(.35s + var(--d, 0) * .1s); }
+  @keyframes apIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+  .ap-svg .ed, .ap-svg .el { opacity: 0; transition: opacity .6s; }
+  .is-active .ap-svg .ed, .is-active .ap-svg .el { opacity: 1; transition-delay: 1.6s; }
+  .ap-svg .pk { opacity: 0; transition: opacity .4s; }
+  .is-active .ap-svg .pk { opacity: 1; transition-delay: 2.2s; }
+  .ap-svg .pk .p1 { fill: var(--linen); filter: drop-shadow(0 0 6px rgba(242,230,216,.8)); }
+  .ap-svg .pk .p2 { fill: var(--sage); }
+  .ap-svg .pk .p3 { fill: var(--sage); }
+  .ap-svg .pk .p4 { fill: var(--brick); }
+  @media (prefers-reduced-motion: reduce) { .ap-svg .pk { display: none; } .ap-svg .nd, .ap-svg .lg, .ap-svg .ed, .ap-svg .el { opacity: 1 !important; } }
+  html.portrait .ap-svg { margin-top: 24px; }
+  .ap-g4 { padding-top: 8px; gap: 2px 22px; }
+</style>
+</head>
+<body>
+<svg class="sf-defs" width="0" height="0" style="position:absolute; width:0; height:0; overflow:hidden" aria-hidden="true" focusable="false">
+  <defs>
+    <linearGradient id="sfPaper" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F2E6D8" stop-opacity=".1"/><stop offset="1" stop-color="#F2E6D8" stop-opacity=".025"/></linearGradient>
+    <linearGradient id="sfTintGold" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#A9B2A2" stop-opacity=".2"/><stop offset="1" stop-color="#A9B2A2" stop-opacity=".04"/></linearGradient>
+    <linearGradient id="sfTintBlue" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#6aa8ff" stop-opacity=".2"/><stop offset="1" stop-color="#6aa8ff" stop-opacity=".04"/></linearGradient>
+    <linearGradient id="sfTintCoral" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f0542a" stop-opacity=".2"/><stop offset="1" stop-color="#f0542a" stop-opacity=".04"/></linearGradient>
+    <linearGradient id="sfTintGreen" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#4cc38a" stop-opacity=".2"/><stop offset="1" stop-color="#4cc38a" stop-opacity=".04"/></linearGradient>
+    <linearGradient id="sfTintViolet" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#a98bff" stop-opacity=".2"/><stop offset="1" stop-color="#a98bff" stop-opacity=".04"/></linearGradient>
+    <linearGradient id="sfCone" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#F2E6D8" stop-opacity=".13"/><stop offset="1" stop-color="#F2E6D8" stop-opacity="0"/></linearGradient>
+    <linearGradient id="sfAreaGold" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#A9B2A2" stop-opacity=".3"/><stop offset="1" stop-color="#A9B2A2" stop-opacity="0"/></linearGradient>
+    <linearGradient id="sfScan" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F2E6D8" stop-opacity="0"/><stop offset=".5" stop-color="#F2E6D8" stop-opacity=".3"/><stop offset="1" stop-color="#F2E6D8" stop-opacity="0"/></linearGradient>
+    <linearGradient id="sfScanG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4cc38a" stop-opacity="0"/><stop offset=".5" stop-color="#4cc38a" stop-opacity=".9"/><stop offset="1" stop-color="#4cc38a" stop-opacity="0"/></linearGradient>
+    <radialGradient id="sfGlowGold"><stop offset="0" stop-color="#A9B2A2" stop-opacity=".34"/><stop offset=".55" stop-color="#A9B2A2" stop-opacity=".1"/><stop offset="1" stop-color="#A9B2A2" stop-opacity="0"/></radialGradient>
+    <radialGradient id="sfGlowCoral"><stop offset="0" stop-color="#f0542a" stop-opacity=".34"/><stop offset=".55" stop-color="#f0542a" stop-opacity=".1"/><stop offset="1" stop-color="#f0542a" stop-opacity="0"/></radialGradient>
+    <radialGradient id="sfGlowBlue"><stop offset="0" stop-color="#6aa8ff" stop-opacity=".3"/><stop offset=".55" stop-color="#6aa8ff" stop-opacity=".09"/><stop offset="1" stop-color="#6aa8ff" stop-opacity="0"/></radialGradient>
+    <radialGradient id="sfGlowGreen"><stop offset="0" stop-color="#4cc38a" stop-opacity=".3"/><stop offset=".55" stop-color="#4cc38a" stop-opacity=".09"/><stop offset="1" stop-color="#4cc38a" stop-opacity="0"/></radialGradient>
+    <radialGradient id="sfGlowViolet"><stop offset="0" stop-color="#a98bff" stop-opacity=".3"/><stop offset=".55" stop-color="#a98bff" stop-opacity=".09"/><stop offset="1" stop-color="#a98bff" stop-opacity="0"/></radialGradient>
+    <radialGradient id="sfGlowInk"><stop offset="0" stop-color="#F2E6D8" stop-opacity=".14"/><stop offset="1" stop-color="#F2E6D8" stop-opacity="0"/></radialGradient>
+    <filter id="sfGlow" x="-80%" y="-80%" width="260%" height="260%"><feGaussianBlur in="SourceGraphic" stdDeviation="2.6" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+    <filter id="sfHeatBlur" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="3.5"/></filter>
+  </defs>
+</svg>
+<canvas id="bgfx" aria-hidden="true"></canvas>
+<div class="progress" id="progress"></div>
+
+<main class="deck" id="deck">
+
+  <!-- 1 표지 -->
+  <section class="slide s-title" data-notes="오늘은 AI 에이전트를 데모 수준에서 실제 운영 가능한 플랫폼으로 끌어올리려면 무엇이 필요한지 이야기합니다. 모델에 도구 몇 개를 붙이고 프롬프트 하나를 쓰면 에이전트가 완성된 것처럼 보이지만, 기업 운영 환경에서는 도구를 호출할 수 있는 것과 작업을 안정적으로 끝낼 수 있는 것이 전혀 다른 문제입니다. 오케스트레이션, 도구와 권한, 메모리와 작업 상태, 관측과 평가, 게이트웨이와 거버넌스 다섯 축으로 나눠 보겠습니다. 이 덱은 LLM-Wiki의 노트 「AI 에이전트 플랫폼 아키텍처」를 정리한 것이고, 노트 작성자의 관점이 담긴 글입니다.">
+    <div class="ph-title" style="background-image:url(img/architecture.jpg)" aria-hidden="true"></div>
+    <div class="date" data-a="fade">2026.11.20 정리</div>
+    <div class="kicker" data-a="left">AI Agent Engineering</div>
+    <h1 data-a style="--d:1">Agent Demo에서<br><em>Agent Platform</em>으로</h1>
+    <p class="lead" data-a style="--d:2">도구를 <b>호출할 수 있는 것</b>과 작업을 <b>안정적으로 끝내는 것</b>은 전혀 다른 문제다.<br>운영 환경에서 에이전트를 받쳐 주는 다섯 개의 축.</p>
+    <div class="chips">
+      <span class="chip" data-a="pop" style="--d:4">오케스트레이션</span>
+      <span class="chip" data-a="pop" style="--d:5">도구 · 권한</span>
+      <span class="chip" data-a="pop" style="--d:6">메모리 · 작업 상태</span>
+      <span class="chip" data-a="pop" style="--d:7">관측 · 평가</span>
+      <span class="chip gold" data-a="pop" style="--d:8">게이트웨이 · 거버넌스</span>
+    </div>
+    <div class="credit">배경 그림: Tech Fusionist, “AI Agent Platform Architecture” (원 노트 첨부 이미지)</div>
+  </section>
+
+  <!-- 2 목차 -->
+  <section class="slide" data-notes="순서는 이렇습니다. 먼저 데모와 플랫폼이 무엇이 다른지 보고, 전체 구조도를 한 장으로 훑습니다. 이어서 오케스트레이션, 도구와 권한, 메모리와 작업 상태, 관측과 평가, 게이트웨이를 차례로 다루고, 마지막에 운영에서 실제로 터지는 문제들과 설계할 때 던져야 할 질문으로 정리합니다. 이 글은 대부분 작성자의 판단과 설계 원칙이라 세이지색 마름모 배지로 표시했습니다.">
+    <div class="kicker" data-a="left">Contents</div>
+    <h2 data-a style="--d:1">여섯 단계로 본다</h2>
+    <ul class="agenda">
+      <li data-a style="--d:2"><span class="n">00</span><div><div class="t">데모와 플랫폼의 차이</div><div class="d">무엇이 빠져 있나 · 전체 구조도</div></div></li>
+      <li data-a style="--d:3"><span class="n">01</span><div><div class="t">오케스트레이션</div><div class="d">Plan → Act → Observe · 하위 Agent의 비용</div></div></li>
+      <li data-a style="--d:4"><span class="n">02</span><div><div class="t">도구와 권한</div><div class="d">MCP의 역할 · Permission Engine</div></div></li>
+      <li data-a style="--d:5"><span class="n">03</span><div><div class="t">메모리와 작업 상태</div><div class="d">기억 네 종류 · 체크포인트 · 멱등 설계</div></div></li>
+      <li data-a style="--d:6"><span class="n">04</span><div><div class="t">관측과 평가</div><div class="d">Trace · 회귀 테스트</div></div></li>
+      <li class="warn" data-a style="--d:7"><span class="n">05</span><div><div class="t">게이트웨이와 거버넌스</div><div class="d">Agent가 수십 개가 될 때 · 정리</div></div></li>
+    </ul>
+    <div class="legend" data-a="fade" style="--d:8; margin-top:20px; gap:10px 14px"><span class="badge judge">판단 · 설계 원칙</span><span class="small">이 덱의 주장은 원 노트 작성자의 관점이며, 확인된 사실이나 벤더 수치는 포함하지 않는다.</span></div>
+    <div class="gloss" data-a="fade" style="--d:9" aria-label="약어 풀이"><span><b>MCP</b><em>Model Context Protocol</em> · 에이전트가 외부 도구를 같은 방식으로 찾고 호출하게 하는 표준</span><span><b>Agent</b> · 스스로 계획하고 도구를 호출해 작업을 수행하는 AI 프로그램</span></div>
+  </section>
+
+  <!-- 3 Demo vs Platform -->
+  <section class="slide" data-notes="데모와 플랫폼을 나란히 놓아 보겠습니다. 데모의 목표는 모델이 작업을 한 번 해내는 것입니다. 모델 하나, 도구 몇 개, MCP 연결, 프롬프트 하나면 됩니다. 플랫폼은 작업 전 과정에서 권한, 상태, 스케줄링, 기억, 신뢰성, 관측 가능성, 그리고 장애가 난 뒤 어떻게 복구하는지를 풀어야 합니다. 작성자는 그래서 앞으로의 에이전트 경쟁이 모델 추론 능력이나 연결한 MCP 서버 개수가 아니라, 런타임과 하네스의 엔지니어링 역량으로 옮겨 갈 것이라고 봅니다.">
+    <div class="kicker" data-a="left">00 · 데모와 플랫폼</div>
+    <h2 data-a style="--d:1">도구를 부를 줄 아는 것과 <em>끝까지 해내는 것</em>은 다르다</h2>
+    <div class="cmp pv" data-a="fade" style="--d:2; margin-top:30px">
+      <div></div><div class="h pk">Agent Demo</div><div class="h vy">Agent Platform</div>
+      <div class="rh">목표</div><div class="c">모델이 작업을 <b>한 번</b> 해내게 한다</div><div class="c">작업을 <b>매번 안정적으로</b> 끝낸다</div>
+      <div class="rh">구성</div><div class="c">LLM 하나 · Tool 몇 개 · MCP 연결 · Prompt 하나</div><div class="c">오케스트레이션 · 권한 · 상태 · 스케줄링 · 기억 · 관측</div>
+      <div class="rh">실패하면</div><div class="c">처음부터 다시 실행</div><div class="c">어디서 멈췄는지 알고 <b>그 지점부터 복구</b></div>
+      <div class="rh key">경쟁력</div><div class="c key">모델 추론 능력 · 연결한 MCP 서버 수</div><div class="c key">Agent Runtime과 Harness의 엔지니어링 역량</div>
+    </div>
+    <div class="card judge" data-a style="--d:4; margin-top:22px; padding:18px 24px"><span class="badge judge">판단</span> <span class="body ap-big-note" style="margin-left:10px">경쟁의 무게중심은 “더 똑똑한 모델”에서 <b>“더 믿을 수 있는 실행 체계”</b>로 옮겨 간다.</span></div>
+    <div class="gloss" data-a="fade" style="--d:6" aria-label="약어 풀이"><span><b>LLM</b><em>Large Language Model</em> · 거대 언어 모델</span><span><b>Runtime</b> · 에이전트가 실제로 돌아가는 실행 환경</span><span><b>Harness</b> · 모델을 감싸 실행·검증·복구를 맡는 바깥 장치</span></div>
+  </section>
+
+  <!-- 4 전체 구조도 (animated SVG) -->
+  <section class="slide" data-notes="원 노트에 붙어 있던 구조도를 이 덱의 색으로 다시 그렸습니다. 사용자는 채팅, 슬랙, API로 들어와 Agent Gateway를 거칩니다. 가운데 Agent Orchestrator가 Plan, Act, Observe 루프를 돌리고, 오른쪽 LLM Router와 추론과 결정을 주고받습니다. 왼쪽에서는 인증과 Agent Registry가 누가 어떤 에이전트를 쓰는지 정하고, Memory Service가 기억을 공급합니다. 도구 호출은 Permission Engine을 지나 Tool Registry와 MCP Gateway를 거쳐 GitHub, Jira, 데이터베이스 같은 MCP 서버로 가고, 코드는 격리된 샌드박스에서 실행됩니다. 위험한 작업은 Approval Queue에서 사람이 승인합니다. 아래에는 Task Queue, Tracing, Evals, Audit Log가 공통 기반으로 깔려 있습니다. 움직이는 점은 요청 하나가 사용자에게서 MCP 서버까지 가는 길입니다. 번호는 오늘 다룰 다섯 축입니다.">
+    <div class="kicker" data-a="left">00 · 전체 구조</div>
+    <h2 data-a style="--d:1">한 장으로 보는 <em>에이전트 플랫폼</em></h2>
+    <svg class="ap-svg" viewBox="0 0 1380 545" role="img" aria-label="AI 에이전트 플랫폼 구조도. 사용자가 Agent Gateway를 거쳐 Agent Orchestrator로 요청을 보내고, Orchestrator는 LLM Router와 추론을 주고받는다. 왼쪽에 인증, Agent Registry, Memory Service, 가운데 아래에 Permission Engine과 Approval Queue, 오른쪽에 Tool Registry, MCP Gateway, MCP 서버(GitHub, Jira, Database), Code Sandbox가 있고, 맨 아래에 Task Queue, Tracing, Evals, Audit Log가 공통 기반으로 놓인다.">
+      <defs>
+        <marker id="apArr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 Z" fill="rgba(242,230,216,.6)"/></marker>
+        <marker id="apArrS" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 Z" fill="#A9B2A2"/></marker>
+      </defs>
+
+      <!-- legend -->
+      <g class="lg" style="--d:0">
+        <g transform="translate(640 22)"><rect width="148" height="40" rx="20"/><circle cx="20" cy="20" r="13"/><text x="20" y="25" class="n" text-anchor="middle">1</text><text x="40" y="26" class="l">오케스트레이션</text></g>
+        <g transform="translate(798 22)"><rect width="122" height="40" rx="20"/><circle cx="20" cy="20" r="13"/><text x="20" y="25" class="n" text-anchor="middle">2</text><text x="40" y="26" class="l">도구 · 권한</text></g>
+        <g transform="translate(930 22)"><rect width="148" height="40" rx="20"/><circle cx="20" cy="20" r="13"/><text x="20" y="25" class="n" text-anchor="middle">3</text><text x="40" y="26" class="l">메모리 · 상태</text></g>
+        <g transform="translate(1088 22)"><rect width="122" height="40" rx="20"/><circle cx="20" cy="20" r="13"/><text x="20" y="25" class="n" text-anchor="middle">4</text><text x="40" y="26" class="l">관측 · 평가</text></g>
+        <g transform="translate(1220 22)"><rect width="140" height="40" rx="20"/><circle cx="20" cy="20" r="13"/><text x="20" y="25" class="n" text-anchor="middle">5</text><text x="40" y="26" class="l">게이트웨이</text></g>
+      </g>
+
+      <!-- edges -->
+      <g class="ed">
+        <path d="M190 45 H296" marker-end="url(#apArr)"/>
+        <path d="M450 80 V116" marker-end="url(#apArr)"/>
+        <path d="M250 160 H296" marker-end="url(#apArr)"/>
+        <path d="M250 255 H296" marker-end="url(#apArr)"/>
+        <path d="M250 385 H296" marker-end="url(#apArr)"/>
+        <path class="sg" d="M724 150 H856" marker-start="url(#apArrS)" marker-end="url(#apArrS)"/>
+        <path d="M380 290 V326" marker-end="url(#apArr)"/>
+        <path class="sg" d="M520 330 V294" marker-end="url(#apArrS)"/>
+        <path d="M555 330 V310 H830 V252 H856" marker-end="url(#apArr)"/>
+        <path d="M830 300 V417 H856" marker-end="url(#apArr)"/>
+        <path class="br" d="M570 385 H586" marker-end="url(#apArr)"/>
+        <path d="M1100 252 H1116" marker-end="url(#apArr)"/>
+        <path d="M1240 290 V310 H940 V326" marker-end="url(#apArr)"/>
+        <path d="M1110 310 V326" marker-end="url(#apArr)"/>
+        <path d="M1240 310 H1280 V326" marker-end="url(#apArr)"/>
+        <path class="bus" d="M135 455 H1200 M135 440 V455 M435 440 V455 M690 440 V455 M1110 440 V455 M180 455 V470 M520 455 V470 M860 455 V470 M1200 455 V470"/>
+      </g>
+      <g class="el">
+        <text x="790" y="140" text-anchor="middle">추론 · 결정</text>
+        <text x="510" y="318" class="sgt" text-anchor="end">관찰</text>
+      </g>
+
+      <!-- nodes -->
+      <g class="nd" style="--d:1"><rect class="bx" x="20" y="10" width="170" height="70" rx="14"/><text x="105" y="40" class="t" text-anchor="middle">사용자</text><text x="105" y="63" class="s" text-anchor="middle">채팅 · 슬랙 · API</text></g>
+      <g class="nd" style="--d:2"><rect class="bx gw" x="300" y="10" width="300" height="70" rx="14"/><text x="450" y="40" class="t" text-anchor="middle">Agent Gateway</text><text x="450" y="63" class="s" text-anchor="middle">모든 요청이 지나는 입구</text><g class="pin"><circle cx="300" cy="10" r="15"/><text x="300" y="16" text-anchor="middle">5</text></g></g>
+
+      <g class="nd" style="--d:3"><rect class="bx" x="20" y="120" width="230" height="80" rx="14"/><text x="38" y="152" class="t">Identity &amp; Auth</text><text x="38" y="180" class="s">SSO · 사용자별 권한 범위</text></g>
+      <g class="nd" style="--d:4"><rect class="bx" x="20" y="215" width="230" height="80" rx="14"/><text x="38" y="247" class="t">Agent Registry</text><text x="38" y="275" class="s">정의 · 시스템 프롬프트 · 버전</text><g class="pin"><circle cx="20" cy="215" r="15"/><text x="20" y="221" text-anchor="middle">5</text></g></g>
+      <g class="nd" style="--d:5"><rect class="bx mem" x="20" y="330" width="230" height="110" rx="14"/><text x="38" y="362" class="t">Memory Service</text><text x="38" y="389" class="s">세션 기억</text><text x="38" y="410" class="s">장기 기억 (Vector DB)</text><text x="38" y="431" class="s">사용자 선호</text><g class="pin"><circle cx="20" cy="330" r="15"/><text x="20" y="336" text-anchor="middle">3</text></g></g>
+
+      <g class="nd" style="--d:3"><rect class="bx core" x="300" y="120" width="420" height="170" rx="18"/><text x="324" y="156" class="t lg2">Agent Orchestrator</text>
+        <text x="324" y="190" class="s m">Plan → Act → Observe 루프</text><text x="324" y="215" class="s m">하위 Agent 위임</text><text x="324" y="240" class="s m">재시도 · 오류 복구</text><text x="324" y="265" class="s m">컨텍스트 창 관리</text>
+        <g class="loop"><circle cx="640" cy="212" r="40" class="lr"/><g class="lspin"><circle cx="640" cy="172" r="7" class="ld"/></g><text x="640" y="208" text-anchor="middle" class="lt">Plan</text><text x="640" y="228" text-anchor="middle" class="lt2">Act · Observe</text></g>
+        <g class="pin"><circle cx="300" cy="120" r="15"/><text x="300" y="126" text-anchor="middle">1</text></g></g>
+      <g class="nd" style="--d:6"><rect class="bx risk" x="300" y="330" width="270" height="110" rx="14"/><text x="320" y="362" class="t">Permission Engine</text><text x="320" y="390" class="s">작업마다 정책 검사</text><text x="320" y="413" class="s">최소 권한 · 읽기 / 쓰기 분리</text><g class="pin"><circle cx="300" cy="330" r="15"/><text x="300" y="336" text-anchor="middle">2</text></g></g>
+      <g class="nd" style="--d:7"><rect class="bx risk aq" x="590" y="330" width="200" height="110" rx="14"/><text x="608" y="362" class="t">Approval Queue</text><text x="608" y="390" class="s">고위험 작업 일시 정지</text><text x="608" y="413" class="s">사람이 승인 · 거절</text></g>
+
+      <g class="nd" style="--d:4"><rect class="bx" x="860" y="120" width="500" height="70" rx="14"/><text x="880" y="152" class="t">LLM Router</text><text x="880" y="176" class="s">추론 모델 · 빠른 모델 · 대체 모델을 작업에 맞게 선택</text></g>
+      <g class="nd" style="--d:6"><rect class="bx" x="860" y="215" width="240" height="75" rx="14"/><text x="878" y="245" class="t">Tool Registry</text><text x="878" y="271" class="s">스키마 · 검색 · 도구별 속도 제한</text><g class="pin"><circle cx="860" cy="215" r="15"/><text x="860" y="221" text-anchor="middle">2</text></g></g>
+      <g class="nd" style="--d:7"><rect class="bx" x="1120" y="215" width="240" height="75" rx="14"/><text x="1138" y="245" class="t">MCP Gateway</text><text x="1138" y="271" class="s">인증 · 호출 프록시 · 응답 정제</text></g>
+      <g class="nd" style="--d:8"><rect class="bx srv" x="860" y="330" width="160" height="50" rx="12"/><text x="940" y="361" class="t sm" text-anchor="middle">GitHub</text></g>
+      <g class="nd" style="--d:8"><rect class="bx srv" x="1030" y="330" width="160" height="50" rx="12"/><text x="1110" y="361" class="t sm" text-anchor="middle">Jira</text></g>
+      <g class="nd" style="--d:8"><rect class="bx srv" x="1200" y="330" width="160" height="50" rx="12"/><text x="1280" y="361" class="t sm" text-anchor="middle">Database</text></g>
+      <g class="nd" style="--d:9"><rect class="bx" x="860" y="395" width="500" height="45" rx="12"/><text x="878" y="424" class="t sm">Code Sandbox</text><text x="1020" y="423" class="s">격리 컨테이너 · 시간 · 자원 제한</text></g>
+
+      <g class="nd" style="--d:10"><rect class="bx base" x="20" y="470" width="320" height="70" rx="14"/><text x="38" y="499" class="t">Task Queue</text><text x="38" y="525" class="s">오래 걸리는 작업 · Durable Workflow</text><g class="pin"><circle cx="20" cy="470" r="15"/><text x="20" y="476" text-anchor="middle">3</text></g></g>
+      <g class="nd" style="--d:11"><rect class="bx base" x="360" y="470" width="320" height="70" rx="14"/><text x="378" y="499" class="t">Tracing &amp; Observability</text><text x="378" y="525" class="s">단계 · 도구 호출 · 토큰 비용 · 재실행</text><g class="pin"><circle cx="360" cy="470" r="15"/><text x="360" y="476" text-anchor="middle">4</text></g></g>
+      <g class="nd" style="--d:12"><rect class="bx base" x="700" y="470" width="320" height="70" rx="14"/><text x="718" y="499" class="t">Evals &amp; Guardrails</text><text x="718" y="525" class="s">출력 검사 · 주입 방어 · 회귀 평가</text><g class="pin"><circle cx="700" cy="470" r="15"/><text x="700" y="476" text-anchor="middle">4</text></g></g>
+      <g class="nd" style="--d:13"><rect class="bx base" x="1040" y="470" width="320" height="70" rx="14"/><text x="1058" y="499" class="t">Audit Log Store</text><text x="1058" y="525" class="s">누가 언제 무엇을 했는지 기록</text></g>
+
+      <!-- moving packets -->
+      <g class="pk">
+        <circle r="8" class="p1"><animateMotion dur="6s" repeatCount="indefinite" path="M190 45 H450 V345 H555 V310 H830 V252 H1240 V340"/></circle>
+        <circle r="6" class="p2"><animateMotion dur="2.6s" repeatCount="indefinite" path="M724 146 H856 V156 H724 Z"/></circle>
+        <circle r="6" class="p3"><animateMotion dur="5s" repeatCount="indefinite" path="M135 455 H1200"/></circle>
+        <circle r="6" class="p4"><animateMotion dur="3s" begin="1s" repeatCount="indefinite" path="M570 385 H590"/></circle>
+      </g>
+    </svg>
+    <div class="gloss ap-g4" data-a="fade" style="--d:8" aria-label="약어 풀이"><span><b>SSO</b><em>Single Sign-On</em> · 한 번 로그인으로 여러 시스템 사용</span><span><b>LLM Router</b> · 작업마다 쓸 모델을 고르는 장치</span><span><b>Sandbox</b> · 격리된 실행 공간</span><span><b>Guardrails</b> · 위험한 입력·출력을 막는 안전장치</span></div>
+    <p class="src">원 그림: Tech Fusionist, “AI Agent Platform Architecture”(원 노트 첨부)를 바탕으로 이 문서에서 다시 그림 · 그림 속 벤더 기술은 예시</p>
+  </section>
+
+  <!-- 5 오케스트레이션 루프 -->
+  <section class="slide" data-notes="첫 번째 축은 오케스트레이션입니다. 진짜 에이전트는 프롬프트를 한 번 실행하고 도구 몇 개를 부른 뒤 끝나지 않습니다. 계획하고, 실행하고, 도구가 돌려준 결과를 관찰한 뒤 다음 행동을 다시 정하는 순환을 계속합니다. 필요하면 일을 하위 에이전트에게 나눠 맡기고, 그동안 컨텍스트, 실행 상태, 재시도, 예외 복구를 함께 관리해야 합니다. 오른쪽 네 가지가 오케스트레이터가 루프 바깥에서 붙잡고 있어야 하는 것들입니다.">
+    <div class="kicker" data-a="left">01 · 오케스트레이션</div>
+    <h2 data-a style="--d:1">한 번 실행하고 끝이 아니라, <em>계속 도는 루프</em></h2>
+    <div class="ap-loopwrap">
+      <div class="ap-loop" data-a="pop" style="--d:2">
+        <svg viewBox="0 0 460 460" role="img" aria-label="Plan, Act, Observe가 원을 따라 순환하는 그림">
+          <circle cx="230" cy="230" r="160" class="ring"/>
+          <circle cx="230" cy="230" r="160" class="ring-run"/>
+          <g class="spin"><circle cx="230" cy="70" r="11" class="pkt"/></g>
+          <g class="nd"><circle cx="230" cy="70" r="62"/><text x="230" y="66" text-anchor="middle" class="t">Plan</text><text x="230" y="94" text-anchor="middle" class="s">계획</text></g>
+          <g class="nd"><circle cx="368.6" cy="310" r="62"/><text x="368.6" y="306" text-anchor="middle" class="t">Act</text><text x="368.6" y="334" text-anchor="middle" class="s">도구 호출</text></g>
+          <g class="nd"><circle cx="91.4" cy="310" r="62"/><text x="91.4" y="306" text-anchor="middle" class="t">Observe</text><text x="91.4" y="334" text-anchor="middle" class="s">결과 확인</text></g>
+          <text x="230" y="236" text-anchor="middle" class="c">다음 행동을</text><text x="230" y="266" text-anchor="middle" class="c">다시 판단</text>
+        </svg>
+      </div>
+      <div class="ap-manage">
+        <div class="card" data-a="right" style="--d:3"><div class="num">01</div><h3>컨텍스트 관리</h3><p>무엇을 모델에 넘기고 무엇을 덜어 낼지</p></div>
+        <div class="card" data-a="right" style="--d:4"><div class="num">02</div><h3>실행 상태</h3><p>지금 몇 번째 단계이고 무엇이 끝났는지</p></div>
+        <div class="card" data-a="right" style="--d:5"><div class="num">03</div><h3>재시도 · 예외 복구</h3><p>실패한 호출을 다시 할지, 다른 길로 갈지</p></div>
+        <div class="card" data-a="right" style="--d:6"><div class="num">04</div><h3>하위 Agent 위임</h3><p>일을 나눠 맡기고 결과를 다시 모으기</p></div>
+      </div>
+    </div>
+    <div class="gloss" data-a="fade" style="--d:7" aria-label="약어 풀이"><span><b>Orchestration</b> · 여러 단계와 도구 호출의 순서·상태를 지휘하는 계층</span><span><b>Context</b> · 모델이 한 번에 보는 입력 전체(대화, 도구 결과 등)</span></div>
+  </section>
+
+  <!-- 6 Workflow vs Agent -->
+  <section class="slide" data-notes="여기서 흔한 오해가 있습니다. 하위 에이전트가 많을수록 시스템이 똑똑해진다고 생각하는 것입니다. 실제로는 여러 에이전트가 동시에 일하면 컨텍스트 전달, 상태 동기화, 실행 충돌, 스케줄링 비용이 늘어납니다. 결정론적 워크플로만으로 끝낼 수 있는 일이라면 에이전트를 억지로 넣을 이유가 없습니다. 모델에게 맡길 것은 동적 판단과 불확실성 처리가 필요한 부분이지, 모든 단계를 자율 의사결정으로 포장하는 것이 아니라는 게 작성자의 주장입니다.">
+    <div class="kicker" data-a="left">01 · 오케스트레이션</div>
+    <h2 data-a style="--d:1">하위 Agent가 많다고 <em>더 똑똑해지지 않는다</em> <span class="badge judge" style="font-size:17px; vertical-align:12px">판단</span></h2>
+    <div class="card hotc" data-a style="--d:2; margin-top:26px">
+      <div class="num" style="color:#ff8a63">Agent를 늘리면 함께 늘어나는 것</div>
+      <div class="ap-costs">
+        <span>컨텍스트 전달</span><span>상태 동기화</span><span>실행 충돌</span><span>스케줄링 비용</span>
+      </div>
+    </div>
+    <div class="cols c2 ap-c3" style="margin-top:24px">
+      <div class="card" data-a style="--d:3"><div class="num">결정론적 Workflow에 맡길 것</div><h3>순서와 조건이 정해진 일</h3><ul><li>입력이 같으면 결과도 같아야 하는 단계</li><li>규칙으로 분기할 수 있는 처리</li><li>정해진 API를 정해진 순서로 부르는 일</li></ul></div>
+      <div class="card judge" data-a style="--d:4"><div class="num">모델(Agent)에 맡길 것</div><h3>동적 판단이 필요한 일</h3><ul><li>도구 결과를 보고 다음 행동을 정해야 할 때</li><li>입력이 모호하거나 예외가 많은 부분</li><li>규칙으로 미리 다 적을 수 없는 불확실성</li></ul></div>
+    </div>
+    <div class="gloss" data-a="fade" style="--d:6" aria-label="약어 풀이"><span><b>Workflow</b> · 미리 정한 순서대로 실행되는 작업 흐름</span><span><b>결정론적</b> · 같은 입력에 항상 같은 결과를 내는 성질</span><span><b>Sub-agent</b> · 상위 에이전트가 일부 작업을 넘겨받게 만든 하위 에이전트</span></div>
+  </section>
+
+  <!-- 7 도구와 권한 -->
+  <section class="slide" data-notes="두 번째 축은 도구와 권한입니다. MCP의 가치는 에이전트가 표준 인터페이스로 외부 도구를 찾고 호출할 수 있게 해 준다는 데 있습니다. 하지만 MCP가 도구 호출의 안전성과 신뢰성까지 보장해 주지는 않습니다. 깃허브, 데이터베이스, 파일 시스템, 사내 업무 시스템에 접근하는 에이전트에 권한 경계가 없으면 매우 위험합니다. 그래서 독립된 Permission Engine이 고위험 작업마다 권한을 검사해야 합니다. 읽기와 수정은 권한을 나누고, 파일 삭제, 명령 실행, 이메일 발송, 운영 데이터베이스 수정은 위험도에 따라 제한과 사람의 승인을 둡니다. 자율 의사결정이 무제한 권한을 뜻하지는 않습니다.">
+    <div class="kicker" data-a="left">02 · 도구와 권한</div>
+    <h2 data-a style="--d:1">자율 의사결정이 <em>무제한 권한</em>을 뜻하지는 않는다</h2>
+    <div class="ap-perm">
+      <div class="ap-mcp card" data-a style="--d:2">
+        <div class="num">MCP가 해 주는 것</div>
+        <p style="margin-top:8px">표준 인터페이스로 외부 도구를 <b>찾고 호출</b>하게 한다</p>
+        <div class="num" style="margin-top:20px; color:#ff8a63">MCP가 해 주지 않는 것</div>
+        <p style="margin-top:8px">호출이 <b>안전한지</b>, 결과가 <b>믿을 만한지</b>는 보장하지 않는다</p>
+      </div>
+      <div class="ap-tiers">
+        <div class="ap-tier t1" data-a="left" style="--d:3"><div class="lv">낮음</div><div class="what"><b>데이터 읽기</b><span>조회 · 검색</span></div><div class="ctl">읽기 권한 범위 안에서 허용</div></div>
+        <div class="ap-tier t2" data-a="left" style="--d:4"><div class="lv">중간</div><div class="what"><b>데이터 수정</b><span>생성 · 변경</span></div><div class="ctl">읽기와 <b>다른 권한</b> · 작업마다 정책 검사</div></div>
+        <div class="ap-tier t3" data-a="left" style="--d:5"><div class="lv">높음</div><div class="what"><b>파일 삭제 · 명령 실행 · 이메일 발송 · 운영 DB 수정</b></div><div class="ctl">명확한 제한 + <b>사람의 승인</b></div></div>
+      </div>
+    </div>
+    <div class="gloss" data-a="fade" style="--d:7" aria-label="약어 풀이"><span><b>Permission Engine</b> · 에이전트의 작업마다 허용 여부를 따로 판단하는 권한 검사기</span><span><b>DB</b><em>Database</em> · 데이터베이스</span><span><b>Approval Queue</b> · 사람 승인을 기다리는 고위험 작업 대기열</span></div>
+  </section>
+
+  <!-- 8 메모리 4종 -->
+  <section class="slide" data-notes="세 번째 축은 메모리입니다. 에이전트 메모리라고 하면 곧바로 벡터 데이터베이스를 떠올리고, 벡터 DB를 붙이면 장기 기억이 생긴다고 생각하기 쉽습니다. 하지만 세션 기억, 작업 상태, 장기 기억, 사용자 선호는 서로 다른 문제를 풉니다. 세션 기억은 지금의 컨텍스트, 장기 기억은 세션을 넘는 보존과 검색을 맡습니다. 작업 상태는 실행 진행 상황, 도구 호출 결과, 외부 작업이 이미 끝났는지, 실패하면 어디서부터 복구할지를 기록합니다. 이 가운데 운영 신뢰성을 좌우하는 것은 작업 상태입니다.">
+    <div class="kicker" data-a="left">03 · 메모리와 작업 상태</div>
+    <h2 data-a style="--d:1">Vector DB를 붙였다고 <em>기억이 생기지는 않는다</em></h2>
+    <div class="cols c4 ap-mem" style="margin-top:30px">
+      <div class="card" data-a style="--d:2"><div class="num">SESSION MEMORY</div><h3>세션 기억</h3><p>지금 대화와 <b>현재 컨텍스트</b>를 유지한다</p></div>
+      <div class="card" data-a style="--d:3"><div class="num">LONG-TERM MEMORY</div><h3>장기 기억</h3><p>세션을 넘어 정보를 <b>보존하고 검색</b>한다. Vector DB가 맡는 곳은 주로 여기</p></div>
+      <div class="card" data-a style="--d:4"><div class="num">USER PREFERENCES</div><h3>사용자 선호</h3><p>사람마다 다른 <b>설정과 취향</b>을 기억한다</p></div>
+      <div class="card judge ap-key" data-a style="--d:5"><div class="num">TASK STATE</div><h3>작업 상태</h3><ul><li>실행 진행 상황</li><li>도구 호출 결과</li><li>외부 작업 완료 여부</li><li>실패 후 <b>복구 지점</b></li></ul></div>
+    </div>
+    <p class="body ap-big-note" data-a style="--d:6; margin-top:34px">오래 도는 작업은 컨텍스트가 압축되거나, 서비스가 재시작되거나, API가 타임아웃 돼도 <b>이미 끝낸 일을 버리면 안 된다.</b></p>
+    <div class="gloss" data-a="fade" style="--d:7" aria-label="약어 풀이"><span><b>Vector DB</b> · 문장을 숫자 벡터로 저장해 의미가 비슷한 내용을 찾는 데이터베이스</span><span><b>API</b><em>Application Programming Interface</em> · 프로그램끼리 기능을 주고받는 창구</span><span><b>타임아웃</b> · 정해진 시간 안에 응답이 없어 요청이 끊기는 것</span></div>
+  </section>
+
+  <!-- 9 디지털 휴먼 파이프라인 -->
+  <section class="slide" data-notes="예를 들어 보겠습니다. 디지털 휴먼 에이전트가 낭독 원고 생성, 디지털 휴먼 영상 생성, 자막 처리, 영상 패키징, 파일 업로드, 최종 전달까지 해야 합니다. 여러 외부 API를 거치고 몇 분씩 걸릴 수 있습니다. 업로드 단계에서 실패했다고 해 봅시다. 위쪽처럼 처음부터 다시 돌리면 디지털 휴먼을 다시 생성하면서 API 비용이 또 청구됩니다. 아래쪽처럼 체크포인트가 있으면 앞의 네 단계는 이미 끝났다는 것을 알고, 실패한 업로드부터 다시 시작합니다. 그래서 Task Queue, Durable Workflow, Checkpoint, 멱등 설계가 중요합니다.">
+    <div class="kicker" data-a="left">03 · 메모리와 작업 상태</div>
+    <h2 data-a style="--d:1">업로드에서 실패했다면, <em>업로드부터</em> 다시</h2>
+    <div class="ap-pipe" data-a="fade" style="--d:2">
+      <div class="lbl bad">체크포인트 없음<small>처음부터 다시 실행</small></div>
+      <div class="st rerun">원고 생성</div><div class="st rerun cost">영상 생성<em>비용 재청구</em></div><div class="st rerun">자막 처리</div><div class="st rerun">패키징</div><div class="st fail">업로드</div><div class="st">전달</div>
+    </div>
+    <div class="ap-pipe" data-a="fade" style="--d:4">
+      <div class="lbl good">체크포인트 있음<small>실패 지점부터 재개</small></div>
+      <div class="st done">원고 생성</div><div class="st done">영상 생성</div><div class="st done">자막 처리</div><div class="st done">패키징</div><div class="st retry">업로드</div><div class="st next">전달</div>
+    </div>
+    <div class="ap-pipe-legend" data-a="fade" style="--d:5"><span><i class="k-rerun"></i>다시 실행</span><span><i class="k-done"></i>완료 기록 · 건너뜀</span><span><i class="k-fail"></i>실패</span><span><i class="k-retry"></i>재시도</span></div>
+    <div class="conds" data-a style="--d:6; margin-top:22px"><span class="chip gold">Task Queue</span><span class="chip gold">Durable Workflow</span><span class="chip gold">Checkpoint</span><span class="chip gold">멱등 설계</span></div>
+    <div class="gloss" data-a="fade" style="--d:7" aria-label="약어 풀이"><span><b>Checkpoint</b> · 단계가 끝날 때마다 남기는 저장 지점</span><span><b>Durable Workflow</b> · 서버가 재시작돼도 진행 상태를 잃지 않는 작업 흐름</span><span><b>Task Queue</b> · 오래 걸리는 작업을 순서대로 맡아 처리하는 대기열</span></div>
+  </section>
+
+  <!-- 10 재시도 구분 -->
+  <section class="slide" data-notes="신뢰할 수 있는 에이전트 시스템은 세 가지를 구분합니다. 어떤 작업은 안전하게 다시 시도할 수 있고, 어떤 작업은 이미 외부에 부작용을 남겼습니다. 그리고 멱등 키, 작업 상태, 보상 메커니즘으로 중복 실행을 막습니다. 멱등 키는 같은 요청이 두 번 와도 한 번만 처리되게 하는 표식이고, 보상 메커니즘은 이미 일어난 부작용을 되돌리거나 상쇄하는 절차입니다. 왼쪽과 가운데 예시는 이해를 돕기 위해 덧붙인 것입니다.">
+    <div class="kicker" data-a="left">03 · 메모리와 작업 상태</div>
+    <h2 data-a style="--d:1">다시 해도 되는 일과 <em>이미 일어난 일</em>을 구분한다</h2>
+    <div class="cols c3 ap-c3" style="margin-top:36px">
+      <div class="card ok" data-a style="--d:2"><div class="num" style="color:var(--green)">안전하게 재시도</div><h3>결과가 바뀌지 않는 호출</h3><ul><li>조회 · 검색</li><li>같은 입력이면 같은 결과를 내는 변환</li><li>멱등 키를 붙인 생성 요청</li></ul></div>
+      <div class="card hotc" data-a style="--d:3"><div class="num" style="color:#ff8a63">이미 외부 부작용</div><h3>두 번 하면 사고가 나는 호출</h3><ul><li>이메일 · 메시지 발송</li><li>비용이 청구되는 생성 API</li><li>운영 데이터 변경 · 파일 업로드 완료</li></ul></div>
+      <div class="card judge" data-a style="--d:4"><div class="num">중복을 막는 장치</div><h3>세 가지를 함께 쓴다</h3><ul><li><b>멱등 키</b> · 같은 요청은 한 번만 처리</li><li><b>작업 상태</b> · 무엇이 끝났는지 기록</li><li><b>보상 메커니즘</b> · 이미 일어난 일을 되돌림</li></ul></div>
+    </div>
+    <div class="gloss" data-a="fade" style="--d:6" aria-label="약어 풀이"><span><b>멱등</b><em>Idempotent</em> · 여러 번 실행해도 결과가 한 번 실행한 것과 같은 성질</span><span><b>부작용</b><em>Side effect</em> · 시스템 밖에 남는 변화(발송, 결제, 저장 등)</span><span><b>보상</b><em>Compensation</em> · 끝난 작업을 취소·상쇄하는 후속 처리</span></div>
+  </section>
+
+  <!-- 11 Trace -->
+  <section class="slide" data-notes="네 번째 축은 관측입니다. 에이전트 실행이 실패하면 적어도 이것들을 알 수 있어야 합니다. 어떤 작업을 받았는지, 어떤 모델을 골랐는지, 어떤 도구를 불렀는지, 도구가 무엇을 돌려줬는지, 왜 그 다음 결정을 내렸는지, 실패가 정확히 어느 단계에서 났는지. 왼쪽 그림은 한 번의 실행을 단계별로 펼친 트레이스를 예시로 그린 것입니다. 완전한 트레이스, 로그, 토큰 비용 기록이 없으면 문제가 모델 추론 오류인지, 도구 인터페이스 이상인지, 권한 부족인지, 컨텍스트 관리 문제인지조차 가를 수 없습니다.">
+    <div class="kicker" data-a="left">04 · 관측과 평가</div>
+    <h2 data-a style="--d:1">실패했을 때 <em>어느 단계였는지</em> 바로 보여야 한다</h2>
+    <div class="row" style="margin-top:28px; align-items:stretch">
+      <div class="card grow ap-trace-card" data-a style="--d:2">
+        <div class="num">한 번의 실행 · Trace 예시 그림</div>
+        <div class="ap-trace">
+          <div class="r"><span class="n">작업 수신</span><span class="tr"><i style="--x:0%; --w:4%"></i></span><span class="m">입력 · 사용자</span></div>
+          <div class="r"><span class="n">모델 선택</span><span class="tr"><i style="--x:4%; --w:6%"></i></span><span class="m">추론 모델</span></div>
+          <div class="r"><span class="n">도구 호출 · 원고</span><span class="tr"><i style="--x:10%; --w:18%"></i></span><span class="m">반환 OK</span></div>
+          <div class="r"><span class="n">도구 호출 · 영상</span><span class="tr"><i style="--x:28%; --w:40%"></i></span><span class="m">반환 OK</span></div>
+          <div class="r"><span class="n">결정 · 다음 단계</span><span class="tr"><i style="--x:68%; --w:5%"></i></span><span class="m">이유 기록</span></div>
+          <div class="r bad"><span class="n">도구 호출 · 업로드</span><span class="tr"><i style="--x:73%; --w:27%"></i></span><span class="m">타임아웃</span></div>
+        </div>
+        <span class="ustamp" style="right:26px; top:22px; --sd:1.6s">예시 · 수치 없음</span>
+      </div>
+      <div class="card" data-a="right" style="--d:4; width:470px">
+        <div class="num">기록이 없으면 가를 수 없는 원인</div>
+        <ul class="chk"><li><b>모델 추론 오류</b></li><li><b>도구 인터페이스 이상</b></li><li><b>권한 부족</b></li><li><b>컨텍스트 관리 문제</b></li></ul>
+        <p style="margin-top:16px">필요한 기록: 완전한 <b>Trace</b>, 로그, <b>Token 비용</b>, 평가 결과</p>
+      </div>
+    </div>
+    <div class="gloss" data-a="fade" style="--d:6" aria-label="약어 풀이"><span><b>Trace</b> · 한 번의 실행을 단계별로 시간순 기록한 것</span><span><b>Observability</b> · 시스템 내부 상태를 밖에서 알아낼 수 있는 정도</span><span><b>Token</b> · 모델이 글을 처리하는 단위. 사용량이 곧 비용</span></div>
+  </section>
+
+  <!-- 12 회귀 평가 -->
+  <section class="slide" data-notes="실행을 기록하는 것은 첫걸음일 뿐입니다. 더 중요한 것은 재현 가능한 평가와 회귀 테스트입니다. 프롬프트, 모델, 도구 인터페이스, 오케스트레이션 로직 가운데 무엇을 바꾸든 매번 같은 평가 세트를 돌려서 작업 성공률, 비용, 지연 시간, 실패 유형이 어떻게 달라졌는지 확인해야 합니다. 그렇지 않으면 시스템이 복잡해질수록 왜 성공했는지도, 왜 실패했는지도 더 모르게 됩니다.">
+    <div class="kicker" data-a="left">04 · 관측과 평가</div>
+    <h2 data-a style="--d:1">무엇을 바꾸든, <em>같은 시험</em>을 다시 본다</h2>
+    <div class="ap-eval">
+      <div class="col" data-a="left" style="--d:2"><div class="num">바꾸는 것</div><span>Prompt</span><span>모델</span><span>도구 인터페이스</span><span>오케스트레이션 로직</span></div>
+      <div class="ar" data-a="fade" style="--d:3">→</div>
+      <div class="mid" data-a="pop" style="--d:4"><div class="num">회귀 평가</div><b>재현 가능한<br>평가 세트 실행</b><small>이전 버전과 같은 조건으로</small></div>
+      <div class="ar" data-a="fade" style="--d:5">→</div>
+      <div class="col on" data-a="right" style="--d:6"><div class="num">확인하는 것</div><span>작업 성공률</span><span>비용</span><span>지연 시간</span><span>실패 유형</span></div>
+    </div>
+    <div class="card judge" data-a style="--d:7; margin-top:26px; padding:18px 24px"><span class="badge judge">판단</span> <span class="body ap-big-note" style="margin-left:10px">평가가 없으면 시스템이 복잡해질수록 <b>왜 성공했는지도, 왜 실패했는지도</b> 더 모르게 된다.</span></div>
+    <div class="gloss" data-a="fade" style="--d:8" aria-label="약어 풀이"><span><b>회귀 테스트</b> · 변경 뒤에 예전에 되던 것이 여전히 되는지 다시 확인하는 시험</span><span><b>Eval</b> · 모델·에이전트의 결과를 정해진 기준으로 채점하는 평가</span><span><b>지연 시간</b><em>Latency</em> · 요청부터 응답까지 걸린 시간</span></div>
+  </section>
+
+  <!-- 13 게이트웨이 -->
+  <section class="slide" data-notes="마지막 축은 쉽게 놓치는 Agent Gateway와 통합 거버넌스입니다. 에이전트가 하나뿐일 때는 많은 문제를 간단한 코드로 풀 수 있습니다. 그런데 영업, 고객 지원, 콘텐츠 생성, 연구개발, 데이터 분석을 맡는 에이전트가 수십 개로 늘어나면, 통합 인증, Agent Registry, 모델 라우팅, 도구 등록, 권한 정책, 버전 관리와 감사가 실제로 필요해집니다. 플랫폼의 가치는 에이전트를 한데 모아 두는 데 있지 않고, 서로 다른 에이전트가 인프라를 재사용하면서 명확한 권한과 리소스 경계 안에서 일하게 하는 데 있습니다.">
+    <div class="kicker" data-a="left">05 · 게이트웨이와 거버넌스</div>
+    <h2 data-a style="--d:1">Agent가 수십 개가 되면 <em>공통 길목</em>이 필요하다</h2>
+    <div class="ap-gw">
+      <div class="agents">
+        <span data-a style="--d:2">영업</span><span data-a style="--d:3">고객 지원</span><span data-a style="--d:4">콘텐츠 생성</span><span data-a style="--d:5">연구개발</span><span data-a style="--d:6">데이터 분석</span><span class="more" data-a style="--d:7">… 수십 개</span>
+      </div>
+      <div class="bar" data-a="pop" style="--d:8"><b>Agent Gateway</b><span>통합 실행 · 거버넌스 체계</span></div>
+      <div class="infra">
+        <div data-a style="--d:9"><b>통합 인증</b><span>누가 어떤 Agent를 쓰나</span></div>
+        <div data-a style="--d:10"><b>Agent Registry</b><span>정의 · 프롬프트 · 버전</span></div>
+        <div data-a style="--d:11"><b>모델 라우팅</b><span>작업에 맞는 모델 선택</span></div>
+        <div data-a style="--d:12"><b>도구 등록</b><span>스키마 · 검색 · 속도 제한</span></div>
+        <div data-a style="--d:13"><b>권한 정책</b><span>리소스 경계</span></div>
+        <div data-a style="--d:14"><b>버전 관리 · 감사</b><span>누가 무엇을 바꿨나</span></div>
+      </div>
+    </div>
+    <div class="gloss" data-a="fade" style="--d:15" aria-label="약어 풀이"><span><b>Gateway</b> · 모든 요청이 거쳐 가는 공통 입구</span><span><b>Registry</b> · 등록된 Agent·도구의 정의와 버전을 모아 둔 목록</span><span><b>Routing</b> · 요청마다 알맞은 모델·경로를 고르는 일</span><span><b>감사</b><em>Audit</em> · 누가 언제 무엇을 했는지 남긴 기록</span></div>
+  </section>
+
+  <!-- 14 운영 문제 지도 -->
+  <section class="slide" data-notes="많은 에이전트 프로젝트가 데모에서는 인상적이지만, 실제 업무에 붙이면 작업 중단, 상태 유실, 중복 실행, 권한 충돌, API 속도 제한, 컨텍스트 오염을 만나면서 신뢰성 문제가 드러납니다. 원 노트가 꼽은 여섯 가지 문제를 왼쪽에 두고, 오늘 본 계층 가운데 어디서 막는지 오른쪽에 짝지었습니다. 이 짝짓기는 이 덱에서 정리한 판단입니다.">
+    <div class="kicker" data-a="left">05 · 정리</div>
+    <h2 data-a style="--d:1">운영에서 터지는 여섯 가지와 <em>막는 자리</em> <span class="badge judge" style="font-size:17px; vertical-align:12px">판단</span></h2>
+    <div class="ap-map" data-a="fade" style="--d:2">
+      <div class="h">운영에서 만나는 문제</div><div class="h">막는 계층</div><div class="h">핵심 장치</div>
+      <div class="p">작업 중단</div><div class="l">메모리 · 작업 상태</div><div class="t">Durable Workflow · Checkpoint</div>
+      <div class="p">상태 유실</div><div class="l">메모리 · 작업 상태</div><div class="t">Task State 기록 · Task Queue</div>
+      <div class="p">중복 실행</div><div class="l">메모리 · 작업 상태</div><div class="t">멱등 키 · 보상 메커니즘</div>
+      <div class="p">권한 충돌</div><div class="l">도구 · 권한 / 게이트웨이</div><div class="t">Permission Engine · 권한 정책</div>
+      <div class="p">API 속도 제한</div><div class="l">도구 · 권한</div><div class="t">Tool Registry의 도구별 제한 · 대기열</div>
+      <div class="p">컨텍스트 오염</div><div class="l">오케스트레이션</div><div class="t">컨텍스트 관리 · 기억 종류 분리</div>
+    </div>
+    <p class="src">문제 목록: 원 노트 · 막는 계층 짝짓기: 이 문서의 정리</p>
+    <div class="gloss" data-a="fade" style="--d:4" aria-label="약어 풀이"><span><b>속도 제한</b><em>Rate limit</em> · 정해진 시간에 보낼 수 있는 API 요청 수 상한</span><span><b>컨텍스트 오염</b> · 엉뚱하거나 낡은 정보가 모델 입력에 섞여 판단을 흐리는 것</span></div>
+  </section>
+
+  <!-- 15 설계 질문 -->
+  <section class="slide" data-notes="작성자는 에이전트 엔지니어링에서 깊이 파고들 가치가 있는 것이 프롬프트 엔지니어링, 함수 호출, MCP만이 아니라 에이전트 시스템 전체의 소프트웨어 엔지니어링 문제라고 봅니다. 그리고 이런 질문을 던집니다. 언제 결정론적 워크플로를 쓰고 언제 동적 계획이 필요한가. 언제 하위 에이전트를 두고 언제 도구를 직접 부르는가. 오래 걸리는 작업은 어떻게 관리하는가. 복구 가능한 실행 상태는 어떻게 설계하는가. 고위험 도구 호출은 어떻게 통제하는가. 새 버전이 정말 더 믿을 만한지 어떻게 평가하는가. 이 질문들이 새 모델 API를 연결하는 것보다 더 중요할 수 있습니다.">
+    <div class="kicker" data-a="left">05 · 정리</div>
+    <h2 data-a style="--d:1">새 모델 API보다 <em>먼저 답할 질문</em> 여섯 개</h2>
+    <ul class="agenda ap-q">
+      <li data-a style="--d:2"><span class="n">Q1</span><div><div class="t">언제 Workflow, 언제 동적 계획?</div><div class="d">오케스트레이션</div></div></li>
+      <li data-a style="--d:3"><span class="n">Q2</span><div><div class="t">언제 하위 Agent, 언제 도구 직접 호출?</div><div class="d">오케스트레이션</div></div></li>
+      <li data-a style="--d:4"><span class="n">Q3</span><div><div class="t">오래 걸리는 작업은 어떻게 관리하나?</div><div class="d">작업 상태 · Task Queue</div></div></li>
+      <li data-a style="--d:5"><span class="n">Q4</span><div><div class="t">복구 가능한 실행 상태는 어떻게 설계하나?</div><div class="d">Checkpoint · 멱등</div></div></li>
+      <li data-a style="--d:6"><span class="n">Q5</span><div><div class="t">고위험 도구 호출은 어떻게 통제하나?</div><div class="d">Permission Engine · 승인</div></div></li>
+      <li data-a style="--d:7"><span class="n">Q6</span><div><div class="t">새 버전이 정말 더 믿을 만한가?</div><div class="d">회귀 평가</div></div></li>
+    </ul>
+    <div class="gloss" data-a="fade" style="--d:8" aria-label="약어 풀이"><span><b>Function Calling</b> · 모델이 정해진 형식으로 함수(도구) 호출을 요청하는 기능</span><span><b>Prompt Engineering</b> · 모델에 주는 지시문을 다듬는 일</span></div>
+  </section>
+
+  <!-- 16 요약 -->
+  <section class="slide" data-notes="정리하겠습니다. 모델은 에이전트 능력의 상한을 정하고, 오케스트레이션, 런타임, 메모리, 권한, 관측, 평가는 그 능력이 실제로 납품 가능한 시스템이 될 수 있는지를 정합니다. 성숙한 에이전트는 도구를 얼마나 많이 부르느냐가 아니라, 실제 업무의 제약 안에서 꾸준하고 믿을 수 있고 통제 가능한 방식으로 작업을 끝내느냐로 판단됩니다. 앞으로 가치 있는 AI 애플리케이션 엔지니어와 FDE는 모델 호출, 워크플로 구축, MCP 설정을 넘어서 이 역량들을 실행 가능하고, 복구 가능하고, 검증 가능하고, 계속 진화할 수 있는 엔지니어링 체계로 묶어 낼 수 있어야 합니다. 데모와 플랫폼 사이에 놓인 것은 더 많은 프롬프트도, 더 많은 하위 에이전트도 아닌 소프트웨어 엔지니어링 역량 그 자체입니다. 출처는 @UPing123zzz, @techyoutbe입니다.">
+    <div class="kicker" data-a="left">Summary</div>
+    <h2 data-a style="--d:1">모델은 <em>상한</em>을, 엔지니어링은 <em>납품 가능성</em>을 정한다</h2>
+    <div class="concl">
+      <div class="card" data-a style="--d:2"><div class="ic">▶</div><h3>실행 가능</h3><p>Plan → Act → Observe를 돌리되, Workflow로 될 일은 Workflow로</p></div>
+      <div class="card" data-a style="--d:3"><div class="ic">↺</div><h3>복구 가능</h3><p>작업 상태 · Checkpoint · 멱등 키로 실패 지점부터 재개</p></div>
+      <div class="card" data-a style="--d:4"><div class="ic">✓</div><h3>검증 가능</h3><p>Trace로 원인을 가르고, 바꿀 때마다 회귀 평가</p></div>
+      <div class="card judge cal" data-a style="--d:5"><div class="num">진화 가능</div><h3 style="margin-top:4px">통제된 확장</h3><p>Gateway · Registry · 권한 정책으로 Agent가 늘어도 경계를 지킨다</p></div>
+    </div>
+    <div class="card judge" data-a style="--d:7; margin-top:24px; padding:20px 26px"><span class="badge judge">판단</span> <span class="body ap-big-note" style="margin-left:10px">데모와 플랫폼 사이에 놓인 것은 더 많은 Prompt도, 더 많은 하위 Agent도 아닌 <b>소프트웨어 엔지니어링 역량</b>이다.</span></div>
+    <p class="src">출처: @UPing123zzz, @techyoutbe · 정리: LLM-Wiki 「AI 에이전트 플랫폼 아키텍처」 노트 (2026.11.20)</p>
+    <div class="gloss" data-a="fade" style="--d:8" aria-label="약어 풀이"><span><b>FDE</b><em>Forward Deployed Engineer</em> · 고객 현장에 붙어 제품을 실제 업무에 맞춰 구현하는 엔지니어</span><span><b>Runtime</b> · 에이전트가 실제로 돌아가는 실행 환경</span></div>
+  </section>
+
+</main>
+
+<div class="notes" id="notes" role="note"></div>
+<nav class="hud" aria-label="슬라이드 이동">
+  <a href="../" title="아카이브로">← Archive</a>
+  <button type="button" id="firstBtn" title="첫 페이지로 (Home)" aria-label="첫 슬라이드로"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 3v10"/><path d="M12.5 3.5 7 8l5.5 4.5"/></svg></button>
+  <button type="button" id="prev" aria-label="이전 슬라이드">‹</button>
+  <span class="count" id="count">1 / 16</span>
+  <button type="button" id="next" aria-label="다음 슬라이드">›</button>
+  <button type="button" id="notesBtn" title="발표자 노트 (N)">N</button>
+  <button type="button" id="fsBtn" title="전체 화면 (F)">⛶</button>
+</nav>
+
+<script>
+(() => {
+  const deck = document.getElementById('deck');
+  const slides = [...deck.querySelectorAll('.slide')];
+  const N = slides.length;
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const $ = id => document.getElementById(id);
+  let cur = -1, timers = [], rafs = [];
+
+  /* ── fit the stage to the window ──
+     Landscape: a fixed 1600×900 stage. Phone held upright: a 640-wide stage whose height follows the
+     screen, and every slide re-flows to one column (html.portrait rules in the CSS). */
+  function fit() {
+    const W = innerWidth, H = innerHeight, root = document.documentElement;
+    const portrait = H > W * 1.15 && W < 900;
+    const short = !portrait && H < 560;
+    root.classList.toggle('portrait', portrait);
+    root.classList.toggle('short', short);
+    const dw = portrait ? 640 : 1600;
+    const dh = portrait ? Math.round(Math.max(1000, Math.min(1500, 640 * H / W))) : 900;
+    const availH = short ? H - 54 : H;
+    const s = Math.min(W / dw, availH / dh);
+    deck.style.width = dw + 'px'; deck.style.height = dh + 'px';
+    deck.style.top = short ? (availH / 2) + 'px' : '50%';
+    deck.style.transform = `scale(${s}) translate(${-dw / 2}px, ${-dh / 2}px)`;
+  }
+  addEventListener('resize', fit); addEventListener('orientationchange', () => setTimeout(fit, 200)); fit();
+
+  /* ── per-slide timers, cleared when the slide is left ── */
+  const later = (fn, ms) => timers.push(setTimeout(fn, reduced ? 0 : ms));
+  const every = (fn, ms) => timers.push(setInterval(fn, ms));
+  const frame = fn => { let id; const loop = t => { if (fn(t) !== false) { id = requestAnimationFrame(loop); rafs.push(id); } }; id = requestAnimationFrame(loop); rafs.push(id); };
+  function clearAll() { timers.forEach(t => { clearTimeout(t); clearInterval(t); }); rafs.forEach(cancelAnimationFrame); timers = []; rafs = []; }
+
+  /* ── count-up numbers: <span data-count="397.5" data-dec="1" data-comma="1" data-from="0" data-delay="500"> ── */
+  const fmt = (v, dec, comma) => comma ? v.toLocaleString('en-US', { minimumFractionDigits: dec, maximumFractionDigits: dec }) : v.toFixed(dec);
+  function countUp(el) {
+    const to = +el.dataset.count, from = +(el.dataset.from || 0), dec = +(el.dataset.dec || 0), delay = +(el.dataset.delay || 500), dur = 1600, comma = !!el.dataset.comma;
+    el.textContent = fmt(from, dec, comma);
+    if (reduced) { el.textContent = fmt(to, dec, comma); return; }
+    later(() => { const t0 = performance.now(); frame(t => { const p = Math.min(1, (t - t0) / dur), e = 1 - Math.pow(1 - p, 3); el.textContent = fmt(from + (to - from) * e, dec, comma); return p < 1; }); }, delay);
+  }
+
+  /* ── before/after toggle charts (.ptog buttons with data-p="0|1" next to a .pchart) ── */
+  const setToggle = (slide, after) => {
+    slide.querySelectorAll('.pchart').forEach(c => c.classList.toggle('after', after));
+    slide.querySelectorAll('.ptog button').forEach(b => b.setAttribute('aria-pressed', String((b.dataset.p === '1') === after)));
+  };
+  document.querySelectorAll('.ptog button').forEach(b => b.addEventListener('click', e => { e.stopPropagation(); clearAll(); setToggle(b.closest('.slide'), b.dataset.p === '1'); }));
+
+  /* ── slide hooks: <section class="slide" data-hook="name"> runs hooks.name(slide) on entry.
+     Add a hook per custom animation; use later/every/frame so leaving the slide stops it. ── */
+  const hooks = {
+    // .pchart: start on "before", switch to "after"
+    toggle(s) { setToggle(s, false); later(() => setToggle(s, true), 2600); },
+    // .wflow: light each .wstep in turn, arrows follow; .tok gets a fresh token on step 3
+    steps(s) {
+      const flow = s.querySelector('.wflow'), steps = [...flow.querySelectorAll('.wstep')], arrs = [...flow.querySelectorAll('.ar')];
+      const tok = flow.querySelector('.tok'); let i = -1;
+      const hex = () => Math.random().toString(16).slice(2, 6);
+      const tick = () => {
+        i = (i + 1) % (steps.length + 1);
+        steps.forEach((el, k) => el.classList.toggle('on', k === i));
+        arrs.forEach((a, k) => a.classList.toggle('on', k < i && i < steps.length));
+        if (tok && i === 2) tok.textContent = 'tok · ' + hex();
+      };
+      steps.forEach(el => el.classList.remove('on')); arrs.forEach(a => a.classList.remove('on'));
+      if (reduced) { steps.forEach(el => el.classList.add('on')); return; }
+      later(() => { tick(); every(tick, 1300); }, 1200);
+    },
+  };
+
+  /* ── navigation ── */
+  function go(n, fromHash) {
+    n = Math.max(0, Math.min(N - 1, n));
+    if (n === cur) return;
+    clearAll();
+    slides.forEach((s, k) => { s.classList.toggle('is-active', k === n); s.classList.toggle('is-past', k < n); s.setAttribute('aria-hidden', k !== n); });
+    cur = n;
+    const s = slides[n]; s.scrollTop = 0;
+    s.querySelectorAll('[data-count]').forEach(countUp);
+    if (s.dataset.hook && hooks[s.dataset.hook]) hooks[s.dataset.hook](s);
+    $('progress').style.width = ((n + 1) / N * 100) + '%';
+    $('count').textContent = `${n + 1} / ${N}`;
+    $('firstBtn').disabled = n === 0;
+    $('notes').innerHTML = `<b>${n + 1}</b>${s.dataset.notes || ''}`;
+    if (!fromHash) history.replaceState(null, '', '#' + (n + 1));
+  }
+  slides.forEach((s, k) => { s.setAttribute('role', 'group'); s.setAttribute('aria-roledescription', 'slide'); s.setAttribute('aria-label', `${k + 1} / ${N}`); });
+  $('firstBtn').onclick = () => go(0);
+  $('prev').onclick = () => go(cur - 1);
+  $('next').onclick = () => go(cur + 1);
+  $('notesBtn').onclick = () => $('notes').classList.toggle('show');
+  const fs = () => document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen?.();
+  $('fsBtn').onclick = fs;
+  addEventListener('keydown', e => {
+    if (e.metaKey || e.ctrlKey || e.altKey) return;
+    if (['ArrowRight', 'ArrowDown', 'PageDown', ' '].includes(e.key)) { e.preventDefault(); go(cur + 1); }
+    else if (['ArrowLeft', 'ArrowUp', 'PageUp'].includes(e.key)) { e.preventDefault(); go(cur - 1); }
+    else if (e.key === 'Home') go(0);
+    else if (e.key === 'End') go(N - 1);
+    else if (e.key === 'n' || e.key === 'N') $('notes').classList.toggle('show');
+    else if (e.key === 'f' || e.key === 'F') fs();
+  });
+  let tx = null, ty = 0;
+  addEventListener('touchstart', e => { tx = e.touches[0].clientX; ty = e.touches[0].clientY; }, { passive: true });
+  addEventListener('touchend', e => {
+    if (tx === null) return;
+    const d = e.changedTouches[0].clientX - tx, dy = e.changedTouches[0].clientY - ty; tx = null;
+    if (Math.abs(d) > 50 && Math.abs(d) > Math.abs(dy) * 1.3) go(cur + (d < 0 ? 1 : -1));
+  });
+  addEventListener('hashchange', () => go((parseInt(location.hash.slice(1), 10) || 1) - 1, true));
+  go((parseInt(location.hash.slice(1), 10) || 1) - 1, true);
+
+  /* ── background: a slow field of gold dots, brighter where a wave passes ── */
+  const cv = $('bgfx'), g = cv.getContext('2d');
+  let W, H, dpr;
+  const size = () => { dpr = Math.min(2, devicePixelRatio || 1); W = innerWidth; H = innerHeight; cv.width = W * dpr; cv.height = H * dpr; g.setTransform(dpr, 0, 0, dpr, 0, 0); };
+  size(); addEventListener('resize', size);
+  let last = 0;
+  const draw = t => {
+    if (!reduced) requestAnimationFrame(draw);
+    if (t - last < 50) return; last = t;
+    g.fillStyle = '#2B2B2B'; g.fillRect(0, 0, W, H);
+    const step = 26, s = t / 1000;
+    for (let y = step / 2; y < H; y += step) for (let x = step / 2; x < W; x += step) {
+      const w = Math.sin(x * .006 + s * .6) + Math.sin(y * .008 - s * .4) + Math.sin((x + y) * .004 + s * .3);
+      const a = .05 + Math.max(0, w) * .045;
+      g.fillStyle = `rgba(169,178,162,${a.toFixed(3)})`; g.fillRect(x - 1, y - 1, 2, 2);
+    }
+  };
+  requestAnimationFrame(draw);
+})();
+</script>
+</body>
+</html>

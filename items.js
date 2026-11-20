@@ -2,6 +2,16 @@
 // 직접 고칠 때도 JSON 형식(따옴표 붙은 키)을 유지해 주세요.
 window.ITEMS = [
   {
+    "href": "agent-platform-slides/",
+    "title": "Agent Demo에서 Agent Platform으로 (슬라이드 타입)",
+    "desc": "AI 에이전트를 데모에서 운영 가능한 플랫폼으로 만드는 다섯 축(오케스트레이션, 도구·권한, 메모리·작업 상태, 관측·평가, 게이트웨이·거버넌스)을 16장으로 정리. 움직이는 플랫폼 구조도, Plan→Act→Observe 루프, 체크포인트 복구 비교, 위험도별 권한 단계, 운영 문제 지도. 차콜·세이지 어스톤 테마와 배민 한나Pro·고도체, 폰 세로 화면 대응. Speaker Notes(N), Fullscreen(F).",
+    "type": "슬라이드",
+    "tags": ["AI 에이전트", "아키텍처", "MCP", "LLM"],
+    "date": "2026-11-20",
+    "thumb": "thumbs/agent-platform-slides.jpg",
+    "hidden": false
+  },
+  {
     "href": "ai-briefing-2026-11-w3-report/",
     "title": "2026년 11월 셋째 주 테크·AI 브리핑 (스크롤 타입)",
     "desc": "AI 시험 부정행위(세무사 수석 자백·수능 대책), Microsoft 365 장애(11월 12~14일 전 세계), Gemini 4 Argon·Carbon·Hydrogen과 Krypton·Helix·Oxygen 유출, 소형 모델 3종, Claude Projects, ChatGPT Wallet, Anthropic IPO, 피클 vs 부이까지 출처와 함께 정리한 상세 리포트. 정부 대응 일정표, 신호 경로 도해, Microsoft 365 장애 복구 타임라인과 SLA 크레딧 계산기, Gemini·소형 모델 비교, IPO 공모가 계산기 등 직접 조작하는 그림 포함.",
