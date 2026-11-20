@@ -9,7 +9,7 @@ window.ITEMS = [
     "tags": ["AI 에이전트", "아키텍처", "MCP", "LLM"],
     "date": "2026-11-20",
     "thumb": "thumbs/agent-platform-report.jpg",
-    "hidden": false
+    "hidden": true
   },
   {
     "href": "agent-platform-slides/",
