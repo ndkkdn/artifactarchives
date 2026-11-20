@@ -3,7 +3,7 @@
 window.ITEMS = [
   {
     "href": "ai-briefing-2026-11-w3-report/",
-    "title": "2026년 11월 셋째 주 테크·AI 브리핑 (스크롤형)",
+    "title": "2026년 11월 셋째 주 테크·AI 브리핑 (스크롤 타입)",
     "desc": "AI 시험 부정행위(세무사 수석 자백·수능 대책), Microsoft 365 장애(11월 12~14일 전 세계), Gemini 4 Argon·Carbon·Hydrogen과 Krypton·Helix·Oxygen 유출, 소형 모델 3종, Claude Projects, ChatGPT Wallet, Anthropic IPO, 피클 vs 부이까지 출처와 함께 정리한 상세 리포트. 정부 대응 일정표, 신호 경로 도해, Microsoft 365 장애 복구 타임라인과 SLA 크레딧 계산기, Gemini·소형 모델 비교, IPO 공모가 계산기 등 직접 조작하는 그림 포함.",
     "type": "리포트",
     "tags": ["AI 동향", "주간 브리핑", "IPO", "Microsoft 365 장애", "Gemini"],
@@ -12,7 +12,7 @@ window.ITEMS = [
   },
   {
     "href": "ai-briefing-2026-11-w3/",
-    "title": "2026년 11월 셋째 주 테크·AI 브리핑 (슬라이드형)",
+    "title": "2026년 11월 셋째 주 테크·AI 브리핑 (슬라이드 타입)",
     "desc": "Anthropic IPO, AI 시험 부정행위, Microsoft 365 장애, Gemini 4, 소형 모델 3종, Claude Projects, ChatGPT Wallet, 피클 vs 부이를 38장으로 정리. 장마다 사진 표지, 확정·루머·판단·벤더 수치 배지, 움직이는 도해와 약어 풀이, 폰 세로 화면 대응. Speaker Notes(N), Fullscreen(F).",
     "type": "슬라이드",
     "tags": ["AI 동향", "주간 브리핑", "IPO", "Microsoft 365 장애", "Gemini"],
@@ -21,7 +21,7 @@ window.ITEMS = [
   },
   {
     "href": "ai-terms/",
-    "title": "AI 작동 원리 필수 용어 (스크롤형)",
+    "title": "AI 작동 원리 필수 용어 (스크롤 타입)",
     "desc": "구조(신경망) → 학습(가중치 조정) → 추론의 흐름을 따라 정리한 필수 용어 42개. 용어마다 움직이는 미니 도해, Attention Is All You Need 논문 요약과 트랜스포머 구조도, 뉴런 계산기, 학습률 시뮬레이터, 토크나이저·어텐션 데모, 온도·Top-k·Top-p 샘플링 실험, 양자화·MoE 도해.",
     "type": "리포트",
     "tags": ["기본기", "용어", "LLM"],
@@ -31,7 +31,7 @@ window.ITEMS = [
   },
   {
     "href": "ai-terms-slides/",
-    "title": "AI 작동 원리 필수 용어 (슬라이드형)",
+    "title": "AI 작동 원리 필수 용어 (슬라이드 타입)",
     "desc": "구조 → 학습 → 추론의 흐름을 따라 필수 용어 42개를 정리한 42장 슬라이드. 용어 카드마다 미니 도해, 트랜스포머 구조도와 논문 Figure 1, 뉴런 계산기·학습률·온도·Top-k/Top-p 실험을 슬라이드 안에서 직접 조작할 수 있고, 폰 세로 화면 대응. Speaker Notes(N), Fullscreen(F).",
     "type": "슬라이드",
     "tags": ["기본기", "용어", "LLM"],
@@ -41,7 +41,7 @@ window.ITEMS = [
   },
   {
     "href": "ai-trends-2026-11-report/",
-    "title": "최신 AI 핵심 동향 심층 분석 (스크롤형)",
+    "title": "최신 AI 핵심 동향 심층 분석 (스크롤 타입)",
     "desc": "같은 보고서를 위아래로 스크롤해 읽는 상세 리포트. METR 가속 경주, 가중치 교정 애니메이션, 바둑판 코드 타이핑, dots 구조도, 직접 조절하는 Low-First 비용 시뮬레이터.",
     "type": "리포트",
     "tags": ["AI 동향", "METR", "Weight-Space", "Effort"],
@@ -50,7 +50,7 @@ window.ITEMS = [
   },
   {
     "href": "ai-trends-2026-11/",
-    "title": "최신 AI 핵심 동향 심층 분석 (슬라이드형)",
+    "title": "최신 AI 핵심 동향 심층 분석 (슬라이드 타입)",
     "desc": "METR 리포트, GPT Image 2.6, Weight-Space Programming, 프론티어 모델 3파전, 최신 Intelligence Index 순위, OpenAI dots와 AI 에이전트 비교·피클 실제 사례, Claude 모델·Effort 운용 가이드까지. 움직이는 도해와 약어 풀이가 들어간 20장 슬라이드, 폰 세로 화면 대응. Speaker Notes(N), Fullscreen(F).",
     "type": "슬라이드",
     "tags": ["AI 동향", "METR", "에이전트", "Effort"],
@@ -59,7 +59,7 @@ window.ITEMS = [
   },
   {
     "href": "llm-slides/",
-    "title": "LLM 이해하기 (슬라이드형)",
+    "title": "LLM 이해하기 (슬라이드 타입)",
     "desc": "발표용 28장 덱. 슬라이드마다 입장 애니메이션과 움직이는 도해, Speaker Notes(N), Fullscreen(F).",
     "type": "슬라이드",
     "tags": ["LLM", "기본기", "발표"],
@@ -68,7 +68,7 @@ window.ITEMS = [
   },
   {
     "href": "llm-guide/",
-    "title": "LLM 이해하기 (스크롤형)",
+    "title": "LLM 이해하기 (스크롤 타입)",
     "desc": "스크롤해 읽는 웹 가이드. 스크롤하면 재생되는 도해와 다음 Token 예측 데모, 태블릿·스마트폰 대응.",
     "type": "리포트",
     "tags": ["LLM", "기본기", "캐싱"],
