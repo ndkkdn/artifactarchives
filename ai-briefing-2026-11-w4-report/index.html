@@ -816,6 +816,17 @@ blockquote.q p { margin: 0; }
 .fcap2 { display: flex; justify-content: space-between; margin-top: 6px; font: 500 12px var(--mono); color: var(--dink-3); }
 .fcode { display: inline-block; margin-top: 8px; padding: 4px 10px; border-radius: 8px; background: #070d1a; color: #c9cede; font: 500 13px var(--mono); }
 @media (prefers-reduced-motion: reduce) { .fstrip2 em { animation: none !important; } }
+.mill2 > div { padding: 0 0 12px; overflow: hidden; }
+.mill2 > div > :not(.mimg) { margin-left: 12px; margin-right: 12px; }
+.mill2 > div.info { padding-top: 12px; justify-content: center; }
+.mill2 .mimg { position: relative; height: 84px; margin-bottom: 4px; background: #0a1220; border-bottom: 1px solid var(--line); overflow: hidden; }
+.mill2 .mimg.light { background: #fff; }
+.mill2 .mimg img { width: 100%; height: 100%; display: block; object-fit: cover; }
+.mill2 .mimg.contain img { object-fit: contain; padding: 5px; }
+.mill2 .mimg.top img { object-position: center 38%; }
+.mill2 .mimg span { position: absolute; right: 5px; bottom: 4px; font: 600 10.5px var(--mono); color: #f3efe4; background: rgba(5,10,20,.72); padding: 1px 6px; border-radius: 6px; }
+.mill2 a.mlink { color: inherit; text-decoration: none; } .mill2 a.mlink:hover { color: var(--gold); text-decoration: underline; }
+.mill2 .mimg-a { display: block; margin: 0 !important; }
 </style>
 <script>document.documentElement.classList.add('js');try{var t=localStorage.getItem('archive-theme');if(t)document.documentElement.dataset.theme=t;}catch(e){}try{var lq=/[?&]launch\b/.test(location.search),ls=sessionStorage.getItem('archive-launch');if(lq||ls===location.pathname){document.documentElement.classList.add('launched');if(!lq)sessionStorage.removeItem('archive-launch');}}catch(e){}</script>
 </head>
@@ -838,7 +849,7 @@ blockquote.q p { margin: 0; }
     <div class="kicker rv" style="--d:0ms">Weekly Tech · AI Briefing · 2026.11 W4</div>
     <h1 class="rv" style="--d:120ms">2026년 11월 넷째 주<br><em>테크·AI 브리핑</em></h1>
     <p class="lede rv" style="--d:260ms">이번 주 가장 큰 소식은 <b>리만 가설 증명 발표</b>입니다. Anthropic의 수학자 알푀게가 Claude와 함께 리만 가설을 증명했다고 11월 20일 발표했고, 증명은 Lean 4 코드로 공개돼 커뮤니티 검증을 통과했습니다. 다만 Clay 연구소의 공식 인정은 아직입니다.<sup class="fn"><a href="#s9" title="Nature – 리만 가설 증명 반응">9</a>,<a href="#s10" title="Scientific American – Lean 검증">10</a>,<a href="#s11" title="Kingy.ai – Clay 규정">11</a></sup> 모델 쪽에서는 <b>GPT-6.2 Astra·Sol</b>, <b>Gemini 4 Neon</b>, 오픈 웨이트 <b>Inkling 2 Mini</b>가 나왔고, 앱 속 AI로는 ChatGPT 리디자인, 카카오톡 '라이언', Gemini GIF 생성, Tesla FSD v15가 있었습니다.</p>
-    <div class="meta rv" style="--d:380ms"><span>📄 10개 주제 · 5개 장</span><span>⏱ 약 28분 읽기</span><span>🔗 출처 26건</span><span>📅 11월 23일 작성 기준</span><span style="opacity:.6">배경 사진: Matt Kieffer · CC BY-SA 2.0</span></div>
+    <div class="meta rv" style="--d:380ms"><span>📄 10개 주제 · 5개 장</span><span>⏱ 약 28분 읽기</span><span>🔗 출처 27건</span><span>📅 11월 23일 작성 기준</span><span style="opacity:.6">배경 사진: Matt Kieffer · CC BY-SA 2.0</span></div>
 
     <div class="shift week rv" style="--d:480ms" aria-label="이번 주 주요 일정">
       <div class="rail"><i></i></div><div class="glow"></div>
@@ -1060,16 +1071,16 @@ blockquote.q p { margin: 0; }
       <div class="fig" data-fig="mill">
         <div class="fig-h"><span class="t">일곱 문제와 현재 상태</span><button class="replay" type="button" data-replay>다시 재생</button></div>
         <div class="mill2">
-          <div class="pop" style="--d:0ms"><span class="f">컴퓨터 과학</span><b>P vs NP</b><p>검증이 쉬운 문제는 푸는 것도 쉬운가</p><span class="st">미해결</span></div>
-          <div class="pop hot" style="--d:120ms"><span class="f">정수론</span><b>리만 가설</b><p>제타 함수의 의미 있는 영점은 모두 임계선 위인가</p><span class="st g">증명 발표 · Clay 미인정</span></div>
-          <div class="pop" style="--d:240ms"><span class="f">수리물리</span><b>양-밀스 존재와 질량 간극</b><p>양자 게이지 이론이 수학적으로 존재하고, 질량 간극을 갖는가</p><span class="st">미해결</span></div>
-          <div class="pop" style="--d:360ms"><span class="f">유체역학</span><b>나비에-스토크스 방정식</b><p>3차원 유체 방정식에 늘 매끄러운 해가 있는가</p><span class="st">미해결</span></div>
-          <div class="pop" style="--d:480ms"><span class="f">정수론</span><b>버치-스위너턴다이어 추측</b><p>타원곡선 위 유리수 점의 개수와 L-함수의 관계</p><span class="st">미해결</span></div>
-          <div class="pop" style="--d:600ms"><span class="f">대수기하</span><b>호지 추측</b><p>어떤 위상적 대상을 대수적 도형으로 나타낼 수 있는가</p><span class="st">미해결</span></div>
-          <div class="pop done" style="--d:720ms"><span class="f">위상수학</span><b>푸앵카레 추측</b><p>구멍 없는 3차원 공간은 구면과 같은가. 페렐만이 2002–03년 증명 공개</p><span class="st ok">해결 · 2010 수여(거절)</span></div>
-          <div class="pop info" style="--d:840ms"><span class="f">집계 · 2026.11.23</span><div class="tally"><div><b>1</b><span>해결</span></div><div><b class="g">1</b><span>증명 발표</span></div><div><b>5</b><span>미해결</span></div></div><p>문제당 상금 <strong>100만 달러</strong></p></div>
+          <div class="pop" style="--d:0ms"><a class="mimg-a" href="https://commons.wikimedia.org/wiki/File:P_np_np-complete_np-hard.svg" target="_blank" rel="noopener" aria-label="P vs NP 이미지 원본(위키미디어 커먼즈)"><div class="mimg light contain"><img src="../ai-briefing-2026-11-w4/img/ch1-pnp.png" alt="P vs NP 문제 집합 포함 관계 다이어그램" loading="lazy"><span>P·NP 포함 관계</span></div></a><span class="f">컴퓨터 과학</span><b><a href="https://www.claymath.org/millennium/p-vs-np/" target="_blank" rel="noopener" class="mlink">P vs NP ↗</a></b><p>검증이 쉬운 문제는 푸는 것도 쉬운가</p><span class="st">미해결</span></div>
+          <div class="pop hot" style="--d:120ms"><a class="mimg-a" href="https://commons.wikimedia.org/wiki/File:Trajectory_of_a_point_moving_along_the_critical_line_transformed_by_Zeta_function.gif" target="_blank" rel="noopener" aria-label="리만 가설 이미지 원본(위키미디어 커먼즈)"><div class="mimg light contain"><img src="../ai-briefing-2026-11-w4/img/ch1-critical-line.gif" alt="임계선 위 점을 제타 함수로 옮긴 궤적 애니메이션" loading="lazy"><span>임계선 위 ζ 궤적</span></div></a><span class="f">정수론</span><b><a href="https://www.claymath.org/millennium/riemann-hypothesis/" target="_blank" rel="noopener" class="mlink">리만 가설 ↗</a></b><p>제타 함수의 의미 있는 영점은 모두 임계선 위인가</p><span class="st g">증명 발표 · Clay 미인정</span></div>
+          <div class="pop" style="--d:240ms"><a class="mimg-a" href="https://commons.wikimedia.org/wiki/File:Feynman_rules_-_QCD_4_gluon_vertex.svg" target="_blank" rel="noopener" aria-label="양-밀스 존재와 질량 간극 이미지 원본(위키미디어 커먼즈)"><div class="mimg light contain"><img src="../ai-briefing-2026-11-w4/img/mill-ym.png" alt="글루온 네 개가 한 점에서 만나는 파인만 도형" loading="lazy"><span>4-글루온 꼭짓점</span></div></a><span class="f">수리물리</span><b><a href="https://www.claymath.org/millennium/yang-mills-the-maths-gap/" target="_blank" rel="noopener" class="mlink">양-밀스 존재와 질량 간극 ↗</a></b><p>양자 게이지 이론이 수학적으로 존재하고, 질량 간극을 갖는가</p><span class="st">미해결</span></div>
+          <div class="pop" style="--d:360ms"><a class="mimg-a" href="https://commons.wikimedia.org/wiki/File:Karman_vortex_street.gif" target="_blank" rel="noopener" aria-label="나비에-스토크스 방정식 이미지 원본(위키미디어 커먼즈)"><div class="mimg cover"><img src="../ai-briefing-2026-11-w4/img/mill-ns.gif" alt="물체 뒤로 소용돌이가 번갈아 생기는 유체 흐름 애니메이션" loading="lazy"><span>카르만 소용돌이</span></div></a><span class="f">유체역학</span><b><a href="https://www.claymath.org/millennium/navier-stokes-equation/" target="_blank" rel="noopener" class="mlink">나비에-스토크스 방정식 ↗</a></b><p>3차원 유체 방정식에 늘 매끄러운 해가 있는가</p><span class="st">미해결</span></div>
+          <div class="pop" style="--d:480ms"><a class="mimg-a" href="https://commons.wikimedia.org/wiki/File:Elliptic-Curve-y%5E2%3Dx%5E3%2Bx%5E2-x.svg" target="_blank" rel="noopener" aria-label="버치-스위너턴다이어 추측 이미지 원본(위키미디어 커먼즈)"><div class="mimg light contain"><img src="../ai-briefing-2026-11-w4/img/mill-bsd.png" alt="타원곡선 그래프" loading="lazy"><span>y² = x³ + x² − x</span></div></a><span class="f">정수론</span><b><a href="https://www.claymath.org/millennium/birch-and-swinnerton-dyer-conjecture/" target="_blank" rel="noopener" class="mlink">버치-스위너턴다이어 추측 ↗</a></b><p>타원곡선 위 유리수 점의 개수와 L-함수의 관계</p><span class="st">미해결</span></div>
+          <div class="pop" style="--d:600ms"><a class="mimg-a" href="https://commons.wikimedia.org/wiki/File:Calabi-yau.jpg" target="_blank" rel="noopener" aria-label="호지 추측 이미지 원본(위키미디어 커먼즈)"><div class="mimg light contain"><img src="../ai-briefing-2026-11-w4/img/mill-hodge.jpg" alt="칼라비-야우 다양체를 3차원으로 그린 곡면" loading="lazy"><span>칼라비-야우 다양체</span></div></a><span class="f">대수기하</span><b><a href="https://www.claymath.org/millennium/hodge-conjecture/" target="_blank" rel="noopener" class="mlink">호지 추측 ↗</a></b><p>어떤 위상적 대상을 대수적 도형으로 나타낼 수 있는가</p><span class="st">미해결</span></div>
+          <div class="pop done" style="--d:720ms"><a class="mimg-a" href="https://commons.wikimedia.org/wiki/File:Grigori_Perelman,_1993_(re-scanned)_(cropped).jpg" target="_blank" rel="noopener" aria-label="푸앵카레 추측 이미지 원본(위키미디어 커먼즈)"><div class="mimg cover top"><img src="../ai-briefing-2026-11-w4/img/mill-poinc.jpg" alt="그리고리 페렐만의 1993년 사진" loading="lazy"><span>그리고리 페렐만(1993)</span></div></a><span class="f">위상수학</span><b><a href="https://www.claymath.org/millennium/poincare-conjecture/" target="_blank" rel="noopener" class="mlink">푸앵카레 추측 ↗</a></b><p>구멍 없는 3차원 공간은 구면과 같은가. 페렐만이 2002–03년 증명 공개</p><span class="st ok">해결 · 2010 수여(거절)</span></div>
+          <div class="pop info" style="--d:840ms"><span class="f">집계 · 2026.11.23</span><div class="tally"><div><b>1</b><span>해결</span></div><div><b class="g">1</b><span>증명 발표</span></div><div><b>5</b><span>미해결</span></div></div><p>문제당 상금 <strong>100만 달러</strong><br><a href="https://www.claymath.org/millennium-problems/" target="_blank" rel="noopener">Clay 문제 목록 ↗</a></p></div>
         </div>
-        <figcaption>자료: Clay 수학 연구소(Millennium Prize Problems). 리만 가설 상태는 2026년 11월 23일 기준입니다.</figcaption>
+        <figcaption>자료: Clay 수학 연구소(Millennium Prize Problems)<sup class="fn"><a href="#s27" title="Clay 수학 연구소 – Millennium Prize Problems">27</a></sup>. 리만 가설 상태는 2026년 11월 23일 기준입니다. 이미지: Wikimedia Commons · <a href="https://commons.wikimedia.org/wiki/File:P_np_np-complete_np-hard.svg" target="_blank" rel="noopener">P vs NP Behnam Esfahbod CC BY-SA 3.0</a> · <a href="https://commons.wikimedia.org/wiki/File:Trajectory_of_a_point_moving_along_the_critical_line_transformed_by_Zeta_function.gif" target="_blank" rel="noopener">리만 YoshiGosu CC BY-SA 4.0</a> · <a href="https://commons.wikimedia.org/wiki/File:Feynman_rules_-_QCD_4_gluon_vertex.svg" target="_blank" rel="noopener">양-밀스 Romainbehar CC0</a> · <a href="https://commons.wikimedia.org/wiki/File:Karman_vortex_street.gif" target="_blank" rel="noopener">나비에-스토크스 Thierry Dugnolle CC BY-SA 4.0</a> · <a href="https://commons.wikimedia.org/wiki/File:Elliptic-Curve-y%5E2%3Dx%5E3%2Bx%5E2-x.svg" target="_blank" rel="noopener">BSD Googolplexian1221 CC0</a> · <a href="https://commons.wikimedia.org/wiki/File:Calabi-yau.jpg" target="_blank" rel="noopener">호지 Andrew J. Hanson CC BY-SA 4.0</a> · <a href="https://commons.wikimedia.org/wiki/File:Grigori_Perelman,_1993_(re-scanned)_(cropped).jpg" target="_blank" rel="noopener">푸앵카레 George M. Bergman CC BY-SA 4.0</a></figcaption>
       </div>
 
       <h3><span class="hn">1.9</span>공식 인정은 아직입니다 <span class="unv">Clay 미인정</span></h3>
@@ -1541,6 +1552,7 @@ blockquote.q p { margin: 0; }
         <li id="s24"><a href="https://techcrunch.com/2026/11/13/chatgpts-new-wallet-lets-ai-agents-shop-and-check-out-for-you/" target="_blank" rel="noopener">TechCrunch – ChatGPT Wallet</a><span class="dom">techcrunch.com</span></li>
         <li id="s25"><a href="https://www.basenor.com/blogs/news/tesla-update-fsd-v15" target="_blank" rel="noopener">Basenor – FSD V15 Reality View 영상(@TeslaNewswire)</a><span class="dom">basenor.com</span></li>
         <li id="s26"><a href="https://developers.openai.com/api/docs/guides/image-generation" target="_blank" rel="noopener">OpenAI – 이미지 생성 가이드(GPT-Image-2.6 GIF 출력)</a><span class="dom">developers.openai.com</span></li>
+        <li id="s27"><a href="https://www.claymath.org/millennium-problems/" target="_blank" rel="noopener">Clay 수학 연구소 – Millennium Prize Problems</a><span class="dom">claymath.org</span></li>
       </ol>
     </section>
 
