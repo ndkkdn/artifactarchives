@@ -856,6 +856,21 @@
   .is-active .cgspot .cloud { animation: cgBob 2s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
   @keyframes cgBob { 50% { transform: translateY(-14px); } }
   @media (prefers-reduced-motion: reduce) { .cgspot *, .fstrip em, .voices .vw b, .mill .mt.hot::after { animation: none !important; } }
+  .zfig .zov { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+  .zfig .zl { stroke: rgba(213,168,68,.0); stroke-width: 10; }
+  .zfig .zscan { stroke: #ffd36b; stroke-width: 12; stroke-linecap: round; stroke-dasharray: 60 600; stroke-dashoffset: 0; opacity: 0; filter: drop-shadow(0 0 8px #ffd36b); }
+  .is-active .zfig .zscan { animation: zScan 5s linear infinite; }
+  @keyframes zScan { 0% { stroke-dashoffset: -560; opacity: 0; } 6% { opacity: 1; } 80% { stroke-dashoffset: 40; opacity: 1; } 86%, 100% { stroke-dashoffset: 40; opacity: 0; } }
+  .zfig .zr { fill: none; stroke: #ffd36b; stroke-width: 5; opacity: 0; transform-box: fill-box; transform-origin: center; }
+  .is-active .zfig .zr { animation: zRing 5s ease-out infinite; animation-delay: calc(var(--i) * .37s); }
+  @keyframes zRing { 0% { opacity: 0; transform: scale(.4); } 4% { opacity: 1; } 18% { opacity: 0; transform: scale(2.2); } 100% { opacity: 0; transform: scale(2.2); } }
+  .zfig .zlab rect { fill: rgba(5,10,20,.82); stroke: #d5a844; stroke-width: 2; }
+  .zfig .zlab text { fill: #ffd36b; font: 700 26px "JetBrains Mono", monospace; }
+  .js .zfig .zlab, .zfig .zlab { opacity: 0; }
+  .is-active .zfig .zlab { animation: zLab .6s var(--ease) 1.2s both; }
+  @keyframes zLab { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: none; } }
+  html.portrait .zfig { width: 100% !important; height: auto !important; aspect-ratio: 1400 / 787; }
+  @media (prefers-reduced-motion: reduce) { .zfig .zscan, .zfig .zr { animation: none !important; } .zfig .zlab { opacity: 1; animation: none !important; } }
   /* ── live demos (동작 재현 애니메이션) ── */
   .pcplot canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
   .pcstage { position: absolute; right: 16px; top: 12px; z-index: 4; text-align: right; font: 700 22px "JetBrains Mono", monospace; color: var(--gold); line-height: 1.25; }
@@ -1102,7 +1117,7 @@
   </section>
 
   <!-- 05 리만 가설이란 -->
-  <section class="slide" data-notes="리만 가설이 무엇인지 먼저 짚겠습니다. 리만 제타 함수는 1 나누기 n의 s제곱을 모든 자연수에 대해 더한 함수를 복소수 전체로 넓힌 것입니다. 이 함수가 0이 되는 점 가운데 음의 짝수에 있는 '자명한 영점'을 빼면, 나머지 영점은 모두 실수부가 정확히 2분의 1인 세로선, 즉 임계선 위에 있다는 것이 리만 가설입니다. 1859년 리만이 논문에서 제기했고, 2000년 Clay 연구소가 밀레니엄 문제로 지정했습니다. 컴퓨터로 수조 개 영점을 확인했지만, 모든 영점에 대한 증명은 이번이 처음이라는 주장입니다. 오른쪽 그림은 임계선을 따라 움직이는 점이 제타 함수를 거치면 어디로 가는지 보여 주는데, 원점을 지날 때가 바로 영점입니다.">
+  <section class="slide" data-notes="리만 가설이 무엇인지 먼저 짚겠습니다. 리만 제타 함수는 1 나누기 n의 s제곱을 모든 자연수에 대해 더한 함수를 복소수 전체로 넓힌 것입니다. 이 함수가 0이 되는 점 가운데 음의 짝수에 있는 '자명한 영점'을 빼면, 나머지 영점은 모두 실수부가 정확히 2분의 1인 세로선, 즉 임계선 위에 있다는 것이 리만 가설입니다. 1859년 리만이 논문에서 제기했고, 2000년 Clay 연구소가 밀레니엄 문제로 지정했습니다. 컴퓨터로 수조 개 영점을 확인했지만, 모든 영점에 대한 증명은 이번이 처음이라는 주장입니다. 오른쪽 그림은 실수부가 2분의 1인 임계선 위에 영점이 줄지어 있는 모습입니다. 아래에서 위로 영점을 하나씩 확인해 나가는 애니메이션처럼, 컴퓨터는 지금까지 10조 개가 넘는 영점이 모두 이 선 위에 있음을 확인했습니다. 리만 가설은 끝없이 올라가도 예외가 없다는 주장입니다.">
     <div class="kicker" data-a="left">01 · 리만 가설이란</div>
     <h2 data-a style="--d:1">모든 ‘의미 있는 영점’은 <em>한 줄 위</em>에 있다</h2>
     <div class="row" style="margin-top:24px; align-items:stretch">
@@ -1115,10 +1130,9 @@
         <div class="card" data-a style="--d:4"><div class="num">③ 167년의 역사</div>
           <p style="margin-top:8px"><b>1859</b> 리만 논문 → <b>2000</b> Clay 밀레니엄 문제 지정 → <b>2026.11.20</b> 증명 발표</p></div>
       </div>
-      <div class="stackcol" style="width:520px">
-        <figure class="refimg light fit" data-a="right" style="--d:3; height:330px"><img src="img/ch1-critical-line.gif" width="300" height="320" alt="임계선을 따라 움직이는 점이 제타 함수를 거쳐 그리는 궤적, 원점을 지나는 순간이 영점"><figcaption>임계선 위의 점을 ζ로 옮긴 궤적. 원점을 지날 때가 영점 · YoshiGosu, CC BY-SA 4.0 (Wikimedia Commons)</figcaption></figure>
-        <figure class="refimg" data-a="right" style="--d:4; height:200px"><img src="img/ch1-kingy-critical.jpg" width="1400" height="787" alt="격자 위 세로선에 영점이 줄지어 찍힌 일러스트"><figcaption>임계선에 늘어선 영점 일러스트 · Kingy.ai 기사 이미지</figcaption></figure>
-      </div>
+      <figure class="refimg zfig" data-a="right" style="--d:3; width:640px; height:360px; align-self:center"><img src="img/ch1-kingy-critical.jpg" width="1400" height="787" alt="격자 위 세로선에 영점이 줄지어 찍힌 일러스트">
+        <svg class="zov" viewBox="0 0 1400 787" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><line class="zl" x1="619" y1="140" x2="666" y2="645"/><line class="zscan" x1="619" y1="140" x2="666" y2="645"/><circle class="zr" cx="662" cy="621" r="16" style="--i:0"/><circle class="zr" cx="658" cy="578" r="16" style="--i:1"/><circle class="zr" cx="654" cy="524" r="16" style="--i:2"/><circle class="zr" cx="650" cy="477" r="16" style="--i:3"/><circle class="zr" cx="646" cy="437" r="16" style="--i:4"/><circle class="zr" cx="639" cy="353" r="16" style="--i:5"/><circle class="zr" cx="635" cy="314" r="16" style="--i:6"/><circle class="zr" cx="631" cy="266" r="16" style="--i:7"/><circle class="zr" cx="627" cy="211" r="16" style="--i:8"/><circle class="zr" cx="623" cy="170" r="16" style="--i:9"/><g class="zlab"><rect x="676" y="118" width="150" height="44" rx="10"/><text x="751" y="148" text-anchor="middle">Re = ½</text></g></svg>
+        <span class="demo-tag dark">영점 확인 애니메이션</span><figcaption>임계선에 늘어선 영점 일러스트 · Kingy.ai 기사 이미지 · 아래에서 위로 영점을 하나씩 확인하는 효과는 덧입힌 재현</figcaption></figure>
     </div>
     <div class="gloss" data-a="fade" style="--d:6" aria-label="약어 풀이"><span><b>복소수</b><em>complex number</em> · a + bi 꼴의 수. a는 실수부, b는 허수부(i² = −1)</span><span><b>영점</b><em>zero</em> · 함수값이 0이 되는 입력값 s</span><span><b>임계선</b><em>critical line</em> · 복소평면에서 실수부가 ½인 세로선</span><span><b>ζ</b> · 그리스 문자 제타</span></div>
   </section>

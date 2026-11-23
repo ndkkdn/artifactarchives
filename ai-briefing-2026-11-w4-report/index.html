@@ -792,6 +792,30 @@ blockquote.q p { margin: 0; }
 @media (max-width: 560px) { .chirow > div { grid-template-columns: 44px repeat(9, minmax(0, 1fr)); gap: 3px; } .chirow span { font-size: 12.5px; } .lfun { font-size: 13px; } }
 .lfun { font: 600 16px var(--mono); text-align: center; margin: 16px 0 6px; color: var(--ink); overflow-wrap: anywhere; }
 @media (prefers-reduced-motion: reduce) { .zplane .znt circle { opacity: 1 !important; animation: none !important; } }
+.mill2 { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+.mill2 > div { display: flex; flex-direction: column; gap: 4px; padding: 12px 14px; border-radius: 12px; border: 1px solid var(--line); background: var(--paper); font-size: 14px; line-height: 1.5; }
+.mill2 .f { font: 600 11.5px var(--mono); color: var(--ink-3); }
+.mill2 b { font-size: 15.5px; line-height: 1.35; color: var(--ink); }
+.mill2 p { margin: 0; color: var(--ink-2); flex: 1; }
+.mill2 .st { align-self: flex-start; font-size: 12px; font-weight: 700; padding: 2px 8px; border-radius: 999px; border: 1px solid var(--line); color: var(--ink-3); }
+.mill2 .st.g { color: var(--gold); border-color: var(--gold); background: var(--gold-soft); } .mill2 .st.ok { color: var(--green); border-color: var(--green); background: var(--green-soft); }
+.mill2 .hot { border-color: var(--gold); background: var(--gold-soft); } .mill2 .hot b { color: var(--gold); }
+.mill2 .done { border-color: var(--green); }
+.mill2 .info { border-style: dashed; background: transparent; }
+.mill2 .tally { display: flex; gap: 14px; } .mill2 .tally div { display: flex; flex-direction: column; } .mill2 .tally b { font: 800 30px var(--en); line-height: 1.1; } .mill2 .tally b.g { color: var(--gold); } .mill2 .tally span { font-size: 12px; color: var(--ink-3); }
+@media (max-width: 760px) { .mill2 { grid-template-columns: 1fr 1fr; } }
+.fsdemo { display: grid; gap: 14px; padding: 16px; }
+.fsdemo h6 { margin: 0 0 8px; font: 700 13px var(--mono); color: var(--dgold); }
+.fstrip2 { position: relative; display: flex; gap: 5px; height: 40px; }
+.fstrip2 i { flex: 1; border-radius: 6px; background: var(--card-2); border: 1px solid var(--dline); }
+.fstrip2.g i { background: linear-gradient(90deg, rgba(224,180,80,.1), rgba(224,180,80,.28)); }
+.fstrip2 em { position: absolute; top: -3px; bottom: -3px; left: 0; width: calc((100% - 40px) / 9); border-radius: 8px; border: 2px solid var(--dgold); box-shadow: 0 0 12px rgba(224,180,80,.5); }
+.fstrip2.o em { border-color: var(--dblue); box-shadow: 0 0 12px rgba(121,168,255,.5); }
+.in .fstrip2.g em { animation: fs2 3s linear infinite; } .in .fstrip2.o em { animation: fs2 1.8s steps(9) infinite; }
+@keyframes fs2 { from { transform: translateX(0); } to { transform: translateX(calc((100% + 5px) * 9)); } }
+.fcap2 { display: flex; justify-content: space-between; margin-top: 6px; font: 500 12px var(--mono); color: var(--dink-3); }
+.fcode { display: inline-block; margin-top: 8px; padding: 4px 10px; border-radius: 8px; background: #070d1a; color: #c9cede; font: 500 13px var(--mono); }
+@media (prefers-reduced-motion: reduce) { .fstrip2 em { animation: none !important; } }
 </style>
 <script>document.documentElement.classList.add('js');try{var t=localStorage.getItem('archive-theme');if(t)document.documentElement.dataset.theme=t;}catch(e){}try{var lq=/[?&]launch\b/.test(location.search),ls=sessionStorage.getItem('archive-launch');if(lq||ls===location.pathname){document.documentElement.classList.add('launched');if(!lq)sessionStorage.removeItem('archive-launch');}}catch(e){}</script>
 </head>
@@ -814,7 +838,7 @@ blockquote.q p { margin: 0; }
     <div class="kicker rv" style="--d:0ms">Weekly Tech · AI Briefing · 2026.11 W4</div>
     <h1 class="rv" style="--d:120ms">2026년 11월 넷째 주<br><em>테크·AI 브리핑</em></h1>
     <p class="lede rv" style="--d:260ms">이번 주 가장 큰 소식은 <b>리만 가설 증명 발표</b>입니다. Anthropic의 수학자 알푀게가 Claude와 함께 리만 가설을 증명했다고 11월 20일 발표했고, 증명은 Lean 4 코드로 공개돼 커뮤니티 검증을 통과했습니다. 다만 Clay 연구소의 공식 인정은 아직입니다.<sup class="fn"><a href="#s9" title="Nature – 리만 가설 증명 반응">9</a>,<a href="#s10" title="Scientific American – Lean 검증">10</a>,<a href="#s11" title="Kingy.ai – Clay 규정">11</a></sup> 모델 쪽에서는 <b>GPT-6.2 Astra·Sol</b>, <b>Gemini 4 Neon</b>, 오픈 웨이트 <b>Inkling 2 Mini</b>가 나왔고, 앱 속 AI로는 ChatGPT 리디자인, 카카오톡 '라이언', Gemini GIF 생성, Tesla FSD v15가 있었습니다.</p>
-    <div class="meta rv" style="--d:380ms"><span>📄 10개 주제 · 5개 장</span><span>⏱ 약 26분 읽기</span><span>🔗 출처 25건</span><span>📅 11월 23일 작성 기준</span><span style="opacity:.6">배경 사진: Matt Kieffer · CC BY-SA 2.0</span></div>
+    <div class="meta rv" style="--d:380ms"><span>📄 10개 주제 · 5개 장</span><span>⏱ 약 28분 읽기</span><span>🔗 출처 26건</span><span>📅 11월 23일 작성 기준</span><span style="opacity:.6">배경 사진: Matt Kieffer · CC BY-SA 2.0</span></div>
 
     <div class="shift week rv" style="--d:480ms" aria-label="이번 주 주요 일정">
       <div class="rail"><i></i></div><div class="glow"></div>
@@ -1031,7 +1055,24 @@ blockquote.q p { margin: 0; }
       </div>
       <figure class="refig cap"><div class="ph"><img src="../ai-briefing-2026-11-w4/img/ch1-sciam.jpg" width="1400" height="787" alt="Scientific American 기사 이미지" loading="lazy"></div><figcaption>Scientific American 기사 이미지 · Lean 검증 기사</figcaption></figure>
 
-      <h3><span class="hn">1.8</span>공식 인정은 아직입니다 <span class="unv">Clay 미인정</span></h3>
+      <h3><span class="hn">1.8</span>밀레니엄 7대 난제: 상금 100만 달러씩, 풀린 것은 하나</h3>
+      <p>리만 가설은 Clay 연구소가 2000년 5월 24일 발표한 일곱 개의 밀레니엄 문제 가운데 하나입니다. 문제마다 100만 달러의 상금이 걸려 있습니다. 일곱 가운데 공식적으로 풀린 것은 푸앵카레 추측 하나입니다.</p>
+      <div class="fig" data-fig="mill">
+        <div class="fig-h"><span class="t">일곱 문제와 현재 상태</span><button class="replay" type="button" data-replay>다시 재생</button></div>
+        <div class="mill2">
+          <div class="pop" style="--d:0ms"><span class="f">컴퓨터 과학</span><b>P vs NP</b><p>검증이 쉬운 문제는 푸는 것도 쉬운가</p><span class="st">미해결</span></div>
+          <div class="pop hot" style="--d:120ms"><span class="f">정수론</span><b>리만 가설</b><p>제타 함수의 의미 있는 영점은 모두 임계선 위인가</p><span class="st g">증명 발표 · Clay 미인정</span></div>
+          <div class="pop" style="--d:240ms"><span class="f">수리물리</span><b>양-밀스 존재와 질량 간극</b><p>양자 게이지 이론이 수학적으로 존재하고, 질량 간극을 갖는가</p><span class="st">미해결</span></div>
+          <div class="pop" style="--d:360ms"><span class="f">유체역학</span><b>나비에-스토크스 방정식</b><p>3차원 유체 방정식에 늘 매끄러운 해가 있는가</p><span class="st">미해결</span></div>
+          <div class="pop" style="--d:480ms"><span class="f">정수론</span><b>버치-스위너턴다이어 추측</b><p>타원곡선 위 유리수 점의 개수와 L-함수의 관계</p><span class="st">미해결</span></div>
+          <div class="pop" style="--d:600ms"><span class="f">대수기하</span><b>호지 추측</b><p>어떤 위상적 대상을 대수적 도형으로 나타낼 수 있는가</p><span class="st">미해결</span></div>
+          <div class="pop done" style="--d:720ms"><span class="f">위상수학</span><b>푸앵카레 추측</b><p>구멍 없는 3차원 공간은 구면과 같은가. 페렐만이 2002–03년 증명 공개</p><span class="st ok">해결 · 2010 수여(거절)</span></div>
+          <div class="pop info" style="--d:840ms"><span class="f">집계 · 2026.11.23</span><div class="tally"><div><b>1</b><span>해결</span></div><div><b class="g">1</b><span>증명 발표</span></div><div><b>5</b><span>미해결</span></div></div><p>문제당 상금 <strong>100만 달러</strong></p></div>
+        </div>
+        <figcaption>자료: Clay 수학 연구소(Millennium Prize Problems). 리만 가설 상태는 2026년 11월 23일 기준입니다.</figcaption>
+      </div>
+
+      <h3><span class="hn">1.9</span>공식 인정은 아직입니다 <span class="unv">Clay 미인정</span></h3>
       <p>Clay 연구소 규정상 상금 심사 대상이 되려면 세 조건을 모두 채워야 합니다. 지금은 하나도 충족하지 않았고, Clay 홈페이지는 여전히 이 문제를 미해결로 표시하고 있습니다.<sup class="fn"><a href="#s11" title="Kingy.ai – Clay 규정">11</a></sup></p>
       <div class="fig" data-fig="clay">
         <div class="fig-h"><span class="t">Clay 밀레니엄 상금 심사 조건</span><span class="s">2026.11.23 기준</span></div>
@@ -1043,7 +1084,7 @@ blockquote.q p { margin: 0; }
         <div class="clay-res rv" style="--d:600ms"><strong>결론:</strong> Lean으로 검증된 것과 Clay가 인정한 것은 다릅니다. 이번 증명은 <strong>"발표 + Lean 검증 완료, Clay 미인정"</strong>입니다.</div>
       </div>
 
-      <h3><span class="hn">1.9</span>왜 P=NP가 따라 나오나</h3>
+      <h3><span class="hn">1.10</span>왜 P=NP가 따라 나오나</h3>
       <ol class="dots">
         <li><strong>같은 밀레니엄 문제:</strong> 둘 다 Clay 밀레니엄 문제라 "밀레니엄 문제가 풀렸다"는 소식이 섞여 전해졌습니다. 메모에서도 둘을 연결했습니다.</li>
         <li><strong>사건의 구조가 닮았다:</strong> 증명을 확인하는 데는 하루, 찾는 데는 167년이 걸렸습니다. 답을 <strong>검증하기는 쉬운데 찾기는 어려운</strong> 문제, 이것이 NP입니다.</li>
@@ -1052,7 +1093,7 @@ blockquote.q p { margin: 0; }
       <div class="callout"><span class="tag">판단</span><p>만약 P = NP라면 짧은 증명을 찾는 일이 검증만큼 쉬워집니다. 하지만 AI가 리만 가설이라는 <strong>문제 하나</strong>의 증명을 찾았다고 해서, 모든 NP 문제를 빠르게 푸는 방법이 생긴 것은 아닙니다.</p></div>
       <figure class="refig cap"><div class="ph light"><img src="../ai-briefing-2026-11-w4/img/ch1-pnp.png" width="1400" height="788" alt="P가 NP와 다를 때와 같을 때 문제 집합의 포함 관계를 그린 다이어그램" loading="lazy"></div><figcaption>P≠NP(왼쪽)와 P=NP(오른쪽)일 때 문제 집합의 관계 · Behnam Esfahbod, CC BY-SA 3.0 (Wikimedia Commons)</figcaption></figure>
 
-      <h3><span class="hn">1.10</span>P=NP 관련 정정</h3>
+      <h3><span class="hn">1.11</span>P=NP 관련 정정</h3>
       <ul class="dots">
         <li>리만 가설과 P vs NP는 <strong>서로 다른 밀레니엄 문제</strong>입니다. 리만 가설이 증명되어도 P vs NP는 풀리지 않습니다.</li>
         <li>P vs NP는 "검증이 쉬운 문제는 푸는 것도 쉬운가?"라는 <strong>열린 질문</strong>입니다. 메모의 "정답을 알면 풀기도 쉽다"처럼 이미 정해진 명제가 아닙니다.</li>
@@ -1087,6 +1128,8 @@ blockquote.q p { margin: 0; }
         <div><dt>ERH</dt><dd><em>Extended Riemann Hypothesis</em>확장 리만 가설. 데데킨트 제타 함수까지 넓힌 리만 가설</dd></div>
         <div><dt>복소수</dt><dd><em>Complex number</em>a + bi 꼴의 수. a는 실수부, b는 허수부이고 i² = −1</dd></div>
         <div><dt>영점</dt><dd><em>Zero</em>함수값이 0이 되는 입력값. 제타 함수에서는 ζ(s) = 0이 되는 s</dd></div>
+        <div><dt>밀레니엄 문제</dt><dd><em>Millennium Prize Problems</em>Clay 연구소가 상금을 건 7개 수학 난제</dd></div>
+        <div><dt>질량 간극</dt><dd><em>Mass gap</em>가장 가벼운 입자도 0보다 큰 질량을 갖는 성질</dd></div>
         <div><dt>Li(x)</dt><dd><em>Logarithmic integral</em>로그 적분. 소수 개수를 잘 근사하는 함수</dd></div>
         <div><dt>커널</dt><dd><em>Lean kernel</em>Lean에서 증명의 모든 단계를 최종 검사하는 작은 핵심 프로그램</dd></div>
         <div><dt>GRH</dt><dd><em>Generalized Riemann Hypothesis</em>일반화된 리만 가설. 디리클레 L-함수까지 넓힌 리만 가설</dd></div>
@@ -1383,10 +1426,35 @@ blockquote.q p { margin: 0; }
         <div><b>11.05</b><span>모델 정식 출시(GA)일</span></div>
       </div>
 
+      <h3><span class="hn">4.5</span>GIF 비교: Gemini 앱 vs GPT-Image-2.6의 GIF 생성 기능</h3>
+      <p>GIF를 만드는 길은 하나 더 있습니다. OpenAI의 이미지 모델 <strong>GPT-Image-2.6</strong>에는 GIF 생성 기능이 있습니다. 별도의 GIF 모델이 아니라, Sunburst와 Flare 두 버전 모두 Image API에서 출력 형식을 GIF로 고르면 애니메이션 GIF를 만들어 줍니다. API로 누구나 쓸 수 있는 전체 공개 기능입니다.<sup class="fn"><a href="#s26" title="OpenAI – 이미지 생성 가이드">26</a></sup></p>
+      <div class="tbl-wrap" data-cards="rows">
+        <table>
+          <thead><tr><th>비교</th><th>Gemini 앱 · GIF 생성</th><th>GPT-Image-2.6 · GIF 생성 기능</th></tr></thead>
+          <tbody>
+            <tr><td>쓰는 사람</td><td>Google AI 구독자 · Gemini 앱</td><td>개발자 · Image API</td></tr>
+            <tr><td>입력</td><td>텍스트 · 사진 · 영상</td><td>텍스트 · 이미지(편집)</td></tr>
+            <tr><td>길이 조절</td><td>약 3초 반복 (고정)</td><td>2–16프레임 × 20–2000ms · 기본 9 × 200ms ≈ 1.8초</td></tr>
+            <tr><td>모델</td><td>Omni 1.2 Flash</td><td><code>gpt-image-2.6-sunburst</code> · <code>gpt-image-2.6-flare</code></td></tr>
+            <tr><td>가격</td><td>구독에 포함</td><td>이미지 출력 100만 토큰당 $30 · GIF 별도 가격 없음</td></tr>
+            <tr><td>누가 · 언제</td><td><span class="okc">구독자 · 한국 포함 · 11.20</span></td><td><span class="okc">API 전체 공개</span> 공개일 미표기</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="fig" data-fig="gifcmp">
+        <div class="fig-h"><span class="t">정해진 3초 루프 vs 프레임 수·간격 지정</span><span class="s">반복 재생</span></div>
+        <div class="fsdemo dk">
+          <div><h6>Gemini · 정해진 3초 루프</h6><div class="fstrip2 g"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><em></em></div><div class="fcap2"><span>0초</span><span>↻ 3초</span></div></div>
+          <div><h6>GPT-Image-2.6 · 프레임 단위</h6><div class="fstrip2 o"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><em></em></div><div class="fcap2"><span>frame_count 9</span><span>frame_duration_ms 200</span></div><code class="fcode">output_format: "gif"</code></div>
+        </div>
+        <figcaption>위: 연속해서 흐르는 3초 루프. 아래: 9개 프레임을 200ms씩 끊어 넘기는 방식. 세부 설정값은 OpenAI 이미지 생성 가이드 기준이며, 공개 날짜는 문서에 적혀 있지 않습니다.</figcaption>
+      </div>
+
       <aside class="gloss" aria-label="약어 풀이"><span class="tag">이 장의 약어</span>
         <dl>
         <div><dt>GPT-Live</dt><dd><em>OpenAI GPT-Live</em>OpenAI의 실시간 음성 대화 모델</dd></div>
         <div><dt>전이중</dt><dd><em>Full duplex</em>듣기와 말하기를 동시에 하는 방식</dd></div>
+        <div><dt>프레임</dt><dd><em>Frame</em>GIF를 이루는 정지 그림 한 장</dd></div>
         <div><dt>EEA</dt><dd><em>European Economic Area</em>유럽경제지역. EU 27개국과 아이슬란드·리히텐슈타인·노르웨이</dd></div>
         <div><dt>CBT</dt><dd><em>Closed Beta Test</em>비공개 베타. 일부 신청자만 먼저 써 보는 시험 운영</dd></div>
         <div><dt>GA</dt><dd><em>General Availability</em>정식 출시. 누구나 쓸 수 있는 단계</dd></div>
@@ -1472,6 +1540,7 @@ blockquote.q p { margin: 0; }
         <li id="s23"><a href="https://help.openai.com/en/articles/20001641-pricing-and-billing-for-dots-in-chatgpt-enterprise" target="_blank" rel="noopener">OpenAI 도움말 – Enterprise dots 요금</a><span class="dom">help.openai.com</span></li>
         <li id="s24"><a href="https://techcrunch.com/2026/11/13/chatgpts-new-wallet-lets-ai-agents-shop-and-check-out-for-you/" target="_blank" rel="noopener">TechCrunch – ChatGPT Wallet</a><span class="dom">techcrunch.com</span></li>
         <li id="s25"><a href="https://www.basenor.com/blogs/news/tesla-update-fsd-v15" target="_blank" rel="noopener">Basenor – FSD V15 Reality View 영상(@TeslaNewswire)</a><span class="dom">basenor.com</span></li>
+        <li id="s26"><a href="https://developers.openai.com/api/docs/guides/image-generation" target="_blank" rel="noopener">OpenAI – 이미지 생성 가이드(GPT-Image-2.6 GIF 출력)</a><span class="dom">developers.openai.com</span></li>
       </ol>
     </section>
 
