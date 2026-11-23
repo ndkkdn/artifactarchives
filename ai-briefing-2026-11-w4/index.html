@@ -1673,18 +1673,18 @@
   </section>
 
   <!-- 27b GIF 비교 -->
-  <section class="slide" data-notes="같은 주에 GIF를 만들 수 있는 길이 하나 더 있습니다. OpenAI의 이미지 모델 GPT-Image-2.6 Sunburst와 Flare는 Image API에서 애니메이션 GIF 출력을 지원합니다. 둘을 비교하면, Gemini는 앱에서 구독자가 텍스트, 사진, 영상으로 약 3초짜리 반복 GIF를 바로 만드는 소비자 기능이고, 한국도 지원합니다. GPT-Image-2.6은 개발자용 API로, output_format을 gif로 지정하고 프레임 수를 2에서 16개, 프레임 간격을 20에서 2000밀리초로 정합니다. 기본값은 9프레임에 200밀리초라서 약 1.8초입니다. 가격은 이미지 출력 100만 토큰당 30달러이고 GIF 전용 가격은 따로 없습니다. GPT-Image-2.6의 공개 날짜는 문서에서 확인하지 못했습니다.">
+  <section class="slide" data-notes="같은 주에 GIF를 만들 수 있는 길이 하나 더 있습니다. OpenAI의 이미지 모델 GPT-Image-2.6에는 GIF 생성 기능이 있습니다. 별도의 GIF 모델이 아니라, Sunburst와 Flare 두 버전 모두 Image API에서 출력 형식을 GIF로 고르면 애니메이션 GIF를 만들어 줍니다. API로 누구나 쓸 수 있는 전체 공개 기능입니다. 둘을 비교하면, Gemini는 앱에서 구독자가 텍스트, 사진, 영상으로 약 3초짜리 반복 GIF를 바로 만드는 소비자 기능이고, 한국도 지원합니다. GPT-Image-2.6은 개발자용 API로, output_format을 gif로 지정하고 프레임 수를 2에서 16개, 프레임 간격을 20에서 2000밀리초로 정합니다. 기본값은 9프레임에 200밀리초라서 약 1.8초입니다. 가격은 이미지 출력 100만 토큰당 30달러이고 GIF 전용 가격은 따로 없습니다. 다만 문서에 공개 날짜는 적혀 있지 않습니다.">
     <div class="kicker" data-a="left">04 · GIF 비교</div>
     <h2 data-a style="--d:1">앱에서 3초 vs API에서 <em>프레임 단위로</em></h2>
     <div class="row" style="margin-top:22px; align-items:stretch">
       <div class="ftab cmp3 grow" data-a style="--d:2">
-        <div class="h">항목</div><div class="h">Gemini 앱 GIF</div><div class="h">GPT-Image-2.6 GIF</div>
+        <div class="h">항목</div><div class="h">Gemini 앱 · GIF 생성</div><div class="h">GPT-Image-2.6 · GIF 생성 기능</div>
         <div class="rh">쓰는 사람</div><div><span><b>Google AI 구독자</b> · Gemini 앱</span></div><div><span><b>개발자</b> · Image API</span></div>
         <div class="rh">입력</div><div><span>텍스트 · 사진 · 영상</span></div><div><span>텍스트 · 이미지(편집)</span></div>
         <div class="rh">길이 조절</div><div><span>약 <b>3초</b> 반복 (고정)</span></div><div><span><b>2–16프레임</b> × 20–2000ms<br>기본 9 × 200ms ≈ 1.8초</span></div>
         <div class="rh">모델</div><div><span>Omni 1.2 Flash</span></div><div><span><code>gpt-image-2.6-sunburst</code> · <code>-flare</code></span></div>
         <div class="rh">가격</div><div><span>구독에 포함</span></div><div><span>이미지 출력 100만 토큰당 <b>$30</b> · GIF 별도 가격 없음</span></div>
-        <div class="rh">한국 · 공개</div><div><span><span class="badge ok">한국 포함 · 11.20</span></span></div><div><span><span class="badge rumor">공개일 문서에 없음</span></span></div>
+        <div class="rh">누가 · 언제</div><div><span><span class="badge ok">구독자 · 한국 포함 · 11.20</span></span></div><div><span><span class="badge ok">API 전체 공개</span> <span class="small" style="color:var(--ink-3)">공개일 미표기</span></span></div>
       </div>
       <div class="stackcol" style="width:400px">
         <div class="card" data-a="right" style="--d:3"><div class="num">Gemini · 정해진 3초 루프</div>
