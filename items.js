@@ -9,7 +9,7 @@ window.ITEMS = [
     "tags": ["AI 동향", "주간 브리핑", "리만 가설", "GPT-6.2", "Gemini"],
     "date": "2026-11-23",
     "thumb": "thumbs/ai-briefing-2026-11-w4-report.jpg",
-    "hidden": false
+    "hidden": true
   },
   {
     "href": "ai-briefing-2026-11-w4/",
@@ -18,8 +18,7 @@ window.ITEMS = [
     "type": "슬라이드",
     "tags": ["AI 동향", "주간 브리핑", "리만 가설", "GPT-6.2", "Gemini"],
     "date": "2026-11-23",
-    "thumb": "thumbs/ai-briefing-2026-11-w4.jpg",
-    "hidden": false
+    "thumb": "thumbs/ai-briefing-2026-11-w4.jpg"
   },
   {
     "href": "agent-platform-report/",
