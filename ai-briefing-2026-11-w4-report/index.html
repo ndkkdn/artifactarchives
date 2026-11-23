@@ -1,0 +1,1775 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="리만 가설 증명(가설의 뜻, 소수 계단 애니메이션, Lean 코드와 검증 이유, Clay 조건, P=NP가 따라 나오는 이유와 정정), GPT-6.2 Astra·Sol, Gemini 4 Neon과 Cobalt·Helium, Inkling 2 Mini와 4비트 양자화, Google Stitch Loop와 대기자 명단, Runway diffusion-ui, ChatGPT 리디자인과 dots·GPT-Live-1.1, 카카오톡 라이언 기능표, Gemini GIF, Tesla FSD v15 Reality View 영상까지 읽기용으로 정리한 주간 브리핑.">
+<title>2026년 11월 넷째 주 테크·AI 브리핑</title>
+<link rel="icon" href="../favicon.ico" sizes="any">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<style>
+/* Layout: same editorial long-read system as ai-briefing-2026-11-w3-report — dark hero with the week's timeline,
+   sticky top bar with read progress, left TOC rail on desktop (bottom sheet on phone), 760px article column;
+   figures play when scrolled into view. Citation numbers link to the Sources list at the end. */
+/* Layout: editorial long-read (same system as ai-trends-2026-11-report) — dark hero with the week's timeline,
+   sticky top bar with read progress, left TOC rail on desktop (bottom sheet on phone), 760px article column;
+   figures play when scrolled into view. Citation numbers link to the Sources list at the end. */
+:root {
+  --bg: #f6f2e8; --paper: #fffdf7; --paper-2: #efe9da; --ink: #101a2c; --ink-2: #4a5263; --ink-3: #7d8494;
+  --line: #e2dac6; --gold: #a87a12; --gold-soft: #f4e8c8; --coral: #d8461c; --coral-soft: #fbe3d8;
+  --blue: #2a63d4; --blue-soft: #e2ebfb; --green: #13865a; --green-soft: #dcf1e7; --violet: #6b4fd0; --violet-soft: #ebe5fb;
+  --redact: #101a2c; --code: #f0ebde;
+  --shadow: 0 1px 2px rgba(40, 30, 10, .05), 0 12px 32px rgba(40, 30, 10, .07);
+  --sans: "Pretendard Variable", Pretendard, Inter, -apple-system, system-ui, sans-serif;
+  --serif: "Noto Serif KR", "Pretendard Variable", serif;
+  --en: Inter, "Pretendard Variable", sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  --ease: cubic-bezier(.2, .8, .2, 1);
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0b1322; --paper: #111b2e; --paper-2: #17233a; --ink: #f1ede2; --ink-2: #b9bccb; --ink-3: #868ca0;
+    --line: #233150; --gold: #e0b450; --gold-soft: #2b2512; --coral: #ff7a4f; --coral-soft: #351a12;
+    --blue: #79a8ff; --blue-soft: #15223f; --green: #4fd09a; --green-soft: #0f2a20; --violet: #a993ff; --violet-soft: #1f1a3a;
+    --redact: #000; --code: #0d1626; --shadow: 0 1px 2px rgba(0,0,0,.4), 0 12px 32px rgba(0,0,0,.35);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0b1322; --paper: #111b2e; --paper-2: #17233a; --ink: #f1ede2; --ink-2: #b9bccb; --ink-3: #868ca0;
+  --line: #233150; --gold: #e0b450; --gold-soft: #2b2512; --coral: #ff7a4f; --coral-soft: #351a12;
+  --blue: #79a8ff; --blue-soft: #15223f; --green: #4fd09a; --green-soft: #0f2a20; --violet: #a993ff; --violet-soft: #1f1a3a;
+  --redact: #000; --code: #0d1626; --shadow: 0 1px 2px rgba(0,0,0,.4), 0 12px 32px rgba(0,0,0,.35);
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 76px; -webkit-text-size-adjust: 100%; }
+body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--sans); font-size: 17px; line-height: 1.82;
+  -webkit-font-smoothing: antialiased; word-break: keep-all; overflow-wrap: break-word; }
+a { color: var(--blue); text-underline-offset: 3px; }
+:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; border-radius: 4px; }
+.gutter { padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+@media (min-width: 640px) { .gutter { padding-left: max(28px, env(safe-area-inset-left, 0px)); padding-right: max(28px, env(safe-area-inset-right, 0px)); } }
+.mono { font-family: var(--mono); }
+.en { font-family: var(--en); }
+
+/* ---------- motion primitives: an ancestor gets .in when scrolled into view ---------- */
+@keyframes rise { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
+@keyframes pop { 0% { opacity: 0; transform: scale(.55); } 70% { transform: scale(1.06); } 100% { opacity: 1; transform: none; } }
+@keyframes growX { from { transform: scaleX(0); } to { transform: none; } }
+@keyframes growY { from { transform: scaleY(0); } to { transform: none; } }
+@keyframes slideIn { from { opacity: 0; transform: translateX(-18px); } to { opacity: 1; transform: none; } }
+@keyframes strike { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+@keyframes dash { to { stroke-dashoffset: -24; } }
+@keyframes blink { 50% { opacity: 0; } }
+@keyframes stamp { 0% { opacity: 0; transform: rotate(-14deg) scale(2.2); } 60% { opacity: 1; transform: rotate(-14deg) scale(.94); } 100% { opacity: 1; transform: rotate(-14deg) scale(1); } }
+@keyframes pulse { 0%, 100% { opacity: .35; } 50% { opacity: 1; } }
+.rv, .pop, .gx, .gy, .si { opacity: 1; }
+.js .rv, .js .pop, .js .si { opacity: 0; }
+.js .gx, .js .gy { transform: scaleX(0); }
+.js .gy { transform: scaleY(0); }
+.in .rv, .rv.in { animation: rise .7s var(--ease) both; animation-delay: var(--d, 0ms); }
+.in .pop { animation: pop .55s var(--ease) both; animation-delay: var(--d, 0ms); }
+.in .si { animation: slideIn .55s var(--ease) both; animation-delay: var(--d, 0ms); }
+.in .gx { transform-origin: left center; animation: growX .9s var(--ease) both; animation-delay: var(--d, 0ms); }
+.in .gy { transform-origin: bottom; animation: growY .8s var(--ease) both; animation-delay: var(--d, 0ms); }
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .js .rv, .js .pop, .js .si { opacity: 1; }
+  .js .gx, .js .gy { transform: none; }
+  *, *::before, *::after { animation-duration: .001ms !important; animation-delay: 0ms !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important; }
+}
+
+/* ---------- top bar ---------- */
+.topbar { position: sticky; top: 0; z-index: 20; background: color-mix(in srgb, var(--bg) 86%, transparent);
+  backdrop-filter: saturate(1.4) blur(14px); -webkit-backdrop-filter: saturate(1.4) blur(14px); border-bottom: 1px solid var(--line); }
+.topbar-in { max-width: 1180px; margin: 0 auto; height: 58px; display: flex; align-items: center; gap: 10px; }
+.crumb { display: flex; align-items: center; gap: 8px; min-width: 0; font-size: 14px; color: var(--ink-2); text-decoration: none; }
+.crumb b { color: var(--ink); font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.crumb .arch { font-family: var(--en); font-weight: 600; letter-spacing: .02em; white-space: nowrap; }
+.crumb .sep { color: var(--ink-3); }
+.topbar .sp { flex: 1; }
+.btn { appearance: none; border: 1px solid var(--line); background: var(--paper); color: var(--ink); height: 36px; padding: 0 13px;
+  border-radius: 999px; font: 600 13px/1 var(--sans); display: inline-flex; align-items: center; gap: 6px; cursor: pointer; text-decoration: none; white-space: nowrap; }
+.btn:hover { border-color: var(--gold); }
+.btn svg { width: 16px; height: 16px; }
+.progress { position: absolute; left: 0; bottom: -1px; height: 2px; width: 100%; background: var(--gold); transform-origin: left; transform: scaleX(0); }
+@media (max-width: 560px) { .crumb .arch, .crumb .sep { display: none; } .btn .lbl { display: none; } .btn { padding: 0 10px; } }
+
+/* ---------- hero ---------- */
+.hero { position: relative; overflow: hidden; background: #0c1524; color: #f3efe4; }
+.hero::before { content: ""; position: absolute; inset: -40px; opacity: .5;
+  background-image: radial-gradient(rgba(243,239,228,.16) 1.2px, transparent 1.4px); background-size: 22px 22px;
+  -webkit-mask-image: radial-gradient(ellipse 70% 80% at 70% 20%, #000 10%, transparent 75%); mask-image: radial-gradient(ellipse 70% 80% at 70% 20%, #000 10%, transparent 75%);
+  animation: drift 40s linear infinite; }
+@keyframes drift { to { transform: translate(22px, 22px); } }
+.hero-in { position: relative; max-width: 1180px; margin: 0 auto; padding: 72px 0 56px; }
+.kicker { font: 600 12.5px/1 var(--en); letter-spacing: .18em; text-transform: uppercase; color: #d5a844; display: flex; gap: 10px; align-items: center; }
+.kicker::before { content: ""; width: 26px; height: 1px; background: currentColor; }
+/* cover title: Paperlogy ExtraBold (SIL OFL, via jsDelivr/project noonnu) */
+@font-face { font-family: "Paperlogy"; font-weight: 800; font-style: normal; font-display: swap; src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/2408-3@1.0/Paperlogy-8ExtraBold.woff2") format("woff2"); }
+.hero h1 { font-family: "Paperlogy", var(--sans); font-weight: 800; font-size: clamp(34px, 5.6vw, 64px); line-height: 1.2; letter-spacing: -.02em; margin: 20px 0 18px; max-width: 15em; }
+.hero h1 em { font-style: normal; color: #d5a844; }
+.hero .lede { max-width: 640px; font-size: clamp(16px, 1.7vw, 19px); color: rgba(243,239,228,.78); margin: 0; }
+.hero .lede b { color: #f3efe4; }
+.meta { margin-top: 22px; display: flex; flex-wrap: wrap; gap: 8px 18px; font-size: 13.5px; color: rgba(243,239,228,.55); }
+.meta span { display: inline-flex; gap: 6px; align-items: center; }
+
+.shift { margin-top: 44px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0; position: relative; }
+.shift .st { position: relative; padding: 18px 18px 18px 0; }
+.shift .st .n { font: 700 12px/1 var(--mono); color: rgba(243,239,228,.45); }
+.shift .st h3 { margin: 10px 0 6px; font-size: clamp(16px, 2vw, 21px); line-height: 1.35; }
+.shift .st p { margin: 0; font-size: 14px; color: rgba(243,239,228,.62); line-height: 1.6; }
+.shift .st.old h3 { color: rgba(243,239,228,.55); }
+.shift .st.new h3 { color: #d5a844; }
+.shift .rail { position: absolute; left: 0; right: 0; top: 0; height: 2px; background: rgba(243,239,228,.14); }
+.shift .rail i { position: absolute; inset: 0; background: linear-gradient(90deg, rgba(243,239,228,.4), #d5a844 60%, #f0542a); transform-origin: left; transform: scaleX(0); }
+.in .shift .rail i { animation: growX 2.4s var(--ease) .5s both; }
+.shift .st::before { content: ""; position: absolute; top: -6px; left: 0; width: 12px; height: 12px; border-radius: 50%; background: #0c1524; border: 2px solid rgba(243,239,228,.4); }
+.shift .st.new::before { border-color: #d5a844; background: #d5a844; box-shadow: 0 0 0 6px rgba(213,168,68,.18); }
+.shift .glow { position: absolute; top: -5px; width: 10px; height: 10px; border-radius: 50%; background: #fff; box-shadow: 0 0 14px 4px rgba(213,168,68,.8); left: 0; opacity: 0; }
+.in .shift .glow { animation: travel 3.6s var(--ease) 1s infinite; }
+@keyframes travel { 0% { left: 0; opacity: 0; } 10% { opacity: 1; } 80% { opacity: 1; } 100% { left: calc(100% - 10px); opacity: 0; } }
+@media (max-width: 720px) {
+  .shift { grid-template-columns: minmax(0, 1fr); padding-left: 22px; }
+  .shift .rail { left: 5px; right: auto; top: 0; bottom: 0; width: 2px; height: auto; }
+  .shift .rail i { transform-origin: top; }
+  .in .shift .rail i { animation-name: growY; }
+  .shift .st { padding: 0 0 22px; }
+  .shift .st::before { left: -22px; top: 4px; }
+  .shift .glow { display: none; }
+}
+
+.stats { margin-top: 40px; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); border-top: 1px solid rgba(243,239,228,.12); }
+.stats a { padding: 18px 14px 4px 0; color: inherit; text-decoration: none; border-right: 1px solid rgba(243,239,228,.08); padding-left: 14px; }
+.stats a:first-child { padding-left: 0; }
+.stats a:last-child { border-right: 0; }
+.stats b { display: block; font: 800 clamp(24px, 3.2vw, 36px)/1.1 var(--en); letter-spacing: -.02em; color: #f3efe4; font-variant-numeric: tabular-nums; }
+.stats span { display: block; margin-top: 6px; font-size: 12.5px; line-height: 1.45; color: rgba(243,239,228,.55); }
+.stats a:hover b { color: #d5a844; }
+@media (max-width: 820px) { .stats { grid-template-columns: repeat(3, minmax(0, 1fr)); } .stats a:nth-child(3) { border-right: 0; } .stats a:nth-child(4) { padding-left: 0; } }
+@media (max-width: 480px) { .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); } .stats a { border-right: 0 !important; padding-left: 0 !important; } }
+
+/* ---------- shell ---------- */
+.shell { max-width: 1180px; margin: 0 auto; display: grid; grid-template-columns: 220px minmax(0, 1fr); gap: 56px; padding-top: 48px; }
+.toc { position: sticky; top: 82px; align-self: start; max-height: calc(100vh - 100px); overflow: auto; }
+.toc h4 { margin: 0 0 12px; font: 700 11.5px/1 var(--en); letter-spacing: .16em; color: var(--ink-3); }
+.toc ol { list-style: none; margin: 0; padding: 0; border-left: 1px solid var(--line); }
+.toc a { display: flex; gap: 10px; padding: 7px 0 7px 14px; margin-left: -1px; border-left: 2px solid transparent; font-size: 14px; line-height: 1.45; color: var(--ink-2); text-decoration: none; }
+.toc a .n { font: 600 11.5px/1.9 var(--mono); color: var(--ink-3); min-width: 18px; }
+.toc a:hover { color: var(--ink); }
+.toc a.on { border-left-color: var(--gold); color: var(--ink); font-weight: 650; }
+.toc a.on .n { color: var(--gold); }
+.toc-mobile { display: none; }
+article { max-width: 760px; min-width: 0; padding-bottom: 40px; }
+@media (max-width: 1000px) {
+  .shell { grid-template-columns: minmax(0, 1fr); gap: 0; padding-top: 28px; }
+  .toc { display: none; }
+  .toc-mobile { display: block; margin: 0 auto 8px; max-width: 760px; border: 1px solid var(--line); background: var(--paper); border-radius: 14px; }
+  .toc-mobile summary { cursor: pointer; padding: 12px 16px; font-weight: 700; font-size: 14px; list-style: none; display: flex; justify-content: space-between; }
+  .toc-mobile summary::after { content: "+"; color: var(--ink-3); }
+  .toc-mobile[open] summary::after { content: "−"; }
+  .toc-mobile ol { list-style: none; margin: 0; padding: 0 16px 12px; }
+  .toc-mobile a { display: flex; gap: 10px; padding: 6px 0; font-size: 14.5px; color: var(--ink-2); text-decoration: none; }
+  .toc-mobile a .n { font: 600 12px/1.9 var(--mono); color: var(--ink-3); min-width: 20px; }
+  article { margin: 0 auto; width: 100%; }
+}
+
+/* ---------- article typography ---------- */
+section { padding: 40px 0 28px; border-bottom: 1px solid var(--line); }
+section:last-of-type { border-bottom: 0; }
+.sec-label { display: inline-flex; gap: 8px; align-items: center; font: 700 12px/1 var(--en); letter-spacing: .14em; text-transform: uppercase; color: var(--gold); }
+.sec-label .num { font-family: var(--mono); }
+/* section titles: Paperlogy Bold (SIL OFL, via jsDelivr/project noonnu) */
+@font-face { font-family: "Paperlogy"; font-weight: 700; font-style: normal; font-display: swap; src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/2408-3@1.0/Paperlogy-7Bold.woff2") format("woff2"); }
+h2 { font-family: "Paperlogy", var(--sans); font-weight: 700; font-size: clamp(26px, 3.4vw, 36px); line-height: 1.32; letter-spacing: -.02em; margin: 12px 0 18px; }
+h3 { font-family: "Paperlogy", var(--sans); font-weight: 700; font-size: 20px; line-height: 1.45; letter-spacing: -.015em; margin: 34px 0 10px; }
+h3 .hn { font: 700 13px/1 var(--mono); color: var(--gold); margin-right: 8px; vertical-align: 2px; }
+p { margin: 0 0 16px; }
+strong { font-weight: 700; }
+mark { background: linear-gradient(transparent 58%, var(--gold-soft) 58%); color: inherit; padding: 0 1px; }
+.standfirst { font-size: 19px; line-height: 1.72; color: var(--ink-2); }
+.standfirst b { color: var(--ink); }
+ul.dots { margin: 0 0 18px; padding: 0; list-style: none; }
+ul.dots li { position: relative; padding-left: 20px; margin: 6px 0; }
+ul.dots li::before { content: ""; position: absolute; left: 4px; top: .78em; width: 6px; height: 6px; border-radius: 50%; background: var(--gold); }
+code { font-family: var(--mono); font-size: .86em; background: var(--code); padding: 2px 6px; border-radius: 6px; }
+.note { font-size: 13.5px; color: var(--ink-3); line-height: 1.6; margin: 10px 2px 0; }
+.note b { color: var(--ink-2); }
+.callout { border: 1px solid var(--line); border-left: 3px solid var(--gold); background: var(--paper); border-radius: 4px 14px 14px 4px; padding: 16px 20px; margin: 22px 0; font-size: 16px; }
+.callout.warn { border-left-color: var(--coral); }
+.callout .tag { display: inline-block; font: 700 11.5px/1 var(--en); letter-spacing: .12em; text-transform: uppercase; color: var(--gold); margin-bottom: 8px; }
+.callout.warn .tag { color: var(--coral); }
+.callout p:last-child { margin-bottom: 0; }
+
+/* ---------- figure shell ---------- */
+.fig { margin: 26px 0 30px; background: var(--paper); border: 1px solid var(--line); border-radius: 18px; box-shadow: var(--shadow); padding: 22px; overflow: hidden; }
+.fig-h { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; }
+.fig-h .t { font-weight: 700; font-size: 15px; }
+.fig-h .s { font-size: 12.5px; color: var(--ink-3); }
+.replay { appearance: none; border: 1px solid var(--line); background: transparent; color: var(--ink-2); font: 600 12px/1 var(--sans); padding: 6px 10px; border-radius: 999px; cursor: pointer; }
+.replay:hover { color: var(--ink); border-color: var(--gold); }
+figcaption { font-size: 13.5px; color: var(--ink-3); margin-top: 14px; line-height: 1.6; }
+@media (max-width: 560px) { .fig { padding: 16px; border-radius: 14px; margin-left: -4px; margin-right: -4px; } }
+/* frontier table */
+.tbl-wrap { overflow-x: auto; margin: 22px 0; border: 1px solid var(--line); border-radius: 16px; background: var(--paper); box-shadow: var(--shadow); }
+table { width: 100%; border-collapse: collapse; min-width: 620px; font-size: 14.5px; line-height: 1.55; }
+th, td { text-align: left; vertical-align: top; padding: 14px 16px; border-bottom: 1px solid var(--line); }
+tr:last-child td { border-bottom: 0; }
+thead th { font-size: 13px; background: var(--paper-2); }
+thead th small { display: block; font: 600 11px/1.4 var(--en); color: var(--ink-3); letter-spacing: .06em; text-transform: uppercase; }
+tbody th { font-size: 13px; color: var(--ink-3); width: 92px; font-weight: 700; }
+td .chip, .mc .chip { display: inline-block; font: 700 11px/1 var(--en); padding: 4px 7px; border-radius: 999px; margin-bottom: 6px; }
+.c-g { background: var(--blue-soft); color: var(--blue); } .c-o { background: var(--green-soft); color: var(--green); } .c-a { background: var(--coral-soft); color: var(--coral); }
+
+.tl { position: relative; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; padding-top: 26px; }
+.tl::before { content: ""; position: absolute; left: 0; right: 0; top: 7px; height: 2px; background: var(--line); }
+.tl .ln { position: absolute; left: 0; right: 0; top: 7px; height: 2px; background: var(--gold); transform-origin: left; transform: scaleX(0); }
+.in .tl .ln { animation: growX 1.6s var(--ease) .2s both; }
+.tl .ev { position: relative; }
+.tl .ev::before { content: ""; position: absolute; top: -25px; left: 0; width: 12px; height: 12px; border-radius: 50%; background: var(--paper); border: 2px solid var(--gold); }
+.tl .ev .dt { font: 700 13px/1 var(--mono); color: var(--gold); }
+.tl .ev h6 { margin: 6px 0 4px; font-size: 15px; line-height: 1.35; }
+.tl .ev p { margin: 0; font-size: 13px; color: var(--ink-2); line-height: 1.55; }
+@media (max-width: 560px) {
+  .tl { grid-template-columns: minmax(0, 1fr); padding: 0 0 0 24px; }
+  .tl::before, .tl .ln { left: 5px; right: auto; top: 0; bottom: 0; width: 2px; height: auto; }
+  .tl .ln { transform-origin: top; transform: scaleY(0); }
+  .in .tl .ln { animation-name: growY; }
+  .tl .ev::before { top: 2px; left: -24px; }
+}
+.sw { width: 46px; height: 26px; border-radius: 999px; background: var(--line); position: relative; transition: background .3s; }
+.sw::after { content: ""; position: absolute; top: 3px; left: 3px; width: 20px; height: 20px; border-radius: 50%; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,.25); transition: transform .3s var(--ease); }
+.sw.on { background: var(--green); } .sw.on::after { transform: translateX(20px); }
+.legend { display: flex; gap: 14px; flex-wrap: wrap; font-size: 12.5px; color: var(--ink-3); margin-top: 12px; }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.legend i { width: 10px; height: 10px; border-radius: 3px; display: inline-block; }
+/* conclusion */
+.concl { display: grid; gap: 12px; counter-reset: c; margin-top: 8px; }
+.concl .cc { display: grid; grid-template-columns: 52px minmax(0, 1fr); gap: 16px; padding: 18px; border-radius: 16px; background: var(--paper); border: 1px solid var(--line); text-decoration: none; color: inherit; transition: border-color .2s, transform .2s; }
+.concl .cc:hover { border-color: var(--gold); transform: translateY(-2px); }
+.concl .cc .ix { font: 800 30px/1 var(--en); color: var(--gold); letter-spacing: -.03em; }
+.concl .cc h6 { margin: 2px 0 4px; font-size: 16.5px; }
+.concl .cc p { margin: 0; font-size: 14.5px; color: var(--ink-2); line-height: 1.65; }
+
+.endnote { margin-top: 26px; font-size: 13.5px; color: var(--ink-3); line-height: 1.7; }
+footer.site { border-top: 1px solid var(--line); margin-top: 24px; }
+footer.site .in-wrap { max-width: 1180px; margin: 0 auto; padding: 22px 0 40px; display: flex; flex-wrap: wrap; gap: 10px 22px; font-size: 13.5px; color: var(--ink-3); }
+footer.site a { color: var(--ink-2); }
+.totop { position: fixed; right: max(16px, env(safe-area-inset-right, 0px)); bottom: max(16px, env(safe-area-inset-bottom, 0px)); z-index: 15; width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--line); background: var(--paper); color: var(--ink); box-shadow: var(--shadow); display: grid; place-items: center; cursor: pointer; opacity: 0; pointer-events: none; transition: opacity .3s, transform .3s; transform: translateY(8px); }
+.totop.show { opacity: 1; pointer-events: auto; transform: none; }
+
+/* ---------- mobile tuning ---------- */
+.toc-btn { display: none; max-width: 52vw; }
+.toc-btn span { overflow: hidden; text-overflow: ellipsis; }
+.sheet { border: 0; padding: 0; margin: auto auto 0; width: 100%; max-width: 560px; max-height: 78vh; border-radius: 20px 20px 0 0;
+  background: var(--paper); color: var(--ink); box-shadow: 0 -10px 40px rgba(0,0,0,.25); padding-bottom: env(safe-area-inset-bottom, 0px); }
+.sheet[open] { animation: sheetUp .32s var(--ease); }
+@keyframes sheetUp { from { transform: translateY(100%); } to { transform: none; } }
+.sheet::backdrop { background: rgba(8, 12, 22, .45); }
+.sheet-h { display: flex; justify-content: space-between; align-items: center; padding: 18px 18px 8px; position: sticky; top: 0; background: var(--paper); }
+.sheet-h::before { content: ""; position: absolute; left: 50%; top: 7px; width: 38px; height: 4px; margin-left: -19px; border-radius: 2px; background: var(--line); }
+.sheet-x { appearance: none; border: 0; background: var(--paper-2); color: var(--ink-2); width: 36px; height: 36px; border-radius: 50%; font-size: 14px; cursor: pointer; }
+.sheet ol { list-style: none; margin: 0; padding: 4px 10px 18px; }
+.sheet a { display: flex; gap: 12px; align-items: center; min-height: 48px; padding: 6px 10px; border-radius: 12px; color: var(--ink-2); text-decoration: none; font-size: 16px; line-height: 1.4; }
+.sheet a .n { font: 600 12.5px/1 var(--mono); color: var(--ink-3); min-width: 22px; }
+.sheet a.on { background: var(--gold-soft); color: var(--ink); font-weight: 700; }
+.sheet a.on .n { color: var(--gold); }
+.mcards { display: none; }
+.crumb .back { display: none; font-size: 18px; color: var(--ink); }
+.mc { border: 1px solid var(--line); background: var(--paper); border-radius: 16px; padding: 16px; box-shadow: var(--shadow); }
+.mc + .mc { margin-top: 10px; }
+.mc .mh { display: flex; flex-wrap: wrap; align-items: center; gap: 2px 8px; margin-bottom: 10px; }
+.mc .mh small { width: 100%; font: 600 11px/1.4 var(--en); letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3); }
+.mc .mh b { font-size: 16px; }
+.mc .mh .chip { margin: 0; }
+.mc dl { margin: 0; display: grid; grid-template-columns: 70px minmax(0, 1fr); gap: 8px 12px; font-size: 14.5px; line-height: 1.55; }
+.mc dt { color: var(--ink-3); font-size: 13px; font-weight: 700; }
+.mc dd { margin: 0; }
+@media (hover: none) { .concl .cc:hover { transform: none; } }
+@media (max-width: 1000px) { .toc-btn { display: inline-flex; } }
+@media (max-width: 640px) {
+  body { font-size: 16px; line-height: 1.78; }
+  .standfirst { font-size: 17px; }
+  h2 { font-size: 25px; margin-bottom: 14px; }
+  h3 { font-size: 18px; margin-top: 28px; }
+  section { padding: 32px 0 22px; }
+  .shell { padding-top: 8px; }
+  .hero-in { padding: 40px 0 36px; }
+  .hero h1 { margin: 14px 0 14px; }
+  .shift { margin-top: 30px; }
+  .stats { margin-top: 26px; }
+  .tbl-wrap { display: none; }
+  .mcards { display: block; margin: 20px 0; }
+  .replay { min-height: 34px; padding: 0 12px; }
+  .pipe { grid-template-columns: minmax(0, 1fr); gap: 8px; }
+  .pipe .who br { display: none; }
+  .steps .s { font-size: 13.5px; padding: 7px 10px; }
+  .code { font-size: 11.5px; white-space: pre; overflow-x: auto; -webkit-overflow-scrolling: touch; min-height: 0; }
+  .vs b { font-size: 19px; }
+  .doc { padding: 18px 16px 64px; font-size: 13px; }
+  .doc .dh span:first-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-right: 8px; }
+  .callout { padding: 14px 16px; font-size: 15px; }
+  .race .row { grid-template-columns: 74px minmax(0, 1fr) 46px; gap: 8px; }
+  .pvm .row, .pvm .axis { grid-template-columns: 84px minmax(0, 1fr); gap: 8px; }
+  .mult b { font-size: 38px; }
+  .quote { padding: 26px 20px; margin-left: -4px; margin-right: -4px; }
+  .topbar .btn[href] { display: none; }
+  .crumb .back { display: inline; }
+  .crumb b { font-size: 13.5px; }
+}
+@media (max-width: 480px) {
+  .stats a:last-child { grid-column: 1 / -1; }
+  .tasks { gap: 3px; }
+  .wg { gap: 2px; }
+}
+/* glossary: tappable terms + appendix list */
+.term { text-decoration: underline dotted color-mix(in srgb, var(--gold) 80%, transparent); text-decoration-thickness: 1.5px; text-underline-offset: 4px; cursor: help; border-radius: 3px; }
+.term:hover, .term:focus-visible, .term.on { background: var(--gold-soft); outline: none; }
+.term-demo { text-decoration: underline dotted var(--gold); text-decoration-thickness: 1.5px; text-underline-offset: 4px; }
+.tpop { position: absolute; z-index: 30; max-width: min(340px, calc(100vw - 32px)); background: var(--ink); color: var(--bg); border-radius: 12px; padding: 12px 14px; font-size: 14px; line-height: 1.55; box-shadow: 0 14px 40px rgba(0,0,0,.3); opacity: 0; transform: translateY(4px); transition: opacity .18s, transform .18s; pointer-events: none; }
+.tpop.show { opacity: 1; transform: none; pointer-events: auto; }
+.tpop b { display: block; font: 700 13px var(--mono); color: var(--gold); }
+.tpop .f { display: block; font-weight: 700; margin: 2px 0 4px; }
+.tpop a { color: inherit; opacity: .7; font-size: 12.5px; }
+.glist { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin: 18px 0 0; }
+.glist .gi { border: 1px solid var(--line); background: var(--paper); border-radius: 14px; padding: 14px 16px; }
+.glist .gi:target { border-color: var(--gold); box-shadow: 0 0 0 3px var(--gold-soft); }
+.glist dt b { font: 700 14px var(--mono); color: var(--gold); margin-right: 8px; }
+.glist dt span { font-weight: 700; font-size: 14.5px; }
+.glist dd { margin: 4px 0 0; font-size: 14px; color: var(--ink-2); line-height: 1.6; }
+@media (max-width: 640px) { .glist { grid-template-columns: minmax(0, 1fr); } }
+/* opened from the archive's launch zoom: the hero is already on screen, so skip its intro */
+.launched .hero .rv { animation: none !important; opacity: 1 !important; transform: none !important; }
+.launched .hero .shift .rail i { animation: none !important; transform: none !important; }
+.gloss { margin: 34px 0 0; padding: 16px 20px 6px; border-top: 1px dashed var(--line); font-size: 15px; line-height: 1.55; color: var(--ink-3); }
+.gloss .tag { display: inline-block; font: 700 11.5px/1 var(--en); letter-spacing: .12em; color: var(--ink-3); margin-bottom: 10px; }
+.gloss dl { margin: 0; display: grid; gap: 8px; }
+.gloss dl > div { display: grid; grid-template-columns: 112px 1fr; gap: 14px; }
+.gloss dt { font: 700 13.5px/1.7 var(--mono); color: var(--gold); }
+.gloss dd { margin: 0; }
+.gloss em { font-style: normal; color: var(--ink-2); font-weight: 600; margin-right: 8px; }
+@media (max-width: 640px) { .gloss { padding: 14px 4px 4px; } .gloss dl > div { grid-template-columns: 1fr; gap: 0; } .gloss em { display: block; margin: 0; } }
+
+/* ================= additions for the weekly briefing ================= */
+.shift.week { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+.shift.week .st { padding-right: 14px; }
+.shift.week .st h3 { font-size: clamp(15px, 1.6vw, 18px); }
+.shift.week .st.new::before { background: #0c1524; box-shadow: none; }
+.shift.week .st.hot::before { border-color: #f0542a; background: #f0542a; box-shadow: 0 0 0 6px rgba(240,84,42,.2); }
+.shift.week .st .n em { font-style: normal; color: #d5a844; margin-left: 6px; }
+@media (max-width: 720px) { .shift.week { grid-template-columns: minmax(0, 1fr); } }
+
+/* citations + sources */
+sup.fn { font: 600 10.5px/0 var(--mono); margin-left: 1px; white-space: nowrap; }
+sup.fn a { color: var(--ink-3); text-decoration: none; padding: 0 1px; border-radius: 3px; }
+sup.fn a:hover, sup.fn a:focus-visible { color: var(--gold); background: var(--gold-soft); }
+.srcs { margin: 18px 0 0; padding-left: 2.6em; font-size: 13.5px; line-height: 1.55; color: var(--ink-2); }
+.srcs li { margin: 0 0 7px; padding: 2px 6px; border-radius: 6px; scroll-margin-top: 90px; }
+.srcs li::marker { font: 600 12px var(--mono); color: var(--ink-3); }
+.srcs li:target { background: var(--gold-soft); }
+.srcs a { color: var(--ink); text-decoration-color: var(--line); overflow-wrap: anywhere; }
+.srcs a:hover { color: var(--blue); }
+.srcs .dom { display: inline-block; margin-left: 6px; font: 500 11.5px var(--mono); color: var(--ink-3); }
+@media (max-width: 640px) { .srcs { padding-left: 2.2em; font-size: 13px; } }
+
+/* status chips */
+.unv, .vend, .okc { display: inline-flex; align-items: center; gap: 4px; font: 700 11px/1.1 var(--sans); padding: 4px 8px; border-radius: 999px; vertical-align: 2px; white-space: nowrap; letter-spacing: 0; }
+.unv { border: 1px dashed var(--coral); color: var(--coral); background: var(--coral-soft); }
+.unv::before { content: "?"; font: 800 10.5px/1 var(--mono); }
+.vend { border: 1px solid color-mix(in srgb, var(--gold) 50%, transparent); color: var(--gold); background: var(--gold-soft); }
+.okc { border: 1px solid color-mix(in srgb, var(--green) 45%, transparent); color: var(--green); background: var(--green-soft); }
+.okc::before { content: "✓"; font-size: 10px; }
+.callout.unvb { border-left: 3px dashed var(--coral); background: repeating-linear-gradient(135deg, var(--paper) 0 12px, color-mix(in srgb, var(--coral-soft) 70%, var(--paper)) 12px 13px); }
+.callout.unvb .tag { color: var(--coral); }
+.callout.ok { border-left-color: var(--green); }
+.callout.ok .tag { color: var(--green); }
+ul.dots li.unv-li::before { background: transparent; border: 1.5px dashed var(--coral); width: 7px; height: 7px; }
+blockquote.q { margin: 14px 0 18px; padding: 4px 0 4px 16px; border-left: 3px solid var(--line); color: var(--ink-2); font-size: 16px; }
+blockquote.q p { margin: 0; }
+.en-q { font-family: var(--en); font-size: .95em; }
+
+/* tldr cards */
+.tldr { display: grid; gap: 12px; margin: 18px 0 8px; }
+.tldr .tc { border: 1px solid var(--line); background: var(--paper); border-radius: 16px; padding: 16px 18px 6px; border-top: 3px solid var(--green); }
+.tldr .tc.u { border-top: 3px dashed var(--coral); }
+.tldr .tc.j { border-top-color: var(--gold); }
+.tldr .tc h4 { margin: 0 0 6px; font-size: 15.5px; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.tldr .tc ul.dots { font-size: 15.5px; line-height: 1.7; }
+
+/* segmented controls */
+.ctl-row { display: flex; flex-wrap: wrap; gap: 10px 14px; align-items: center; margin-bottom: 16px; }
+.ctl-row .lab { font-size: 12.5px; color: var(--ink-3); font-weight: 700; }
+.seg { display: inline-flex; flex-wrap: wrap; gap: 4px; padding: 4px; border-radius: 12px; background: var(--paper-2); max-width: 100%; }
+.seg button { appearance: none; border: 0; background: transparent; color: var(--ink-2); font: 600 13px/1.2 var(--sans); padding: 8px 11px; border-radius: 9px; cursor: pointer; min-height: 34px; }
+.seg button:hover { color: var(--ink); }
+.seg button[aria-pressed="true"] { background: var(--paper); color: var(--ink); box-shadow: 0 1px 3px rgba(0,0,0,.14); }
+.tgl { appearance: none; border: 1px solid var(--line); background: var(--bg); color: var(--ink-2); font: 600 13px/1.2 var(--sans); padding: 7px 12px 7px 8px; border-radius: 999px; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; min-height: 36px; }
+.tgl .sw { width: 34px; height: 20px; flex: none; }
+.tgl .sw::after { width: 14px; height: 14px; }
+.tgl[aria-pressed="true"] { color: var(--ink); border-color: var(--gold); }
+.tgl[aria-pressed="true"] .sw { background: var(--green); }
+.tgl[aria-pressed="true"] .sw::after { transform: translateX(14px); }
+.out { margin-top: 16px; padding: 13px 16px; border-radius: 12px; background: var(--paper-2); font-size: 14.5px; line-height: 1.6; }
+.out b { font-weight: 800; }
+.out.warn { background: var(--coral-soft); }
+.out.good { background: var(--green-soft); }
+
+/* horizontal bars */
+.hb { display: grid; gap: 10px; }
+.hb .r { display: grid; grid-template-columns: 136px minmax(0, 1fr) 92px; gap: 10px; align-items: center; font-size: 13.5px; }
+.hb .l { color: var(--ink-2); line-height: 1.3; min-width: 0; }
+.hb .l small { display: block; color: var(--ink-3); font-size: 11.5px; }
+.hb .t { height: 18px; border-radius: 5px; background: var(--paper-2); position: relative; overflow: hidden; }
+.hb .t i { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 5px; width: 0; transition: width .8s var(--ease); }
+.hb .t i.ext { opacity: .38; }
+.hb .v { font: 700 13.5px/1.2 var(--mono); text-align: right; font-variant-numeric: tabular-nums; }
+.hb .r.na .v { color: var(--ink-3); font: 500 12px/1.3 var(--sans); }
+.hb .r.best .v { color: var(--gold); }
+.hb .r.best .l { color: var(--ink); font-weight: 700; }
+.hb .grp { font: 700 11.5px/1 var(--en); letter-spacing: .1em; color: var(--ink-3); text-transform: uppercase; margin-top: 6px; }
+@media (max-width: 560px) {
+  .hb .r { grid-template-columns: minmax(0, 1fr) auto; gap: 4px 10px; }
+  .hb .t { grid-column: 1 / -1; grid-row: 2; height: 14px; }
+}
+.axisnote { display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; font-size: 12px; color: var(--ink-3); margin-top: 10px; }
+
+/* timeline with five or six stops */
+.tl.c5 { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+.tl .ev.hot::before { border-color: var(--coral); background: var(--coral); }
+.tl .ev.hot .dt { color: var(--coral); }
+.tl .ev.ghost { opacity: .75; }
+.tl .ev.ghost::before { border-style: dashed; border-color: var(--coral); }
+.tl .ev blockquote { margin: 6px 0 0; font-size: 12.5px; color: var(--ink-2); line-height: 1.5; border-left: 2px solid var(--line); padding-left: 8px; }
+.stampx { display: inline-block; margin-top: 8px; border: 2.5px solid var(--coral); color: var(--coral); font: 800 15px/1 var(--sans); letter-spacing: .1em; padding: 6px 10px; border-radius: 6px; transform: rotate(-8deg); opacity: 0; }
+.in .stampx { animation: stamp2 .5s var(--ease) both; animation-delay: var(--d, 2s); }
+@keyframes stamp2 { 0% { opacity: 0; transform: rotate(-8deg) scale(2); } 60% { opacity: 1; transform: rotate(-8deg) scale(.94); } 100% { opacity: 1; transform: rotate(-8deg) scale(1); } }
+@media (max-width: 760px) and (min-width: 561px) { .tl.c5 { grid-template-columns: repeat(3, minmax(0, 1fr)); row-gap: 34px; } .tl.c5::before, .tl.c5 .ln { display: none; } }
+
+/* agenda (government response) */
+.ag { position: relative; }
+.ag-nodes { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 6px; position: relative; padding-top: 4px; }
+.ag-nodes::before { content: ""; position: absolute; left: 6%; right: 6%; top: 21px; height: 2px; background: var(--line); }
+.ag-nodes .fillbar { position: absolute; left: 6%; top: 21px; height: 2px; background: var(--gold); width: 0; transition: width .5s var(--ease); max-width: 88%; }
+.ag-nodes button { appearance: none; border: 0; background: none; padding: 0; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 6px; color: var(--ink-2); font: 600 12.5px/1.3 var(--sans); text-align: center; position: relative; min-width: 0; }
+.ag-nodes button .dot { width: 36px; height: 36px; border-radius: 50%; border: 2px solid var(--line); background: var(--paper); display: grid; place-items: center; font: 700 10.5px/1 var(--mono); color: var(--ink-3); transition: all .25s; }
+.ag-nodes button.done .dot { border-color: var(--gold); color: var(--gold); }
+.ag-nodes button[aria-selected="true"] .dot { background: var(--gold); border-color: var(--gold); color: #1b1606; transform: scale(1.1); }
+.ag-nodes button.dday .dot { border-color: var(--coral); color: var(--coral); }
+.ag-nodes button.dday[aria-selected="true"] .dot { background: var(--coral); color: #fff; }
+.ag-nodes button .d { font-family: var(--mono); font-size: 12px; color: var(--ink); }
+.ag-nodes button small { font-size: 11.5px; color: var(--ink-3); font-weight: 500; }
+.ag-panel { margin-top: 16px; border: 1px solid var(--line); border-radius: 14px; padding: 16px 18px; background: var(--bg); min-height: 150px; }
+.ag-panel h6 { margin: 0 0 8px; font-size: 15.5px; display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.ag-panel h6 .dd { font: 700 12px/1 var(--mono); padding: 4px 7px; border-radius: 6px; background: var(--gold-soft); color: var(--gold); }
+.ag-panel ul { margin: 0; padding-left: 18px; font-size: 14px; line-height: 1.65; color: var(--ink-2); }
+.ag-panel li.lim { color: var(--coral); }
+@media (max-width: 560px) {
+  .ag-nodes { grid-template-columns: repeat(3, minmax(0, 1fr)); row-gap: 14px; }
+  .ag-nodes::before, .ag-nodes .fillbar { display: none; }
+}
+
+/* small stat cards */
+.kv { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin: 16px 0; }
+.kv > div { border: 1px solid var(--line); border-radius: 14px; padding: 14px; background: var(--paper); min-width: 0; }
+.kv b { display: block; font: 800 24px/1.15 var(--en); letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
+.kv span { display: block; margin-top: 4px; font-size: 13px; color: var(--ink-2); line-height: 1.45; }
+.fig .kv > div { background: var(--bg); }
+.law { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin: 14px 0 18px; }
+.law > div { border: 1px solid var(--line); border-radius: 14px; padding: 14px 16px; background: var(--paper); }
+.law h6 { margin: 0 0 4px; font-size: 14px; color: var(--gold); }
+.law p { margin: 0; font-size: 14px; line-height: 1.6; color: var(--ink-2); }
+@media (max-width: 560px) { .law { grid-template-columns: minmax(0, 1fr); } }
+/* numbered legend lists */
+.leg2 { list-style: none; margin: 16px 0 0; padding: 0; display: grid; gap: 6px; font-size: 13.5px; line-height: 1.55; color: var(--ink-2); }
+.leg2 li { display: grid; grid-template-columns: 26px minmax(0, 1fr); gap: 8px; align-items: start; }
+.leg2 li i { font: 700 11px/22px var(--mono); width: 22px; height: 22px; border-radius: 50%; text-align: center; border: 1.5px solid var(--gold); color: var(--gold); font-style: normal; }
+.leg2 li.x i { border-color: var(--coral); border-style: dashed; color: var(--coral); }
+
+/* sliders */
+.sl { display: grid; gap: 6px; font-size: 13.5px; color: var(--ink-2); margin-bottom: 12px; }
+.sl span { display: flex; justify-content: space-between; gap: 10px; }
+.sl b { font-family: var(--mono); color: var(--ink); }
+.sl input[type=range] { width: 100%; accent-color: var(--gold); margin: 0; min-height: 28px; }
+.two { display: grid; grid-template-columns: 1fr 1fr; gap: 14px 24px; }
+@media (max-width: 560px) { .two { grid-template-columns: minmax(0, 1fr); } }
+
+/* gemini: price panel */
+.pp { margin-top: 20px; padding-top: 16px; border-top: 1px dashed var(--line); }
+.pp h6 { margin: 0 0 10px; font-size: 14px; display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
+.dl-lg { display: flex; gap: 14px; flex-wrap: wrap; font-size: 12.5px; color: var(--ink-3); margin: -2px 0 12px; }
+.dl-lg span { display: inline-flex; align-items: center; gap: 6px; }
+.dl-lg i { width: 10px; height: 10px; border-radius: 3px; display: inline-block; }
+.flag { position: absolute; top: 14px; right: 14px; transform: rotate(4deg); border: 2px solid var(--coral); color: var(--coral); background: var(--paper); font: 800 11.5px/1 var(--sans); padding: 6px 8px; border-radius: 6px; letter-spacing: .02em; }
+.fig.rel { position: relative; }
+.fig.rel .fig-h { padding-right: 120px; }
+@media (max-width: 560px) { .flag { position: static; display: inline-block; transform: none; margin-bottom: 10px; } .fig.rel .fig-h { padding-right: 0; } }
+.tbl-wrap.keep table { min-width: 0; }
+@media (max-width: 640px) { .tbl-wrap.keep { display: block; } .tbl-wrap.keep table { font-size: 13.5px; } .tbl-wrap.keep th, .tbl-wrap.keep td { padding: 11px 12px; } .tbl-wrap.keep tbody th { width: 40%; } }
+.tbl-wrap td b.g { color: var(--green); }
+.notice { margin: 26px 0 0; padding: 14px 16px; border-radius: 12px; border: 1.5px solid var(--coral); color: var(--ink); font-size: 14.5px; font-weight: 600; display: flex; gap: 10px; align-items: flex-start; }
+.notice::before { content: "!"; flex: none; width: 22px; height: 22px; border-radius: 50%; background: var(--coral); color: #fff; font: 800 13px/22px var(--en); text-align: center; }
+.fig .note { margin-top: 12px; }
+.trust { margin-top: 20px; display: grid; grid-template-columns: 90px minmax(0, 1fr); gap: 4px 12px; align-items: center; font-size: 12.5px; color: var(--ink-3); }
+.trust .tt { font-weight: 700; grid-row: span 2; }
+.trust .tbar { height: 12px; border-radius: 6px; background: var(--paper-2); position: relative; overflow: hidden; }
+.trust .tbar i { position: absolute; left: 0; top: 0; bottom: 0; width: 50%; border-radius: 6px; background: repeating-linear-gradient(135deg, var(--coral) 0 6px, color-mix(in srgb, var(--coral) 55%, transparent) 6px 10px); }
+.trust .tlab { display: flex; justify-content: space-between; }
+.hero sup.fn a { color: rgba(243,239,228,.5); }
+.fig { --ca: #c8714f; --cg: #1f9d63; --co: #5b6577; --cm: #3a7be0; --cx: #b9b2a1; }
+:root[data-theme="dark"] .fig { --ca: #d98a6a; --cg: #4cc38a; --co: #b7c0d2; --cm: #6aa8ff; --cx: #4a5670; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .fig { --ca: #d98a6a; --cg: #4cc38a; --co: #b7c0d2; --cm: #6aa8ff; --cx: #4a5670; } }
+.chk label > span { flex: 1; min-width: 0; }
+.tl.c4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+@media (max-width: 760px) and (min-width: 561px) { .tl.c4 { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: 34px; } .tl.c4::before, .tl.c4 .ln { display: none; } }
+@media (max-width: 560px) { .tl.c4, .tl.c5 { grid-template-columns: minmax(0, 1fr); row-gap: 22px; } }
+/* chapter image banners (shared with the slide deck's chapter covers) */
+.ch-banner { position: relative; margin: 22px 0 6px; height: 250px; border-radius: 18px; overflow: hidden; background: #0c1524; border: 1px solid var(--line); }
+.ch-banner .bg { position: absolute; inset: -6%; background-size: cover; background-position: center; animation: chDrift 22s ease-in-out infinite alternate; }
+.ch-banner .bg.soft { filter: blur(12px) saturate(1.1) brightness(.75); inset: -10%; }
+.ch-banner .shade { position: absolute; inset: 0; background: linear-gradient(90deg, rgba(12,21,36,.88) 0%, rgba(12,21,36,.55) 45%, rgba(12,21,36,.2) 100%); }
+.ch-banner .cnum { position: absolute; left: 26px; bottom: 16px; font: 800 72px/1 Inter, sans-serif; letter-spacing: -.04em; color: rgba(213,168,68,.92); }
+.ch-banner img { position: absolute; right: 24px; top: 24px; height: calc(100% - 48px); width: auto; max-width: 56%; object-fit: cover; object-position: top; border-radius: 12px; border: 1px solid rgba(243,239,228,.2); box-shadow: 0 18px 40px rgba(0,0,0,.45); }
+.ch-credit { display: block; font-size: 12px; line-height: 1.5; color: var(--ink-3); margin: 0 0 20px; }
+@keyframes chDrift { 0% { transform: scale(1.04) translate(0, 0); } 50% { transform: scale(1.12) translate(-2%, 1%); } 100% { transform: scale(1.08) translate(2%, -1.5%); } }
+@media (max-width: 560px) { .ch-banner { height: 190px; } .ch-banner .cnum { font-size: 48px; left: 18px; bottom: 12px; } .ch-banner img { right: 14px; top: 14px; height: calc(100% - 28px); max-width: 60%; } }
+@media (prefers-reduced-motion: reduce) { .ch-banner .bg, .hero-ph { animation: none; } }
+.hero-ph { position: absolute; right: 0; top: 0; bottom: 0; width: 62%; background-size: cover; background-position: center; opacity: .5; -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 55%); mask-image: linear-gradient(90deg, transparent 0%, #000 55%); pointer-events: none; }
+.hero-in { position: relative; z-index: 1; }
+@media (max-width: 760px) { .hero-ph { width: 100%; opacity: .28; -webkit-mask-image: linear-gradient(180deg, #000 0%, transparent 75%); mask-image: linear-gradient(180deg, #000 0%, transparent 75%); } }
+.ignite-what { margin: 12px 0; padding: 12px 16px; border-radius: 12px; border: 1px solid var(--line); background: var(--paper); font-size: 16px; line-height: 1.65; }
+
+/* ================= additions for the week-4 briefing ================= */
+/* fact-check table */
+.fc td:nth-child(2) { white-space: nowrap; }
+.fc td .okc, .fc td .unv, .fc td .vend { margin: 0 4px 4px 0; }
+.legend2 { display: flex; flex-wrap: wrap; gap: 8px 14px; margin: 14px 0 0; font-size: 13px; color: var(--ink-3); align-items: center; }
+
+/* Gemini 4 lineup ladder */
+.ladder { display: grid; gap: 10px; }
+.ladder .rung { display: grid; grid-template-columns: 120px minmax(0, 1fr); gap: 14px; align-items: center; }
+.ladder .nm { font: 800 16px/1.2 var(--en); text-align: right; }
+.ladder .nm small { display: block; font: 600 11.5px/1.4 var(--sans); color: var(--ink-3); }
+.ladder .bx { border: 1.5px solid var(--line); border-radius: 12px; padding: 10px 14px; background: var(--bg); font-size: 13.5px; line-height: 1.5; color: var(--ink-2); min-width: 0; }
+.ladder .bx b { color: var(--ink); }
+.ladder .rung.new .bx { border-color: var(--gold); background: var(--gold-soft); }
+.ladder .rung.new .nm { color: var(--gold); }
+.ladder .rung.ghost .bx { border-style: dashed; border-color: var(--coral); background: repeating-linear-gradient(135deg, var(--bg) 0 10px, color-mix(in srgb, var(--coral-soft) 70%, var(--bg)) 10px 11px); }
+.ladder .rung.ghost .nm { color: var(--coral); opacity: .9; }
+.ladder .sep { border-top: 1px dashed var(--line); margin: 6px 0 2px; font: 700 11.5px/1 var(--en); letter-spacing: .1em; color: var(--ink-3); padding-top: 10px; }
+@media (max-width: 560px) { .ladder .rung { grid-template-columns: minmax(0, 1fr); gap: 4px; } .ladder .nm { text-align: left; } .ladder .nm small { display: inline; margin-left: 6px; } }
+
+/* Inkling loop diagram */
+.loopd { position: relative; padding-top: 46px; }
+.loopd .cells { display: grid; grid-template-columns: repeat(24, minmax(0, 1fr)); gap: 3px; }
+.loopd .cells i { height: 46px; border-radius: 5px; background: var(--paper-2); border: 1px solid var(--line); transition: background .18s, transform .18s, border-color .18s; }
+.loopd .cells i.mid { border-color: color-mix(in srgb, var(--gold) 55%, transparent); }
+.loopd .cells i.on { background: var(--blue); border-color: var(--blue); transform: translateY(-3px); }
+.loopd .cells i.mid.on { background: var(--gold); border-color: var(--gold); }
+.loopd .arc { position: absolute; top: 0; height: 40px; border: 2px dashed var(--gold); border-bottom: 0; border-radius: 22px 22px 0 0; display: grid; place-items: start center; }
+.loopd .arc span { margin-top: -12px; background: var(--paper); padding: 0 8px; font: 800 14px/22px var(--en); color: var(--gold); }
+.loopd .lab { display: grid; grid-template-columns: 6fr 12fr 6fr; gap: 3px; margin-top: 8px; font-size: 12px; color: var(--ink-3); text-align: center; line-height: 1.4; }
+.loopd .lab b { display: block; color: var(--ink-2); font-size: 12.5px; }
+.loopd .ctr { display: flex; flex-wrap: wrap; gap: 6px 18px; margin-top: 14px; font-size: 13.5px; color: var(--ink-2); }
+.loopd .ctr b { font: 700 14px var(--mono); color: var(--ink); }
+@media (max-width: 560px) { .loopd .cells { gap: 2px; } .loopd .cells i { height: 34px; border-radius: 3px; } .loopd .lab { font-size: 11px; } }
+
+/* Clay conditions */
+.clay { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin-top: 4px; }
+.clay > div { border: 1.5px dashed var(--line); border-radius: 14px; padding: 14px; background: var(--bg); position: relative; min-width: 0; }
+.clay .k { font: 700 11.5px/1 var(--mono); color: var(--ink-3); }
+.clay b { display: block; margin: 6px 0 4px; font-size: 15px; line-height: 1.35; }
+.clay p { margin: 0; font-size: 13px; color: var(--ink-2); line-height: 1.55; }
+.clay .st { display: inline-block; margin-top: 10px; font: 700 11.5px/1 var(--sans); padding: 5px 8px; border-radius: 999px; background: var(--coral-soft); color: var(--coral); }
+.clay > div.done { border-style: solid; border-color: var(--green); }
+.clay > div.done .st { background: var(--green-soft); color: var(--green); }
+.clay-res { margin-top: 12px; padding: 12px 14px; border-radius: 12px; background: var(--coral-soft); font-size: 14.5px; line-height: 1.6; }
+@media (max-width: 640px) { .clay { grid-template-columns: minmax(0, 1fr); } }
+
+/* verify vs discover contrast */
+.vd { display: grid; gap: 14px; }
+.vd .r { display: grid; grid-template-columns: 110px minmax(0, 1fr) 96px; gap: 12px; align-items: center; font-size: 14px; }
+.vd .r .l { color: var(--ink-2); line-height: 1.35; }
+.vd .r .l small { display: block; font-size: 11.5px; color: var(--ink-3); }
+.vd .r .t { height: 22px; border-radius: 6px; background: var(--paper-2); position: relative; overflow: hidden; }
+.vd .r .t i { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 6px; }
+.vd .r.v .t i { width: 3px; min-width: 3px; background: var(--green); }
+.vd .r.f .t i { width: 100%; background: linear-gradient(90deg, var(--gold), var(--coral)); }
+.vd .r .n { font: 800 18px/1 var(--en); text-align: right; font-variant-numeric: tabular-nums; }
+.vd .r.v .n { color: var(--green); } .vd .r.f .n { color: var(--coral); }
+@media (max-width: 560px) { .vd .r { grid-template-columns: minmax(0, 1fr) auto; gap: 4px 10px; } .vd .r .t { grid-column: 1 / -1; grid-row: 2; } }
+
+/* P vs NP mini */
+.pnp { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.pnp > div { border: 1px solid var(--line); border-radius: 14px; padding: 14px 16px; background: var(--bg); }
+.pnp h6 { margin: 0 0 6px; font-size: 14px; color: var(--gold); }
+.pnp > div.x h6 { color: var(--coral); }
+.pnp p { margin: 0; font-size: 14px; line-height: 1.6; color: var(--ink-2); }
+@media (max-width: 560px) { .pnp { grid-template-columns: minmax(0, 1fr); } }
+
+/* Stitch Loop flow */
+.lflow { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; position: relative; }
+.lflow .stp { border: 1.5px solid var(--line); background: var(--bg); border-radius: 14px; padding: 12px; font-size: 12.5px; line-height: 1.45; color: var(--ink-2); position: relative; min-width: 0; transition: border-color .3s, background .3s; }
+.lflow .stp .k { font: 700 11px/1 var(--mono); color: var(--ink-3); }
+.lflow .stp b { display: block; font-size: 14px; color: var(--ink); margin: 6px 0 4px; line-height: 1.3; }
+.lflow .stp.on { border-color: var(--gold); background: var(--gold-soft); }
+.lflow .stp.pr.on { border-color: var(--green); background: var(--green-soft); }
+.lflow .stp:not(:last-child)::before { content: "→"; position: absolute; right: -11px; top: 50%; transform: translate(50%, -50%); color: var(--ink-3); font-size: 14px; z-index: 1; }
+.lflow-back { margin-top: 10px; text-align: center; font-size: 12.5px; color: var(--ink-3); }
+.lflow-back span { display: inline-block; border: 1.5px dashed var(--gold); border-top: 0; border-radius: 0 0 14px 14px; padding: 4px 18px 6px; color: var(--gold); font-weight: 700; }
+@media (max-width: 720px) {
+  .lflow { grid-template-columns: minmax(0, 1fr); gap: 14px; }
+  .lflow .stp:not(:last-child)::before { content: "↓"; right: auto; left: 50%; top: auto; bottom: -14px; transform: translate(-50%, 50%); }
+}
+
+/* generated-UI mock */
+.gen { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.gen .pane { border: 1px solid var(--line); border-radius: 14px; padding: 12px; background: var(--bg); min-width: 0; }
+.gen .pane h6 { margin: 0 0 8px; font-size: 13px; color: var(--ink-2); }
+.gen pre { margin: 0; font: 500 12px/1.6 var(--mono); color: var(--ink-3); white-space: pre-wrap; }
+.gen canvas { display: block; width: 100%; height: 150px; border-radius: 10px; background: var(--paper-2); }
+@media (max-width: 560px) { .gen { grid-template-columns: minmax(0, 1fr); } }
+
+/* phone tab bar mock */
+.tabbar { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; max-width: 360px; margin: 0 auto; padding: 8px; border-radius: 18px; border: 1px solid var(--line); background: var(--bg); }
+.tabbar span { text-align: center; padding: 10px 4px; border-radius: 12px; font-size: 13.5px; font-weight: 700; color: var(--ink-2); }
+.tabbar span.on { background: var(--gold-soft); color: var(--ink); }
+.region { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 16px; justify-content: center; }
+.region span { font-size: 12.5px; font-weight: 700; padding: 5px 10px; border-radius: 999px; border: 1px dashed var(--coral); color: var(--coral); background: var(--coral-soft); }
+.region span.kr { border-style: solid; }
+/* ---------- w4 revision: reference images, code, demos ---------- */
+.refig { margin: 22px 0; border: 1px solid var(--line); border-radius: 16px; overflow: hidden; background: var(--paper); box-shadow: var(--shadow); }
+.refig .ph { position: relative; background: #0a1220; }
+.refig .ph.light { background: #fff; }
+.refig img { display: block; width: 100%; height: auto; }
+.refig.cap img { max-height: 420px; object-fit: contain; margin: 0 auto; }
+.refig figcaption { padding: 10px 16px 12px; font-size: 13.5px; line-height: 1.55; color: var(--ink-3); border-top: 1px solid var(--line); }
+.refig.duo .ph { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--line); }
+.refig.duo .ph > div { background: #0a1220; display: grid; place-items: center; }
+.refig.duo img { height: 260px; object-fit: cover; }
+@media (max-width: 560px) { .refig.duo .ph { grid-template-columns: 1fr; } .refig.duo img { height: 200px; } }
+.demo-tag { position: absolute; top: 10px; left: 10px; z-index: 5; font: 600 12px var(--mono); color: #1b1606; background: #e0b450; padding: 3px 9px; border-radius: 999px; line-height: 1.5; }
+.leanc { margin: 0; font: 500 14.5px/1.7 var(--mono); background: #070d1a; color: #c9cede; border-radius: 12px; padding: 16px 18px; overflow-x: auto; white-space: pre; }
+.leanc .kw { color: #a993ff; } .leanc .ty { color: #79a8ff; } .leanc .cm { color: #7d8494; font-style: italic; } .leanc .nm { color: #e0b450; } .leanc .ok { color: #4fd09a; } .leanc .hl { background: rgba(224,180,80,.18); border-radius: 4px; }
+.why3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: 18px 0 4px; }
+.why3 > div { border: 1px solid var(--line); border-radius: 14px; padding: 14px 16px; background: var(--paper-2); font-size: 15px; line-height: 1.6; }
+.why3 > div b { display: block; font-size: 15.5px; margin-bottom: 4px; color: var(--ink); }
+.why3 > div .k { font: 700 12px var(--mono); color: var(--gold); }
+.why3 > div.risk { border-color: var(--coral); background: var(--coral-soft); }
+@media (max-width: 640px) { .why3 { grid-template-columns: 1fr; } }
+.kflow { display: flex; gap: 8px; align-items: stretch; flex-wrap: wrap; }
+.kflow > div { flex: 1 1 140px; border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; background: var(--paper); font-size: 14px; line-height: 1.5; position: relative; }
+.kflow > div b { display: block; font-size: 15px; }
+.kflow > div .k { font: 700 12px var(--mono); color: var(--ink-3); }
+.in .kflow > div { animation: kfl 6s var(--ease) infinite; animation-delay: calc(var(--i) * 1s); }
+@keyframes kfl { 0%, 4% { border-color: var(--line); background: var(--paper); } 10%, 40% { border-color: var(--gold); background: var(--gold-soft); } 50%, 100% { border-color: var(--line); background: var(--paper); } }
+.kflow > div.fail { border-style: dashed; border-color: var(--coral); }
+/* quantization bits */
+.qbits { display: flex; flex-direction: column; gap: 12px; }
+.qbits .br { display: grid; grid-template-columns: 84px minmax(0, 1fr) 150px; gap: 12px; align-items: center; font-size: 14px; }
+.qbits .br b { font: 700 14px var(--mono); }
+.qbits .cells { display: flex; gap: 3px; }
+.qbits .cells i { flex: 0 0 calc((100% - 45px) / 16); height: 22px; border-radius: 4px; background: var(--c); opacity: .15; }
+.in .qbits .cells i { animation: qon .35s var(--ease) both; animation-delay: calc(.3s + var(--k) * 35ms); }
+@keyframes qon { from { opacity: .15; transform: scaleY(.3); } to { opacity: 1; transform: none; } }
+.qbits .br span { color: var(--ink-2); }
+@media (max-width: 560px) { .qbits .br { grid-template-columns: 64px minmax(0, 1fr); } .qbits .br span { grid-column: 1 / -1; } }
+.lmap { display: flex; gap: 4px; margin-top: 18px; }
+.lmap i { flex: 1; height: 28px; border-radius: 5px; background: var(--gold-soft); border: 1px solid var(--gold); }
+.lmap i.p8 { background: var(--blue-soft); border-color: var(--blue); }
+.lmap-l { display: flex; justify-content: space-between; font: 500 12.5px var(--mono); color: var(--ink-3); margin-top: 6px; }
+/* dark demo panels (same look in both themes) */
+.dk { --card: #111b2e; --card-2: #1d2a44; --dline: #2a3a5c; --dink: #f1ede2; --dink-2: #b9bccb; --dink-3: #868ca0; --dgold: #e0b450; --dblue: #79a8ff; --dgreen: #4fd09a;
+  position: relative; background: #0b1322; border-radius: 14px; color: var(--dink); }
+.demo2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 44px 12px 12px; }
+@media (max-width: 560px) { .demo2 { grid-template-columns: 1fr; } }
+.dpan { position: relative; border-radius: 12px; background: var(--card); border: 1px solid var(--dline); padding: 12px; overflow: hidden; display: flex; flex-direction: column; min-height: 250px; }
+.dpan h4 { margin: 0 0 8px; font: 700 14px var(--mono); color: var(--dink); }
+.dpan h4 small { display: block; font: 500 12px var(--sans); color: var(--dink-3); margin-top: 2px; }
+.vrow { display: flex; align-items: center; gap: 8px; margin-top: 8px; }
+.vrow > b { width: 34px; font-size: 12.5px; color: var(--dink-2); font-weight: 600; }
+.vbar { flex: 1; display: flex; align-items: center; gap: 3px; height: 40px; }
+.vbar i { flex: 1; height: 100%; border-radius: 3px; background: var(--c); transform: scaleY(.35); }
+.in .vbar i { animation: vWave .5s ease-in-out infinite alternate; animation-delay: calc(var(--k) * -73ms); }
+@keyframes vWave { from { transform: scaleY(.18); } to { transform: scaleY(1); } }
+.in .vbar.u { animation: talkU 8s infinite; } .in .vbar.d { animation: talkD 8s infinite; }
+@keyframes talkU { 0%, 34% { transform: scaleY(1); } 39%, 100% { transform: scaleY(.07); } }
+@keyframes talkD { 0%, 12% { transform: scaleY(.07); } 16%, 52% { transform: scaleY(1); } 56%, 100% { transform: scaleY(.07); } }
+.vstate { position: relative; height: 22px; margin-top: 10px; font: 600 12.5px var(--sans); }
+.vstate span { position: absolute; inset: 0; opacity: 0; }
+.vstate .s1 { color: var(--dgreen); opacity: 1; } .vstate .s2 { color: var(--dink-3); }
+.in .vstate .s1 { animation: vs1 8s infinite; } .in .vstate .s2 { animation: vs2 8s infinite; }
+@keyframes vs1 { 0%, 14% { opacity: 0; } 17%, 35% { opacity: 1; } 39%, 100% { opacity: 0; } }
+@keyframes vs2 { 0%, 56% { opacity: 0; } 60%, 97% { opacity: 1; } 100% { opacity: 0; } }
+.meter { margin-top: auto; display: flex; justify-content: space-between; align-items: baseline; padding-top: 8px; border-top: 1px dashed var(--dline); }
+.meter em { font-style: normal; font-size: 12px; color: var(--dink-3); }
+.meter b { position: relative; font: 700 20px var(--mono); color: var(--dgold); width: 120px; text-align: right; height: 26px; }
+.meter b span { position: absolute; right: 0; top: 0; } .meter b .m2 { color: var(--dblue); opacity: 0; }
+.in .meter b .m1 { animation: mt1 8s infinite; } .in .meter b .m2 { animation: mt2 8s infinite; }
+@keyframes mt1 { 0%, 56% { opacity: 1; } 60%, 97% { opacity: 0; } 100% { opacity: 1; } }
+@keyframes mt2 { 0%, 56% { opacity: 0; } 60%, 97% { opacity: 1; } 100% { opacity: 0; } }
+.wchat { display: flex; flex-direction: column; gap: 6px; flex: 1; position: relative; }
+.wb { font-size: 12.5px; line-height: 1.4; padding: 6px 9px; border-radius: 12px; max-width: 88%; }
+.wb.dot { background: var(--card-2); color: var(--dink); align-self: flex-start; border-bottom-left-radius: 4px; }
+.wb.me { background: #ff7a45; color: #fff; align-self: flex-end; border-bottom-right-radius: 4px; }
+.wbtn { align-self: flex-start; font-size: 12.5px; font-weight: 700; color: var(--dblue); background: rgba(121,168,255,.12); border: 1px solid rgba(121,168,255,.4); padding: 4px 10px; border-radius: 999px; }
+.wauth, .wdone { position: absolute; inset: 0; display: grid; place-items: center; align-content: center; gap: 8px; background: rgba(7,13,26,.92); border-radius: 10px; opacity: 0; font-size: 13px; color: var(--dink-2); text-align: center; line-height: 1.4; }
+.wauth .fid { width: 54px; height: 54px; border-radius: 16px; border: 3px solid var(--dblue); position: relative; }
+.wauth .fid::after { content: ""; position: absolute; left: 6px; right: 6px; height: 3px; top: 8px; background: var(--dblue); border-radius: 2px; box-shadow: 0 0 10px var(--dblue); }
+.wdone b { width: 54px; height: 54px; border-radius: 50%; background: var(--dgreen); color: #06210f; font-size: 30px; display: grid; place-items: center; }
+.in .wchat .w1 { animation: w1 9s infinite both; } .in .wchat .w2 { animation: w2 9s infinite both; } .in .wchat .w3 { animation: w3 9s infinite both; } .in .wchat .w4 { animation: w4 9s infinite both; }
+.in .wauth { animation: wa 9s infinite; } .in .wauth .fid::after { animation: scan 1s ease-in-out infinite alternate; } .in .wdone { animation: wd 9s infinite; }
+@keyframes w1 { 0%, 3% { opacity: 0; transform: translateY(8px); } 7%, 96% { opacity: 1; transform: none; } 100% { opacity: 0; } }
+@keyframes w2 { 0%, 16% { opacity: 0; transform: translateY(8px); } 20%, 96% { opacity: 1; transform: none; } 100% { opacity: 0; } }
+@keyframes w3 { 0%, 28% { opacity: 0; transform: translateY(8px); } 32%, 96% { opacity: 1; transform: none; } 100% { opacity: 0; } }
+@keyframes w4 { 0%, 40% { opacity: 0; transform: scale(.9); } 44%, 96% { opacity: 1; transform: none; } 100% { opacity: 0; } }
+@keyframes wa { 0%, 50% { opacity: 0; } 53%, 68% { opacity: 1; } 71%, 100% { opacity: 0; } }
+@keyframes wd { 0%, 70% { opacity: 0; transform: scale(.94); } 74%, 95% { opacity: 1; transform: none; } 99%, 100% { opacity: 0; } }
+@keyframes scan { from { top: 8px; } to { top: 39px; } }
+/* Gemini GIF demo */
+.gifdemo { display: flex; flex-direction: column; gap: 10px; padding: 46px 16px 16px; max-width: 460px; margin: 0 auto; }
+.gprompt { display: flex; align-items: center; gap: 8px; padding: 9px 12px; border-radius: 999px; background: var(--card); border: 1px solid var(--dline); font-size: 14px; white-space: nowrap; overflow: hidden; }
+.gprompt .tx { display: inline-block; overflow: hidden; white-space: nowrap; vertical-align: bottom; width: 13.2em; }
+.gprompt .cur { width: 2px; height: 18px; background: var(--dblue); }
+.in .gprompt .tx { animation: gtype 10s steps(14) infinite; } .in .gprompt .cur { animation: blink .8s steps(2) infinite; }
+@keyframes gtype { 0% { width: 0; } 22%, 100% { width: 13.2em; } }
+.gstage { position: relative; height: 240px; border-radius: 12px; overflow: hidden; background: linear-gradient(160deg, #1d2a44, #10192c); border: 1px solid var(--dline); }
+.gstage svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+.gen2 { position: absolute; inset: 0; display: grid; place-items: center; font: 600 14px var(--sans); color: var(--dink-2); background: linear-gradient(110deg, #142036 30%, #22345a 50%, #142036 70%); background-size: 250% 100%; opacity: 0; }
+.in .gen2 { animation: genShow 10s infinite, shimmer 1.2s linear infinite; }
+@keyframes genShow { 0%, 22% { opacity: 0; } 25%, 40% { opacity: 1; } 44%, 100% { opacity: 0; } }
+@keyframes shimmer { from { background-position: 100% 0; } to { background-position: -100% 0; } }
+.in .gstage .steam { animation: steam 3s ease-in-out infinite; } .in .gstage .steam.s2 { animation-delay: -1s; } .in .gstage .steam.s3 { animation-delay: -2s; }
+@keyframes steam { 0% { opacity: 0; transform: translateY(14px); } 30% { opacity: .9; } 100% { opacity: 0; transform: translateY(-34px); } }
+.gloop { display: flex; align-items: center; gap: 10px; font: 600 13px var(--mono); color: var(--dink-2); }
+.gloop .pb { flex: 1; height: 5px; border-radius: 3px; background: var(--card-2); overflow: hidden; }
+.gloop .pb i { display: block; height: 100%; background: var(--dblue); transform-origin: left; }
+.in .gloop .pb i { animation: gpb 3s linear infinite; }
+@keyframes gpb { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+/* diffusion-ui denoise over the real demo image */
+.noisegrid { position: absolute; inset: 0; display: grid; grid-template-columns: repeat(12, 1fr); grid-template-rows: repeat(12, 1fr); pointer-events: none; }
+.noisegrid i { background: var(--nc); opacity: 0; }
+.in .noisegrid i { animation: denoise 7s infinite; animation-delay: var(--nd); }
+@keyframes denoise { 0%, 6% { opacity: .95; } 30%, 86% { opacity: 0; } 100% { opacity: .95; } }
+.in .diffuse img { animation: unblur 7s infinite; }
+@keyframes unblur { 0%, 6% { filter: blur(14px) saturate(.3); } 36%, 86% { filter: none; } 100% { filter: blur(14px) saturate(.3); } }
+/* prime-count chart */
+.pcplot { position: relative; height: 380px; border-radius: 12px; overflow: hidden; background: #0a1220; }
+.pcplot canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.pcstage { position: absolute; right: 14px; top: 12px; z-index: 4; text-align: right; font: 700 20px var(--mono); color: #e0b450; line-height: 1.25; }
+.pcstage small { display: block; font: 500 13px var(--sans); color: #b9bccb; }
+@media (max-width: 560px) { .pcplot { height: 300px; } .pcstage { font-size: 16px; top: 40px; } }
+/* tab bar cycling */
+.in .tabbar.cyc span { animation: tabCyc 6s ease-in-out infinite; }
+.in .tabbar.cyc span:nth-child(2) { animation-delay: -4s; } .in .tabbar.cyc span:nth-child(3) { animation-delay: -2s; }
+@keyframes tabCyc { 0%, 30% { background: var(--gold-soft); color: var(--gold); } 36%, 94% { background: transparent; color: var(--ink-2); } 100% { background: var(--gold-soft); color: var(--gold); } }
+@media (prefers-reduced-motion: reduce) { .dk *, .noisegrid i, .diffuse img, .tabbar.cyc span, .kflow > div, .qbits .cells i { animation: none !important; } .qbits .cells i { opacity: 1; } }
+.zsteps { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 18px 0; }
+.zsteps > div { border: 1px solid var(--line); border-radius: 14px; padding: 14px 16px; background: var(--paper); box-shadow: var(--shadow); font-size: 15px; line-height: 1.6; }
+.zsteps .k { font: 700 12px var(--mono); color: var(--gold); }
+.zsteps b { display: block; font: 600 16px/1.5 var(--mono); margin: 6px 0; color: var(--ink); overflow-wrap: anywhere; }
+.zsteps p { margin: 0; color: var(--ink-2); }
+@media (max-width: 640px) { .zsteps { grid-template-columns: 1fr; } }
+.zplane { width: 100%; height: auto; display: block; font-family: var(--sans); }
+.zplane .zr.conv { fill: var(--blue-soft); } .zplane .zr.strip { fill: var(--gold-soft); }
+.zplane .zax { stroke: var(--ink-3); stroke-width: 1.5; } .zplane .zcl { stroke: var(--gold); stroke-width: 2.5; stroke-dasharray: 8 6; }
+.in .zplane .zcl { animation: dash 1.2s linear infinite; }
+.zplane .zt { fill: var(--ink-2); font-size: 14px; font-weight: 600; } .zplane .zt.sm, .zplane .sm text { font-size: 12.5px; font-weight: 500; fill: var(--ink-3); } .zplane .zt.gold { fill: var(--gold); }
+.zplane .ztriv circle { fill: var(--paper); stroke: var(--ink-2); stroke-width: 2.5; }
+.zplane .zpole line { stroke: var(--coral); stroke-width: 3; }
+.zplane .znt circle { fill: var(--gold); stroke: var(--paper); stroke-width: 2; transform-box: fill-box; transform-origin: center; }
+.js .zplane .znt circle { opacity: 0; } .in .zplane .znt circle { animation: pop .5s var(--ease) both; animation-delay: var(--d); }
+.zplane .zarr { stroke: var(--ink-3); stroke-width: 1.2; }
+.chirow { display: flex; flex-direction: column; gap: 6px; overflow-x: auto; }
+.chirow > div { display: grid; grid-template-columns: 64px repeat(9, minmax(30px, 1fr)); gap: 4px; align-items: center; }
+.chirow b { font: 700 14px var(--mono); color: var(--ink-2); }
+.chirow span { text-align: center; padding: 6px 0; border-radius: 8px; font: 600 14px var(--mono); background: var(--paper-2); }
+.chirow span.p { background: var(--green-soft); color: var(--green); } .chirow span.m { background: var(--coral-soft); color: var(--coral); } .chirow span.z { color: var(--ink-3); }
+@media (max-width: 560px) { .chirow > div { grid-template-columns: 44px repeat(9, minmax(0, 1fr)); gap: 3px; } .chirow span { font-size: 12.5px; } .lfun { font-size: 13px; } }
+.lfun { font: 600 16px var(--mono); text-align: center; margin: 16px 0 6px; color: var(--ink); overflow-wrap: anywhere; }
+@media (prefers-reduced-motion: reduce) { .zplane .znt circle { opacity: 1 !important; animation: none !important; } }
+</style>
+<script>document.documentElement.classList.add('js');try{var t=localStorage.getItem('archive-theme');if(t)document.documentElement.dataset.theme=t;}catch(e){}try{var lq=/[?&]launch\b/.test(location.search),ls=sessionStorage.getItem('archive-launch');if(lq||ls===location.pathname){document.documentElement.classList.add('launched');if(!lq)sessionStorage.removeItem('archive-launch');}}catch(e){}</script>
+</head>
+<body>
+
+<header class="topbar gutter">
+  <div class="topbar-in">
+    <a class="crumb" href="../" aria-label="Artifact Archives로 돌아가기"><span class="back" aria-hidden="true">←</span><span class="arch">ARTIFACT ARCHIVES</span><span class="sep">/</span><b>11월 넷째 주 테크·AI 브리핑</b></a>
+    <span class="sp"></span>
+    <button class="btn toc-btn" id="tocBtn" type="button" aria-haspopup="dialog" aria-label="목차 열기"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h10"/></svg><span id="tocCur">목차</span></button>
+    <a class="btn" href="../ai-briefing-2026-11-w4/" title="같은 내용을 한 장씩 넘겨 보는 슬라이드 타입"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></svg><span class="lbl">슬라이드 타입으로 보기</span></a>
+    <button class="btn" id="themeBtn" type="button" aria-label="테마 전환"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 0 0 18z" fill="currentColor"/></svg><span class="lbl">테마</span></button>
+  </div>
+  <div class="progress" id="progress"></div>
+</header>
+
+<div class="hero gutter" id="hero">
+  <div class="hero-ph" style="background-image:url(../ai-briefing-2026-11-w4/img/title-seoul-namsan.jpg)" aria-hidden="true"></div>
+  <div class="hero-in">
+    <div class="kicker rv" style="--d:0ms">Weekly Tech · AI Briefing · 2026.11 W4</div>
+    <h1 class="rv" style="--d:120ms">2026년 11월 넷째 주<br><em>테크·AI 브리핑</em></h1>
+    <p class="lede rv" style="--d:260ms">이번 주 가장 큰 소식은 <b>리만 가설 증명 발표</b>입니다. Anthropic의 수학자 알푀게가 Claude와 함께 리만 가설을 증명했다고 11월 20일 발표했고, 증명은 Lean 4 코드로 공개돼 커뮤니티 검증을 통과했습니다. 다만 Clay 연구소의 공식 인정은 아직입니다.<sup class="fn"><a href="#s9" title="Nature – 리만 가설 증명 반응">9</a>,<a href="#s10" title="Scientific American – Lean 검증">10</a>,<a href="#s11" title="Kingy.ai – Clay 규정">11</a></sup> 모델 쪽에서는 <b>GPT-6.2 Astra·Sol</b>, <b>Gemini 4 Neon</b>, 오픈 웨이트 <b>Inkling 2 Mini</b>가 나왔고, 앱 속 AI로는 ChatGPT 리디자인, 카카오톡 '라이언', Gemini GIF 생성, Tesla FSD v15가 있었습니다.</p>
+    <div class="meta rv" style="--d:380ms"><span>📄 10개 주제 · 5개 장</span><span>⏱ 약 26분 읽기</span><span>🔗 출처 25건</span><span>📅 11월 23일 작성 기준</span><span style="opacity:.6">배경 사진: Matt Kieffer · CC BY-SA 2.0</span></div>
+
+    <div class="shift week rv" style="--d:480ms" aria-label="이번 주 주요 일정">
+      <div class="rail"><i></i></div><div class="glow"></div>
+      <div class="st old"><div class="n">11.17</div><h3>GPT-6.2 Astra · Sol</h3><p>고난도 전문 업무용과 일상 업무용 두 모델. 같은 날 Runway diffusion-ui 공개.</p></div>
+      <div class="st old"><div class="n">11.18</div><h3>Gemini 4 Neon · Stitch Loop</h3><p>Neon 정식 출시(11.16 유출 후). Stitch에 자율 에이전트 실험 기능.</p></div>
+      <div class="st old"><div class="n">11.19</div><h3>ChatGPT 리디자인 · GPT-Live-1.1 API</h3><p>하단 3개 탭(한국 제외). dots 음성 모델 API 공개.</p></div>
+      <div class="st old hot"><div class="n">11.20</div><h3>리만 가설 증명 발표</h3><p>Lean 4 코드로 공개. 같은 날 Inkling 2 Mini, Gemini GIF 생성.</p></div>
+      <div class="st old"><div class="n">11.21</div><h3>Tesla FSD v15</h3><p>Reality View 화면과 함께 배포 시작. AI4 차량만.</p></div>
+      <div class="st new"><div class="n">12월<em>예정</em></div><h3>카카오 '라이언' CBT</h3><p>12.16은 약관 시행일. 사전 신청자 일부 대상 비공개 베타.</p></div>
+    </div>
+
+    <div class="stats rv" style="--d:640ms">
+      <a href="#riemann"><b data-count="167" data-suf="년">0</b><span>리만 가설 제기부터 증명 발표까지</span></a>
+      <a href="#riemann"><b data-count="17.5" data-dec="1" data-pre="약 " data-suf="만">0</b><span>공개된 Lean 파일 수 (14개 아카이브)</span></a>
+      <a href="#models"><b data-count="8" data-pre="$">0</b><span>Astra 입력 가격 (100만 토큰당, 20% 인하)</span></a>
+      <a href="#models"><b data-count="26.4" data-dec="1" data-suf="B">0</b><span>Inkling 2 Mini 총 파라미터</span></a>
+      <a href="#apps"><b data-count="3" data-pre="약 " data-suf="초">0</b><span>Gemini 앱 반복 GIF 길이</span></a>
+    </div>
+  </div>
+</div>
+
+<div class="shell gutter">
+  <nav class="toc" aria-label="목차"><h4>CONTENTS</h4><ol id="toc"></ol></nav>
+
+  <article id="article">
+
+    <!-- ================= 0. 한눈에 보기 ================= -->
+    <section id="glance" data-n="00" data-t="한눈에 보기">
+      <span class="sec-label"><span class="num">00</span> · Fact check</span>
+      <h2>한눈에 보기: 11개 항목 판정</h2>
+      <p class="standfirst">이번 주 메모에 올라온 항목을 하나씩 확인했습니다. <b>출시된 것</b>과 <b>코드 유출·티저에 그친 것</b>, 그리고 <b>날짜나 이름을 바로잡아야 하는 것</b>을 나눴습니다.</p>
+      <div class="tbl-wrap fc" data-cards="rows">
+        <table>
+          <thead><tr><th>항목</th><th>판정</th><th>핵심</th></tr></thead>
+          <tbody>
+            <tr><td><a href="#models">GPT-6.2 Astra / Sol</a></td><td><span class="okc">출시됨</span></td><td>11월 17일 출시</td></tr>
+            <tr><td><a href="#models">Gemini 4 Neon</a></td><td><span class="okc">출시됨</span></td><td>11월 16일 유출 후 18일 정식 출시</td></tr>
+            <tr><td><a href="#models">Gemini 4 Cobalt</a></td><td><span class="unv">코드 유출만</span></td><td>공식 발표 없음</td></tr>
+            <tr><td><a href="#models">Gemini 4 Helium</a></td><td><span class="unv">티저만</span></td><td>모델 ID·가격 없음</td></tr>
+            <tr><td><a href="#models">Inkling 2 Mini</a></td><td><span class="okc">출시됨</span></td><td>11월 20일, 오픈 웨이트 · 4비트로 학습</td></tr>
+            <tr><td><a href="#agents">"Gemini Loop"</a></td><td><span class="okc">확인</span></td><td>정확한 명칭은 Stitch Loop. 11월 18일 발표, 대기자 명단</td></tr>
+            <tr><td><a href="#riemann">리만 가설 증명</a></td><td><span class="okc">발표 · Lean 검증</span> <span class="unv">Clay 미인정</span></td><td>P=NP는 풀리지 않음</td></tr>
+            <tr><td><a href="#apps">ChatGPT 리디자인 / dots</a></td><td><span class="okc">확정</span></td><td>한국은 리디자인 대상에서 제외 · 음성은 GPT-Live-1.1</td></tr>
+            <tr><td><a href="#apps">카카오톡 '라이언'</a></td><td><span class="unv">날짜 해석 주의</span></td><td>12월 16일은 약관 시행일</td></tr>
+            <tr><td><a href="#apps">Gemini Omni 1.2 Flash GIF</a></td><td><span class="okc">확인</span></td><td>한국 포함</td></tr>
+            <tr><td><a href="#fsd">FSD v15 Reality View</a></td><td><span class="okc">확인</span></td><td>11월 21일 배포 시작</td></tr>
+            <tr><td><a href="#agents">diffusion-ui</a></td><td><span class="okc">확인 (Runway Labs)</span></td><td>연구 프리뷰</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="legend2"><span class="okc">확정</span>공식 발표·복수 매체로 확인 <span class="unv">미확인</span>유출·티저·확인 안 된 주장 <span class="vend">벤더 수치</span>회사가 직접 낸 수치</div>
+    </section>
+
+    <!-- ================= 1. 리만 가설 ================= -->
+    <section id="riemann" data-n="01" data-t="리만 가설 증명 · P=NP">
+      <span class="sec-label"><span class="num">01</span> · 수학</span>
+      <h2>리만 가설 증명: Lean 검증은 통과, Clay 인정은 아직</h2>
+      <p class="standfirst">Anthropic의 수학자 레벤트 알푀게가 Claude와 함께 <b>리만 가설과 일반화된 리만 가설</b>을 증명했다고 11월 20일 발표했습니다. 증명은 논문이 아니라 <b>Lean 4 코드</b>로 나왔고, 커뮤니티와 독립 연구자들이 컴파일해 확인했습니다. 가설이 무엇인지, 왜 Lean으로 검증하는지, P=NP는 왜 따라 나오는지까지 차례로 짚습니다.</p>
+      <figure class="ch-banner" style="margin-bottom:6px"><div class="bg" style="background-image:url(../ai-briefing-2026-11-w4/img/ch1-zeta.jpg); filter:brightness(.5) saturate(1.3)" aria-hidden="true"></div><div class="shade"></div><div class="cnum" aria-hidden="true">01</div><img src="../ai-briefing-2026-11-w4/img/ch1-riemann.jpg" width="1190" height="1600" alt="베른하르트 리만 초상 사진" loading="lazy"></figure>
+      <small class="ch-credit">배경: 리만 제타 함수 절댓값 그래프 · Wikimedia Commons 기여자 · CC BY-SA 3.0 / 우측: 베른하르트 리만 초상 · Public domain (Wikimedia Commons)</small>
+
+      <h3><span class="hn">1.1</span>리만 가설이란</h3>
+      <ul class="dots">
+        <li><strong>제타 함수:</strong> 1/1<sup>s</sup> + 1/2<sup>s</sup> + 1/3<sup>s</sup> + …처럼 모든 자연수 n에 대해 1/n<sup>s</sup>를 더한 함수 ζ(s)를 복소수 전체로 넓힌 것입니다.</li>
+        <li><strong>가설:</strong> ζ(s) = 0이 되는 점 가운데 음의 짝수(−2, −4, …)에 있는 '자명한 영점'을 빼면, 나머지 영점은 모두 <strong>실수부가 정확히 1/2인 세로선(임계선)</strong> 위에 있다는 주장입니다.</li>
+        <li><strong>역사:</strong> 1859년 리만이 논문에서 제기했고, 2000년 Clay 연구소가 밀레니엄 문제로 지정했습니다. 컴퓨터로 수조 개 영점을 확인했지만 모든 영점에 대한 증명은 없었습니다.</li>
+      </ul>
+      <figure class="refig duo"><div class="ph"><div><img src="../ai-briefing-2026-11-w4/img/ch1-critical-line.gif" width="560" height="560" alt="임계선 위의 점을 제타 함수로 옮기면 그려지는 궤적이 원점을 반복해 지나는 애니메이션" loading="lazy"></div><div style="background:#fff"><img src="../ai-briefing-2026-11-w4/img/ch1-kingy-critical.jpg" width="1400" height="787" alt="임계선 위에 영점이 늘어선 모습을 그린 일러스트" loading="lazy"></div></div><figcaption>왼쪽: 임계선 위의 점을 ζ로 옮긴 궤적. 원점을 지날 때가 영점 · YoshiGosu, CC BY-SA 4.0 (Wikimedia Commons) / 오른쪽: 임계선에 늘어선 영점 일러스트 · Kingy.ai 기사 이미지</figcaption></figure>
+
+      <h3><span class="hn">1.2</span>제타 함수 자세히 보기</h3>
+      <p>리만 가설을 이해하려면 제타 함수가 어떻게 만들어졌는지부터 보는 편이 빠릅니다. 네 단계로 나눠 설명합니다.</p>
+      <div class="zsteps">
+        <div><span class="k">① 무한급수 · 오일러</span><b>ζ(s) = 1 + 1/2ˢ + 1/3ˢ + 1/4ˢ + …</b><p>s가 1보다 크면 합이 한 값으로 모입니다. 오일러는 1734년 <strong>ζ(2) = π²/6</strong>(바젤 문제)을 풀었습니다. s = 1이면 조화급수 1 + 1/2 + 1/3 + …가 되어 끝없이 커집니다.</p></div>
+        <div><span class="k">② 오일러 곱 · 소수와 연결</span><b>ζ(s) = ∏ₚ 1 / (1 − p⁻ˢ)</b><p>모든 자연수는 소수의 곱으로 한 가지 방식으로만 나뉜다는 사실(산술의 기본 정리)에서 나옵니다. 왼쪽은 <strong>자연수 전체</strong>의 합, 오른쪽은 <strong>소수 전체</strong>의 곱입니다. 제타 함수가 소수 이야기가 되는 출발점입니다.</p></div>
+        <div><span class="k">③ 해석적 연속 · 리만 (1859)</span><b>s를 복소수 전체로 넓힘 (s = 1만 제외)</b><p>급수는 실수부가 1보다 클 때만 뜻이 있습니다. 리만은 이 함수를 매끄럽게 이어 붙여 복소평면 전체에서 정의했습니다. 그래서 ζ(−1) = −1/12 같은 값이 나오는데, 이는 1 + 2 + 3 + …를 실제로 더한 값이 아니라 <strong>이어 붙인 함수의 값</strong>입니다.</p></div>
+        <div><span class="k">④ 함수 방정식 · 대칭</span><b>ζ(s) = 2ˢ πˢ⁻¹ sin(πs/2) Γ(1−s) ζ(1−s)</b><p>s에서의 값과 1−s에서의 값이 묶여 있어, 함수가 <strong>실수부 1/2인 세로선을 중심으로 대칭</strong>입니다. sin(πs/2)가 0이 되는 −2, −4, −6 …이 '자명한 영점'입니다.</p></div>
+      </div>
+      <div class="fig" data-fig="zplane">
+        <div class="fig-h"><span class="t">복소평면 위의 제타 함수 지도</span><button class="replay" type="button" data-replay>다시 재생</button></div>
+        <svg class="zplane" viewBox="0 0 720 400" role="img" aria-label="복소평면에서 급수가 수렴하는 영역, 임계 띠, 임계선, 자명한 영점, s=1의 극, 처음 세 개의 자명하지 않은 영점 위치를 표시한 그림">
+          <rect class="zr conv" x="430" y="20" width="270" height="340"/>
+          <text class="zt" x="565" y="46" text-anchor="middle">급수가 그대로 수렴 (실수부 &gt; 1)</text>
+          <rect class="zr strip" x="350" y="20" width="80" height="340"/>
+          <text class="zt" x="390" y="46" text-anchor="middle">임계 띠</text>
+          <line class="zax" x1="20" y1="300" x2="700" y2="300"/>
+          <line class="zax" x1="350" y1="20" x2="350" y2="380"/>
+          <line class="zcl" x1="390" y1="20" x2="390" y2="380"/>
+          <text class="zt gold" x="398" y="372">실수부 = 1/2 (임계선)</text>
+          <g class="zt sm"><text x="350" y="320" text-anchor="middle">0</text><text x="430" y="320" text-anchor="middle">1</text><text x="190" y="320" text-anchor="middle">−2</text><text x="30" y="320" text-anchor="middle">−4</text><text x="270" y="320" text-anchor="middle">−1</text><text x="110" y="320" text-anchor="middle">−3</text></g>
+          <g class="ztriv"><circle cx="190" cy="300" r="7"/><circle cx="30" cy="300" r="7"/></g>
+          <text class="zt" x="110" y="276" text-anchor="middle">자명한 영점 −2, −4, …</text>
+          <g class="zpole"><line x1="423" y1="293" x2="437" y2="307"/><line x1="437" y1="293" x2="423" y2="307"/></g>
+          <text class="zt" x="446" y="290">s = 1 · 극(값이 무한대)</text>
+          <g class="znt">
+            <circle cx="390" cy="229" r="7" style="--d:600ms"/><circle cx="390" cy="187" r="7" style="--d:850ms"/><circle cx="390" cy="160" r="7" style="--d:1100ms"/><circle cx="390" cy="118" r="7" style="--d:1350ms"/><circle cx="390" cy="102" r="7" style="--d:1600ms"/>
+          </g>
+          <g class="zt sm"><text x="404" y="233">½ + 14.13i</text><text x="404" y="191">½ + 21.02i</text><text x="404" y="164">½ + 25.01i</text><text x="404" y="122">½ + 30.42i</text><text x="404" y="106">½ + 32.94i</text></g>
+          <text class="zt" x="250" y="150" text-anchor="end">자명하지 않은 영점</text><text class="zt sm" x="250" y="168" text-anchor="end">지금까지 계산된 것은 모두 임계선 위</text>
+          <line class="zarr" x1="256" y1="155" x2="378" y2="185"/>
+        </svg>
+        <figcaption>세로축은 허수부(높이)입니다. 그림의 높이는 실제 비율이 아닌 모식입니다. 영점 좌표(14.134725…, 21.022040…, 25.010858…, 30.424876…, 32.935062…)는 알려진 값입니다.</figcaption>
+      </div>
+      <ul class="dots">
+        <li><strong>임계 띠:</strong> 자명하지 않은 영점은 모두 실수부가 0과 1 사이인 띠 안에 있습니다. 1896년 아다마르와 드 라 발레 푸생이 실수부 = 1 위에는 영점이 없음을 보였고, 이것이 <strong>소수 정리</strong>의 증명이 됐습니다.</li>
+        <li><strong>임계선:</strong> 1914년 하디는 실수부 1/2 위에 영점이 무한히 많다는 것을 증명했습니다. 컴퓨터로는 처음 10조(10¹³) 개가 넘는 영점이 모두 이 선 위에 있음을 확인했습니다. 리만 가설은 <strong>예외가 하나도 없다</strong>는 주장입니다.</li>
+        <li><strong>영점과 소수를 잇는 식:</strong> 리만과 폰 망골트의 '명시 공식'은 소수의 개수를 "주된 항 x에서 영점마다 하나씩 생기는 물결을 빼는" 모양으로 씁니다. 영점 ρ 하나가 만드는 물결의 크기는 x<sup>Re ρ</sup>입니다. 모든 영점의 실수부가 1/2이면 물결은 √x를 넘지 못하고, 이것이 1.3절에서 말하는 <strong>오차 √x</strong>의 정체입니다.</li>
+      </ul>
+
+      <h3><span class="hn">1.3</span>왜 중요한가: 영점의 위치가 소수의 질서를 정한다</h3>
+      <ul class="dots">
+        <li><strong>소수와의 연결:</strong> x 이하 소수의 개수 π(x)는 대략 x / ln x입니다(소수 정리). 리만 가설이 참이면 이 근사의 <strong>오차가 √x 수준</strong>으로 작다는 것이 보장됩니다.</li>
+        <li><strong>조건부 정리들:</strong> "리만 가설이 참이라면 …"으로 시작하는 정리가 수없이 쌓여 있습니다. 증명이 확정되면 이들이 한꺼번에 무조건 참이 됩니다.</li>
+        <li><strong>일반화된 리만 가설:</strong> 같은 주장을 디리클레 L-함수로 넓힌 것으로, 소수 판정 같은 알고리즘의 성능 분석에도 쓰여 왔습니다.</li>
+      </ul>
+      <div class="fig" data-fig="pc">
+        <div class="fig-h"><span class="t">가까이선 계단, 멀리선 매끈한 곡선</span><span class="s">반복 재생</span></div>
+        <div class="pcplot dk"><span class="demo-tag">애니메이션 · 직접 계산한 실제 값</span><canvas aria-label="x 범위를 30에서 10,000까지 넓히면 계단 모양의 소수 개수 π(x)가 매끈한 곡선이 되어 Li(x)에 붙는 과정"></canvas><div class="pcstage"></div></div>
+        <figcaption>x 범위를 30 → 100 → 1,000 → 10,000으로 넓힙니다. 가까이서 보면 소수(점)가 나올 때마다 한 칸씩 오르는 계단이지만, 멀리서 보면 매끈한 곡선이 되어 로그 적분 Li(x)에 바짝 붙습니다. 이 붙어 있는 정도(오차)를 보장하는 것이 리만 가설입니다. 10,000 이하 소수는 1,229개입니다. 값은 이 페이지에서 직접 계산했습니다.</figcaption>
+      </div>
+
+      <h3><span class="hn">1.4</span>리만 가설과 일반화된 리만 가설은 무엇이 다른가</h3>
+      <p>리만 가설은 제타 함수 ζ(s) <strong>한 개</strong>의 영점에 관한 주장입니다. 일반화된 리만 가설(GRH)은 같은 주장을 <strong>디리클레 L-함수 무한히 많은 개</strong>로 넓힌 것입니다. 리만 가설은 GRH의 특수한 경우입니다.</p>
+      <div class="tbl-wrap" data-cards="rows">
+        <table>
+          <thead><tr><th>비교</th><th>리만 가설 (RH)</th><th>일반화된 리만 가설 (GRH)</th></tr></thead>
+          <tbody>
+            <tr><td>대상 함수</td><td>ζ(s) = Σ 1/nˢ</td><td>L(s, χ) = Σ χ(n)/nˢ (χ: 디리클레 지표)</td></tr>
+            <tr><td>함수 개수</td><td>1개</td><td>지표 χ마다 하나씩, 무한히 많음</td></tr>
+            <tr><td>주장</td><td>자명하지 않은 영점의 실수부가 모두 1/2</td><td>모든 L(s, χ)의 자명하지 않은 영점의 실수부가 모두 1/2</td></tr>
+            <tr><td>관계</td><td>χ가 모든 n에 1을 주는 경우(자명한 지표)가 바로 ζ(s)</td><td>RH를 포함</td></tr>
+            <tr><td>알려 주는 것</td><td>소수 <strong>전체</strong>가 얼마나 고르게 퍼져 있는지</td><td><strong>특정 나머지를 갖는</strong> 소수(예: 4로 나눠 1이 남는 소수)가 얼마나 고르게 퍼져 있는지</td></tr>
+            <tr><td>Clay 상금</td><td>밀레니엄 문제 대상</td><td>대상 아님</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="fig" data-fig="mod4">
+        <div class="fig-h"><span class="t">예시: 4로 나눈 나머지를 보는 지표 χ</span><button class="replay" type="button" data-replay>다시 재생</button></div>
+        <div class="chirow">
+          <div class="pop" style="--d:0ms"><b>n</b><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span></div>
+          <div class="pop" style="--d:250ms"><b>χ(n)</b><span class="p">+1</span><span class="z">0</span><span class="m">−1</span><span class="z">0</span><span class="p">+1</span><span class="z">0</span><span class="m">−1</span><span class="z">0</span><span class="p">+1</span></div>
+        </div>
+        <p class="lfun rv" style="--d:500ms">L(s, χ) = 1 − 1/3ˢ + 1/5ˢ − 1/7ˢ + 1/9ˢ − …</p>
+        <div class="kv">
+          <div><b>4k + 1 소수</b><span>5, 13, 17, 29, 37, 41 … (χ = +1)</span></div>
+          <div><b>4k + 3 소수</b><span>3, 7, 11, 19, 23, 31 … (χ = −1)</span></div>
+          <div><b>π/4</b><span>s = 1일 때 L 값 (라이프니츠 급수 1 − 1/3 + 1/5 − …)</span></div>
+        </div>
+        <figcaption>이 L-함수의 영점은 "4k+1 꼴 소수와 4k+3 꼴 소수가 얼마나 비슷한 개수로 나오는가"를 정합니다. RH가 소수가 <strong>몇 개</strong>인지에 답한다면, GRH는 소수가 나머지별로 <strong>어떻게 나뉘는지</strong>까지 답합니다.</figcaption>
+      </div>
+      <p><strong>GRH가 따로 중요한 이유:</strong> 다음 결과들은 "GRH가 참이라면"을 전제로 증명돼 있습니다. 이번 발표가 GRH까지 증명했다고 주장한 점이 중요한 까닭입니다.</p>
+      <ul class="dots">
+        <li><strong>소수 판정:</strong> 밀러 판정법이 결정적 알고리즘이 됩니다. 어떤 수 n이 소수인지 확인하려면 작은 수 약 2(ln n)²개까지만 시험하면 됩니다.</li>
+        <li><strong>이차 비잉여:</strong> 가장 작은 이차 비잉여의 크기에 강한 상한이 생깁니다.</li>
+        <li><strong>아틴 원시근 추측:</strong> 1967년 훌리가 GRH의 확장판(데데킨트 제타 함수에 대한 가설)을 전제로 증명했습니다.</li>
+        <li><strong>계산 정수론·암호:</strong> 여러 알고리즘의 효율 분석이 GRH를 전제로 합니다.</li>
+      </ul>
+      <div class="callout"><span class="tag">알아 둘 점</span><p>"일반화된 리만 가설"은 문헌마다 범위가 조금 다릅니다. 디리클레 L-함수까지만 가리키기도 하고, 데데킨트 제타 함수(확장 리만 가설, ERH)나 더 일반적인 L-함수까지 포함하기도 합니다. 이번 발표의 GRH가 정확히 어디까지인지는 원문에서 따로 확인하지 않았습니다.</p></div>
+
+      <h3><span class="hn">1.5</span>발표와 검증 <span class="okc">확정</span></h3>
+      <ul class="dots">
+        <li><strong>발표:</strong> 11월 20일, Anthropic의 수학자 알푀게가 Claude와 함께 리만 가설과 일반화된 리만 가설을 증명했다고 발표했습니다.<sup class="fn"><a href="#s9" title="Nature – 리만 가설 증명 반응">9</a></sup></li>
+        <li><strong>증명 형태:</strong> 논문이 아니라 Lean 4 코드로 공개됐습니다. 14개 아카이브에 약 17.5만 개 파일 규모입니다.<sup class="fn"><a href="#s10" title="Scientific American – Lean 검증">10</a></sup></li>
+        <li><strong>검증:</strong> Lean/Mathlib 커뮤니티가 공동 성명으로 명제와 증명이 모두 정확하다고 인증했습니다. MIT의 앤드루 서덜랜드 등 독립 연구자들도 별도로 컴파일에 성공했습니다.<sup class="fn"><a href="#s10" title="Scientific American – Lean 검증">10</a></sup></li>
+        <li><strong>반응:</strong> 메이너드는 증명이 맞을 것으로 본다고 말했습니다. 그랜빌은 공개된 설명 문서가 엉망이라고 비판했고, 발표 시점에도 의문을 제기했습니다.<sup class="fn"><a href="#s9" title="Nature – 리만 가설 증명 반응">9</a></sup></li>
+      </ul>
+      <figure class="refig cap"><div class="ph"><img src="../ai-briefing-2026-11-w4/img/ch1-nature.jpg" width="1400" height="787" alt="Nature 기사 대표 이미지" loading="lazy"></div><figcaption>Nature 기사 대표 이미지 (James Brittain/Getty) · 리만 가설 증명 반응 기사</figcaption></figure>
+      <div class="fig" data-fig="rh">
+        <div class="fig-h"><span class="t">발표에서 공식 인정까지</span><button class="replay" type="button" data-replay>다시 재생</button></div>
+        <div class="tl c4"><span class="ln"></span>
+          <div class="ev rv" style="--d:200ms"><span class="dt">167년 전</span><h6>문제 제기</h6><p>이번 증명이 나오기까지 167년이 걸렸습니다.</p></div>
+          <div class="ev rv hot" style="--d:550ms"><span class="dt">11.20</span><h6>증명 발표</h6><p>알푀게와 Claude. Lean 4 코드, 14개 아카이브 · 약 17.5만 파일.</p></div>
+          <div class="ev rv" style="--d:900ms"><span class="dt">발표 후</span><h6>Lean 검증</h6><p>Lean/Mathlib 공동 성명, 서덜랜드 등 독립 컴파일 성공.</p><span class="stampx" style="--d:1500ms">검증</span></div>
+          <div class="ev rv ghost" style="--d:1250ms"><span class="dt">미정</span><h6>Clay 공식 인정</h6><p>게재 → 2년 경과 → 수학계 수용. 홈페이지는 여전히 '미해결'.</p></div>
+        </div>
+        <figcaption>"167년"은 원고의 "증명을 찾는 데 167년" 표현을 따랐습니다. 자료: Nature, Scientific American, Kingy.ai(Clay 규정).</figcaption>
+      </div>
+
+      <h3><span class="hn">1.6</span>Lean 코드란</h3>
+      <ul class="dots">
+        <li><strong>Lean:</strong> 수학 명제와 증명을 프로그래밍 언어처럼 적으면, 컴퓨터가 증명의 모든 단계를 검사해 주는 <strong>증명 보조기</strong>입니다. 2013년 Microsoft Research의 레오나르도 드 모라가 시작했고, 지금은 Lean 4가 쓰입니다.</li>
+        <li><strong>Mathlib:</strong> 전 세계 수학자들이 함께 만드는 Lean 수학 라이브러리입니다. 리만 제타 함수와 리만 가설의 정의도 이미 들어 있습니다.</li>
+        <li><strong>커널:</strong> Lean의 작은 핵심 검사기입니다. 증명의 한 단계라도 규칙에 어긋나면 통과시키지 않습니다.</li>
+      </ul>
+      <div class="fig" data-fig="lean">
+        <div class="fig-h"><span class="t">Mathlib에 있는 리만 가설의 정의</span></div>
+<pre class="leanc" aria-label="Mathlib의 리만 가설 정의"><span class="cm">-- Mathlib에 있는 리만 가설의 정의 (명제)</span>
+<span class="kw">def</span> <span class="nm">RiemannHypothesis</span> : <span class="ty">Prop</span> :=
+  ∀ (s : <span class="ty">ℂ</span>) (_ : riemannZeta s = 0)
+    (_ : ¬∃ n : <span class="ty">ℕ</span>, s = -2 * (n + 1)) (_ : s ≠ 1),
+    <span class="hl">s.re = 1 / 2</span>
+
+<span class="cm">-- 증명의 모양 (예시 · 실제 이름·구조 아님)</span>
+<span class="kw">theorem</span> <span class="nm">riemann_hypothesis</span> : RiemannHypothesis := <span class="kw">by</span>
+  <span class="cm">… 17.5만 개 파일에 걸친 보조정리들 …</span>
+<span class="ok">✓ 커널 검사 통과</span></pre>
+        <figcaption>"제타 함수 값이 0이고, 음의 짝수가 아니고, 1이 아닌 모든 복소수 s의 실수부는 1/2"이라는 뜻입니다. 정의 부분은 Mathlib 공개 문서를 옮겼고, 아래 정리 줄은 증명이 어떤 모양인지 보여 주는 <strong>설명용 예시</strong>입니다.</figcaption>
+      </div>
+
+      <h3><span class="hn">1.7</span>왜 Lean으로 검증하나</h3>
+      <div class="why3">
+        <div><span class="k">01 · 분량</span><b>사람이 다 읽을 수 없다</b>14개 아카이브, 약 17.5만 개 파일. 줄마다 읽고 확인할 수 있는 분량이 아닙니다.</div>
+        <div><span class="k">02 · AI 증명의 함정</span><b>그럴듯한 오류를 걸러 낸다</b>AI가 만든 증명에는 틀린 단계가 숨어 있을 수 있습니다. 커널은 한 단계라도 어긋나면 통과시키지 않습니다.</div>
+        <div class="risk"><span class="k">03 · 남는 위험</span><b>명제를 잘못 옮기면</b>원래 문제와 다른 명제를 적으면, 엉뚱한 명제를 완벽하게 증명할 수 있습니다.</div>
+      </div>
+      <div class="fig" data-fig="kflow">
+        <div class="fig-h"><span class="t">Lean 검증이 일하는 순서</span></div>
+        <div class="kflow">
+          <div style="--i:0"><span class="k">01</span><b>명제 옮기기</b>수학 문장을 Lean 정의로</div>
+          <div style="--i:1"><span class="k">02</span><b>증명 작성</b>보조정리를 쌓아 올림</div>
+          <div style="--i:2"><span class="k">03</span><b>커널 검사</b>모든 단계를 규칙과 대조</div>
+          <div style="--i:3"><span class="k">04</span><b>통과 / 실패</b>한 단계라도 틀리면 실패</div>
+        </div>
+        <figcaption>그래서 커뮤니티 공동 성명이 증명뿐 아니라 <strong>'명제'가 정확하다</strong>는 점을 따로 확인한 것이 중요합니다. 그랜빌이 지적한 설명 문서 문제는 사람이 아이디어를 이해하는 일에 관한 것으로, 기계 검사와는 별개입니다. 자료: Scientific American, Nature.</figcaption>
+      </div>
+      <figure class="refig cap"><div class="ph"><img src="../ai-briefing-2026-11-w4/img/ch1-sciam.jpg" width="1400" height="787" alt="Scientific American 기사 이미지" loading="lazy"></div><figcaption>Scientific American 기사 이미지 · Lean 검증 기사</figcaption></figure>
+
+      <h3><span class="hn">1.8</span>공식 인정은 아직입니다 <span class="unv">Clay 미인정</span></h3>
+      <p>Clay 연구소 규정상 상금 심사 대상이 되려면 세 조건을 모두 채워야 합니다. 지금은 하나도 충족하지 않았고, Clay 홈페이지는 여전히 이 문제를 미해결로 표시하고 있습니다.<sup class="fn"><a href="#s11" title="Kingy.ai – Clay 규정">11</a></sup></p>
+      <div class="fig" data-fig="clay">
+        <div class="fig-h"><span class="t">Clay 밀레니엄 상금 심사 조건</span><span class="s">2026.11.23 기준</span></div>
+        <div class="clay">
+          <div class="rv" style="--d:100ms"><span class="k">조건 1</span><b>학술지 등에 게재</b><p>지금은 Lean 코드와 설명 문서만 공개된 상태입니다.</p><span class="st">아직</span></div>
+          <div class="rv" style="--d:250ms"><span class="k">조건 2</span><b>게재 후 2년 경과</b><p>게재 시점부터 시계가 돕니다.</p><span class="st">아직</span></div>
+          <div class="rv" style="--d:400ms"><span class="k">조건 3</span><b>수학계 전반의 수용</b><p>Lean 검증은 통과했지만, 설명 문서에 대한 비판도 있습니다.</p><span class="st">진행 중</span></div>
+        </div>
+        <div class="clay-res rv" style="--d:600ms"><strong>결론:</strong> Lean으로 검증된 것과 Clay가 인정한 것은 다릅니다. 이번 증명은 <strong>"발표 + Lean 검증 완료, Clay 미인정"</strong>입니다.</div>
+      </div>
+
+      <h3><span class="hn">1.9</span>왜 P=NP가 따라 나오나</h3>
+      <ol class="dots">
+        <li><strong>같은 밀레니엄 문제:</strong> 둘 다 Clay 밀레니엄 문제라 "밀레니엄 문제가 풀렸다"는 소식이 섞여 전해졌습니다. 메모에서도 둘을 연결했습니다.</li>
+        <li><strong>사건의 구조가 닮았다:</strong> 증명을 확인하는 데는 하루, 찾는 데는 167년이 걸렸습니다. 답을 <strong>검증하기는 쉬운데 찾기는 어려운</strong> 문제, 이것이 NP입니다.</li>
+        <li><strong>역사적 연결:</strong> 1956년 괴델은 폰 노이만에게 보낸 편지에서, 주어진 길이의 증명을 찾는 일을 기계가 빠르게 할 수 있는지 물었습니다. 오늘날 P vs NP 질문의 원형으로 꼽힙니다.</li>
+      </ol>
+      <div class="callout"><span class="tag">판단</span><p>만약 P = NP라면 짧은 증명을 찾는 일이 검증만큼 쉬워집니다. 하지만 AI가 리만 가설이라는 <strong>문제 하나</strong>의 증명을 찾았다고 해서, 모든 NP 문제를 빠르게 푸는 방법이 생긴 것은 아닙니다.</p></div>
+      <figure class="refig cap"><div class="ph light"><img src="../ai-briefing-2026-11-w4/img/ch1-pnp.png" width="1400" height="788" alt="P가 NP와 다를 때와 같을 때 문제 집합의 포함 관계를 그린 다이어그램" loading="lazy"></div><figcaption>P≠NP(왼쪽)와 P=NP(오른쪽)일 때 문제 집합의 관계 · Behnam Esfahbod, CC BY-SA 3.0 (Wikimedia Commons)</figcaption></figure>
+
+      <h3><span class="hn">1.10</span>P=NP 관련 정정</h3>
+      <ul class="dots">
+        <li>리만 가설과 P vs NP는 <strong>서로 다른 밀레니엄 문제</strong>입니다. 리만 가설이 증명되어도 P vs NP는 풀리지 않습니다.</li>
+        <li>P vs NP는 "검증이 쉬운 문제는 푸는 것도 쉬운가?"라는 <strong>열린 질문</strong>입니다. 메모의 "정답을 알면 풀기도 쉽다"처럼 이미 정해진 명제가 아닙니다.</li>
+        <li>이번 사례는 오히려 반대 직관을 보여 줍니다. Lean으로 검증하는 데는 하루가 걸렸지만, 증명을 찾는 데는 167년이 걸렸습니다.</li>
+      </ul>
+      <div class="fig" data-fig="vd">
+        <div class="fig-h"><span class="t">검증은 하루, 발견은 167년</span><button class="replay" type="button" data-replay>다시 재생</button></div>
+        <div class="vd">
+          <div class="r v"><span class="l">검증<small>Lean 컴파일</small></span><span class="t"><i class="gx"></i></span><span class="n">하루</span></div>
+          <div class="r f"><span class="l">발견<small>증명을 찾기까지</small></span><span class="t"><i class="gx" style="--d:300ms"></i></span><span class="n" data-count="167" data-suf="년">0</span></div>
+        </div>
+        <div class="pnp" style="margin-top:18px">
+          <div class="rv" style="--d:500ms"><h6>P vs NP가 묻는 것</h6><p>"검증이 쉬운 문제는 푸는 것도 쉬운가?" 아직 답이 없는 열린 질문입니다.</p></div>
+          <div class="x rv" style="--d:650ms"><h6>메모의 오해</h6><p>"정답을 알면 풀기도 쉽다"는 정해진 명제가 아닙니다. 리만 가설 증명과도 관계없습니다.</p></div>
+        </div>
+        <figcaption>막대 길이는 비율 그대로입니다(167년 ≈ 6만 일). 하루짜리 막대는 거의 보이지 않습니다.</figcaption>
+      </div>
+      <div class="callout"><span class="tag">함께 정정</span><p>10월 말 AI가 지수 시간 가설(ETH)을 반증했다는 주장도 있었습니다. 하지만 이것 역시 P vs NP를 해결한 것은 아닙니다.</p></div>
+
+      <aside class="gloss" aria-label="약어 풀이"><span class="tag">이 장의 약어</span>
+        <dl>
+        <div><dt>Lean</dt><dd><em>Lean 4 theorem prover</em>수학 증명을 코드로 쓰고 컴퓨터가 한 줄씩 맞는지 확인하는 증명 보조 도구</dd></div>
+        <div><dt>Mathlib</dt><dd><em>Lean mathematical library</em>Lean 커뮤니티가 함께 만드는 수학 라이브러리</dd></div>
+        <div><dt>ETH</dt><dd><em>Exponential Time Hypothesis</em>지수 시간 가설. 어떤 문제는 지수 시간보다 빨리 풀 수 없다는 가설</dd></div>
+        <div><dt>P vs NP</dt><dd><em>Polynomial vs Nondeterministic Polynomial time</em>검증이 쉬운 문제는 푸는 것도 쉬운가를 묻는 밀레니엄 문제</dd></div>
+        <div><dt>Clay</dt><dd><em>Clay Mathematics Institute</em>밀레니엄 문제 7개에 상금을 건 미국 수학 연구소</dd></div>
+        <div><dt>MIT</dt><dd><em>Massachusetts Institute of Technology</em>매사추세츠 공과대학교</dd></div>
+        <div><dt>오일러 곱</dt><dd><em>Euler product</em>자연수 전체의 합을 소수 전체의 곱으로 바꿔 쓴 식</dd></div>
+        <div><dt>해석적 연속</dt><dd><em>Analytic continuation</em>일부 영역에서만 정의된 함수를 매끄럽게 이어 더 넓은 영역으로 확장하는 방법</dd></div>
+        <div><dt>함수 방정식</dt><dd><em>Functional equation</em>ζ(s)와 ζ(1−s)를 잇는 식. 임계선을 중심으로 한 대칭을 만든다</dd></div>
+        <div><dt>디리클레 지표</dt><dd><em>Dirichlet character</em>나머지에 따라 1, −1, 0 같은 값을 주는 주기 함수</dd></div>
+        <div><dt>ERH</dt><dd><em>Extended Riemann Hypothesis</em>확장 리만 가설. 데데킨트 제타 함수까지 넓힌 리만 가설</dd></div>
+        <div><dt>Li(x)</dt><dd><em>Logarithmic integral</em>로그 적분. 소수 개수를 잘 근사하는 함수</dd></div>
+        <div><dt>커널</dt><dd><em>Lean kernel</em>Lean에서 증명의 모든 단계를 최종 검사하는 작은 핵심 프로그램</dd></div>
+        <div><dt>GRH</dt><dd><em>Generalized Riemann Hypothesis</em>일반화된 리만 가설. 디리클레 L-함수까지 넓힌 리만 가설</dd></div>
+        </dl>
+      </aside>
+    </section>
+
+    <!-- ================= 2. 새 모델 ================= -->
+    <section id="models" data-n="02" data-t="새 모델 5종">
+      <span class="sec-label"><span class="num">02</span> · 모델</span>
+      <h2>새 모델: GPT-6.2, Gemini 4 Neon, Inkling 2 Mini</h2>
+      <p class="standfirst">OpenAI는 <b>Astra·Sol</b> 두 모델을 냈고, Google은 <b>Gemini 4 Neon</b>을 정식 출시했습니다. Cobalt와 Helium은 아직 유출·티저 단계입니다. Thinking Machines는 루프 구조의 오픈 웨이트 모델 <b>Inkling 2 Mini</b>를 공개했습니다.</p>
+      <figure class="ch-banner" style="margin-bottom:6px"><div class="bg soft" style="background-image:url(../ai-briefing-2026-11-w4/img/ch2-wafer.jpg)" aria-hidden="true"></div><div class="shade"></div><div class="cnum" aria-hidden="true">02</div><img src="../ai-briefing-2026-11-w4/img/ch2-wafer.jpg" width="1200" height="1600" alt="반도체 칩이 새겨진 실리콘 웨이퍼" loading="lazy"></figure>
+      <small class="ch-credit">배경·우측: Naotake Murayama · CC BY 2.0 · Pentium 칩 웨이퍼 (Wikimedia Commons)</small>
+
+      <h3><span class="hn">2.1</span>OpenAI GPT-6.2 Astra / Sol <span class="okc">출시</span></h3>
+      <p>OpenAI는 11월 17일 두 모델을 출시했습니다. <strong>Astra</strong>는 고난도 전문 업무용이고, <strong>Sol</strong>은 일상 업무용입니다.<sup class="fn"><a href="#s1" title="OpenAI 개발자 커뮤니티 – GPT-6.2 Astra and Sol">1</a>,<a href="#s2" title="SiliconANGLE – GPT-6.2">2</a></sup></p>
+      <figure class="refig cap"><div class="ph"><img src="../ai-briefing-2026-11-w4/img/ch2-gpt62.jpg" width="1400" height="787" alt="GPT-6.2 발표 이미지" loading="lazy"></div><figcaption>GPT-6.2 발표 이미지 · SiliconANGLE 기사</figcaption></figure>
+      <ul class="dots">
+        <li><strong>성능·비용:</strong> OpenAI는 Astra가 GPT-6 Astra보다 성능이 높으면서도 작업당 비용은 3분의 1 미만이라고 주장합니다. <span class="vend">벤더 수치</span></li>
+        <li><strong>안전 등급:</strong> Astra는 OpenAI 준비성 프레임워크에서 'AI 자기개선' 항목의 High 기준을 충족한 첫 외부 배포 모델입니다. 사이버 역량이 크게 오른 만큼 보안 관련 안전장치를 강화해 출시했습니다.<sup class="fn"><a href="#s2" title="SiliconANGLE – GPT-6.2">2</a></sup></li>
+        <li><strong>반응:</strong> 평가가 엇갈립니다. OpenAI 측은 출시 직전 며칠 사이에 큰 개선이 있었는데 일부 리뷰어가 이를 반영하지 못했다고 해명했습니다.</li>
+      </ul>
+      <div class="fig" data-fig="price">
+        <div class="fig-h"><span class="t">API 가격 (100만 토큰당)</span><button class="replay" type="button" data-replay>다시 재생</button></div>
+        <div class="hb" id="priceBars"></div>
+        <div class="dl-lg" style="margin-top:12px"><span><i style="background:var(--gold)"></i>Astra</span><span><i style="background:var(--blue)"></i>Sol</span><span><i style="background:var(--gold); opacity:.38"></i>Astra 인하 전 (20% 인하에서 역산)</span></div>
+        <figcaption>Astra는 이전 모델보다 20% 내렸고, Sol은 GPT-6.1 Sol과 같은 가격입니다. 연한 막대는 "20% 인하"에서 거꾸로 계산한 이전 가격입니다. 자료: OpenAI 개발자 커뮤니티, SiliconANGLE.</figcaption>
+      </div>
+
+      <h3><span class="hn">2.2</span>Gemini 4 Neon · Cobalt · Helium</h3>
+      <ul class="dots">
+        <li><strong>Neon (출시됨):</strong> 11월 18일 정식 출시됐습니다. 컨텍스트는 100만 토큰, 가격은 입력 $3 / 출력 $15입니다. 라인업에서 Carbon(최상위)과 Hydrogen(고속) 사이에 위치합니다.<sup class="fn"><a href="#s3" title="Google Cloud – Gemini 4 시작 가이드">3</a></sup> <span class="okc">확정</span></li>
+        <li class="unv-li"><strong>Cobalt (코드 유출만):</strong> AI Studio 프런트엔드 코드에서 <code>models/neon</code>, <code>models/cobalt</code> 문자열이 발견됐습니다. Google은 이를 확인하지 않았고, 모델 ID나 과금 항목도 아직 없습니다.<sup class="fn"><a href="#s4" title="Gemini 4 Cobalt 유출 분석">4</a></sup> <span class="unv">루머·미확인</span></li>
+        <li class="unv-li"><strong>Helium (티저만):</strong> Google DeepMind 직원이 올린 티저 영상에서 기존 4개 모델 다음으로 Helium이 빛나는 장면이 나왔습니다. Flash-Lite급 모델이라는 추측이 있지만 공식 정보는 없습니다. Helium은 과거 인도용 구독 요금제 이름으로도 쓰인 적이 있습니다.<sup class="fn"><a href="#s5" title="Gemini 4 Helium 티저">5</a></sup> <span class="unv">루머·미확인</span></li>
+      </ul>
+      <div class="fig" data-fig="ladder">
+        <div class="fig-h"><span class="t">Gemini 4 라인업에서 Neon의 자리</span><span class="s">점선 = 공식 확인 안 됨</span></div>
+        <div class="ladder">
+          <div class="rung si" style="--d:100ms"><div class="nm">Carbon<small>최상위</small></div><div class="bx">라인업 맨 위 모델</div></div>
+          <div class="rung new si" style="--d:250ms"><div class="nm">Neon<small>11.18 출시</small></div><div class="bx"><b>컨텍스트 100만 토큰 · 입력 $3 / 출력 $15</b><br>11월 16일 유출 후 18일 정식 출시</div></div>
+          <div class="rung si" style="--d:400ms"><div class="nm">Hydrogen<small>고속</small></div><div class="bx">속도 중심 모델</div></div>
+          <div class="sep si" style="--d:520ms">미확인</div>
+          <div class="rung ghost si" style="--d:620ms"><div class="nm">Cobalt<small>코드 유출만</small></div><div class="bx">AI Studio 코드 속 <code>models/cobalt</code> 문자열. 모델 ID·과금 항목 없음</div></div>
+          <div class="rung ghost si" style="--d:760ms"><div class="nm">Helium<small>티저만</small></div><div class="bx">티저 영상 속 이름. Flash-Lite급이라는 추측뿐, 공식 정보 없음</div></div>
+        </div>
+        <figcaption>Cobalt·Helium의 위치는 정해지지 않았습니다. 자료: Google Cloud 문서, orcarouter.ai, techcityauthority.com.</figcaption>
+      </div>
+
+      <figure class="refig cap"><div class="ph light"><img src="../ai-briefing-2026-11-w4/img/ch2-cobalt-leak.jpg" width="1400" height="787" alt="Neon은 과금 항목이 있고 Cobalt는 없다는 유출 분석 이미지" loading="lazy"></div><figcaption>유출 분석: Neon은 과금 항목 있음, Cobalt는 없음 · OrcaRouter 블로그 이미지</figcaption></figure>
+
+      <h3><span class="hn">2.3</span>Thinking Machines – Inkling 2 Mini <span class="okc">출시</span></h3>
+      <ul class="dots">
+        <li><strong>출시:</strong> 11월 20일, Apache 2.0 라이선스입니다. 텍스트와 이미지를 입력받고, 컨텍스트는 100만 토큰입니다.<sup class="fn"><a href="#s6" title="Thinking Machines – Inkling 2 Mini">6</a></sup></li>
+        <li><strong>구조:</strong> 루프형 MoE 트랜스포머입니다. 24개 레이어 중 가운데 12개를 3회 반복 실행합니다.</li>
+        <li><strong>파라미터:</strong> 총 26.4B입니다. 활성 파라미터는 출처에 따라 3.4B 또는 5.4B로 나오는데, 5.4B는 루프 반복분을 포함해 센 수치입니다.</li>
+        <li><strong>성능:</strong> Artificial Analysis 지능 지수에서 Qwen3.8 27B와 같은 점수를 냈습니다. 활성 파라미터는 약 5분의 1 수준입니다.<sup class="fn"><a href="#s7" title="Artificial Analysis – Inkling 2 Mini">7</a></sup></li>
+        <li><strong>실행 환경:</strong> RAM 32GB 이상인 Mac에서 Ollama로 실행할 수 있습니다.</li>
+      </ul>
+      <figure class="refig cap"><div class="ph"><img src="../ai-briefing-2026-11-w4/img/ch2-inkling.jpg" width="1400" height="787" alt="Inkling 2 Mini 공개 이미지" loading="lazy"></div><figcaption>Inkling 2 Mini 공개 이미지 · Thinking Machines</figcaption></figure>
+      <div class="fig" data-fig="loop">
+        <div class="fig-h"><span class="t">24개 레이어, 가운데 12개는 세 번</span><button class="replay" type="button" data-replay>다시 재생</button></div>
+        <div class="loopd">
+          <div class="arc" style="left:25%; width:50%"><span>× 3</span></div>
+          <div class="cells" id="loopCells"></div>
+          <div class="lab"><span><b>1–6</b>한 번</span><span><b>7–18 (가운데 12개)</b>3회 반복</span><span><b>19–24</b>한 번</span></div>
+          <div class="ctr"><span>지금 <b id="loopPass">–</b></span><span>실행한 레이어 <b id="loopN">0</b> / 48</span></div>
+        </div>
+        <div class="kv" style="margin-top:18px">
+          <div><b>26.4B</b><span>총 파라미터</span></div>
+          <div><b>3.4B</b><span>활성 파라미터 (반복 미포함)</span></div>
+          <div><b>5.4B</b><span>활성 파라미터 (루프 반복분 포함해 센 값)</span></div>
+          <div><b>1M</b><span>컨텍스트 토큰</span></div>
+        </div>
+        <figcaption>"48"은 6 + 12×3 + 6을 더한 값으로, 도해를 위해 계산했습니다. 자료: Thinking Machines, Artificial Analysis.</figcaption>
+      </div>
+
+      <h3><span class="hn">2.4</span>Inkling 2 Mini가 32GB Mac에서 도는 이유: 4비트 양자화</h3>
+      <ul class="dots">
+        <li><strong>양자화란:</strong> 모델의 숫자 하나를 표현하는 비트 수를 줄이는 기술입니다. 보통 16비트(BF16)로 저장하는데, 264억 개 파라미터를 16비트로 담으면 <strong>약 52.8GB</strong>가 필요해 32GB Mac에 들어가지 않습니다.</li>
+        <li><strong>처음부터 4비트로 학습:</strong> 전문가 층의 순전파를 사전 학습부터 강화 학습까지 모두 <strong>NVFP4</strong>로 돌렸고, 마지막 4개 층만 8비트 <strong>MXFP8</strong>을 썼습니다.<sup class="fn"><a href="#s6" title="Thinking Machines – Inkling 2 Mini">6</a></sup></li>
+        <li><strong>변환 손실 없음:</strong> 배포 가중치도 학습 때와 같은 정밀도(20개 층 NVFP4, 4개 층 MXFP8)라서, 학습 뒤 따로 깎아 내는 변환 손실이 없다고 설명합니다. <span class="vend">벤더 설명</span></li>
+        <li><strong>전문가 가지치기:</strong> 학습 도중 전문가 384개 중 3분의 2를 잘라 <strong>128개</strong>만 남겼고(토큰마다 8개 선택), 큰 내부 모델에서 1조 토큰을 증류해 성능을 회복했습니다.</li>
+        <li><strong>실행:</strong> 양자화한 GGUF 버전을 Unsloth·llama.cpp로 받을 수 있고, NVIDIA DGX Spark에서도 효율적으로 돌아갑니다.</li>
+      </ul>
+      <div class="fig" data-fig="qbits">
+        <div class="fig-h"><span class="t">숫자 하나에 쓰는 비트 수</span><button class="replay" type="button" data-replay>다시 재생</button></div>
+        <div class="qbits">
+          <div class="br"><b>BF16</b><div class="cells"><i style="--c:var(--ink-3);--k:0"></i><i style="--c:var(--ink-3);--k:1"></i><i style="--c:var(--ink-3);--k:2"></i><i style="--c:var(--ink-3);--k:3"></i><i style="--c:var(--ink-3);--k:4"></i><i style="--c:var(--ink-3);--k:5"></i><i style="--c:var(--ink-3);--k:6"></i><i style="--c:var(--ink-3);--k:7"></i><i style="--c:var(--ink-3);--k:8"></i><i style="--c:var(--ink-3);--k:9"></i><i style="--c:var(--ink-3);--k:10"></i><i style="--c:var(--ink-3);--k:11"></i><i style="--c:var(--ink-3);--k:12"></i><i style="--c:var(--ink-3);--k:13"></i><i style="--c:var(--ink-3);--k:14"></i><i style="--c:var(--ink-3);--k:15"></i></div><span>16비트 · 일반 저장 · <b>≈52.8GB</b></span></div>
+          <div class="br"><b>MXFP8</b><div class="cells"><i style="--c:var(--blue);--k:0"></i><i style="--c:var(--blue);--k:1"></i><i style="--c:var(--blue);--k:2"></i><i style="--c:var(--blue);--k:3"></i><i style="--c:var(--blue);--k:4"></i><i style="--c:var(--blue);--k:5"></i><i style="--c:var(--blue);--k:6"></i><i style="--c:var(--blue);--k:7"></i></div><span>8비트 · 마지막 4개 층</span></div>
+          <div class="br"><b>NVFP4</b><div class="cells"><i style="--c:var(--gold);--k:0"></i><i style="--c:var(--gold);--k:1"></i><i style="--c:var(--gold);--k:2"></i><i style="--c:var(--gold);--k:3"></i></div><span>4비트 · 20개 층 · <b>≈15GB</b></span></div>
+        </div>
+        <div class="lmap" aria-label="24개 층 중 앞 20개 NVFP4, 마지막 4개 MXFP8"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i class="p8"></i><i class="p8"></i><i class="p8"></i><i class="p8"></i></div>
+        <div class="lmap-l"><span>층 1</span><span>NVFP4 × 20</span><span>MXFP8 × 4 · 층 24</span></div>
+        <figcaption>≈52.8GB는 264억 × 2바이트, ≈15GB는 전체를 NVFP4(블록 배율 포함 약 4.5비트)로 가정한 <strong>이 문서의 계산값</strong>이며 공식 수치가 아닙니다. 자료: Thinking Machines 「Introducing Inkling 2 Mini」.</figcaption>
+      </div>
+
+      <aside class="gloss" aria-label="약어 풀이"><span class="tag">이 장의 약어</span>
+        <dl>
+        <div><dt>API</dt><dd><em>Application Programming Interface</em>프로그램에서 모델을 불러 쓰는 통로</dd></div>
+        <div><dt>MoE</dt><dd><em>Mixture of Experts</em>전문가 혼합. 입력마다 일부 전문가 층만 골라 계산하는 구조</dd></div>
+        <div><dt>B</dt><dd><em>Billion</em>10억. 26.4B는 파라미터 264억 개</dd></div>
+        <div><dt>RAM</dt><dd><em>Random Access Memory</em>컴퓨터 주기억장치</dd></div>
+        <div><dt>Apache 2.0</dt><dd><em>Apache License 2.0</em>상업적 사용·수정·재배포를 허용하는 오픈소스 라이선스</dd></div>
+        <div><dt>BF16</dt><dd><em>bfloat16</em>숫자 하나를 16비트로 담는 형식</dd></div>
+        <div><dt>NVFP4</dt><dd><em>NVIDIA 4-bit floating point</em>NVIDIA의 4비트 부동소수점 형식</dd></div>
+        <div><dt>MXFP8</dt><dd><em>Microscaling 8-bit floating point</em>블록 단위 배율을 쓰는 8비트 부동소수점 형식</dd></div>
+        <div><dt>GGUF</dt><dd><em>GPT-Generated Unified Format</em>llama.cpp 계열에서 쓰는 모델 파일 형식</dd></div>
+        <div><dt>증류</dt><dd><em>Distillation</em>큰 모델의 출력을 따라 하도록 작은 모델을 학습시키는 방법</dd></div>
+        </dl>
+      </aside>
+    </section>
+
+    <!-- ================= 3. 에이전트·생성형 UI ================= -->
+    <section id="agents" data-n="03" data-t="에이전트 · 생성형 UI">
+      <span class="sec-label"><span class="num">03</span> · 에이전트 · 인터페이스</span>
+      <h2>"Gemini Loop"의 정체는 Stitch Loop, 그리고 픽셀로 그리는 UI</h2>
+      <p class="standfirst">메모의 "Gemini Loop"는 Google <b>Stitch Loop</b>입니다. 출시 뒤에도 제품을 계속 고치는 장기 실행 에이전트로, 지금은 <b>대기자 명단</b> 단계입니다. 같은 주 Runway Labs는 화면의 모든 픽셀을 모델이 실시간으로 그리는 연구 앱 <b>diffusion-ui</b>를 공개했습니다.</p>
+      <figure class="ch-banner" style="margin-bottom:6px"><div class="bg" style="background-image:url(../ai-briefing-2026-11-w4/img/ch3-pixels.jpg)" aria-hidden="true"></div><div class="shade"></div><div class="cnum" aria-hidden="true">03</div><img src="../ai-briefing-2026-11-w4/img/ch3-lcd.jpg" width="900" height="1600" alt="LCD 화면 픽셀 확대 사진" loading="lazy"></figure>
+      <small class="ch-credit">배경: D-Kuru · CC BY-SA 3.0 AT · Nokia 8 디스플레이 픽셀 패턴 / 우측: Jaredryandloneria · CC BY-SA 4.0 · LCD 픽셀 확대 (Wikimedia Commons)</small>
+
+      <h3><span class="hn">3.1</span>Google Stitch Loop <span class="okc">확인</span></h3>
+      <ul class="dots">
+        <li>11월 18일 Google Labs의 Stitch 실험 기능으로 발표됐습니다. Stitch가 제품을 설계하는 도구라면, Stitch Loop는 <strong>출시 뒤에도 제품을 계속 개선하는</strong> 에이전트입니다.<sup class="fn"><a href="#s8" title="TestingCatalog – Stitch Loop">8</a></sup></li>
+        <li><strong>연결:</strong> GitHub, 로그, 사용자 행동, 피드백 같은 제품 맥락을 180개가 넘는 통합 기능이나 커스텀 MCP 서버, CLI 업로드로 연결합니다.</li>
+        <li><strong>제안 → 구현:</strong> 각 루프가 근거와 트레이드오프를 담은 제안을 내고, 고른 수정안을 격리된 클라우드 샌드박스에서 만든 뒤 GitHub PR을 엽니다. <strong>사람이 검토하기 전에는 아무것도 병합되지 않습니다.</strong></li>
+        <li><strong>기본 루프:</strong> 보안(Gemini 4 Carbon + CodeMender), 지연 시간, WCAG 접근성. 결제 전환율 같은 목표로 커스텀 루프도 만들 수 있습니다. Antigravity, Slack(<code>@stitch</code>)과도 연동됩니다.</li>
+      </ul>
+      <div class="fig" data-fig="lflow">
+        <div class="fig-h"><span class="t">Stitch Loop가 일하는 순서</span><button class="replay" type="button" data-replay>다시 재생</button></div>
+        <div class="lflow" id="lflow">
+          <div class="stp"><span class="k">01</span><b>연결</b>180+ 통합 · MCP · CLI로 제품 맥락 연결</div>
+          <div class="stp"><span class="k">02</span><b>제안</b>근거와 트레이드오프를 담은 개선안</div>
+          <div class="stp"><span class="k">03</span><b>구현</b>격리된 클라우드 샌드박스에서 수정</div>
+          <div class="stp pr"><span class="k">04</span><b>PR · 감시</b>사람이 검토 전엔 병합 없음</div>
+        </div>
+        <div class="lflow-back"><span>↺ 지표를 지켜보며 다시 루프</span></div>
+        <figcaption>자료: TestingCatalog 「Early look at Loop」(2026.11.18).</figcaption>
+      </div>
+
+      <h3><span class="hn">3.2</span>Stitch Loop 대기자 명단</h3>
+      <div class="kv">
+        <div><b>전 세계</b><span>대기자 명단은 모든 사용자에게 열림</span></div>
+        <div><b>우선 접근</b><span>자격 되는 Google AI Ultra 구독자</span></div>
+        <div><b>작은 팀</b><span>빠르게 출시하지만 출시 뒤 작업이 버거운 팀이 대상</span></div>
+        <div><b>미공개</b><span>가격 · 정식 출시일 · 한국 제공 여부</span></div>
+      </div>
+      <figure class="refig cap"><div class="ph"><img src="../ai-briefing-2026-11-w4/img/ch3-stitch-loop.jpg" width="1400" height="787" alt="목표별 루프와 제안 수가 보이는 Stitch Loop의 Loops 목록 화면" loading="lazy"></div><figcaption>Stitch Loop의 Loops 화면: 커뮤니티 확장, 데이터 정확도, 알림 속도 같은 목표별 루프와 제안 수 · TestingCatalog 기사 이미지 (2026.11.18)</figcaption></figure>
+
+      <h3><span class="hn">3.3</span>Runway diffusion-ui <span class="okc">연구 프리뷰</span></h3>
+      <ul class="dots">
+        <li>11월 17일 공개된 연구 앱입니다. 화면의 모든 픽셀을 실시간 모델이 생성합니다.<sup class="fn"><a href="#s18" title="Runway Diffusion-UI 정리">18</a></sup></li>
+        <li>생성된 인터페이스가 구조화된 데이터를 쓰고, 상태를 유지하고, 조작 요소를 만들어 낼 수 있습니다.</li>
+        <li>초기 연구 시연 단계로, 가격이나 정식 제공 계획은 없습니다.</li>
+        <li>9월에 공개된 Runway의 'Interface World Model' Solaris를 잇는 작업입니다. Solaris는 HTML·CSS·JS 없이 UI를 프레임 단위로 생성합니다.</li>
+      </ul>
+      <figure class="refig" data-fig="diff"><div class="ph diffuse" style="max-width:520px; margin:0 auto"><span class="demo-tag">생성 개념 재현: 노이즈 → 화면</span><img src="../ai-briefing-2026-11-w4/img/ch3-diffusion-ui.jpg" width="1400" height="1400" alt="나무 탁자 위 단어 게임판을 모델이 생성한 diffusion-ui 시연 화면" loading="lazy"><div class="noisegrid" aria-hidden="true"></div></div><figcaption>사진은 Runway 공식 시연 화면(AIPostHub 게재)이고, 노이즈가 걷히는 효과는 "픽셀을 모델이 직접 생성한다"는 개념을 보여 주려고 덧입힌 재현입니다.</figcaption></figure>
+
+      <aside class="gloss" aria-label="약어 풀이"><span class="tag">이 장의 약어</span>
+        <dl>
+        <div><dt>PR</dt><dd><em>Pull Request</em>코드 변경을 합치기 전에 검토를 요청하는 단위</dd></div>
+        <div><dt>UI</dt><dd><em>User Interface</em>사용자 인터페이스. 사람이 보고 누르는 화면</dd></div>
+        <div><dt>HTML·CSS·JS</dt><dd><em>HyperText Markup Language · Cascading Style Sheets · JavaScript</em>웹 화면을 만드는 세 가지 언어(구조·모양·동작)</dd></div>
+        <div><dt>MCP</dt><dd><em>Model Context Protocol</em>AI가 외부 도구·데이터에 붙는 표준</dd></div>
+        <div><dt>CLI</dt><dd><em>Command Line Interface</em>명령줄 도구</dd></div>
+        <div><dt>WCAG</dt><dd><em>Web Content Accessibility Guidelines</em>웹 접근성 지침</dd></div>
+        <div><dt>샌드박스</dt><dd><em>Sandbox</em>실제 서비스와 분리된 시험 환경</dd></div>
+        </dl>
+      </aside>
+    </section>
+
+    <!-- ================= 4. 앱 속 AI ================= -->
+    <section id="apps" data-n="04" data-t="앱 속 AI">
+      <span class="sec-label"><span class="num">04</span> · 앱</span>
+      <h2>앱 속 AI: ChatGPT와 dots, 카카오톡 '라이언', Gemini GIF</h2>
+      <p class="standfirst">세 소식 모두 <b>한국 사용자 입장</b>에서 따져 볼 점이 있습니다. ChatGPT 리디자인은 한국이 빠졌지만 dots 음성(GPT-Live-1.1)의 한국어는 좋아졌습니다. 카카오톡 '라이언'의 12월 16일은 출시일이 아닙니다. Gemini GIF는 한국도 지원합니다.</p>
+      <figure class="ch-banner" style="margin-bottom:6px"><div class="bg soft" style="background-image:url(../ai-briefing-2026-11-w4/img/ch4-phone.jpg)" aria-hidden="true"></div><div class="shade"></div><div class="cnum" aria-hidden="true">04</div><img src="../ai-briefing-2026-11-w4/img/ch4-chatgpt.jpg" width="1400" height="840" alt="홈, dots 소개, 그리드 화면을 보여 주는 ChatGPT 새 모바일 앱 화면 세 장" loading="lazy" style="max-width:62%; object-fit:contain"></figure>
+      <small class="ch-credit">배경: Nenad Stojkovic · CC BY 2.0 · 스마트폰으로 메시지 입력 (Wikimedia Commons) / 우측: ChatGPT 새 모바일 화면 · Digital Trends 기사 이미지</small>
+
+      <h3><span class="hn">4.1</span>ChatGPT 리디자인</h3>
+      <ul class="dots">
+        <li><strong>리디자인:</strong> 11월 19일 공개됐습니다. 하단 바에 홈, Dots, 그리드 3개 탭이 생겼고, 자주 쓰는 기능을 고정할 수 있습니다. 첫 대상은 dots 이용 자격이 있는 Pro 사용자입니다.<sup class="fn"><a href="#s12" title="Digital Trends – ChatGPT 리디자인">12</a></sup> <span class="okc">확정</span></li>
+        <li><strong>한국은 제외됩니다:</strong> EEA, 영국, 스위스와 함께 한국은 이번 리디자인 대상에서 빠졌습니다.<sup class="fn"><a href="#s13" title="Root-Nation – 한국 제외">13</a></sup></li>
+        <li><strong>dots 확대:</strong> 일부 Plus 사용자를 대상으로 테스트를 시작했고, 미국 Business Standard 사용자에게도 제공됩니다.</li>
+      </ul>
+      <div class="fig" data-fig="tabs">
+        <div class="fig-h"><span class="t">새 하단 바와 제외 지역</span></div>
+        <div class="tabbar cyc" id="tabbar" aria-label="하단 바 세 탭 (탭 전환 재현)"><span>홈</span><span>Dots</span><span>그리드</span></div>
+        <div class="region"><span>EEA</span><span>영국</span><span>스위스</span><span class="kr">한국</span></div>
+        <figcaption>위: 하단 바의 세 탭이 차례로 선택되는 재현(배치는 도식). 아래: 이번 리디자인 대상에서 빠진 지역. 자료: Digital Trends, Root-Nation.</figcaption>
+      </div>
+      <figure class="refig cap"><div class="ph"><img src="../ai-briefing-2026-11-w4/img/ch4-chatgpt.jpg" width="1400" height="840" alt="홈, dots 소개, 그리드 화면을 보여 주는 ChatGPT 새 모바일 앱 화면 세 장" loading="lazy"></div><figcaption>새 모바일 화면: 홈 · dots · 그리드 · Digital Trends 기사 이미지</figcaption></figure>
+
+      <h3><span class="hn">4.2</span>dots의 목소리는 GPT-Live-1.1, 기업은 기본 켜짐</h3>
+      <div class="tbl-wrap" data-cards="rows">
+        <table>
+          <thead><tr><th>소식</th><th>날짜 · 표시</th><th>내용</th></tr></thead>
+          <tbody>
+            <tr><td>GPT-Live-1.1 · ChatGPT 음성</td><td><span class="okc">확정 · 10.15</span></td><td>ChatGPT·Codex·dots 음성을 교체. 새 목소리 13종, 억양 일관성 개선. <strong>한국어</strong>·일본어·힌디어 등 성능 향상<sup class="fn"><a href="#s19" title="OpenAI 개발자 커뮤니티 – GPT-Live-1.1">19</a></sup></td></tr>
+            <tr><td>GPT-Live-1.1 · API 공개</td><td><span class="okc">확정 · 11.19</span></td><td>모델명 <code>gpt-live-1.1</code>. 말하면서 듣는 전이중. 대화 중 분당 $0.05, 새 대기 상태 분당 $0.02<sup class="fn"><a href="#s20" title="OpenAI Developers – GPT-Live-1.1 API">20</a>,<a href="#s21" title="OpenAI – GPT-Live 가이드·가격">21</a></sup></td></tr>
+            <tr><td>Enterprise 기본 켜짐</td><td><span class="okc">확정 · 11.18</span></td><td>관리자가 끄지 않으면 자동 활성. 구성원당 개인 dot 1개. 2027년 1월 13일까지 무료<sup class="fn"><a href="#s22" title="OpenAI 도움말 – dots 시작하기">22</a></sup></td></tr>
+            <tr><td>Enterprise 요금</td><td><span class="vend">벤더 수치 · 2027.1.14~</span></td><td>dot당 월 Standard $50 · Advanced $200 · Expert $500. Codex·Work로 넘긴 작업은 별도 과금<sup class="fn"><a href="#s23" title="OpenAI 도움말 – Enterprise dots 요금">23</a></sup></td></tr>
+            <tr><td>ChatGPT Wallet</td><td><span class="okc">확정 · 11.13</span></td><td>dots가 상품을 고르고 대신 결제. 카드 번호 대신 결제 토큰, Face ID·지문으로 승인. 미국 Pro 일부<sup class="fn"><a href="#s24" title="TechCrunch – ChatGPT Wallet">24</a></sup></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="fig" data-fig="dots">
+        <div class="fig-h"><span class="t">실제로 쓸 수 있는 두 기능, 이렇게 움직입니다</span><span class="s">반복 재생</span></div>
+        <div class="demo2 dk" aria-label="GPT-Live 전이중 대화와 Wallet 결제 흐름을 재현한 애니메이션">
+          <span class="demo-tag">동작 재현 · 실제 화면 아님</span>
+          <div class="dpan"><h4>GPT-Live-1.1<small>듣기·말하기 동시 · 대기 과금</small></h4>
+            <div class="vrow"><b>나</b><div class="vbar u" style="--c:#ff7a45"><i style="--k:0"></i><i style="--k:1"></i><i style="--k:2"></i><i style="--k:3"></i><i style="--k:4"></i><i style="--k:5"></i><i style="--k:6"></i><i style="--k:7"></i><i style="--k:8"></i><i style="--k:9"></i><i style="--k:10"></i><i style="--k:11"></i><i style="--k:12"></i><i style="--k:13"></i></div></div>
+            <div class="vrow"><b>dot</b><div class="vbar d" style="--c:#79a8ff"><i style="--k:0"></i><i style="--k:1"></i><i style="--k:2"></i><i style="--k:3"></i><i style="--k:4"></i><i style="--k:5"></i><i style="--k:6"></i><i style="--k:7"></i><i style="--k:8"></i><i style="--k:9"></i><i style="--k:10"></i><i style="--k:11"></i><i style="--k:12"></i><i style="--k:13"></i></div></div>
+            <div class="vstate"><span class="s1">● 말하는 중에도 듣는 중</span><span class="s2">◌ 대기: 말을 기다림</span></div>
+            <div class="meter"><em>분당 요금</em><b><span class="m1">$0.05</span><span class="m2">$0.02</span></b></div>
+          </div>
+          <div class="dpan"><h4>ChatGPT Wallet<small>dot이 고르고 대신 결제</small></h4>
+            <div class="wchat">
+              <div class="wb dot w1">허브 화분 1개, 총 $66.30. 저장된 주소로 보낼까요?</div>
+              <div class="wb me w2">응, 보내줘</div>
+              <div class="wb dot w3">결제 승인을 요청할게요.</div>
+              <div class="wbtn w4">구매 검토 ›</div>
+              <div class="wauth"><span class="fid"></span>Face ID로 승인 중</div>
+              <div class="wdone"><b>✓</b>결제 완료<br><small style="color:#868ca0">카드 번호 대신 토큰</small></div>
+            </div>
+          </div>
+        </div>
+        <figcaption>왼쪽: 사용자와 dot이 동시에 말하는 전이중 대화, 말이 끊기면 대기 요금으로 전환. 오른쪽: TechCrunch가 보도한 Wallet 결제 흐름(대화 속 상품 예시는 기사 이미지에서 옮김).</figcaption>
+      </div>
+      <div class="callout"><span class="tag">한국 사용자 관점</span><p>바로 체감할 변화는 <strong>한국어 음성 개선</strong>입니다. dots 도움말이 제외 지역으로 적은 곳은 EEA·영국·스위스뿐이라, 위의 리디자인 제외와는 따로 봐야 합니다. 다만 한국에서 바로 쓸 수 있다고 명시한 자료도 없습니다. Wallet과 Enterprise 요금은 당장 해당되지 않습니다.</p></div>
+
+      <h3><span class="hn">4.3</span>카카오톡 AI 비서 '라이언' (카나나 스페이스)</h3>
+      <p>정식 명칭은 <strong>카나나 스페이스</strong>이고, 라이언은 그 첫 페르소나입니다.<sup class="fn"><a href="#s15" title="아시아투데이 – 카나나 스페이스 12월 파일럿">15</a></sup> 무엇을 할 수 있는지 표로 정리했습니다.</p>
+      <div class="tbl-wrap" data-cards="rows">
+        <table>
+          <thead><tr><th>기능</th><th>분류</th><th>상태</th><th>언제부터</th></tr></thead>
+          <tbody>
+            <tr><td>부르기</td><td>호출</td><td><span class="okc">발표됨</span></td><td>카톡 화면을 두 손가락으로 쓸기</td></tr>
+            <tr><td>메시지 전송</td><td>소통</td><td><span class="okc">첫 공개</span></td><td>12월 중 CBT부터</td></tr>
+            <tr><td>일정 관리</td><td>생활</td><td><span class="okc">첫 공개</span></td><td>12월 중 CBT부터</td></tr>
+            <tr><td>웹 검색</td><td>정보</td><td><span class="okc">첫 공개</span></td><td>12월 중 CBT부터</td></tr>
+            <tr><td>카톡 설정 변경</td><td>설정</td><td><span class="okc">첫 공개</span></td><td>12월 중 CBT부터</td></tr>
+            <tr><td>주문</td><td>커머스</td><td><span class="unv">추가 예정</span></td><td>미정</td></tr>
+            <tr><td>선물</td><td>커머스</td><td><span class="unv">추가 예정</span></td><td>미정</td></tr>
+            <tr><td>예약</td><td>생활</td><td><span class="unv">추가 예정</span></td><td>미정</td></tr>
+            <tr><td>송금</td><td>금융</td><td><span class="unv">추가 예정</span></td><td>미정</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="fig" data-fig="kakao">
+        <div class="fig-h"><span class="t">12월 16일은 출시일이 아닙니다</span><button class="replay" type="button" data-replay>다시 재생</button></div>
+        <div class="tl c4"><span class="ln"></span>
+          <div class="ev rv" style="--d:200ms"><span class="dt">현재</span><h6>기본 기능</h6><p>메시지 전송, 일정 관리, 웹 검색, 카톡 설정 변경.</p></div>
+          <div class="ev rv hot" style="--d:550ms"><span class="dt">12.16</span><h6>AI 서비스 공통 이용약관 시행</h6><p>서비스 출시일이 아니라 약관이 효력을 갖는 날.</p><span class="stampx" style="--d:1300ms">출시일 아님</span></div>
+          <div class="ev rv" style="--d:900ms"><span class="dt">12월 중</span><h6>비공개 베타(CBT)</h6><p>사전 신청자 일부 대상. 전체 사용자 출시 아님.</p></div>
+          <div class="ev rv ghost" style="--d:1250ms"><span class="dt">이후</span><h6>추가 예정 기능</h6><p>주문, 선물, 예약, 송금.</p></div>
+        </div>
+        <figcaption>자료: 중앙이코노미뉴스(12/16 약관), 아시아투데이(12월 파일럿).</figcaption>
+      </div>
+      <p>12월 16일은 <strong>AI 서비스 공통 이용약관 시행일</strong>입니다.<sup class="fn"><a href="#s14" title="중앙이코노미뉴스 – 카카오 AI 약관(12/16)">14</a></sup> 실제 이용은 12월 중 사전 신청자 일부를 대상으로 한 비공개 베타(CBT)로 시작합니다.<sup class="fn"><a href="#s15" title="아시아투데이 – 카나나 스페이스 12월 파일럿">15</a></sup></p>
+
+      <h3><span class="hn">4.4</span>Gemini Omni 1.2 Flash – GIF 생성 <span class="okc">확인</span></h3>
+      <ul class="dots">
+        <li>11월 20일부터 Gemini 앱에서 텍스트, 사진, 영상으로 약 3초짜리 반복 GIF를 만들 수 있습니다.<sup class="fn"><a href="#s16" title="Android Authority – Gemini GIF">16</a></sup></li>
+        <li>Google AI 구독자 대상이며, <strong>한국도 지원 국가에 포함</strong>됩니다.</li>
+        <li>Omni 1.2 Flash 모델 자체는 11월 5일 정식 출시(GA)됐습니다. 최대 15초 영상과 4K 업스케일을 지원합니다.</li>
+        <li class="unv-li">"GIFable"이라는 표현은 공식 자료에서 확인되지 않았습니다.</li>
+      </ul>
+      <div class="fig" data-fig="gif">
+        <div class="fig-h"><span class="t">프롬프트 한 줄로 3초 반복 GIF</span><span class="s">반복 재생</span></div>
+        <div class="gifdemo dk" aria-label="Gemini 앱에서 프롬프트로 3초 반복 GIF를 만드는 과정을 재현한 애니메이션">
+          <span class="demo-tag">동작 재현 · 실제 화면 아님</span>
+          <div class="gprompt"><span style="color:#79a8ff">✦</span><span class="tx">김이 피어오르는 커피잔 GIF</span><span class="cur"></span></div>
+          <div class="gstage">
+            <svg viewBox="0 0 360 260" role="img" aria-label="김이 반복해서 피어오르는 커피잔">
+              <ellipse cx="180" cy="226" rx="110" ry="14" fill="rgba(0,0,0,.35)"/>
+              <path class="steam" d="M150 120 q-14 -18 0 -36 q14 -18 0 -36" fill="none" stroke="#e9eef8" stroke-width="7" stroke-linecap="round"/>
+              <path class="steam s2" d="M180 116 q-14 -18 0 -36 q14 -18 0 -36" fill="none" stroke="#e9eef8" stroke-width="7" stroke-linecap="round"/>
+              <path class="steam s3" d="M210 120 q-14 -18 0 -36 q14 -18 0 -36" fill="none" stroke="#e9eef8" stroke-width="7" stroke-linecap="round"/>
+              <path d="M112 132 h136 l-12 78 a14 14 0 0 1 -14 12 h-84 a14 14 0 0 1 -14 -12 z" fill="#d5a844"/>
+              <path d="M248 148 q34 0 30 28 q-4 26 -36 24" fill="none" stroke="#d5a844" stroke-width="12"/>
+              <ellipse cx="180" cy="134" rx="68" ry="9" fill="#5a3a1c"/>
+            </svg>
+            <div class="gen2">✦ GIF 생성 중…</div>
+          </div>
+          <div class="gloop"><span>↻ GIF</span><span class="pb"><i></i></span><span>3초</span></div>
+        </div>
+        <figcaption>입력 → 생성 → 3초 반복 재생 흐름을 재현한 그림입니다. 실제 Gemini 앱 화면이 아닙니다.</figcaption>
+      </div>
+      <div class="kv">
+        <div><b>약 3초</b><span>반복 GIF 길이</span></div>
+        <div><b>15초</b><span>Omni 1.2 Flash 최대 영상 길이</span></div>
+        <div><b>4K</b><span>업스케일 지원</span></div>
+        <div><b>11.05</b><span>모델 정식 출시(GA)일</span></div>
+      </div>
+
+      <aside class="gloss" aria-label="약어 풀이"><span class="tag">이 장의 약어</span>
+        <dl>
+        <div><dt>GPT-Live</dt><dd><em>OpenAI GPT-Live</em>OpenAI의 실시간 음성 대화 모델</dd></div>
+        <div><dt>전이중</dt><dd><em>Full duplex</em>듣기와 말하기를 동시에 하는 방식</dd></div>
+        <div><dt>EEA</dt><dd><em>European Economic Area</em>유럽경제지역. EU 27개국과 아이슬란드·리히텐슈타인·노르웨이</dd></div>
+        <div><dt>CBT</dt><dd><em>Closed Beta Test</em>비공개 베타. 일부 신청자만 먼저 써 보는 시험 운영</dd></div>
+        <div><dt>GA</dt><dd><em>General Availability</em>정식 출시. 누구나 쓸 수 있는 단계</dd></div>
+        <div><dt>GIF</dt><dd><em>Graphics Interchange Format</em>짧게 반복 재생되는 움직이는 이미지 형식</dd></div>
+        <div><dt>4K</dt><dd><em>4K resolution</em>가로 약 4,000픽셀급 고해상도</dd></div>
+        </dl>
+      </aside>
+    </section>
+
+    <!-- ================= 5. Tesla ================= -->
+    <section id="fsd" data-n="05" data-t="Tesla FSD v15">
+      <span class="sec-label"><span class="num">05</span> · 자율주행</span>
+      <h2>Tesla FSD v15: 차 위에서 내려다보는 Reality View</h2>
+      <p class="standfirst">Tesla는 11월 21일 FSD v15 배포를 시작했습니다. 새 화면 <b>Reality View</b>는 차량 위 가상 카메라 시점으로 주변을 실시간 생성해 보여 줍니다. 함께 나온 <b>"안전 25배"</b>는 Tesla 자체 수치입니다.</p>
+      <figure class="ch-banner" style="margin-bottom:6px"><div class="bg" style="background-image:url(../ai-briefing-2026-11-w4/img/ch5-tesla.jpg)" aria-hidden="true"></div><div class="shade"></div><div class="cnum" aria-hidden="true">05</div><img src="../ai-briefing-2026-11-w4/img/ch5-tesla.jpg" width="1600" height="1200" alt="거리에 주차된 Tesla Model Y" loading="lazy"></figure>
+      <small class="ch-credit">배경·우측: Dllu · CC BY-SA 4.0 · Tesla Model Y (2025), Santana Row (Wikimedia Commons)</small>
+      <ul class="dots">
+        <li><strong>배포:</strong> 11월 21일 배포를 시작했고, 12월 홀리데이 업데이트로 확대될 예정입니다.<sup class="fn"><a href="#s17" title="Digital Trends – FSD v15">17</a></sup> <span class="okc">확정</span></li>
+        <li><strong>Reality View:</strong> 차량 위 가상 카메라 시점에서 주변을 실시간으로 생성해 보여 주는 화면입니다. FSD가 어디로 갈 계획인지 표시되고, 화면을 탭해 목적지를 지정할 수도 있습니다.</li>
+        <li><strong>지원 차량:</strong> AI4 하드웨어 차량에서만 지원됩니다.</li>
+      </ul>
+      <figure class="refig"><div class="ph" style="position:relative"><span class="demo-tag">실제 화면 영상 · 2배속</span><picture><source srcset="../ai-briefing-2026-11-w4/img/ch5-reality-view.jpg" media="(prefers-reduced-motion: reduce)"><img src="../ai-briefing-2026-11-w4/img/ch5-reality-view.gif" width="560" height="315" alt="주차장에서 Reality View 화면의 빈자리를 손가락으로 탭하자 화살표 표시가 뜨고, 위에서 내려다보는 시점으로 바뀌며 차가 그 자리로 들어가는 영상" loading="lazy"></picture></div><figcaption>FSD v15 주차 UI와 Reality View: 빈자리를 탭 → 화살표 표시 → 위에서 내려다보는 시점으로 전환 → 주차 · @TeslaNewswire 게시 영상(X, Basenor 게재)을 GIF로 변환<sup class="fn"><a href="#s25" title="Basenor – FSD V15 영상">25</a></sup></figcaption></figure>
+      <div class="callout warn"><span class="tag">벤더 수치 · "안전 25배"</span><p>Tesla 자체 수치이며 검증되지 않았습니다. Tesla는 지표의 정의와 비교 기준을 공개하지 않았습니다. <span class="vend">벤더 수치</span></p></div>
+
+      <aside class="gloss" aria-label="약어 풀이"><span class="tag">이 장의 약어</span>
+        <dl>
+        <div><dt>FSD</dt><dd><em>Full Self-Driving</em>Tesla의 주행 보조 소프트웨어 이름</dd></div>
+        <div><dt>AI4</dt><dd><em>Tesla AI4 hardware</em>Tesla 차량에 들어가는 4세대 자율주행 컴퓨터</dd></div>
+        </dl>
+      </aside>
+    </section>
+
+    <!-- ================= 주의사항 ================= -->
+    <section id="caveats" data-n="!" data-t="주의사항">
+      <span class="sec-label"><span class="num">!</span> · 읽기 전에 알아 둘 것</span>
+      <h2>주의사항</h2>
+      <ul class="dots">
+        <li>이 문서는 <strong>2026년 11월 23일 작성 기준</strong>입니다. 리만 가설 증명의 학계 평가, Gemini 4 라인업, 카카오 CBT 일정은 이후 바뀔 수 있습니다.</li>
+        <li>리만 가설 증명은 Lean 검증을 통과했지만 <strong>Clay 연구소는 인정하지 않았습니다.</strong> 리만 가설이 증명되어도 P vs NP는 풀리지 않습니다.</li>
+        <li>Astra의 "작업당 비용 3분의 1 미만"과 Tesla의 "안전 25배"는 <strong>회사가 직접 낸 수치</strong>입니다. Tesla는 지표 정의와 비교 기준을 공개하지 않았습니다.</li>
+        <li class="unv-li">다음 항목은 공식 확인이 없습니다: Gemini 4 Cobalt(코드 문자열만), Gemini 4 Helium(티저만), "GIFable"이라는 표현.</li>
+        <li>Inkling 2 Mini의 활성 파라미터는 출처마다 3.4B 또는 5.4B로 다릅니다. 5.4B는 루프 반복분을 포함한 값입니다. 양자화 절의 ≈15GB는 공식 수치가 아니라 이 문서의 계산값입니다.</li>
+        <li>1.6절 Lean 코드의 정의 부분은 Mathlib 공개 문서를 옮긴 것이고, 정리(theorem) 줄은 <strong>설명용 예시</strong>입니다. 리만 가설과 제타 함수 설명(1.1–1.4절), Lean의 역사, 괴델의 편지는 기사가 아니라 일반 수학 지식으로 보충했습니다.</li>
+        <li>"동작 재현" 표시가 붙은 그림(GPT-Live, Wallet, Gemini GIF, diffusion-ui 노이즈, 탭 전환)은 이해를 돕기 위한 재현이며 실제 화면이 아닙니다. Tesla 영상과 기사 이미지는 출처를 밝혀 인용했고, 재사용 라이선스가 따로 없습니다.</li>
+      </ul>
+      <p class="endnote">이 페이지는 「AI 뉴스 딥리서치 (2026년 11월 23일 작성)」의 내용을 웹 읽기용으로 다시 구성한 것입니다. 수치와 사실 관계는 원고를 따랐고, 도해는 이해를 돕기 위해 새로 만들었습니다. 같은 내용을 한 장씩 넘기며 보려면 <a href="../ai-briefing-2026-11-w4/">슬라이드 타입</a>을 열어 보세요.</p>
+    </section>
+
+    <section id="glossary" data-n="※" data-t="용어 풀이">
+      <span class="sec-label"><span class="num">※</span> · 부록</span>
+      <h2>용어 풀이</h2>
+      <p>본문에서 <span class="term-demo">점선 밑줄</span>이 있는 약어를 누르면 풀네임과 설명이 바로 뜹니다. 한곳에 모아 보면 다음과 같습니다.</p>
+      <dl class="glist" id="glist"></dl>
+    </section>
+
+    <section id="sources" data-n="§" data-t="출처">
+      <span class="sec-label"><span class="num">§</span> · Sources</span>
+      <h2>출처</h2>
+      <p>본문의 위첨자 번호와 같습니다. 링크는 새 탭에서 열립니다.</p>
+      <ol class="srcs">
+        <li id="s1"><a href="https://community.openai.com/t/gpt-6-2-astra-and-sol-are-now-available/1417531" target="_blank" rel="noopener">OpenAI 개발자 커뮤니티 – GPT-6.2 Astra and Sol</a><span class="dom">community.openai.com</span></li>
+        <li id="s2"><a href="https://siliconangle.com/2026/11/17/openai-rolls-out-gpt-6-2-astra-for-professional-work-and-gpt-6-2-sol-for-everyday-work/" target="_blank" rel="noopener">SiliconANGLE – GPT-6.2</a><span class="dom">siliconangle.com</span></li>
+        <li id="s3"><a href="https://docs.cloud.google.com/gemini-enterprise-agent-platform/models/start/get-started-with-gemini-4" target="_blank" rel="noopener">Google Cloud – Gemini 4 시작 가이드</a><span class="dom">docs.cloud.google.com</span></li>
+        <li id="s4"><a href="https://www.orcarouter.ai/blog/gemini-4-cobalt-neon-ai-studio-leak" target="_blank" rel="noopener">Gemini 4 Cobalt 유출 분석</a><span class="dom">orcarouter.ai</span></li>
+        <li id="s5"><a href="https://www.techcityauthority.com/2026/11/gemini-4-helium-teased.html" target="_blank" rel="noopener">Gemini 4 Helium 티저</a><span class="dom">techcityauthority.com</span></li>
+        <li id="s6"><a href="https://thinkingmachines.ai/news/inkling-2-mini/" target="_blank" rel="noopener">Thinking Machines – Inkling 2 Mini</a><span class="dom">thinkingmachines.ai</span></li>
+        <li id="s7"><a href="https://artificialanalysis.ai/articles/inkling-2-mini" target="_blank" rel="noopener">Artificial Analysis – Inkling 2 Mini</a><span class="dom">artificialanalysis.ai</span></li>
+        <li id="s8"><a href="https://www.testingcatalog.com/early-look-at-loop-new-autonomous-ai-agent-from-google/" target="_blank" rel="noopener">TestingCatalog – Stitch Loop</a><span class="dom">testingcatalog.com</span></li>
+        <li id="s9"><a href="https://www.nature.com/articles/d41586-026-03812-7" target="_blank" rel="noopener">Nature – 리만 가설 증명 반응</a><span class="dom">nature.com</span></li>
+        <li id="s10"><a href="https://www.scientificamerican.com/article/the-ai-riemann-hypothesis-proof-is-almost-certainly-true-independent-mathematicians-attest/" target="_blank" rel="noopener">Scientific American – Lean 검증</a><span class="dom">scientificamerican.com</span></li>
+        <li id="s11"><a href="https://kingy.ai/blog/levent-alpoge-claude-riemann-hypothesis-proof/" target="_blank" rel="noopener">Kingy.ai – Clay 규정</a><span class="dom">kingy.ai</span></li>
+        <li id="s12"><a href="https://www.digitaltrends.com/computing/chatgpt-new-mobile-design/" target="_blank" rel="noopener">Digital Trends – ChatGPT 리디자인</a><span class="dom">digitaltrends.com</span></li>
+        <li id="s13"><a href="https://root-nation.com/en/news-en/it-news-en/en-chatgpt-mobile-app-new-design/" target="_blank" rel="noopener">Root-Nation – 한국 제외</a><span class="dom">root-nation.com</span></li>
+        <li id="s14"><a href="https://www.joongangenews.com/news/articleView.html?idxno=564185" target="_blank" rel="noopener">중앙이코노미뉴스 – 카카오 AI 약관(12/16)</a><span class="dom">joongangenews.com</span></li>
+        <li id="s15"><a href="https://www.asiatoday.co.kr/kn/view.php?key=20261105010001885" target="_blank" rel="noopener">아시아투데이 – 카나나 스페이스 12월 파일럿</a><span class="dom">asiatoday.co.kr</span></li>
+        <li id="s16"><a href="https://www.androidauthority.com/gemini-gif-generation-rollout-3737901/" target="_blank" rel="noopener">Android Authority – Gemini GIF</a><span class="dom">androidauthority.com</span></li>
+        <li id="s17"><a href="https://www.digitaltrends.com/cars/tesla-fsd-v15-rollout/" target="_blank" rel="noopener">Digital Trends – FSD v15</a><span class="dom">digitaltrends.com</span></li>
+        <li id="s18"><a href="https://www.aiposthub.com/runway-diffusion-ui-research/" target="_blank" rel="noopener">Runway Diffusion-UI 정리</a><span class="dom">aiposthub.com</span></li>
+        <li id="s19"><a href="https://community.openai.com/t/gpt-live-1-1-is-rolling-out-with-new-voices-and-better-accents/1406704" target="_blank" rel="noopener">OpenAI 개발자 커뮤니티 – GPT-Live-1.1 출시(10.15)</a><span class="dom">community.openai.com</span></li>
+        <li id="s20"><a href="https://x.com/OpenAIDevs/status/2123506733524136446" target="_blank" rel="noopener">OpenAI Developers – GPT-Live-1.1 API 공개(11.19)</a><span class="dom">x.com</span></li>
+        <li id="s21"><a href="https://developers.openai.com/api/docs/guides/live" target="_blank" rel="noopener">OpenAI – Getting started with GPT-Live · API 가격표</a><span class="dom">developers.openai.com</span></li>
+        <li id="s22"><a href="https://help.openai.com/en/articles/20001530-getting-started-with-your-dot" target="_blank" rel="noopener">OpenAI 도움말 – Getting started with your dot</a><span class="dom">help.openai.com</span></li>
+        <li id="s23"><a href="https://help.openai.com/en/articles/20001641-pricing-and-billing-for-dots-in-chatgpt-enterprise" target="_blank" rel="noopener">OpenAI 도움말 – Enterprise dots 요금</a><span class="dom">help.openai.com</span></li>
+        <li id="s24"><a href="https://techcrunch.com/2026/11/13/chatgpts-new-wallet-lets-ai-agents-shop-and-check-out-for-you/" target="_blank" rel="noopener">TechCrunch – ChatGPT Wallet</a><span class="dom">techcrunch.com</span></li>
+        <li id="s25"><a href="https://www.basenor.com/blogs/news/tesla-update-fsd-v15" target="_blank" rel="noopener">Basenor – FSD V15 Reality View 영상(@TeslaNewswire)</a><span class="dom">basenor.com</span></li>
+      </ol>
+    </section>
+
+  </article>
+</div>
+
+<footer class="site gutter"><div class="in-wrap"><a href="../">← Artifact Archives</a><a href="../ai-briefing-2026-11-w4/">슬라이드 타입으로 보기</a><a href="https://github.com/ndkkdn/artifactarchives" target="_blank" rel="noopener">github.com/ndkkdn/artifactarchives</a></div></footer>
+<dialog class="sheet" id="tocSheet" aria-label="목차"><div class="sheet-h"><b>목차</b><button type="button" class="sheet-x" data-close aria-label="닫기">✕</button></div><ol id="tocMobile"></ol></dialog>
+<button class="totop" id="totop" type="button" aria-label="맨 위로"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg></button>
+
+<script>
+(() => {
+  const root = document.documentElement;
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const $ = s => document.querySelector(s), $$ = (s, el = document) => [...el.querySelectorAll(s)];
+  const wait = ms => new Promise(r => setTimeout(r, reduce ? 0 : ms));
+  const ease = t => 1 - Math.pow(1 - t, 3);
+  const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;');
+
+  $('#themeBtn').onclick = () => {
+    const dark = root.dataset.theme ? root.dataset.theme === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
+    root.dataset.theme = dark ? 'light' : 'dark';
+    try { localStorage.setItem('archive-theme', root.dataset.theme); } catch (e) {}
+  };
+
+  /* count-up numbers */
+  function countUp(el, dur = 1400) {
+    const to = parseFloat(el.dataset.count), dec = +(el.dataset.dec || 0), pre = el.dataset.pre || '', suf = el.dataset.suf || '';
+    const fmt = v => pre + v.toLocaleString('en-US', { minimumFractionDigits: dec, maximumFractionDigits: dec }) + suf;
+    if (reduce || !dur) { el.textContent = fmt(to); return; }
+    const t0 = performance.now();
+    const step = now => { const t = Math.min(1, (now - t0) / dur); el.textContent = fmt(to * ease(t)); if (t < 1) requestAnimationFrame(step); };
+    requestAnimationFrame(step);
+  }
+
+  /* generic horizontal bars: rows = [{l, sub, v, hi, txt, c, best, na}] */
+  function bars(el, rows, max, animate = true) {
+    el.innerHTML = rows.map(r => r.grp ? `<div class="grp">${r.grp}</div>` :
+      `<div class="r${r.best ? ' best' : ''}${r.na ? ' na' : ''}"><span class="l">${r.l}${r.sub ? `<small>${r.sub}</small>` : ''}</span>` +
+      `<span class="t">${r.hi != null ? `<i class="ext" style="background:${r.c}" data-w="${(r.hi / max * 100).toFixed(2)}"></i>` : ''}<i style="background:${r.c}" data-w="${r.na ? 0 : (r.v / max * 100).toFixed(2)}"></i></span>` +
+      `<span class="v">${r.txt}</span></div>`).join('');
+    const set = () => $$('.t i', el).forEach(i => i.style.width = i.dataset.w + '%');
+    if (!animate || reduce) { $$('.t i', el).forEach(i => { i.style.transition = 'none'; }); set(); return; }
+    requestAnimationFrame(() => requestAnimationFrame(set));
+  }
+  const segInit = (seg, cb) => {
+    const bs = $$('button', seg);
+    bs.forEach(b => b.addEventListener('click', () => { bs.forEach(x => x.setAttribute('aria-pressed', x === b)); cb(b.dataset.v); }));
+    return () => bs.find(b => b.getAttribute('aria-pressed') === 'true').dataset.v;
+  };
+  const tglInit = (btn, cb) => btn.addEventListener('click', () => { const on = btn.getAttribute('aria-pressed') !== 'true'; btn.setAttribute('aria-pressed', on); cb(on); });
+
+  const HOOKS = {};
+  const runs = new WeakMap();
+  function play(fig) {
+    const prev = runs.get(fig); if (prev) prev.dead = true;
+    const tk = { dead: false }; runs.set(fig, tk);
+    fig.classList.remove('in'); void fig.offsetWidth; fig.classList.add('in');
+    $$('[data-count]', fig).forEach(el => countUp(el));
+    const h = HOOKS[fig.dataset.fig]; if (h) h(fig, tk);
+  }
+
+
+  /* 2.1 GPT-6.2 prices (per 1M tokens). Faded bar = Astra before the 20% cut, back-calculated */
+  HOOKS.price = () => bars($('#priceBars'), [
+    { grp: '입력' },
+    { l: 'Astra', sub: '20% 인하', v: 8, hi: 10, txt: '$8', c: 'var(--gold)', best: 1 },
+    { l: 'Sol', sub: 'GPT-6.1 Sol과 같음', v: 2, txt: '$2', c: 'var(--blue)' },
+    { grp: '출력' },
+    { l: 'Astra', sub: '20% 인하', v: 40, hi: 50, txt: '$40', c: 'var(--gold)', best: 1 },
+    { l: 'Sol', sub: 'GPT-6.1 Sol과 같음', v: 10, txt: '$10', c: 'var(--blue)' },
+  ], 50);
+
+  /* 2.3 Inkling loop: layers 1–6 once, 7–18 three times, 19–24 once */
+  const cells = $('#loopCells');
+  cells.innerHTML = Array.from({ length: 24 }, (_, i) => `<i class="${i >= 6 && i < 18 ? 'mid' : ''}"></i>`).join('');
+  const cellEls = $$('i', cells);
+  HOOKS.loop = async (fig, tk) => {
+    const seq = [];
+    for (let i = 0; i < 6; i++) seq.push([i, '1–6']);
+    for (let p = 1; p <= 3; p++) for (let i = 6; i < 18; i++) seq.push([i, `가운데 ${p}회차`]);
+    for (let i = 18; i < 24; i++) seq.push([i, '19–24']);
+    const pass = $('#loopPass'), n = $('#loopN');
+    cellEls.forEach(c => c.classList.remove('on'));
+    if (reduce) { cellEls.forEach(c => c.classList.add('on')); pass.textContent = '완료'; n.textContent = 48; return; }
+    await wait(300);
+    for (let k = 0; k < seq.length; k++) {
+      if (tk.dead) return;
+      const [i, lbl] = seq[k];
+      cellEls.forEach(c => c.classList.remove('on'));
+      cellEls[i].classList.add('on');
+      pass.textContent = lbl; n.textContent = k + 1;
+      await wait(70);
+    }
+    if (tk.dead) return;
+    cellEls.forEach(c => c.classList.add('on'));
+    pass.textContent = '완료';
+  };
+
+  /* 3.1 Stitch Loop steps light up in turn, then loop back */
+  HOOKS.lflow = async (fig, tk) => {
+    const st = $$('#lflow .stp');
+    st.forEach(s => s.classList.remove('on'));
+    if (reduce) { st.forEach(s => s.classList.add('on')); return; }
+    for (let r = 0; r < 2; r++) {
+      for (const s of st) { if (tk.dead) return; s.classList.add('on'); await wait(650); }
+      if (r === 0) { await wait(500); if (tk.dead) return; st.slice(1, 3).forEach(s => s.classList.remove('on')); await wait(300); }
+    }
+  };
+
+  /* 3.2 diffusion-ui concept: noise resolves into a simple screen */
+  HOOKS.gen = async (fig, tk) => {
+    const cv = $('#genCv'), cx = cv.getContext('2d'), W = cv.width, H = cv.height;
+    const css = getComputedStyle(document.documentElement);
+    const col = { bg: css.getPropertyValue('--paper-2').trim() || '#efe9da', ink: css.getPropertyValue('--ink-3').trim() || '#7d8494', gold: css.getPropertyValue('--gold').trim() || '#a87a12', line: css.getPropertyValue('--line').trim() || '#e2dac6' };
+    const target = () => {
+      cx.fillStyle = col.bg; cx.fillRect(0, 0, W, H);
+      cx.fillStyle = col.line; cx.fillRect(16, 16, W - 32, 22);
+      cx.fillStyle = col.ink; cx.fillRect(16, 52, 180, 10); cx.fillRect(16, 70, 130, 10);
+      cx.fillStyle = col.gold; cx.beginPath(); cx.roundRect ? cx.roundRect(16, 98, 120, 34, 10) : cx.rect(16, 98, 120, 34); cx.fill();
+      cx.fillStyle = '#fff'; cx.font = '700 14px Pretendard Variable, sans-serif'; cx.fillText('구매하기', 46, 120);
+    };
+    const steps = reduce ? 1 : 26;
+    for (let s = steps; s >= 0; s--) {
+      if (tk.dead) return;
+      target();
+      const amt = s / steps;
+      if (amt > 0) {
+        const img = cx.getImageData(0, 0, W, H), d = img.data;
+        for (let p = 0; p < d.length; p += 4) {
+          const nz = Math.random() * 255;
+          d[p] = d[p] * (1 - amt) + nz * amt; d[p + 1] = d[p + 1] * (1 - amt) + nz * amt; d[p + 2] = d[p + 2] * (1 - amt) + nz * amt;
+        }
+        cx.putImageData(img, 0, 0);
+      }
+      await wait(90);
+    }
+  };
+  /* ---------- w4 revision: prime-count chart (loops while visible) ---------- */
+  (() => {
+    const box = document.querySelector('.pcplot'); if (!box) return;
+    const cv = box.querySelector('canvas'), st = box.querySelector('.pcstage');
+    const N = 10000, pi = new Float64Array(N + 1), sieve = new Uint8Array(N + 1); let c = 0;
+    for (let i = 2; i <= N; i++) { if (!sieve[i]) { c++; for (let j = i * i; j <= N; j += i) sieve[j] = 1; } pi[i] = c; }
+    const Li = new Float64Array(N + 1);
+    for (let i = 3; i <= N; i++) { const f = t => 1 / Math.log(t); Li[i] = Li[i - 1] + (f(i - 1) + 4 * f(i - .5) + f(i)) / 6; }
+    const LiAt = x => { const i = Math.floor(x); return i >= N ? Li[N] : Li[i] + (Li[i + 1] - Li[i]) * (x - i); };
+    const stages = [[30, '계단: 소수마다 한 칸씩'], [100, '계단이 잘아진다'], [1000, '울퉁불퉁한 선'], [10000, '거의 매끈한 곡선 · Li(x)에 밀착']];
+    const HOLD = 2200, MOVE = 1500, CYCLE = stages.length * (HOLD + MOVE);
+    const ez = t => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+    let raf = 0, t0 = 0, last = '';
+    const xmaxAt = t => { t %= CYCLE; const seg = HOLD + MOVE, k = Math.floor(t / seg), r = t - k * seg, a = stages[k][0], b = stages[(k + 1) % 4][0];
+      if (r < HOLD || k === 3) return [a, k]; const e = ez((r - HOLD) / MOVE); return [Math.exp(Math.log(a) + (Math.log(b) - Math.log(a)) * e), k]; };
+    const nice = r => { const p = Math.pow(10, Math.floor(Math.log10(r / 4))); for (const m of [1, 2, 5, 10]) if (r / (m * p) <= 6) return m * p; return 10 * p; };
+    function draw(X, k) {
+      const dpr = devicePixelRatio || 1, W = cv.clientWidth, H = cv.clientHeight; if (!W) return;
+      if (cv.width !== Math.round(W * dpr) || cv.height !== Math.round(H * dpr)) { cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr); }
+      const g = cv.getContext('2d'); g.setTransform(dpr, 0, 0, dpr, 0, 0); g.clearRect(0, 0, W, H);
+      const narrow = W < 480, L = narrow ? 44 : 56, R = 18, T = narrow ? 120 : 84, B = 40, w = W - L - R, h = H - T - B;
+      const Y = Math.max(LiAt(X), pi[Math.min(N, Math.floor(X))]) * 1.12 + 1, sx = x => L + x / X * w, sy = y => T + h - y / Y * h;
+      g.font = '11.5px "JetBrains Mono", monospace'; g.lineWidth = 1; const xs = nice(X), ys = nice(Y);
+      g.strokeStyle = 'rgba(243,239,228,.08)'; g.fillStyle = 'rgba(243,239,228,.5)';
+      for (let x = 0; x <= X + 1e-9; x += xs) { g.beginPath(); g.moveTo(sx(x), T); g.lineTo(sx(x), T + h); g.stroke(); g.textAlign = 'center'; g.fillText(x.toLocaleString(), sx(x), T + h + 17); }
+      for (let y = 0; y <= Y; y += ys) { g.beginPath(); g.moveTo(L, sy(y)); g.lineTo(L + w, sy(y)); g.stroke(); g.textAlign = 'right'; g.fillText(Math.round(y).toLocaleString(), L - 7, sy(y) + 4); }
+      const ta = Math.max(0, Math.min(1, (200 - X) / 150));
+      if (ta > 0) { g.fillStyle = `rgba(224,180,80,${ta})`; for (let p = 2; p <= X; p++) if (!sieve[p]) { g.beginPath(); g.arc(sx(p), T + h, 3, 0, 7); g.fill(); } }
+      const line = (col, fn) => { g.strokeStyle = col; g.lineWidth = 2; g.beginPath(); const n = Math.min(900, Math.ceil(X * 2)); for (let i = 0; i <= n; i++) { const x = 2 + (X - 2) * i / n; i ? g.lineTo(sx(x), sy(fn(x))) : g.moveTo(sx(x), sy(fn(x))); } g.stroke(); };
+      line('rgba(255,122,79,.9)', x => x / Math.log(x)); line('rgba(121,168,255,.95)', LiAt);
+      g.strokeStyle = '#4fd09a'; g.lineWidth = 2.6; g.beginPath(); g.moveTo(sx(0), sy(0));
+      const step = Math.max(1, Math.floor(X / 1200)); let pv = 0;
+      for (let x = 1; x <= Math.min(N, X); x += step) { const y = pi[x]; if (y !== pv) { g.lineTo(sx(x), sy(pv)); g.lineTo(sx(x), sy(y)); pv = y; } }
+      g.lineTo(sx(X), sy(pv)); g.stroke();
+      g.font = '600 12.5px "Pretendard Variable", sans-serif'; g.textAlign = 'left';
+      [['#4fd09a', 'π(x) 실제 소수 개수'], ['#79a8ff', 'Li(x)'], ['#ff7a4f', 'x / ln x']].forEach(([cl, tx], i) => { const xx = [14, 168, 236][i], yy = narrow ? 104 : 60; g.fillStyle = cl; g.fillRect(xx, yy - 6, 16, 3); g.fillStyle = 'rgba(243,239,228,.85)'; g.fillText(tx, xx + 21, yy); });
+      const html = `x ≤ ${Math.round(X).toLocaleString()}<small>${stages[k][1]} · 소수 ${pi[Math.min(N, Math.floor(X))].toLocaleString()}개</small>`;
+      if (html !== last) { st.innerHTML = html; last = html; }
+    }
+    const frame = now => { if (!t0) t0 = now; const [X, k] = xmaxAt(now - t0); draw(X, k); raf = requestAnimationFrame(frame); };
+    if (reduce) { draw(10000, 3); addEventListener('resize', () => draw(10000, 3)); return; }
+    draw(30, 0);
+    new IntersectionObserver(es => es.forEach(e => { cancelAnimationFrame(raf); if (e.isIntersecting) { t0 = 0; raf = requestAnimationFrame(frame); } }), { threshold: .2 }).observe(box);
+  })();
+  /* diffusion-ui noise cells */
+  $$('.noisegrid').forEach(gd => { const pal = ['#2b3550', '#5b4a3a', '#8a7a5c', '#1a2236', '#a99b7c', '#3c4a68', '#6e5a44']; let s = ''; for (let i = 0; i < 144; i++) s += `<i style="--nc:${pal[(Math.random() * 7) | 0]};--nd:${(Math.random() * 1.4).toFixed(2)}s"></i>`; gd.innerHTML = s; });
+  /* ---------- observers ---------- */
+  const figs = $$('[data-fig]');
+  const io = 'IntersectionObserver' in window ? new IntersectionObserver(es => es.forEach(e => {
+    if (e.isIntersecting) { play(e.target); io.unobserve(e.target); }
+  }), { threshold: .25, rootMargin: '0px 0px -8% 0px' }) : null;
+  figs.forEach(f => io ? io.observe(f) : play(f));
+  $$('[data-replay]').forEach(b => b.addEventListener('click', () => play(b.closest('[data-fig]'))));
+  const rio = 'IntersectionObserver' in window ? new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); rio.unobserve(e.target); } }), { threshold: .1 }) : null;
+  $$('.glist').forEach(el => rio ? rio.observe(el) : el.classList.add('in'));
+
+  const hero = $('#hero');
+  const launched = root.classList.contains('launched');
+  requestAnimationFrame(() => { hero.classList.add('in'); setTimeout(() => $$('[data-count]', hero).forEach(el => countUp(el, launched ? 0 : 1600)), reduce || launched ? 0 : 700); });
+
+  /* ---------- tables → cards on phones ---------- */
+  $$('.tbl-wrap[data-cards]').forEach(w => {
+    const tb = $('table', w), head = $$('thead th', tb).map(th => th.innerHTML), rows = $$('tbody tr', tb).map(tr => [...tr.children].map(c => c.innerHTML));
+    const box = document.createElement('div'); box.className = 'mcards';
+    if (w.dataset.cards === 'cols') {
+      box.innerHTML = head.slice(1).map((h, j) => `<div class="mc"><div class="mh"><b>${h}</b></div><dl>${rows.map(r => `<dt>${r[0]}</dt><dd>${r[j + 1]}</dd>`).join('')}</dl></div>`).join('');
+    } else {
+      box.innerHTML = rows.map(r => `<div class="mc"><div class="mh"><b>${r[0]}</b></div><dl>${head.slice(1).map((h, j) => `<dt>${h}</dt><dd>${r[j + 1]}</dd>`).join('')}</dl></div>`).join('');
+    }
+    w.after(box);
+  });
+
+  /* ---------- glossary: collected from each chapter's abbreviation list ---------- */
+  const GLOSS = {};
+  const glist = $('#glist');
+  $$('.gloss dl > div').forEach(d => {
+    const k = d.querySelector('dt').textContent.trim(), em = d.querySelector('em'), full = em.textContent, exp = em.nextSibling ? d.querySelector('dd').textContent.replace(full, '').trim() : '';
+    GLOSS[k] = [full, exp];
+    glist.insertAdjacentHTML('beforeend', `<div class="gi rv"><dt><b>${esc(k)}</b><span>${esc(full)}</span></dt><dd>${esc(exp)}</dd></div>`);
+  });
+  const SKIP = new Set(['AI', 'B', '4K', 'GIF', 'MIT', 'GA']);
+  const ALIAS = {};
+  const TERMS = {}; Object.keys(GLOSS).forEach(k => { if (!SKIP.has(k)) TERMS[ALIAS[k] || k] = k; });
+  const keys = Object.keys(TERMS).sort((a, b) => b.length - a.length);
+  const escRe = k => k.replace(/[.*+?^${}()|[\]\\/&;]/g, '\\$&');
+  const re = new RegExp('(^|[^A-Za-z0-9])(' + keys.map(escRe).join('|') + ')(?![A-Za-z0-9])');
+  $$('article section').forEach(sec => {
+    if (sec.id === 'glossary' || sec.id === 'sources') return;
+    const seen = new Set();
+    const walker = document.createTreeWalker(sec, NodeFilter.SHOW_TEXT, { acceptNode: n =>
+      n.parentElement.closest('.fig, code, h2, h3, .sec-label, .tbl-wrap, .mcards, .term, a, svg, .note, .gloss, sup, blockquote, .en-q, .unv, .vend, .okc, .tag') ? NodeFilter.FILTER_REJECT : NodeFilter.FILTER_ACCEPT });
+    const nodes = []; while (walker.nextNode()) nodes.push(walker.currentNode);
+    nodes.forEach(node => {
+      let n = node;
+      for (let guard = 0; guard < 8 && n; guard++) {
+        const m = re.exec(n.data); if (!m) break;
+        const k = m[2], at = m.index + m[1].length;
+        if (seen.has(k)) { n = n.splitText(at + k.length); continue; }
+        seen.add(k);
+        const mid = n.splitText(at), rest = mid.splitText(k.length);
+        const g = GLOSS[TERMS[k]];
+        const t = document.createElement('span'); t.className = 'term'; t.tabIndex = 0; t.dataset.k = TERMS[k];
+        t.setAttribute('role', 'button'); t.setAttribute('aria-label', `${k}: ${g[0]}. ${g[1]}`);
+        t.textContent = k; mid.replaceWith(t); n = rest;
+      }
+    });
+  });
+  const pop = document.createElement('div'); pop.className = 'tpop'; pop.setAttribute('role', 'tooltip'); document.body.appendChild(pop);
+  let popFor = null;
+  const slug = k => 'g-' + (k.replace(/[^A-Za-z0-9]/g, '') || [...k].map(c => c.charCodeAt(0).toString(36)).join(''));
+  $$('.glist .gi').forEach(gi => gi.id = slug(gi.querySelector('dt b').textContent));
+  function showTerm(t) {
+    const [full, exp] = GLOSS[t.dataset.k];
+    pop.innerHTML = `<b>${esc(t.dataset.k)}</b><span class="f">${esc(full)}</span>${esc(exp)}<br><a href="#${slug(t.dataset.k)}">용어 풀이 전체 보기 →</a>`;
+    $$('.term.on').forEach(x => x.classList.remove('on')); t.classList.add('on'); popFor = t;
+    const r = t.getBoundingClientRect(), w = Math.min(340, innerWidth - 32);
+    pop.style.left = Math.max(16, Math.min(scrollX + r.left, scrollX + innerWidth - w - 16)) + 'px';
+    pop.style.top = (scrollY + r.bottom + 8) + 'px';
+    pop.classList.add('show');
+  }
+  function hideTerm() { pop.classList.remove('show'); popFor && popFor.classList.remove('on'); popFor = null; }
+  document.addEventListener('click', e => {
+    const t = e.target.closest('.term');
+    if (t) { e.preventDefault(); popFor === t ? hideTerm() : showTerm(t); }
+    else if (!e.target.closest('.tpop')) hideTerm();
+  });
+  document.addEventListener('keydown', e => {
+    const t = e.target.closest && e.target.closest('.term');
+    if (t && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); showTerm(t); }
+    if (e.key === 'Escape') hideTerm();
+  });
+  if (matchMedia('(hover: hover)').matches) {
+    document.addEventListener('mouseover', e => { const t = e.target.closest('.term'); if (t && t !== popFor) showTerm(t); });
+    document.addEventListener('mouseout', e => { const t = e.target.closest('.term'); if (t && !(e.relatedTarget && (e.relatedTarget.closest('.tpop') || e.relatedTarget.closest('.term') === t))) hideTerm(); });
+    pop.addEventListener('mouseleave', hideTerm);
+  }
+  addEventListener('resize', hideTerm);
+
+  /* ---------- TOC, scroll spy, progress ---------- */
+  const secs = $$('article section');
+  const item = s => `<li><a href="#${s.id}"><span class="n">${s.dataset.n}</span><span>${s.dataset.t}</span></a></li>`;
+  $('#toc').innerHTML = secs.map(item).join('');
+  $('#tocMobile').innerHTML = secs.map(item).join('');
+  const sheet = $('#tocSheet'), tocCur = $('#tocCur'), mLinks = $$('#tocMobile a');
+  $('#tocBtn').onclick = () => { sheet.showModal(); sheet.querySelector('a.on')?.focus(); };
+  sheet.addEventListener('click', e => { if (e.target === sheet || e.target.closest('[data-close]')) sheet.close(); });
+  mLinks.forEach(a => a.addEventListener('click', () => sheet.close()));
+  const links = $$('#toc a'), bar = $('#progress'), top = $('#totop');
+  function onScroll() {
+    const h = document.documentElement.scrollHeight - innerHeight;
+    bar.style.transform = `scaleX(${h > 0 ? Math.min(1, scrollY / h) : 0})`;
+    top.classList.toggle('show', scrollY > innerHeight);
+    let cur = secs[0];
+    for (const s of secs) if (s.getBoundingClientRect().top < innerHeight * .35) cur = s;
+    links.concat(mLinks).forEach(a => a.classList.toggle('on', a.getAttribute('href') === '#' + cur.id));
+    const lbl = scrollY < innerHeight * .5 ? '목차' : cur.dataset.n + ' ' + cur.dataset.t;
+    if (tocCur.textContent !== lbl) tocCur.textContent = lbl;
+  }
+  addEventListener('scroll', onScroll, { passive: true }); addEventListener('resize', onScroll); onScroll();
+  top.onclick = () => scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' });
+})();
+</script>
+<script src="../voice.js" defer></script>
+</body>
+</html>

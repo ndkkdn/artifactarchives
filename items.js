@@ -2,6 +2,26 @@
 // 직접 고칠 때도 JSON 형식(따옴표 붙은 키)을 유지해 주세요.
 window.ITEMS = [
   {
+    "href": "ai-briefing-2026-11-w4-report/",
+    "title": "2026년 11월 넷째 주 테크·AI 브리핑 (스크롤 타입)",
+    "desc": "리만 가설 증명(가설의 뜻, 제타 함수 상세 설명, 리만 가설과 일반화된 리만 가설의 차이, Lean 코드와 검증 이유, Clay 인정 조건, P=NP가 따라 나오는 이유와 정정), GPT-6.2 Astra·Sol, Gemini 4 Neon과 Cobalt·Helium 단서, Inkling 2 Mini와 4비트 양자화, Google Stitch Loop와 대기자 명단, Runway diffusion-ui, ChatGPT 리디자인과 dots·GPT-Live-1.1, 카카오톡 '라이언' 기능표, Gemini GIF, Tesla FSD v15를 출처 25건과 함께 정리한 상세 리포트. 11개 항목 판정표, 소수 계단이 곡선이 되는 그래프 애니메이션, Mathlib 리만 가설 정의 코드, 양자화 비트 도해, GPT-Live·Wallet·Gemini GIF 동작 재현, Reality View 실제 화면 GIF, 섹션마다 참고 이미지, 눌러 보는 용어 풀이.",
+    "type": "리포트",
+    "tags": ["AI 동향", "주간 브리핑", "리만 가설", "GPT-6.2", "Gemini"],
+    "date": "2026-11-23",
+    "thumb": "thumbs/ai-briefing-2026-11-w4-report.jpg",
+    "hidden": false
+  },
+  {
+    "href": "ai-briefing-2026-11-w4/",
+    "title": "2026년 11월 넷째 주 테크·AI 브리핑 (슬라이드 타입)",
+    "desc": "리만 가설 증명(가설의 뜻과 소수와의 관계, Lean 코드와 검증 이유, Clay 인정 조건, P=NP가 함께 언급되는 이유와 정정), GPT-6.2 Astra·Sol, Gemini 4 Neon과 Cobalt·Helium 단서, Inkling 2 Mini 루프 구조와 4비트(NVFP4) 양자화, Google Stitch Loop와 대기자 명단, Runway diffusion-ui, ChatGPT 리디자인과 dots·GPT-Live-1.1 새 소식, 카카오톡 '라이언' 기능표, Gemini GIF, Tesla FSD v15를 31장으로 정리. 슬라이드마다 참고 이미지, 실제 동작하는 기능(GPT-Live·Wallet·Gemini GIF·diffusion-ui·ChatGPT 탭)은 동작 재현 애니메이션, 소수 계단이 곡선이 되는 그래프 애니메이션, FSD Reality View 실제 화면 GIF, 확정·루머·판단·벤더 수치 배지, 폰 세로 화면 대응. Speaker Notes(N), Fullscreen(F).",
+    "type": "슬라이드",
+    "tags": ["AI 동향", "주간 브리핑", "리만 가설", "GPT-6.2", "Gemini"],
+    "date": "2026-11-23",
+    "thumb": "thumbs/ai-briefing-2026-11-w4.jpg",
+    "hidden": false
+  },
+  {
     "href": "agent-platform-report/",
     "title": "Agent Demo에서 Agent Platform으로 (스크롤 타입)",
     "desc": "AI 에이전트를 데모에서 운영 가능한 플랫폼으로 만드는 다섯 축(오케스트레이션, 도구·권한, 메모리·작업 상태, 관측·평가, 게이트웨이·거버넌스)을 7개 장으로 풀어 쓴 리포트. 요청 경로가 움직이는 플랫폼 구조도, Plan→Act→Observe 루프, 체크포인트 복구 비교, 위험도별 권한 단계, Trace 예시, 회귀 평가 흐름, 운영 문제 지도와 설계 질문, 눌러 보는 용어 풀이.",

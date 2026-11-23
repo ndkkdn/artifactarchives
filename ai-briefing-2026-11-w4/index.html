@@ -1,0 +1,1828 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>2026년 11월 넷째 주 테크·AI 브리핑</title>
+<meta name="description" content="리만 가설 증명(가설의 뜻, Lean 검증, Clay 조건, P=NP가 함께 언급되는 이유), GPT-6.2 Astra·Sol, Gemini 4 Neon·Cobalt·Helium, Inkling 2 Mini와 4비트 양자화, Google Stitch Loop와 대기자 명단, Runway diffusion-ui, ChatGPT 리디자인·dots·GPT-Live-1.1, 카카오톡 라이언, Gemini GIF, Tesla FSD v15를 31장으로 정리한 주간 브리핑.">
+<link rel="icon" href="../favicon.ico">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<!-- Design system extracted verbatim from ai-briefing-2026-11-w3. Component-specific blocks (od, ddc, sla, chain,
+     pj, drain, stack, s1fin, art-*) are kept so patterns copied from references/example-w3.html keep working. -->
+<style>
+  :root {
+    --bg: #0c1524; --bg-2: #122038; --card: rgba(243, 239, 228, .045); --card-2: rgba(243, 239, 228, .08);
+    --line: rgba(243, 239, 228, .12); --ink: #f3efe4; --ink-2: rgba(243, 239, 228, .7); --ink-3: rgba(243, 239, 228, .44);
+    --gold: #d5a844; --coral: #f0542a; --blue: #6aa8ff; --green: #4cc38a; --red: #ff6b6b; --violet: #a98bff;
+    --c-ant: #d08a6a; --c-oai: #b7c0d2; --c-meta: #6aa8ff;
+    --ease: cubic-bezier(.2, .8, .2, 1);
+    color-scheme: dark;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; background: var(--bg); color: var(--ink); overflow: hidden; }
+  body { font-family: "Pretendard Variable", Pretendard, Inter, system-ui, sans-serif; -webkit-font-smoothing: antialiased; word-break: keep-all; }
+  .mono { font-family: "JetBrains Mono", ui-monospace, monospace; }
+  .en { font-family: Inter, "Pretendard Variable", sans-serif; }
+  #bgfx { position: fixed; inset: 0; width: 100%; height: 100%; }
+
+  /* ── fixed 1600×900 stage, scaled to fit ── */
+  .deck { position: fixed; left: 50%; top: 50%; width: 1600px; height: 900px; transform-origin: 0 0; }
+  .slide {
+    position: absolute; inset: 0; padding: 92px 110px 96px; display: flex; flex-direction: column;
+    opacity: 0; visibility: hidden; transform: translateX(40px); transition: opacity .5s var(--ease), transform .6s var(--ease), visibility 0s .6s;
+  }
+  .slide.is-active { opacity: 1; visibility: visible; transform: none; transition: opacity .5s var(--ease), transform .6s var(--ease); }
+  .slide.is-past { transform: translateX(-40px); }
+
+  /* entrance choreography: every [data-a] child plays when its slide becomes active */
+  .slide [data-a] { opacity: 0; }
+  .slide.is-active [data-a] { animation: var(--anim, rise) .8s var(--ease) both; animation-delay: calc(140ms + var(--d, 0) * 110ms); }
+  [data-a="fade"] { --anim: fade; } [data-a="left"] { --anim: fromLeft; } [data-a="right"] { --anim: fromRight; } [data-a="pop"] { --anim: pop; }
+  @keyframes rise { from { opacity: 0; transform: translateY(28px); } to { opacity: 1; transform: none; } }
+  @keyframes fade { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes fromLeft { from { opacity: 0; transform: translateX(-40px); } to { opacity: 1; transform: none; } }
+  @keyframes fromRight { from { opacity: 0; transform: translateX(40px); } to { opacity: 1; transform: none; } }
+  @keyframes pop { 0% { opacity: 0; transform: scale(.85); } 70% { opacity: 1; transform: scale(1.03); } 100% { opacity: 1; transform: none; } }
+
+  /* ── type ── */
+  .kicker { display: inline-flex; align-items: center; gap: 10px; font: 600 18px/1 Inter, "Pretendard Variable", sans-serif; letter-spacing: .14em; text-transform: uppercase; color: var(--gold); }
+  .kicker::before { content: ""; width: 28px; height: 2px; background: currentColor; }
+  h1, h2, h3 { margin: 0; font-weight: 700; letter-spacing: -.035em; }
+  h2 { font-size: 54px; line-height: 1.18; margin-top: 16px; }
+  /* slide titles: Paperlogy (SIL OFL, via jsDelivr/project noonnu) */
+  @font-face { font-family: "Paperlogy"; font-weight: 700; font-style: normal; font-display: swap; src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/2408-3@1.0/Paperlogy-7Bold.woff2") format("woff2"); }
+  h1, h2 { font-family: "Paperlogy", "Pretendard Variable", Pretendard, Inter, sans-serif; letter-spacing: -.03em; }
+  h1 { font-weight: 800; }
+  h2 em, h1 em { font-style: normal; color: var(--gold); }
+  .lead { font-size: 25px; line-height: 1.6; color: var(--ink-2); margin: 18px 0 0; max-width: 1180px; }
+  .lead b, .body b { color: var(--ink); font-weight: 600; }
+  .body { font-size: 21px; line-height: 1.6; color: var(--ink-2); margin: 0; }
+  .small { font-size: 16px; color: var(--ink-3); line-height: 1.55; }
+  .small b { color: var(--ink-2); }
+  .chip { display: inline-flex; align-items: center; gap: 8px; padding: 8px 16px; border-radius: 999px; background: var(--card-2); border: 1px solid var(--line); font-size: 18px; color: var(--ink-2); white-space: nowrap; }
+  .chip.gold { color: #1b1606; background: var(--gold); border-color: transparent; font-weight: 600; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 22px; padding: 26px 28px; }
+  .card h3 { font-size: 25px; letter-spacing: -.025em; }
+  .card .num { font: 700 14px/1.3 "JetBrains Mono", "Pretendard Variable", monospace; color: var(--gold); letter-spacing: .06em; }
+  .card p { margin: 10px 0 0; font-size: 18px; line-height: 1.55; color: var(--ink-2); }
+  .card p b, .card li b { color: var(--ink); }
+  .card ul { margin: 10px 0 0; padding-left: 20px; font-size: 18px; line-height: 1.55; color: var(--ink-2); }
+  .card li + li { margin-top: 6px; }
+  .row { display: flex; gap: 28px; }
+  .grow { flex: 1; min-width: 0; }
+  .src { position: absolute; left: 110px; bottom: 44px; font-size: 15px; color: var(--ink-3); max-width: 900px; }
+  .cols { display: grid; gap: 22px; }
+  .c2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .c3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .c4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .c5 { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+  .c3w { grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr) minmax(0, 1fr); }
+
+  /* ── status badges: confirmed / rumor / judgment / vendor numbers ── */
+  .badge { display: inline-flex; align-items: center; gap: 6px; font: 700 14px/1.2 "Pretendard Variable", Inter, sans-serif; letter-spacing: .02em; padding: 5px 11px; border-radius: 999px; white-space: nowrap; vertical-align: middle; }
+  .badge.ok { background: rgba(76,195,138,.16); color: var(--green); border: 1px solid rgba(76,195,138,.45); }
+  .badge.ok::before { content: "✓"; }
+  .badge.rumor { color: #ff8a63; border: 1.5px dashed rgba(240,84,42,.8); background: repeating-linear-gradient(-45deg, rgba(240,84,42,.18) 0 6px, rgba(240,84,42,.05) 6px 12px); }
+  .badge.rumor::before { content: "?"; font-weight: 800; }
+  .badge.judge { background: rgba(213,168,68,.16); color: var(--gold); border: 1px solid rgba(213,168,68,.5); }
+  .badge.judge::before { content: "◆"; font-size: 11px; }
+  .badge.vendor { background: rgba(106,168,255,.14); color: var(--blue); border: 1px solid rgba(106,168,255,.45); }
+  .badge.vendor::before { content: "!"; font-weight: 800; }
+  .badge.warn { background: rgba(240,84,42,.14); color: #ff8a63; border: 1px solid rgba(240,84,42,.5); }
+  .card.ok { border-color: rgba(76,195,138,.45); background: linear-gradient(160deg, rgba(76,195,138,.10), rgba(76,195,138,.02)); }
+  .card.rumor { border: 1.5px dashed rgba(240,84,42,.65); background: repeating-linear-gradient(-45deg, rgba(240,84,42,.07) 0 10px, rgba(240,84,42,.015) 10px 20px); }
+  .card.judge { border-color: rgba(213,168,68,.55); background: linear-gradient(160deg, rgba(213,168,68,.14), rgba(213,168,68,.02)); }
+  .card.vendor { border-color: rgba(106,168,255,.4); background: linear-gradient(160deg, rgba(106,168,255,.08), rgba(106,168,255,.01)); }
+  .card.hotc { border-color: rgba(240,84,42,.45); background: rgba(240,84,42,.06); }
+  .ustamp { position: absolute; display: inline-block; border: 3px solid var(--coral); color: var(--coral); font: 800 19px/1 "Pretendard Variable", sans-serif; letter-spacing: .06em; padding: 7px 12px; border-radius: 8px; transform: rotate(-7deg) scale(1.7); opacity: 0; pointer-events: none; background: rgba(12,21,36,.6); }
+  .is-active .ustamp { animation: stamp .45s var(--ease) var(--sd, 1.8s) both; }
+  @keyframes stamp { to { opacity: .95; transform: rotate(-7deg) scale(1); } }
+
+  /* ── chrome ── */
+  .progress { position: fixed; left: 0; top: 0; height: 3px; background: var(--gold); width: 0; transition: width .5s var(--ease); z-index: 5; }
+  .hud { position: fixed; right: max(18px, env(safe-area-inset-right)); bottom: max(16px, env(safe-area-inset-bottom)); display: flex; gap: 8px; align-items: center; z-index: 5; }
+  .hud button, .hud a { appearance: none; border: 0; height: 38px; min-width: 38px; padding: 0 12px; border-radius: 999px; background: rgba(243,239,228,.08); color: var(--ink-2);
+    font: 500 14px Inter, "Pretendard Variable", sans-serif; cursor: pointer; display: inline-grid; place-items: center; text-decoration: none; backdrop-filter: blur(8px); }
+  .hud button:hover, .hud a:hover { background: rgba(243,239,228,.16); color: var(--ink); }
+  .hud .count { font: 500 14px "JetBrains Mono", monospace; color: var(--ink-3); padding: 0 6px; white-space: nowrap; }
+  .notes { position: fixed; left: 50%; bottom: 70px; transform: translateX(-50%); width: min(920px, calc(100vw - 32px)); max-height: 60vh; overflow-y: auto; z-index: 6; display: none;
+    background: rgba(8, 14, 26, .94); border: 1px solid var(--line); border-radius: 16px; padding: 18px 22px; font-size: 16px; line-height: 1.65; color: var(--ink-2); }
+  .notes.show { display: block; }
+  .notes b { color: var(--gold); font-weight: 600; margin-right: 6px; }
+  :focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
+
+  /* ── glossary strip (abbreviations) ── */
+  .gloss { margin-top: auto; padding-top: 12px; border-top: 1px solid var(--line); display: flex; flex-wrap: wrap; gap: 4px 26px; font-size: 14.5px; line-height: 1.5; color: var(--ink-3); position: relative; z-index: 1; }
+  .gloss span { max-width: 100%; }
+  .gloss b { font: 700 13.5px "JetBrains Mono", monospace; color: var(--gold); margin-right: 8px; }
+  .gloss em { font-style: normal; color: var(--ink-2); }
+  .slide:has(.src) .gloss { margin-bottom: 12px; }
+
+  /* ── 01 title ── */
+  .s-title { justify-content: center; }
+  @font-face { font-family: "Paperlogy"; font-weight: 800; font-style: normal; font-display: swap; src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/2408-3@1.0/Paperlogy-8ExtraBold.woff2") format("woff2"); }
+  .s-title h1 { font-family: "Paperlogy", "Pretendard Variable", Pretendard, Inter, sans-serif; font-weight: 800; font-size: 100px; line-height: 1.12; letter-spacing: -.035em; margin-top: 26px; }
+  .s-title .lead { font-size: 27px; margin-top: 28px; }
+  .s-title .chips { display: flex; gap: 12px; margin-top: 48px; flex-wrap: wrap; }
+  .s-title .date { position: absolute; right: 110px; top: 92px; font: 500 18px "JetBrains Mono", "Pretendard Variable", monospace; color: var(--ink-3); }
+
+  /* ── agenda ── */
+  .agenda { display: grid; grid-template-columns: 1fr 1fr; gap: 0 48px; margin: 34px 0 0; padding: 0; }
+  .agenda li { list-style: none; display: flex; gap: 22px; align-items: baseline; padding: 18px 0; border-bottom: 1px solid var(--line); }
+  .agenda .n { font: 700 21px "JetBrains Mono", monospace; color: var(--gold); width: 38px; flex: none; }
+  .agenda .t { font-size: 28px; font-weight: 600; letter-spacing: -.02em; }
+  .agenda .d { font-size: 18px; color: var(--ink-3); margin-top: 5px; }
+  .agenda li.warn .n, .agenda li.warn .t { color: var(--coral); }
+
+  /* ── TL;DR ── */
+  .tldr { display: grid; grid-template-columns: 1.1fr 1fr 1fr; gap: 22px; margin-top: 34px; }
+  .tldr .card { padding: 24px 26px; }
+  .tldr ul { font-size: 18px; line-height: 1.55; }
+  .tldr li + li { margin-top: 10px; }
+
+  /* ── horizontal bars ── */
+  .hbars { display: flex; flex-direction: column; gap: 10px; }
+  .hbar { display: grid; grid-template-columns: var(--lw, 150px) minmax(0, 1fr) var(--vw, 100px); gap: 12px; align-items: center; font-size: 17px; color: var(--ink-2); }
+  .hbar .nm { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .hbar .tr { height: var(--bh, 22px); border-radius: 7px; background: var(--card-2); overflow: hidden; position: relative; }
+  .hbar .tr i { position: absolute; left: 0; top: 0; bottom: 0; width: 0; border-radius: inherit; background: var(--c, var(--blue)); transition: width 1.2s var(--ease); }
+  .hbar .tr i.rng { background: repeating-linear-gradient(-45deg, var(--c, var(--blue)) 0 5px, transparent 5px 10px); opacity: .9; }
+  .is-active .hbar .tr i { width: var(--w); transition-delay: calc(var(--bd, .6s) + var(--k, 0) * .12s); }
+  .hbar .v { font: 700 17px "JetBrains Mono", "Pretendard Variable", monospace; color: var(--ink); text-align: right; white-space: nowrap; }
+  .hbar.best .nm, .hbar.best .v { color: var(--gold); }
+  .legend { display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: 15px; color: var(--ink-3); }
+  .legend i { display: inline-block; width: 12px; height: 12px; border-radius: 3px; margin-right: 6px; vertical-align: -1px; }
+
+  /* ── vertical column bars ── */
+  .vbars { display: flex; align-items: flex-end; gap: 12px; height: var(--vh, 190px); border-bottom: 1px solid var(--line); margin-top: 10px; }
+  .vbars .b { flex: 1; min-width: 0; height: 100%; display: flex; flex-direction: column; justify-content: flex-end; position: relative; }
+  .vbars .b i { display: block; height: 0; border-radius: 7px 7px 0 0; background: var(--c, var(--blue)); transition: height 1.1s var(--ease); }
+  .is-active .vbars .b i { height: var(--h); transition-delay: calc(var(--bd, .6s) + var(--k, 0) * .12s); }
+  .vbars .b em { position: absolute; left: 0; right: 0; bottom: calc(var(--h) + 6px); text-align: center; font: 700 16px "JetBrains Mono", monospace; font-style: normal; color: var(--ink); opacity: 0; transition: opacity .3s; white-space: nowrap; }
+  .is-active .vbars .b em { opacity: 1; transition-delay: calc(var(--bd, .6s) + .9s + var(--k, 0) * .12s); }
+  .vlab { display: flex; gap: 12px; margin-top: 8px; }
+  .vlab span { flex: 1; min-width: 0; text-align: center; font-size: 14px; color: var(--ink-3); line-height: 1.3; }
+
+  /* ── timeline ── */
+  .tline { position: relative; display: grid; grid-template-columns: repeat(var(--n, 4), minmax(0, 1fr)); gap: 24px; margin-top: 34px; padding-top: 44px; }
+  .tline .axis { position: absolute; left: 0; right: 0; top: 12px; height: 3px; background: var(--line); }
+  .tline .axis i { position: absolute; inset: 0; background: var(--gold); transform: scaleX(0); transform-origin: left; transition: transform 1.6s var(--ease); }
+  .is-active .tline .axis i { transform: scaleX(1); transition-delay: .5s; }
+  .tline .ev { position: relative; min-width: 0; }
+  .tline .ev .dot { position: absolute; left: 0; top: -43px; width: 22px; height: 22px; border-radius: 50%; background: var(--bg); border: 4px solid var(--gold); }
+  .tline .ev.key .dot { background: var(--gold); box-shadow: 0 0 0 6px rgba(213,168,68,.18); }
+  .tline .ev.bad .dot { border-color: var(--coral); background: var(--coral); }
+  .tline .ev.rum .dot { border-style: dashed; border-color: var(--coral); }
+  .tline .when { font: 700 18px "JetBrains Mono", "Pretendard Variable", monospace; color: var(--gold); }
+  .tline .ev.bad .when, .tline .ev.rum .when { color: #ff8a63; }
+  .tline .what { font-size: 18.5px; line-height: 1.5; color: var(--ink-2); margin-top: 6px; }
+  .tline .what b { color: var(--ink); }
+  .tline .q { margin-top: 8px; font-size: 16px; line-height: 1.5; color: var(--ink-2); padding-left: 12px; border-left: 3px solid var(--line); }
+  .tline .q.en { font-style: italic; }
+
+  /* ── 04 scores + exam room ── */
+  .scores { display: flex; gap: 46px; margin-top: 12px; }
+  .scores .lbl { font-size: 16px; color: var(--ink-3); }
+  .kpi { font: 800 64px/1.05 Inter, sans-serif; letter-spacing: -.04em; color: var(--ink); }
+  .kpi small { font-size: 28px; color: var(--ink-3); letter-spacing: -.02em; margin-left: 4px; }
+  .kpi.gold { color: var(--gold); }
+  .room { display: grid; grid-template-columns: repeat(5, 40px); gap: 8px; justify-content: center; padding: 14px 18px; border-radius: 14px; background: var(--bg-2); }
+  .room .podium { grid-column: 1 / -1; text-align: center; font-size: 13px; color: var(--ink-3); padding: 4px; border: 1px solid var(--line); border-radius: 6px; margin-bottom: 4px; }
+  .room i { height: 26px; border-radius: 6px; background: var(--card-2); transition: background .4s, box-shadow .4s; font: 700 11px/26px "Pretendard Variable"; font-style: normal; text-align: center; color: transparent; }
+  .is-active .room i.s1 { background: var(--coral); color: #1b0a05; transition-delay: 1.4s; box-shadow: 0 0 0 3px rgba(240,84,42,.3); }
+  .is-active .room i.s2 { background: var(--gold); color: #1b1606; transition-delay: 1.9s; box-shadow: 0 0 0 3px rgba(213,168,68,.3); }
+
+  /* ── 06 government measures ── */
+  .measures { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 14px; margin-top: 14px; }
+  .measures .m { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 16px 18px; font-size: 17px; line-height: 1.45; color: var(--ink-2); }
+  .measures .m b { display: block; font: 700 15px "JetBrains Mono"; color: var(--gold); margin-bottom: 6px; }
+  .measures .m.flag { border-style: dashed; border-color: rgba(240,84,42,.5); }
+
+  /* ── 09 signal chain ── */
+  .chain-svg { width: 100%; height: auto; display: block; margin-top: 18px; }
+  .chain-svg text { fill: #f3efe4; font-family: "Pretendard Variable", sans-serif; }
+  .chain-svg .node rect { fill: rgba(243,239,228,.05); stroke: rgba(243,239,228,.22); stroke-width: 1.5; }
+  .chain-svg .leg { stroke: rgba(243,239,228,.25); stroke-width: 4; stroke-dasharray: 8 8; fill: none; }
+  .chain-svg .leg.bt { stroke: rgba(76,195,138,.5); transition: stroke .2s; }
+  .chain-svg .leg.bt.hit { stroke: var(--green); stroke-dasharray: none; }
+  .chain-svg .pkt { fill: var(--gold); }
+  .chain-svg .ring { fill: none; stroke: var(--green); stroke-width: 2; opacity: 0; }
+  .is-active .chain-svg .ring { animation: ring 2.4s ease-out infinite; }
+  .chain-svg .ring.r2 { animation-delay: .8s !important; } .chain-svg .ring.r3 { animation-delay: 1.6s !important; }
+  @keyframes ring { 0% { opacity: .9; r: 10; } 100% { opacity: 0; r: 70; } }
+  .chain-svg .okt { fill: var(--green) !important; font-weight: 700; }
+  .chain-v { display: none; }
+  html.portrait .chain-h { display: none; }
+  html.portrait .chain-v { display: block; margin-top: 20px; }
+  .chain-svg .not { fill: #ff8a63 !important; font-weight: 700; }
+
+
+  /* ── 13 gantt ── */
+  .gantt { display: grid; grid-template-columns: 330px minmax(0, 1fr); gap: 16px 24px; margin-top: 30px; align-items: center; }
+  .gantt .gl b { display: block; font-size: 26px; letter-spacing: -.02em; }
+  .gantt .gl small { display: block; font-size: 15px; color: var(--ink-3); line-height: 1.45; margin-top: 4px; }
+  .gantt .gt { position: relative; height: 62px; border-radius: 10px; background: var(--card); }
+  .gantt .seg { position: absolute; top: 24px; height: 26px; border-radius: 6px; transform: scaleX(0); transform-origin: left; transition: transform .9s var(--ease); }
+  .gantt .seg.pre { background: repeating-linear-gradient(-45deg, var(--c) 0 5px, transparent 5px 10px); opacity: .75; }
+  .gantt .seg.ga { background: var(--c); }
+  .is-active .gantt .seg { transform: none; transition-delay: var(--sd, .8s); }
+  .gantt .mk { position: absolute; top: 2px; font: 700 13.5px "JetBrains Mono", "Pretendard Variable", monospace; color: var(--ink-2); white-space: nowrap; transform: translateX(-2px); opacity: 0; transition: opacity .4s; }
+  .gantt .mk.r { transform: translateX(-100%); }
+  .is-active .gantt .mk { opacity: 1; transition-delay: var(--sd, 1s); }
+  .gantt .ticks { position: relative; height: 22px; grid-column: 2; }
+  .gantt .ticks span { position: absolute; top: 0; transform: translateX(-50%); font: 500 13px "JetBrains Mono"; color: var(--ink-3); }
+
+  /* ── 14 model panels ── */
+  .panels { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px 22px; margin-top: 22px; }
+  .panels .card { padding: 18px 22px 20px; }
+  .panels .card h3 { font-size: 20px; display: flex; justify-content: space-between; align-items: baseline; gap: 10px; margin-bottom: 12px; }
+  .panels .card h3 small { font: 500 14px "Pretendard Variable"; color: var(--ink-3); letter-spacing: 0; }
+  .panels .hbars { gap: 7px; }
+  .panels .hbar { --lw: 150px; --vw: 120px; --bh: 18px; font-size: 15.5px; }
+  .panels .hbar .v { font-size: 15.5px; }
+
+  /* ── 15 price toggle ── */
+  .ptog { display: inline-flex; padding: 4px; border-radius: 999px; background: var(--card-2); border: 1px solid var(--line); gap: 4px; }
+  .ptog button { appearance: none; border: 0; background: transparent; color: var(--ink-2); font: 600 16px "Pretendard Variable", sans-serif; padding: 8px 16px; border-radius: 999px; cursor: pointer; }
+  .ptog button[aria-pressed="true"] { background: var(--gold); color: #1b1606; }
+  .pchart .hbar { --lw: 170px; --vw: 92px; --bh: 20px; font-size: 16px; }
+  .pchart .hbar .tr i { width: 0; transition: width .9s var(--ease); }
+  .is-active .pchart .hbar .tr i { width: var(--w0); transition-delay: 0s; }
+  .is-active .pchart.after .hbar .tr i { width: var(--w1); }
+  .pchart .v1, .pchart.after .v0 { display: none; }
+  .pchart.after .v1 { display: inline; }
+  .pchart.after .hbar.dbl .v { color: #ff8a63; }
+  .pchart .grp { font-size: 17px; font-weight: 700; color: var(--ink); margin: 12px 0 6px; display: flex; align-items: center; gap: 10px; }
+  .pchart .grp:first-child { margin-top: 0; }
+  .pchart .grp i { width: 12px; height: 12px; border-radius: 3px; background: var(--c); }
+  .vlist { margin: 10px 0 0; padding: 0; list-style: none; font-size: 16px; line-height: 1.45; color: var(--ink-2); }
+  .vlist li { display: flex; justify-content: space-between; gap: 12px; padding: 6px 0; border-bottom: 1px dashed var(--line); }
+  .vlist li span:last-child { text-align: right; color: var(--ink); font-family: "JetBrains Mono", "Pretendard Variable", monospace; font-size: 15px; }
+
+  /* ── 16 credibility gauge ── */
+  .gauge { position: relative; height: 22px; border-radius: 11px; background: linear-gradient(90deg, rgba(240,84,42,.7), rgba(213,168,68,.7) 50%, rgba(76,195,138,.7)); margin: 18px 0 8px; }
+  .gauge .needle { position: absolute; top: -8px; bottom: -8px; width: 4px; border-radius: 2px; background: var(--ink); left: 0; transition: left 1.6s var(--ease); box-shadow: 0 0 0 3px rgba(12,21,36,.7); }
+  .is-active .gauge .needle { left: 33%; transition-delay: 1.4s; }
+  .is-active .gauge.low .needle { left: 16%; }
+  .gauge .zone { position: absolute; top: 0; bottom: 0; left: 18%; width: 30%; border: 2px solid var(--ink); border-radius: 11px; opacity: 0; transition: opacity .5s; }
+  .is-active .gauge .zone { opacity: .9; transition-delay: 2.6s; }
+  .gscale { display: flex; justify-content: space-between; font-size: 14px; color: var(--ink-3); }
+
+  /* ── 17 small models ── */
+  .sm-wrap { display: grid; grid-template-columns: minmax(0, 1fr) 60px minmax(0, 1fr); gap: 14px; align-items: stretch; margin-top: 26px; }
+  .sm-wrap .arr { display: grid; place-items: center; font-size: 40px; color: var(--gold); }
+  .sm-wrap .hbar { --lw: 170px; --vw: 140px; --bh: 26px; font-size: 18px; }
+  .sm-wrap .hbar .v { font-size: 18px; }
+  .ttab { display: grid; grid-template-columns: 200px repeat(3, minmax(0, 1fr)); margin-top: 20px; border-radius: 16px; overflow: hidden; border: 1px solid var(--line); }
+  .ttab > div { padding: 11px 16px; font-size: 16.5px; line-height: 1.4; color: var(--ink-2); border-bottom: 1px solid var(--line); background: var(--card); }
+  .ttab > div.h { font-weight: 700; color: var(--ink); background: var(--card-2); }
+  .ttab > div.rh { color: var(--ink-3); font-weight: 600; }
+  .ttab > div:nth-last-child(-n+4) { border-bottom: 0; }
+
+  /* ── 20 projects diagram ── */
+  .pj-wrap { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: 30px; margin-top: 22px; align-items: start; }
+  .pj-svg { width: 100%; height: auto; display: block; }
+  .pj-svg text { fill: #f3efe4; font-family: "Pretendard Variable", sans-serif; }
+  .pj-svg text.cmd { fill: var(--gold); font-family: "JetBrains Mono", monospace; font-weight: 700; }
+  .pj-svg .node rect.box { fill: rgba(243,239,228,.05); stroke: rgba(243,239,228,.22); stroke-width: 1.5; }
+  .pj-svg .coord rect.box { fill: rgba(213,168,68,.14); stroke: rgba(213,168,68,.7); }
+  .pj-svg .path { fill: none; stroke: rgba(243,239,228,.2); stroke-width: 2; stroke-dasharray: 6 8; }
+  .pj-svg .pkt { fill: var(--gold); } .pj-svg .pkt.up { fill: var(--blue); }
+  .pj-svg .pbg { fill: rgba(243,239,228,.1); } .pj-svg .pfill { fill: var(--green); }
+  .pj-svg .bub rect { fill: rgba(106,168,255,.14); stroke: rgba(106,168,255,.55); }
+  .upd { display: flex; flex-direction: column; gap: 12px; }
+  .upd .card { padding: 16px 20px; }
+  .upd .card h3 { font-size: 20px; }
+  .upd .card p { font-size: 16px; margin-top: 6px; }
+  .upd code, .card code { font: 600 15px "JetBrains Mono", monospace; color: var(--gold); background: rgba(213,168,68,.12); padding: 1px 6px; border-radius: 6px; }
+
+  /* ── 21 usage drain ── */
+  .drain { display: grid; grid-template-columns: 180px minmax(0, 1fr) 120px; gap: 16px; align-items: center; font-size: 19px; color: var(--ink-2); margin-top: 18px; }
+  .drain .tank { height: 34px; border-radius: 10px; background: var(--card-2); overflow: hidden; position: relative; }
+  .drain .tank i { position: absolute; inset: 0; right: auto; width: 100%; border-radius: inherit; background: linear-gradient(90deg, var(--green), #8be3b5); transition: width 4s linear; }
+  .is-active .drain .t1 i { width: 80%; transition-delay: 1.2s; }
+  .is-active .drain .t5 i { width: 0%; transition-delay: 1.2s; background: linear-gradient(90deg, var(--coral), #ff9b7c); }
+  .drain .thr { display: flex; gap: 6px; }
+  .drain .thr i { width: 18px; height: 18px; border-radius: 5px; background: var(--blue); }
+  .drain .lab { font: 700 18px "JetBrains Mono", "Pretendard Variable", monospace; color: var(--ink); text-align: right; }
+
+  /* ── 22 wallet flow ── */
+  .wflow { display: grid; grid-template-columns: minmax(0, 1fr) 46px minmax(0, 1fr) 46px minmax(0, 1fr) 46px minmax(0, 1fr); align-items: stretch; margin-top: 28px; }
+  .wstep { background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: 18px 20px; transition: border-color .35s, background .35s, box-shadow .35s; }
+  .wstep .ic { font-size: 28px; }
+  .wstep h3 { font-size: 21px; margin-top: 8px; }
+  .wstep p { margin: 6px 0 0; font-size: 16px; line-height: 1.5; color: var(--ink-2); }
+  .wstep .tok { font: 600 14px "JetBrains Mono", monospace; color: var(--gold); margin-top: 8px; display: inline-block; padding: 2px 8px; border-radius: 6px; background: rgba(213,168,68,.12); }
+  .wstep.on { border-color: rgba(213,168,68,.75); background: rgba(213,168,68,.12); box-shadow: 0 20px 50px -28px rgba(213,168,68,.8); }
+  .wflow .ar { display: grid; place-items: center; color: var(--ink-3); font-size: 26px; transition: color .3s; }
+  .wflow .ar.on { color: var(--gold); }
+  .vault { display: flex; align-items: center; gap: 18px; margin-top: 18px; padding: 14px 22px; border-radius: 16px; border: 1px dashed rgba(76,195,138,.55); background: rgba(76,195,138,.06); font-size: 18px; color: var(--ink-2); }
+  .vault .cn { font: 700 20px "JetBrains Mono", monospace; color: var(--ink); letter-spacing: .06em; position: relative; white-space: nowrap; }
+  .vault .cn::after { content: ""; position: absolute; left: -4px; right: -4px; top: 50%; height: 3px; background: var(--green); transform: scaleX(0); transform-origin: left; transition: transform .7s var(--ease); }
+  .is-active .vault .cn::after { transform: scaleX(1); transition-delay: 1.6s; }
+  .vault b { color: var(--green); }
+  .conds { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+  .conds .chip { font-size: 15.5px; padding: 6px 12px; }
+
+  /* ── 23 delegation risk ── */
+  .risk { display: grid; grid-template-columns: minmax(0, 1fr) 60px minmax(0, 1fr); align-items: center; gap: 10px; margin-top: 12px; }
+  .risk .st { border-radius: 14px; padding: 12px 16px; font-size: 16px; line-height: 1.45; color: var(--ink-2); background: var(--card-2); }
+  .risk .st b { display: block; color: var(--ink); font-size: 17px; }
+  .risk .st.hi { border: 1.5px solid rgba(240,84,42,.6); background: rgba(240,84,42,.08); }
+  .risk .ar { text-align: center; color: #ff8a63; font-size: 26px; }
+
+  /* ── 24 IPO stack ── */
+  .stack { position: relative; height: 84px; border-radius: 14px; background: var(--card); margin-top: 52px; display: flex; overflow: visible; }
+  .stack .sg { position: relative; height: 100%; width: 0; transition: width 1.2s var(--ease); display: flex; align-items: center; padding-left: 16px; overflow: hidden; white-space: nowrap; font-size: 19px; font-weight: 700; color: #0c1524; }
+  .stack .sg:first-child { border-radius: 14px 0 0 14px; }
+  .stack .sg.pub { background: var(--gold); }
+  .stack .sg.pub .rng { position: absolute; right: 0; top: 0; bottom: 0; width: var(--rw); background: repeating-linear-gradient(-45deg, rgba(12,21,36,.35) 0 5px, transparent 5px 10px); }
+  .stack .sg.prv { background: var(--blue); border-radius: 0 14px 14px 0; }
+  .is-active .stack .sg.pub { width: var(--w); transition-delay: .7s; }
+  .is-active .stack .sg.prv { width: var(--w); transition-delay: 1.7s; }
+  .stack .mark { position: absolute; top: -40px; bottom: -10px; left: var(--x); border-left: 2px dashed var(--ink); opacity: 0; transition: opacity .4s; }
+  .stack .mark span { position: absolute; top: 0; left: 10px; white-space: nowrap; font-size: 17px; font-weight: 700; color: var(--ink); }
+  .is-active .stack .mark { opacity: 1; transition-delay: 2.9s; }
+  .sticks { position: relative; height: 22px; margin-top: 10px; }
+  .sticks span { position: absolute; transform: translateX(-50%); font: 500 13px "JetBrains Mono"; color: var(--ink-3); }
+  .sticks span:first-child { transform: none; }
+  .ipo-head { align-items: center; }
+  html.portrait .ipo-head { align-items: flex-start; }
+  .ipo-sum { display: flex; align-items: baseline; gap: 16px; }
+  .ipo-sum .kpi { font-size: 76px; color: var(--gold); }
+
+  /* ── 25 demand blocks ── */
+  .demand { display: flex; gap: 8px; align-items: flex-end; margin-top: 12px; }
+  .demand i { width: 34px; border-radius: 6px 6px 0 0; background: var(--card-2); height: 26px; transition: background .3s, height .5s var(--ease); }
+  .demand i.base { background: var(--ink-3); }
+  .is-active .demand i.x { background: var(--gold); height: 52px; transition-delay: calc(1.4s + var(--k) * .18s); }
+
+  /* ── 26 S-1 ── */
+  .s1fin { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 24px; margin-top: 22px; }
+  .s1fin .vbars { --vh: 200px; }
+  .s1fin .kpis { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+  .s1fin .kpis .card { padding: 16px 18px; }
+  .s1fin .kpis .kpi { font-size: 42px; }
+  .s1fin .kpis .kpi small { font-size: 20px; }
+  .s1fin .kpis p { font-size: 14.5px; margin-top: 4px; }
+  .loss { display: flex; height: 36px; border-radius: 10px; overflow: hidden; background: var(--card-2); margin-top: 10px; }
+  .loss i { width: 0; height: 100%; transition: width 1.2s var(--ease); display: block; }
+  .loss i.nc { background: repeating-linear-gradient(-45deg, rgba(240,84,42,.75) 0 6px, rgba(240,84,42,.4) 6px 12px); }
+  .loss i.rest { background: var(--coral); }
+  .is-active .loss i { width: var(--w); transition-delay: var(--ld, 1.2s); }
+
+  /* ── 28 compare ── */
+  .cmp { display: grid; grid-template-columns: 130px minmax(0, 1fr) minmax(0, 1fr); gap: 8px 12px; margin-top: 12px; align-items: center; }
+  .cmp .h { font-size: 18px; font-weight: 700; padding: 10px 14px; border-radius: 12px; background: var(--card-2); }
+  .cmp .h.ant { color: var(--c-ant); border: 1px solid rgba(208,138,106,.45); }
+  .cmp .rh { font-size: 15px; color: var(--ink-3); font-weight: 600; }
+  .cmp .c { font-size: 16px; line-height: 1.4; color: var(--ink-2); padding: 8px 4px; border-top: 1px dashed var(--line); }
+  .cmp .c b { color: var(--ink); }
+  .cmp .mbar { height: 12px; border-radius: 6px; background: var(--card-2); margin-top: 6px; overflow: hidden; }
+  .cmp .mbar i { display: block; height: 100%; width: 0; background: var(--c, var(--ink-3)); border-radius: inherit; transition: width 1.1s var(--ease); }
+  .is-active .cmp .mbar i { width: var(--w); transition-delay: calc(.8s + var(--k, 0) * .15s); }
+
+  /* ── summary ── */
+  .concl { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; margin-top: 32px; }
+  .concl .card { display: flex; flex-direction: column; gap: 8px; padding: 20px 22px; }
+  .concl .ic { font-size: 26px; }
+  .concl h3 { font-size: 21px; line-height: 1.3; }
+  .concl p { margin: 0; font-size: 15.5px; line-height: 1.5; color: var(--ink-2); }
+  .concl .cal { grid-column: span 1; }
+  .cal ol { list-style: none; margin: 4px 0 0; padding: 0; display: flex; flex-direction: column; gap: 6px; font-size: 15px; color: var(--ink-2); }
+  .cal li b { font: 700 14px "JetBrains Mono"; color: var(--gold); margin-right: 8px; }
+
+  /* ── spot illustrations (inline SVG, decorative) ── */
+  .art { position: absolute; pointer-events: none; z-index: 0; }
+  .art svg { display: block; width: 100%; height: 100%; }
+  .art .k, .chain-svg .pic { fill: none; stroke: rgba(243,239,228,.42); stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+  .art .k2 { fill: none; stroke: rgba(243,239,228,.24); stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+  .art .dash { stroke-dasharray: 2 7; }
+  .art .fc { fill: url(#sfPaper); }
+  .art .sg, .chain-svg .pic.sg { stroke: var(--gold); } .art .sc { stroke: var(--coral); } .art .sb { stroke: var(--blue); } .art .sgr, .chain-svg .pic.sgr { stroke: var(--green); } .art .sv { stroke: var(--violet); }
+  .art .sg, .art .sc, .art .sb, .art .sgr, .art .sv, .chain-svg .pic.sg, .chain-svg .pic.sgr { stroke-opacity: .75; }
+  .art .sg.fc, .chain-svg .pic.sg.fc { fill: url(#sfTintGold); } .art .sb.fc { fill: url(#sfTintBlue); } .art .sc.fc { fill: url(#sfTintCoral); } .art .sgr.fc, .chain-svg .pic.sgr.fc { fill: url(#sfTintGreen); } .chain-svg .pic.fc { fill: url(#sfPaper); }
+  .art .glow, .chain-svg .glow { filter: url(#sfGlow); }
+  .art .fg { fill: var(--gold); } .art .fco { fill: var(--coral); } .art .fgr, .chain-svg .fgr { fill: var(--green); } .art .fbg { fill: var(--bg); }
+  .art text { font-family: "Pretendard Variable", Pretendard, sans-serif; fill: rgba(243,239,228,.5); }
+  .art text.mono { font-family: "JetBrains Mono", "Pretendard Variable", monospace; }
+  .art .a, .chain-svg .a { transform-box: fill-box; transform-origin: center; }
+  .is-active .art .bob { animation: artBob 6.4s ease-in-out infinite; }
+  .is-active .art .swing { transform-origin: 50% 0; animation: artSwing 4s ease-in-out infinite; }
+  .is-active .art .blink, .is-active .chain-svg .blink { animation: artBlink 3s ease-in-out infinite; }
+  .is-active .art .pulse { animation: artPulse 3.6s ease-in-out infinite; }
+  .is-active .art .spin { animation: artSpin 32s linear infinite; }
+  .is-active .art .halo { animation: artHalo 4.8s ease-in-out infinite; }
+  @keyframes artBob { 50% { transform: translateY(-4px); } }
+  @keyframes artSwing { 0%, 100% { transform: rotate(-5deg); } 50% { transform: rotate(5deg); } }
+  @keyframes artBlink { 50% { opacity: .35; } }
+  @keyframes artPulse { 0%, 100% { opacity: .45; } 50% { opacity: .9; } }
+  @keyframes artHalo { 0%, 100% { opacity: .7; } 50% { opacity: 1; } }
+  @keyframes artSpin { to { transform: rotate(360deg); } }
+  /* 01 title */
+  .art-title { left: 1090px; top: 150px; width: 400px; height: 400px; }
+  /* 04 exam sheet */
+  .art-exam { left: 110px; top: 594px; width: 1380px; height: 148px; }
+  .art-exam .cone { transform-box: view-box; animation: none; }
+  .is-active .art-exam .cone.c1 { transform-origin: 70px 60px; animation: artSweep 6.8s ease-in-out infinite; }
+  .is-active .art-exam .cone.c2 { transform-origin: 170px 60px; animation: artSweep 6.8s ease-in-out -3.4s infinite; }
+  @keyframes artSweep { 0%, 100% { transform: rotate(-5deg); } 50% { transform: rotate(5deg); } }
+  .art-exam .ans { opacity: 0; }
+  .is-active .art-exam .ans { animation: artMark 8s ease-in-out infinite; animation-delay: calc(1.2s + var(--i) * .5s); }
+  @keyframes artMark { 0% { opacity: 0; } 7%, 78% { opacity: .95; } 94%, 100% { opacity: 0; } }
+  .is-active .art .run { animation: artRun 3.6s ease-in-out infinite, artArc 3.6s ease-in-out infinite; }
+  @keyframes artRun { 0% { transform: translateX(0); opacity: 0; } 16% { opacity: 1; } 84% { opacity: 1; } 100% { transform: translateX(var(--dx)); opacity: 0; } }
+  @keyframes artArc { 0%, 100% { translate: 0 0; } 50% { translate: 0 var(--dy, 0px); } }
+  /* 07 suneung */
+  .art-suneung { left: 110px; top: 614px; width: 1380px; height: 176px; }
+  .is-active .art-suneung .scan { animation: artScan 4.2s ease-in-out infinite; }
+  @keyframes artScan { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(92px); } }
+  .is-active .art-suneung .look .pupil { animation: artLook 3.2s ease-in-out infinite; }
+  @keyframes artLook { 0%, 100% { transform: translateX(-2px); } 50% { transform: translateX(2px); } }
+  /* 13 · 16 element tiles */
+  .art-tiles { right: 110px; top: 98px; display: flex; gap: 12px; }
+  .art-tiles svg { width: 92px; height: 92px; }
+  .art-kr { right: 110px; top: 100px; width: 304px; height: 88px; }
+  .is-active .art-kr .flick { animation: artFlick 4.4s ease-in-out infinite; }
+  @keyframes artFlick { 0%, 100% { opacity: .92; } 50% { opacity: .5; } }
+  /* 22 wallet */
+  .art-wallet { left: 110px; top: 598px; width: 1380px; height: 154px; }
+  .art-wallet .seq { opacity: 0; }
+  .is-active .art-wallet .p1 { animation: artP1 5.6s ease-in-out infinite, artP1y 5.6s ease-in-out infinite; }
+  .is-active .art-wallet .p2 { animation: artP2 5.6s ease-in-out infinite, artP2y 5.6s ease-in-out infinite; }
+  .is-active .art-wallet .fscan { animation: artFscan 5.6s ease-in-out infinite; }
+  .is-active .art-wallet .okm { animation: artOk 5.6s ease-in-out infinite; }
+  .is-active .art-wallet .tokglow { animation: artTok 5.6s ease-in-out infinite; }
+  @keyframes artP1y { 0%, 24%, 100% { translate: 0 0; } 14% { translate: 0 -9px; } }
+  @keyframes artP2y { 0%, 58%, 80%, 100% { translate: 0 0; } 70% { translate: 0 9px; } }
+  @keyframes artP1 { 0% { opacity: 0; transform: translateX(0); } 4% { opacity: 1; } 24% { opacity: 1; transform: translateX(104px); } 27%, 100% { opacity: 0; transform: translateX(104px); } }
+  @keyframes artFscan { 0%, 26% { opacity: 0; transform: translateY(0); } 30% { opacity: 1; } 50% { opacity: 1; transform: translateY(44px); } 54%, 100% { opacity: 0; transform: translateY(44px); } }
+  @keyframes artOk { 0%, 50% { opacity: 0; } 58%, 92% { opacity: 1; } 100% { opacity: 0; } }
+  @keyframes artP2 { 0%, 58% { opacity: 0; transform: translateX(0); } 62% { opacity: 1; } 80% { opacity: 1; transform: translateX(110px); } 83%, 100% { opacity: 0; transform: translateX(110px); } }
+  @keyframes artTok { 0%, 76% { opacity: .45; } 88% { opacity: 1; } 100% { opacity: .45; } }
+  /* 24 ticker */
+  .art-ticker { left: 110px; top: 640px; width: 1380px; height: 94px; }
+  .is-active .art-ticker .tape { animation: artTape 26s linear infinite; }
+  @keyframes artTape { to { transform: translateX(-1240px); } }
+  /* 27 lock-up */
+  .art-lock { left: 110px; top: 534px; width: 1380px; height: 196px; }
+  .art-lock .prog { transform-box: fill-box; transform-origin: left center; transform: scaleX(0); transition: transform 1.6s var(--ease); }
+  .is-active .art-lock .prog { transform: none; transition-delay: 1.2s; }
+  html.portrait .art { display: none; }
+  /* tall phones leave the title slide's upper half empty: show the title spot there */
+  @media (max-aspect-ratio: 1/2) { html.portrait .art-title { display: block; left: calc(50% - 150px); top: 120px; width: 300px; height: 300px; } }
+
+  /* ── phone held sideways: controls get their own lane under the stage ── */
+  .hud .alt { gap: 6px; display: inline-flex; align-items: center; }
+  .hud .alt .ico { font-size: 13px; }
+  html.portrait .hud .alt .lbl, html.short .hud .alt .lbl { display: none; }
+  html.portrait .hud #fsBtn { display: none; }
+  html.short .hud { bottom: max(8px, env(safe-area-inset-bottom)); gap: 6px; }
+  html.short .hud button, html.short .hud a { height: 34px; min-width: 34px; }
+  html.short .notes { bottom: 52px; }
+
+  /* ── phone held upright: 640-wide stage, one column ── */
+  html.portrait .hud { left: max(10px, env(safe-area-inset-left)); right: max(10px, env(safe-area-inset-right)); justify-content: center; gap: 6px; }
+  html.portrait .hud button, html.portrait .hud a { height: 40px; min-width: 40px; }
+  html.portrait .slide { padding: 64px 40px 140px; overflow-y: auto; overflow-x: hidden; overscroll-behavior: contain; scrollbar-width: none; justify-content: flex-start; }
+  html.portrait .slide::-webkit-scrollbar { display: none; }
+  html.portrait .s-title { justify-content: center; }
+  html.portrait .kicker { font-size: 15px; }
+  html.portrait h2 { font-size: 38px; line-height: 1.24; margin-top: 14px; }
+  html.portrait .lead { font-size: 20px; margin-top: 14px; }
+  html.portrait .body { font-size: 18px; }
+  html.portrait .small { font-size: 15px; }
+  html.portrait .chip { font-size: 15px; padding: 6px 12px; }
+  html.portrait .card { padding: 18px 20px; border-radius: 18px; }
+  html.portrait .card h3 { font-size: 21px; }
+  html.portrait .card p, html.portrait .card ul { font-size: 16px; }
+  html.portrait .row { flex-direction: column; gap: 16px; }
+  html.portrait .row > * { width: auto !important; }
+  html.portrait .cols { grid-template-columns: minmax(0, 1fr); gap: 14px; }
+  html.portrait .src { position: static; margin-top: 18px; font-size: 13px; }
+  html.portrait .gloss { font-size: 14.5px; gap: 6px 18px; padding-top: 12px; margin-top: 24px; }
+  html.portrait .gloss b { font-size: 13.5px; }
+  html.portrait .gloss span { display: block; }
+  html.portrait .slide:has(.src) .gloss { margin-bottom: 0; }
+  html.portrait .badge { font-size: 13px; padding: 4px 9px; }
+  html.portrait .ustamp { font-size: 16px; }
+  html.portrait .kpi { font-size: 50px; }
+  html.portrait .kpi small { font-size: 22px; }
+  /* title */
+  html.portrait .s-title h1 { font-size: 60px; }
+  html.portrait .s-title .lead { font-size: 20px; margin-top: 22px; }
+  html.portrait .s-title .chips { gap: 8px; margin-top: 30px; }
+  html.portrait .s-title .date { right: 40px; top: 64px; font-size: 15px; }
+  /* agenda */
+  html.portrait .agenda { grid-template-columns: minmax(0, 1fr); margin-top: 20px; }
+  html.portrait .agenda li { padding: 12px 0; gap: 14px; }
+  html.portrait .agenda .n { font-size: 16px; width: 28px; }
+  html.portrait .agenda .t { font-size: 22px; }
+  html.portrait .agenda .d { font-size: 15px; }
+  /* tldr */
+  html.portrait .tldr { grid-template-columns: minmax(0, 1fr); gap: 14px; margin-top: 22px; }
+  html.portrait .tldr ul { font-size: 16px; }
+  /* bars */
+  html.portrait .hbar { --lw: 118px; --vw: 84px; gap: 8px; font-size: 14.5px; }
+  html.portrait .hbar .v { font-size: 14px; }
+  html.portrait .vbars { gap: 8px; }
+  html.portrait .vbars .b em { font-size: 13px; }
+  html.portrait .vlab { gap: 8px; } html.portrait .vlab span { font-size: 12.5px; }
+  /* timeline */
+  html.portrait .tline { grid-template-columns: minmax(0, 1fr); gap: 14px; padding-top: 0; padding-left: 34px; margin-top: 24px; }
+  html.portrait .tline .axis { left: 9px; right: auto; top: 6px; bottom: 6px; width: 3px; height: auto; }
+  html.portrait .tline .axis i { transform: scaleY(0); transform-origin: top; }
+  html.portrait .is-active .tline .axis i { transform: none; }
+  html.portrait .tline .ev .dot { left: -34px; top: 0; }
+  html.portrait .tline .when { font-size: 16px; }
+  html.portrait .tline .what { font-size: 16.5px; }
+  html.portrait .tline .q { font-size: 15px; }
+  /* scores */
+  html.portrait .scores { gap: 26px; }
+  /* measures */
+  html.portrait .measures { grid-template-columns: minmax(0, 1fr); gap: 8px; }
+  html.portrait .measures .m { font-size: 15.5px; padding: 12px 14px; }
+  /* gantt */
+  html.portrait .gantt { grid-template-columns: minmax(0, 1fr); gap: 6px; margin-top: 20px; }
+  html.portrait .gantt .gl { margin-top: 10px; }
+  html.portrait .gantt .gl b { font-size: 21px; }
+  html.portrait .gantt .gl small { font-size: 13.5px; }
+  html.portrait .gantt .ticks { grid-column: 1; }
+  html.portrait .gantt .mk { font-size: 11.5px; }
+  /* panels */
+  html.portrait .panels { grid-template-columns: minmax(0, 1fr); gap: 12px; margin-top: 16px; }
+  html.portrait .panels .hbar { --lw: 112px; --vw: 104px; font-size: 13.5px; }
+  html.portrait .panels .hbar .v { font-size: 13px; }
+  html.portrait .panels .card h3 { font-size: 17px; flex-wrap: wrap; }
+  html.portrait .pchart .hbar { --lw: 104px; --vw: 76px; font-size: 14px; }
+  html.portrait .vlist { font-size: 14.5px; }
+  html.portrait .vlist li span:last-child { font-size: 13px; }
+  /* small models */
+  html.portrait .sm-wrap { grid-template-columns: minmax(0, 1fr); gap: 8px; margin-top: 18px; }
+  html.portrait .sm-wrap .arr { transform: rotate(90deg); font-size: 30px; height: 40px; width: 40px; margin: 0 auto; }
+  html.portrait .sm-wrap .hbar { --lw: 120px; --vw: 110px; font-size: 15px; }
+  html.portrait .sm-wrap .hbar .v { font-size: 14.5px; }
+  html.portrait .ttab { grid-template-columns: 82px repeat(3, minmax(0, 1fr)); }
+  html.portrait .ttab > div { padding: 8px 8px; font-size: 13px; }
+  /* projects */
+  html.portrait .pj-wrap { grid-template-columns: minmax(0, 1fr); gap: 16px; margin-top: 16px; }
+  html.portrait .upd .card h3 { font-size: 18px; }
+  html.portrait .upd .card p { font-size: 15px; }
+  html.portrait .drain { grid-template-columns: 96px minmax(0, 1fr) 70px; gap: 10px; font-size: 15px; }
+  html.portrait .drain .thr i { width: 12px; height: 12px; }
+  html.portrait .drain .lab { font-size: 14px; }
+  /* wallet */
+  html.portrait .wflow { grid-template-columns: minmax(0, 1fr); margin-top: 18px; }
+  html.portrait .wflow .ar { height: 30px; width: 30px; margin: 0 auto; transform: rotate(90deg); font-size: 22px; }
+  html.portrait .wstep { padding: 14px 16px; }
+  html.portrait .wstep h3 { font-size: 18px; }
+  html.portrait .wstep p { font-size: 15px; }
+  html.portrait .vault { flex-direction: column; align-items: flex-start; gap: 6px; font-size: 15.5px; }
+  html.portrait .vault .cn { font-size: 16px; }
+  html.portrait .risk { grid-template-columns: minmax(0, 1fr); }
+  html.portrait .risk .ar { transform: rotate(90deg); width: 30px; margin: 0 auto; }
+  /* ipo */
+  html.portrait .stack { height: 64px; margin-top: 56px; }
+  html.portrait .stack .sg { font-size: 13.5px; padding-left: 8px; }
+  html.portrait .stack .mark span { font-size: 14px; left: auto; right: 8px; }
+  html.portrait .ipo-sum { flex-wrap: wrap; }
+  html.portrait .ipo-sum .kpi { font-size: 56px; }
+  html.portrait .demand i { width: 24px; }
+  html.portrait .s1fin { grid-template-columns: minmax(0, 1fr); gap: 16px; }
+  html.portrait .s1fin .kpis .kpi { font-size: 34px; }
+  html.portrait .cmp { grid-template-columns: 74px minmax(0, 1fr) minmax(0, 1fr); gap: 6px 8px; }
+  html.portrait .cmp .h { font-size: 15px; padding: 8px 10px; }
+  html.portrait .cmp .rh { font-size: 13px; }
+  html.portrait .cmp .c { font-size: 14px; }
+  /* summary */
+  html.portrait .concl { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin-top: 20px; }
+  html.portrait .concl .card { padding: 14px 16px; }
+  html.portrait .concl h3 { font-size: 17px; }
+  html.portrait .concl p, html.portrait .cal ol { font-size: 14px; }
+  html.portrait .concl .cal { grid-column: 1 / -1; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .slide, .slide [data-a], .slide.is-active [data-a] { animation: none !important; transition: none !important; opacity: 1; transform: none; }
+    .slide:not(.is-active) { opacity: 0; }
+    *, *::before, *::after { animation-duration: .001s !important; animation-delay: 0s !important; transition-duration: .001s !important; transition-delay: 0s !important; }
+    .art *, .chain-svg .pic, .chain-svg .blink { animation: none !important; }
+    .art .ans, .art .seq.okm { opacity: 1; }
+    .art .run, .art .seq { translate: none; }
+  }
+
+  /* ── chapter openers with photos ── */
+  .ph { position: absolute; inset: -4%; background-size: cover; background-position: center; transform: scale(1.04); }
+  .is-active .ph { animation: phDrift 22s ease-in-out infinite alternate; }
+  .ph.soft { filter: blur(14px) saturate(1.1) brightness(.75); inset: -8%; }
+  @keyframes phDrift { 0% { transform: scale(1.04) translate(0, 0); } 50% { transform: scale(1.12) translate(-2%, 1%); } 100% { transform: scale(1.08) translate(2%, -1.5%); } }
+  @media (prefers-reduced-motion: reduce) { .is-active .ph { animation: none; } }
+  .ph-shade { position: absolute; inset: 0; background: linear-gradient(90deg, rgba(12,21,36,.94) 0%, rgba(12,21,36,.72) 42%, rgba(12,21,36,.25) 100%), linear-gradient(0deg, rgba(12,21,36,.85) 0%, rgba(12,21,36,0) 45%); }
+  .s-photo { justify-content: flex-end; padding-bottom: 150px; }
+  .s-photo > *:not(.ph):not(.ph-shade) { position: relative; z-index: 1; }
+  .s-photo .bign { font: 800 150px/1 Inter, sans-serif; color: rgba(213,168,68,.9); letter-spacing: -.04em; margin-bottom: 8px; }
+  .s-photo h2 { font-size: 72px; margin: 0; }
+  .s-photo .sub { font-size: 24px; color: var(--ink-2); margin-top: 18px; max-width: 900px; line-height: 1.5; }
+  .credit { position: absolute !important; left: 110px; bottom: 40px; font-size: 13px; color: rgba(243,239,228,.55); z-index: 2; max-width: 900px; }
+  .ph-card { position: absolute !important; right: 110px; top: 150px; width: 640px; margin: 0; border-radius: 22px; overflow: hidden; border: 1px solid rgba(243,239,228,.18); box-shadow: 0 30px 80px rgba(0,0,0,.5); transform: rotate(1.5deg); }
+  .ph-card img { display: block; width: 100%; max-height: 560px; object-fit: cover; object-position: top; }
+  .s-title .ph-title { position: absolute; right: 0; top: 0; bottom: 0; width: 62%; background-size: cover; background-position: center; -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 45%); mask-image: linear-gradient(90deg, transparent 0%, #000 45%); opacity: .75; }
+  .s-title .art-title { display: none !important; }
+  .ignite-what { margin-top: 10px; padding: 10px 14px; border-radius: 12px; background: rgba(243,239,228,.05); border: 1px solid var(--line); font-size: 15.5px; line-height: 1.5; color: var(--ink-2); }
+  .ignite-what b { color: var(--ink); }
+  /* ── 02 Microsoft 365 outage ── */
+  .ddc { width: 100%; height: auto; display: block; margin-top: 6px; overflow: visible; }
+  .ddc text { fill: var(--ink-2); font-family: "Pretendard Variable", Pretendard, sans-serif; }
+  .ddc text.mono { font-family: "JetBrains Mono", "Pretendard Variable", monospace; }
+  .ddc text.gold { fill: var(--gold); font-weight: 700; } .ddc text.cor { fill: #ff8a63; font-weight: 700; }
+  .ddc .grid { stroke: rgba(243,239,228,.08); } .ddc .axis { stroke: rgba(243,239,228,.3); }
+  .ddc .start { stroke: var(--coral); stroke-width: 2; stroke-dasharray: 5 5; }
+  .ddc .peak { stroke: var(--gold); stroke-width: 2; stroke-dasharray: 7 6; opacity: 0; }
+  .is-active .ddc .peak { opacity: .9; transition: opacity .6s 3s; }
+  .ddc .ln { fill: none; stroke: var(--coral); stroke-width: 3.5; stroke-linejoin: round; stroke-linecap: round; stroke-dasharray: 1; stroke-dashoffset: 1; }
+  .is-active .ddc .ln { stroke-dashoffset: 0; transition: stroke-dashoffset 1.8s var(--ease) 1s; }
+  .ddc .area { fill: rgba(240,84,42,.12); opacity: 0; } .is-active .ddc .area { opacity: 1; transition: opacity .8s 2.4s; }
+  .ddc .pt { opacity: 0; } .ddc .pt circle { fill: var(--coral); stroke: var(--bg); stroke-width: 2; } .ddc .pt text { fill: var(--ink); }
+  .is-active .ddc .pt { opacity: 1; transition: opacity .4s calc(1.1s + var(--k) * .42s); }
+  .inc { display: grid; gap: 10px; margin-top: 10px; }
+  .inc .it { display: grid; grid-template-columns: 128px minmax(0, 1fr); gap: 12px; align-items: baseline; font-size: 16.5px; color: var(--ink-2); line-height: 1.45; }
+  .inc .id { font: 700 16.5px "JetBrains Mono", monospace; color: var(--gold); }
+  .inc b { color: var(--ink); } .kst { color: var(--ink-3); font-size: 14.5px; white-space: nowrap; }
+  .svc { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: 14px; margin-top: 10px; }
+  .svc .col { display: flex; flex-wrap: wrap; gap: 6px; align-content: flex-start; }
+  .svc .svh { width: 100%; font-size: 15px; font-weight: 700; margin-bottom: 2px; }
+  .svc .bad .svh { color: #ff8a63; } .svc .ok .svh { color: var(--green); }
+  .svc span { font-size: 14.5px; line-height: 1.3; padding: 3px 9px; border-radius: 8px; color: var(--ink); opacity: 0; transform: scale(.9); transition: opacity .3s, transform .3s var(--ease); }
+  .svc .bad span { background: rgba(240,84,42,.12); border: 1px solid rgba(240,84,42,.4); }
+  .svc .ok span { background: rgba(76,195,138,.12); border: 1px solid rgba(76,195,138,.45); }
+  .is-active .svc span { opacity: 1; transform: none; transition-delay: calc(1.1s + var(--k) * .08s); }
+  .od-wrap { display: grid; grid-template-columns: minmax(0, 1fr) 520px; gap: 26px; margin-top: 16px; align-items: start; }
+  .od { width: 100%; height: auto; display: block; }
+  .od text { fill: #f3efe4; font-family: "Pretendard Variable", Pretendard, sans-serif; }
+  .od text.cap { fill: var(--gold); }
+  .od .arr path { stroke: rgba(106,168,255,.55); stroke-width: 2; stroke-dasharray: 3 4; fill: none; }
+  .is-active .od .arr path { animation: odFlow 1s linear infinite; }
+  @keyframes odFlow { to { stroke-dashoffset: -14; } }
+  .od .hc rect { fill: rgba(213,168,68,.1); stroke: rgba(213,168,68,.7); stroke-width: 1.5; }
+  .od .hc .hcp { fill: none; stroke: var(--gold); stroke-width: 2.4; stroke-linejoin: round; stroke-linecap: round; }
+  .od .hc.bad rect { fill: rgba(240,84,42,.12); stroke: var(--coral); } .od .hc.bad .hcp { stroke: var(--coral); }
+  .od .hc.alt rect { fill: rgba(76,195,138,.12); stroke: var(--green); } .od .hc.alt .hcp { stroke: var(--green); }
+  .od .beam { stroke: var(--gold); stroke-width: 2; stroke-dasharray: 4 5; opacity: 0; transition: opacity .15s; }
+  .od .beam.on { opacity: .9; } .od .beam.fail { stroke: var(--coral); }
+  .od .srv { transition: transform .5s var(--ease), opacity .5s; }
+  .od .srv .box { fill: rgba(76,195,138,.1); stroke: rgba(76,195,138,.7); stroke-width: 1.5; transition: fill .35s, stroke .35s; }
+  .od .srv .led { fill: var(--green); transition: fill .3s; }
+  .od .srv .slot { fill: rgba(243,239,228,.1); }
+  .od .srv .ld { fill: var(--green); transition: width .5s var(--ease), fill .3s; }
+  .od .srv .ld.mid { fill: var(--gold); } .od .srv .ld.hi { fill: var(--coral); }
+  .od .srv.hot .box { fill: rgba(240,84,42,.2); stroke: var(--coral); } .od .srv.hot .led { fill: var(--coral); }
+  .od .srv.down { opacity: .3; transform: translateY(9px); }
+  .od .srv.down .box { fill: rgba(240,84,42,.06); stroke: var(--coral); stroke-dasharray: 5 4; } .od .srv.down .led { fill: var(--coral); }
+  .phs { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; margin-top: 8px; }
+  .phs span { font-size: 14.5px; line-height: 1.4; color: var(--ink-3); padding: 8px 10px; border-radius: 10px; border: 1px solid var(--line); background: var(--card); transition: color .3s, border-color .3s, background .3s; }
+  .phs span b { display: block; font: 700 13px "JetBrains Mono", monospace; color: var(--ink-3); }
+  .phs span.on { color: var(--ink); border-color: rgba(213,168,68,.7); background: rgba(213,168,68,.12); }
+  .phs span.on b { color: var(--gold); }
+  .chk { list-style: none; margin: 10px 0 0; padding: 0; display: flex; flex-direction: column; gap: 7px; font-size: 16.5px; line-height: 1.45; color: var(--ink-2); }
+  .chk li { display: grid; grid-template-columns: 18px minmax(0, 1fr); gap: 10px; }
+  .chk li::before { content: ""; width: 14px; height: 14px; margin-top: 4px; border-radius: 4px; border: 2px solid var(--gold); }
+  .chk b { color: var(--ink); }
+  .sla { margin-top: 26px; }
+  .sla-track { position: relative; }
+  .sla-bar { display: flex; height: 46px; border-radius: 10px; overflow: hidden; }
+  .sla-bar i { height: 100%; display: grid; place-items: center; font: 700 15px "JetBrains Mono", monospace; font-style: normal; color: #0c1524; }
+  .sla-bar .z0 { background: rgba(243,239,228,.25); } .sla-bar .z25 { background: rgba(213,168,68,.6); } .sla-bar .z50 { background: rgba(240,140,60,.8); } .sla-bar .z100 { background: var(--coral); }
+  .sla-needle { position: absolute; top: -9px; bottom: -9px; width: 4px; margin-left: -2px; border-radius: 2px; background: var(--ink); box-shadow: 0 0 0 3px rgba(12,21,36,.75); transition: left .9s var(--ease); }
+  .sla-ticks { position: relative; height: 40px; margin-top: 10px; }
+  .sla-ticks span { position: absolute; top: 0; transform: translateX(-50%); font: 500 13px/1.3 "JetBrains Mono", "Pretendard Variable", monospace; color: var(--ink-3); text-align: center; white-space: nowrap; }
+  .sla-ticks span:first-child { transform: none; } .sla-ticks span:last-child { transform: translateX(-100%); }
+  .sla-ticks small { display: block; color: var(--ink-2); font-size: 12.5px; }
+  .sla-out { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin-top: 12px; }
+  .sla-out div { background: var(--card-2); border-radius: 12px; padding: 10px 14px; }
+  .sla-out span { display: block; font-size: 13.5px; color: var(--ink-3); }
+  .sla-out b { font: 800 30px/1.15 Inter, sans-serif; letter-spacing: -.02em; color: var(--ink); font-variant-numeric: tabular-nums; }
+  .sla-out b.cr { color: var(--gold); }
+  .cal .ignite-what { margin-top: 8px; padding: 8px 10px; font-size: 13px; line-height: 1.45; }
+  html.portrait .inc .it { grid-template-columns: minmax(0, 1fr); gap: 2px; }
+  html.portrait .svc { grid-template-columns: minmax(0, 1fr); }
+  html.portrait .od-wrap { grid-template-columns: minmax(0, 1fr); gap: 14px; }
+  html.portrait .phs { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  html.portrait .phs span { font-size: 13.5px; }
+  html.portrait .chk { font-size: 15px; }
+  html.portrait .sla-out b { font-size: 22px; }
+  html.portrait .sla-out { gap: 6px; } html.portrait .sla-out div { padding: 8px 10px; }
+  html.portrait .s-photo { padding-bottom: 120px; }
+  html.portrait .s-photo .bign { font-size: 96px; } html.portrait .s-photo h2 { font-size: 48px; } html.portrait .s-photo .sub { font-size: 18px; }
+  html.portrait .slide.s-photo { justify-content: flex-end; padding-bottom: 170px; }
+  html.portrait .ph-card { left: 40px; right: 40px; top: 110px; width: auto; transform: none; } html.portrait .credit { left: 24px; bottom: 96px; font-size: 11px; max-width: 80%; }
+  html.portrait .s-title .ph-title { width: 100%; opacity: .35; -webkit-mask-image: linear-gradient(180deg, #000 0%, transparent 70%); mask-image: linear-gradient(180deg, #000 0%, transparent 70%); }
+
+  /* AA index screenshot with Gemini columns highlighted */
+  .aa-shot { position: relative; margin: 0; border-radius: 18px; overflow: hidden; background: #fff; border: 1px solid rgba(243,239,228,.18); box-shadow: 0 24px 60px rgba(0,0,0,.4); }
+  .aa-shot img { display: block; width: 100%; height: auto; }
+  .aa-shot svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+  .aa-shot .aa-dim { fill: rgba(12,21,36,.42); opacity: 0; transition: opacity .8s ease .9s; }
+  .aa-shot .aa-ring { fill: none; stroke: #d5a844; stroke-width: 4; opacity: 0; transition: opacity .6s ease 1.2s; }
+  .aa-shot .aa-tag rect { fill: #d5a844; } .aa-shot .aa-tag text { font: 800 17px "Pretendard Variable", Inter, sans-serif; fill: #0c1524; }
+  .aa-shot .aa-tag { opacity: 0; transition: opacity .6s ease 1.5s; }
+  .is-active .aa-shot .aa-dim, .aa-shot.in .aa-dim { opacity: 1; }
+  .is-active .aa-shot .aa-ring, .is-active .aa-shot .aa-tag, .aa-shot.in .aa-ring, .aa-shot.in .aa-tag { opacity: 1; }
+  .is-active .aa-shot .aa-ring { animation: aaPulse 2.6s ease-in-out 2s infinite; }
+  @keyframes aaPulse { 0%, 100% { stroke-opacity: 1; } 50% { stroke-opacity: .45; } }
+  @media (prefers-reduced-motion: reduce) { .aa-shot .aa-ring { animation: none !important; } }
+  .aa-grid { display: grid; grid-template-columns: minmax(0, 960px) minmax(0, 1fr); gap: 24px; margin-top: 18px; align-items: start; }
+  .aa-side .card { padding: 18px 22px; } .aa-side .card + .card { margin-top: 12px; }
+  .aa-credit { font-size: 13px; color: var(--ink-3); margin-top: 10px; }
+  html.portrait .aa-grid { grid-template-columns: minmax(0, 1fr); gap: 14px; }
+  .hud #firstBtn { display: inline-grid; place-items: center; padding: 0 10px; }
+  html.portrait .hud a[title="아카이브로"] { font-size: 0; padding: 0; width: 40px; justify-content: center; }
+  html.portrait .hud a[title="아카이브로"]::before { content: "←"; font-size: 18px; }
+  .hud #firstBtn:disabled { opacity: .35; cursor: default; background: rgba(243,239,228,.04); }
+  .scen-grid { display: grid; grid-template-columns: 700px minmax(0, 1fr); gap: 26px; margin-top: 18px; align-items: start; }
+  .scen-shot { position: relative; margin: 0; border-radius: 16px; overflow: hidden; border: 1.5px dashed rgba(240,84,42,.7); }
+  .scen-shot img { display: block; width: 100%; height: auto; }
+  .scen-shot .stamp { position: absolute; left: 14px; top: 14px; padding: 6px 12px; border-radius: 10px; background: rgba(12,21,36,.85); border: 1.5px dashed #f0542a; color: #ff8a63; font: 800 15px "Pretendard Variable", sans-serif; }
+  .scen-cap { font-size: 13px; color: var(--ink-3); margin-top: 8px; }
+  .scen-side .card { padding: 18px 22px; } .scen-side .card + .card { margin-top: 12px; }
+  .scen-side ol { margin: 8px 0 0; padding-left: 20px; font-size: 17px; line-height: 1.55; color: var(--ink-2); }
+  .scen-side ul { margin: 8px 0 0; padding-left: 18px; font-size: 16.5px; line-height: 1.55; color: var(--ink-2); }
+  html.portrait .scen-grid { grid-template-columns: minmax(0, 1fr); gap: 14px; }
+  .pv { grid-template-columns: 118px minmax(0, 1fr) minmax(0, 1fr); gap: 0 14px; margin-top: 16px; }
+  .pv .c { font-size: 17.5px; line-height: 1.45; padding: 11px 4px; }
+  .pv .rh { font-size: 16px; padding: 11px 0; border-top: 1px dashed var(--line); align-self: stretch; display: flex; align-items: center; }
+  .pv .h.pk { color: #8fd18a; border: 1px solid rgba(143,209,138,.4); } .pv .h.vy { color: #a98bff; border: 1px solid rgba(169,139,255,.45); }
+  .pv .key { background: rgba(213,168,68,.10); border-top: 1.5px solid rgba(213,168,68,.6) !important; color: var(--ink); }
+  .pv .rh.key { color: var(--gold); padding-left: 10px; border-radius: 10px 0 0 10px; }
+  .pv .c.key:last-child { border-radius: 0 10px 10px 0; }
+  html.portrait .pv { grid-template-columns: 74px minmax(0, 1fr) minmax(0, 1fr); gap: 0 8px; }
+  html.portrait .pv .c { font-size: 12.5px; } html.portrait .pv .rh { font-size: 12px; }
+
+  /* ── w4 additions ── */
+  .ftab { display: grid; grid-template-columns: 190px 150px minmax(0, 1fr); border: 1px solid var(--line); border-radius: 16px; overflow: hidden; }
+  .ftab > div { padding: 10px 14px; font-size: 16px; line-height: 1.38; color: var(--ink-2); border-bottom: 1px solid var(--line); background: var(--card); display: flex; align-items: center; }
+  .ftab > div.h { font-weight: 700; color: var(--ink); background: var(--card-2); font-size: 15px; }
+  .ftab > div.rh { color: var(--ink); font-weight: 600; }
+  .ftab > div:nth-last-child(-n+3) { border-bottom: 0; }
+  .ftab .badge { font-size: 13px; padding: 3px 8px; white-space: nowrap; }
+  .ladder { display: flex; flex-direction: column; gap: 12px; }
+  .ladder .rung { display: grid; grid-template-columns: 150px minmax(0, 1fr) auto; gap: 16px; align-items: center; padding: 14px 20px; border-radius: 16px; border: 1px solid var(--line); background: var(--card); }
+  .ladder .rung b { font-size: 24px; letter-spacing: -.01em; }
+  .ladder .rung span { font-size: 16.5px; color: var(--ink-2); }
+  .ladder .rung em { font: 600 15px "JetBrains Mono", monospace; font-style: normal; color: var(--ink-3); }
+  .ladder .rung.new { border-color: rgba(213,168,68,.6); background: rgba(213,168,68,.1); box-shadow: 0 0 0 4px rgba(213,168,68,.08); }
+  .ladder .rung.new b, .ladder .rung.new em { color: var(--gold); }
+  .ladder .rung.unk { border-style: dashed; border-color: rgba(240,84,42,.55); background: transparent; }
+  .ladder .rung.unk b { color: #ff8a63; }
+  .layers { display: flex; align-items: flex-end; gap: 5px; margin-top: 16px; height: 150px; position: relative; }
+  .layers i { flex: 1; height: 56px; border-radius: 5px; background: var(--card-2); border: 1px solid var(--line); opacity: 0; transform: translateY(10px); transition: opacity .4s, transform .4s var(--ease); transition-delay: calc(.5s + var(--k) * 40ms); }
+  .layers i.lp { background: rgba(213,168,68,.22); border-color: rgba(213,168,68,.6); }
+  .is-active .layers i { opacity: 1; transform: none; }
+  .layers .loopband { position: absolute; left: calc(25% + 1px); right: calc(25% + 1px); top: 4px; height: 70px; border: 2px dashed rgba(213,168,68,.7); border-bottom: 0; border-radius: 40px 40px 0 0; display: grid; place-items: start center; }
+  .layers .loopband span { margin-top: -15px; background: var(--bg); padding: 0 12px; font: 700 18px "JetBrains Mono", monospace; color: var(--gold); }
+  .is-active .layers .loopband { animation: loopPulse 2.4s ease-in-out 1.6s infinite; }
+  @keyframes loopPulse { 0%, 100% { border-color: rgba(213,168,68,.7); } 50% { border-color: rgba(213,168,68,.2); } }
+  .laylab { display: flex; justify-content: space-between; font: 500 14px "JetBrains Mono", monospace; color: var(--ink-3); margin-top: 8px; }
+  .bigvs { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 24px; text-align: center; margin-top: 8px; }
+  .bigvs .k { font: 800 64px Inter, "Pretendard Variable", sans-serif; letter-spacing: -.03em; line-height: 1; }
+  .bigvs .l { font-size: 17px; color: var(--ink-2); margin-top: 8px; }
+  .bigvs .vs { font: 700 20px "JetBrains Mono", monospace; color: var(--ink-3); }
+  .tabsmock { display: flex; justify-content: space-around; gap: 8px; margin-top: 16px; padding: 14px 10px; border-radius: 22px; background: rgba(0,0,0,.25); border: 1px solid var(--line); }
+  .tabsmock span { display: flex; flex-direction: column; align-items: center; gap: 6px; font-size: 16px; color: var(--ink-2); padding: 8px 18px; border-radius: 14px; }
+  .tabsmock span b { font-size: 26px; line-height: 1; }
+  .tabsmock span.on { background: rgba(213,168,68,.14); color: var(--gold); }
+  .xchip { text-decoration: line-through; text-decoration-color: var(--coral); opacity: .75; }
+  html.portrait .ftab { grid-template-columns: 112px 104px minmax(0, 1fr); }
+  html.portrait .ftab > div { font-size: 13.5px; padding: 8px 9px; }
+  html.portrait .ftab:not(.k4) .badge { white-space: normal; line-height: 1.3; }
+  /* ── live demos (동작 재현 애니메이션) ── */
+  .pcplot canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+  .pcstage { position: absolute; right: 16px; top: 12px; z-index: 4; text-align: right; font: 700 22px "JetBrains Mono", monospace; color: var(--gold); line-height: 1.25; }
+  .pcstage small { display: block; font: 500 14px "Pretendard Variable", sans-serif; color: var(--ink-2); }
+  .demo-tag { position: absolute; top: 10px; left: 10px; z-index: 5; font: 600 12px "JetBrains Mono", monospace; letter-spacing: .02em; color: #1b1606; background: var(--gold); padding: 3px 8px; border-radius: 999px; }
+  .demo-tag.dark { color: var(--gold); background: rgba(5,10,20,.78); border: 1px solid rgba(213,168,68,.5); }
+  /* ChatGPT tabs cycle */
+  .is-active .tabsmock.cyc span { animation: tabCyc 6s ease-in-out infinite; }
+  .is-active .tabsmock.cyc span:nth-child(2) { animation-delay: -4s; }
+  .is-active .tabsmock.cyc span:nth-child(3) { animation-delay: -2s; }
+  @keyframes tabCyc { 0%, 30% { background: rgba(213,168,68,.16); color: var(--gold); } 36%, 94% { background: transparent; color: var(--ink-2); } 100% { background: rgba(213,168,68,.16); color: var(--gold); } }
+  /* two-panel demo card */
+  .demo2 { position: relative; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 40px 12px 12px; border-radius: 16px; border: 1px solid var(--line); background: #070d1a; }
+  .dpan { position: relative; border-radius: 14px; background: var(--card); border: 1px solid var(--line); padding: 12px; overflow: hidden; display: flex; flex-direction: column; }
+  .dpan h4 { margin: 0 0 8px; font: 700 14px "JetBrains Mono", monospace; color: var(--ink); }
+  .dpan h4 small { display: block; font: 500 12px "Pretendard Variable", sans-serif; color: var(--ink-3); margin-top: 2px; }
+  /* GPT-Live duplex */
+  .vrow { display: flex; align-items: center; gap: 8px; margin-top: 8px; }
+  .vrow > b { width: 34px; font-size: 12.5px; color: var(--ink-2); font-weight: 600; }
+  .vbar { flex: 1; display: flex; align-items: center; gap: 3px; height: 40px; transform-origin: center; }
+  .vbar i { flex: 1; height: 100%; border-radius: 3px; background: var(--c, var(--blue)); transform: scaleY(.35); }
+  .is-active .vbar i { animation: vWave .5s ease-in-out infinite alternate; animation-delay: calc(var(--k) * -73ms); }
+  @keyframes vWave { from { transform: scaleY(.18); } to { transform: scaleY(1); } }
+  .is-active .vbar.u { animation: talkU 8s infinite; } .is-active .vbar.d { animation: talkD 8s infinite; }
+  @keyframes talkU { 0%, 34% { transform: scaleY(1); } 39%, 100% { transform: scaleY(.07); } }
+  @keyframes talkD { 0%, 12% { transform: scaleY(.07); } 16%, 52% { transform: scaleY(1); } 56%, 100% { transform: scaleY(.07); } }
+  .vstate { position: relative; height: 22px; margin-top: 10px; font: 600 12.5px "Pretendard Variable", sans-serif; }
+  .vstate span { position: absolute; inset: 0; opacity: 0; }
+  .vstate .s1 { color: var(--green); opacity: 1; }
+  .is-active .vstate .s1 { animation: vs1 8s infinite; } .is-active .vstate .s2 { animation: vs2 8s infinite; }
+  @keyframes vs1 { 0%, 14% { opacity: 0; } 17%, 35% { opacity: 1; } 39%, 100% { opacity: 0; } }
+  @keyframes vs2 { 0%, 56% { opacity: 0; } 60%, 97% { opacity: 1; } 100% { opacity: 0; } }
+  .vstate .s2 { color: var(--ink-3); }
+  .meter { margin-top: auto; display: flex; justify-content: space-between; align-items: baseline; padding-top: 8px; border-top: 1px dashed var(--line); }
+  .meter em { font-style: normal; font-size: 12px; color: var(--ink-3); }
+  .meter b { position: relative; font: 700 20px "JetBrains Mono", monospace; color: var(--gold); width: 120px; text-align: right; height: 26px; }
+  .meter b span { position: absolute; right: 0; top: 0; }
+  .meter b .m2 { color: var(--blue); opacity: 0; }
+  .is-active .meter b .m1 { animation: mt1 8s infinite; } .is-active .meter b .m2 { animation: mt2 8s infinite; }
+  @keyframes mt1 { 0%, 56% { opacity: 1; } 60%, 97% { opacity: 0; } 100% { opacity: 1; } }
+  @keyframes mt2 { 0%, 56% { opacity: 0; } 60%, 97% { opacity: 1; } 100% { opacity: 0; } }
+  /* Wallet flow */
+  .wchat { display: flex; flex-direction: column; gap: 6px; flex: 1; position: relative; }
+  .wb { font-size: 12.5px; line-height: 1.35; padding: 6px 9px; border-radius: 12px; max-width: 88%; }
+  .wb.dot { background: var(--card-2); color: var(--ink); align-self: flex-start; border-bottom-left-radius: 4px; }
+  .wb.me { background: #ff7a45; color: #fff; align-self: flex-end; border-bottom-right-radius: 4px; }
+  .wbtn { align-self: flex-start; font-size: 12.5px; font-weight: 700; color: var(--blue); background: rgba(106,168,255,.12); border: 1px solid rgba(106,168,255,.4); padding: 5px 10px; border-radius: 999px; }
+  .wauth { position: absolute; inset: 0; display: grid; place-items: center; align-content: center; gap: 8px; background: rgba(7,13,26,.9); border-radius: 10px; opacity: 0; font-size: 12.5px; color: var(--ink-2); text-align: center; }
+  .wauth .fid { width: 54px; height: 54px; border-radius: 16px; border: 3px solid var(--blue); position: relative; }
+  .wauth .fid::after { content: ""; position: absolute; left: 6px; right: 6px; height: 3px; top: 8px; background: var(--blue); border-radius: 2px; box-shadow: 0 0 10px var(--blue); }
+  .wdone { position: absolute; inset: 0; display: grid; place-items: center; align-content: center; gap: 6px; background: rgba(7,13,26,.92); border-radius: 10px; font-size: 13px; color: var(--ink); text-align: center; }
+  .wdone b { width: 54px; height: 54px; border-radius: 50%; background: var(--green); color: #06210f; font-size: 30px; display: grid; place-items: center; }
+  .wdone { opacity: 0; }
+  .is-active .wchat .w1 { animation: w1 9s infinite both; } .is-active .wchat .w2 { animation: w2 9s infinite both; } .is-active .wchat .w3 { animation: w3 9s infinite both; } .is-active .wchat .w4 { animation: w4 9s infinite both; }
+  .is-active .wauth { animation: wa 9s infinite; } .is-active .wauth .fid::after { animation: scan 1s ease-in-out infinite alternate; }
+  .is-active .wdone { animation: wd 9s infinite; }
+  @keyframes w1 { 0%, 3% { opacity: 0; transform: translateY(8px); } 7%, 96% { opacity: 1; transform: none; } 100% { opacity: 0; } }
+  @keyframes w2 { 0%, 16% { opacity: 0; transform: translateY(8px); } 20%, 96% { opacity: 1; transform: none; } 100% { opacity: 0; } }
+  @keyframes w3 { 0%, 28% { opacity: 0; transform: translateY(8px); } 32%, 96% { opacity: 1; transform: none; } 100% { opacity: 0; } }
+  @keyframes w4 { 0%, 40% { opacity: 0; transform: scale(.9); } 44%, 96% { opacity: 1; transform: none; } 100% { opacity: 0; } }
+  @keyframes wa { 0%, 50% { opacity: 0; } 53%, 68% { opacity: 1; } 71%, 100% { opacity: 0; } }
+  @keyframes wd { 0%, 70% { opacity: 0; transform: scale(.94); } 74%, 95% { opacity: 1; transform: none; } 99%, 100% { opacity: 0; } }
+  @keyframes scan { from { top: 8px; } to { top: 39px; } }
+  /* Gemini GIF demo */
+  .gifdemo { position: relative; display: flex; flex-direction: column; gap: 10px; padding: 42px 16px 16px; border-radius: 16px; border: 1px solid var(--line); background: #070d1a; }
+  .gprompt { display: flex; align-items: center; gap: 8px; padding: 10px 12px; border-radius: 999px; background: var(--card); border: 1px solid var(--line); font-size: 14px; color: var(--ink); white-space: nowrap; overflow: hidden; }
+  .gprompt .tx { display: inline-block; overflow: hidden; white-space: nowrap; vertical-align: bottom; width: 13.2em; }
+  .gprompt .cur { width: 2px; height: 18px; background: var(--blue); }
+  .is-active .gprompt .tx { animation: gtype 10s steps(14) infinite; }
+  .is-active .gprompt .cur { animation: blinkc .8s steps(2) infinite; }
+  @keyframes gtype { 0% { width: 0; } 22%, 100% { width: 13.2em; } }
+  @keyframes blinkc { 50% { opacity: 0; } }
+  .gstage { position: relative; flex: 1; min-height: 250px; border-radius: 14px; overflow: hidden; background: linear-gradient(160deg, #1d2a44, #10192c); border: 1px solid var(--line); }
+  .gstage svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .gen { position: absolute; inset: 0; display: grid; place-items: center; font: 600 14px "Pretendard Variable", sans-serif; color: var(--ink-2); background: linear-gradient(110deg, #142036 30%, #22345a 50%, #142036 70%); background-size: 250% 100%; opacity: 0; }
+  .is-active .gen { animation: genShow 10s infinite, shimmer 1.2s linear infinite; }
+  @keyframes genShow { 0%, 22% { opacity: 0; } 25%, 40% { opacity: 1; } 44%, 100% { opacity: 0; } }
+  @keyframes shimmer { from { background-position: 100% 0; } to { background-position: -100% 0; } }
+  .is-active .gstage .steam { animation: steam 3s ease-in-out infinite; }
+  .is-active .gstage .steam.s2 { animation-delay: -1s; } .is-active .gstage .steam.s3 { animation-delay: -2s; }
+  @keyframes steam { 0% { opacity: 0; transform: translateY(14px); } 30% { opacity: .9; } 100% { opacity: 0; transform: translateY(-34px); } }
+  .is-active .gstage .cupbob { animation: cupbob 3s ease-in-out infinite; }
+  @keyframes cupbob { 50% { transform: translateY(-3px); } }
+  .gloop { display: flex; align-items: center; gap: 10px; font: 600 13px "JetBrains Mono", monospace; color: var(--ink-2); }
+  .gloop .pb { flex: 1; height: 5px; border-radius: 3px; background: var(--card-2); overflow: hidden; }
+  .gloop .pb i { display: block; height: 100%; width: 100%; background: var(--blue); transform-origin: left; }
+  .is-active .gloop .pb i { animation: gpb 3s linear infinite; }
+  @keyframes gpb { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+  /* diffusion-ui denoise */
+  .noisegrid { position: absolute; inset: 0; display: grid; grid-template-columns: repeat(12, 1fr); grid-template-rows: repeat(12, 1fr); pointer-events: none; }
+  .noisegrid i { background: var(--nc); opacity: 0; }
+  .is-active .noisegrid i { animation: denoise 7s infinite; animation-delay: var(--nd); }
+  @keyframes denoise { 0%, 6% { opacity: .95; } 30%, 86% { opacity: 0; } 100% { opacity: .95; } }
+  .is-active .refimg.diffuse img { animation: unblur 7s infinite; }
+  @keyframes unblur { 0%, 6% { filter: blur(14px) saturate(.3); } 36%, 86% { filter: none; } 100% { filter: blur(14px) saturate(.3); } }
+  /* FSD Reality View overlay */
+  .rvsvg { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+  .rvsvg .path { fill: none; stroke: #4aa3ff; stroke-width: 20; stroke-linecap: round; opacity: .85; stroke-dasharray: 26 18; }
+  .rvsvg .pathglow { fill: none; stroke: rgba(74,163,255,.35); stroke-width: 44; stroke-linecap: round; }
+  .is-active .rvsvg .path { animation: dashflow 1s linear infinite; }
+  @keyframes dashflow { to { stroke-dashoffset: -44; } }
+  .rvsvg .tap { fill: none; stroke: #fff; stroke-width: 5; opacity: 0; transform-box: fill-box; transform-origin: center; }
+  .is-active .rvsvg .tap { animation: tap 4s ease-out infinite; } .is-active .rvsvg .tap.t2 { animation-delay: .25s; }
+  @keyframes tap { 0%, 10% { opacity: 0; transform: scale(.3); } 14% { opacity: 1; } 40% { opacity: 0; transform: scale(2.2); } 100% { opacity: 0; } }
+  .rvsvg .pin { transform-box: fill-box; transform-origin: 50% 100%; }
+  .is-active .rvsvg .pin { animation: pin 4s ease-out infinite; }
+  @keyframes pin { 0%, 18% { opacity: 0; transform: translateY(-40px); } 28%, 92% { opacity: 1; transform: none; } 100% { opacity: 0; } }
+  @media (prefers-reduced-motion: reduce) { .demo2 *, .gifdemo *, .noisegrid i, .rvsvg *, .refimg.diffuse img, .tabsmock.cyc span { animation: none !important; } }
+  html.portrait .demo2 { grid-template-columns: 1fr; }
+  html.portrait .gstage { min-height: 200px; }
+  html.portrait .ladder .rung { grid-template-columns: minmax(0, 1fr); gap: 4px; }
+  html.portrait .bigvs .k { font-size: 44px; }
+  html.portrait .layers { height: 120px; gap: 3px; }
+  /* reference images */
+  .refimg { margin: 0; border-radius: 16px; overflow: hidden; border: 1px solid var(--line); background: #0a1220; position: relative; }
+  .refimg img { display: block; width: 100%; height: 100%; object-fit: cover; }
+  .refimg.fit img { object-fit: contain; }
+  .refimg.light { background: #fff; }
+  .refimg figcaption { position: absolute; left: 0; right: 0; bottom: 0; padding: 18px 12px 7px; font-size: 12.5px; line-height: 1.35; color: rgba(243,239,228,.82); background: linear-gradient(transparent, rgba(5,10,20,.88)); }
+  .refimg.light figcaption { color: #333; background: linear-gradient(transparent, rgba(255,255,255,.95)); }
+  .stackcol { display: flex; flex-direction: column; gap: 14px; }
+  /* Lean code panel */
+  .lean { margin: 0; font: 500 16px/1.65 "JetBrains Mono", ui-monospace, monospace; background: #070d1a; border: 1px solid var(--line); border-radius: 16px; padding: 18px 22px; white-space: pre; color: var(--ink-2); overflow: hidden; }
+  .lean .kw { color: var(--violet); } .lean .ty { color: var(--blue); } .lean .cm { color: var(--ink-3); font-style: italic; } .lean .nm { color: var(--gold); } .lean .ok { color: var(--green); }
+  .lean .hl { background: rgba(213,168,68,.14); border-radius: 4px; }
+  /* bit-width bars */
+  .bits { display: flex; flex-direction: column; gap: 12px; margin-top: 14px; }
+  .bits .br { display: grid; grid-template-columns: 110px minmax(0, 1fr) 150px; gap: 14px; align-items: center; }
+  .bits .br b { font: 700 17px "JetBrains Mono", monospace; }
+  .bits .cells { display: flex; gap: 3px; }
+  .bits .cells i { width: calc((100% - 45px) / 16); height: 26px; border-radius: 4px; background: var(--c); opacity: 0; transform: scaleY(.3); transition: opacity .3s, transform .4s var(--ease); transition-delay: calc(.6s + var(--k, 0) * 30ms); }
+  .is-active .bits .cells i { opacity: 1; transform: none; }
+  .bits .br span { font-size: 15px; color: var(--ink-2); }
+  .lmap { display: flex; gap: 4px; margin-top: 12px; }
+  .lmap i { flex: 1; height: 34px; border-radius: 5px; background: rgba(213,168,68,.3); border: 1px solid rgba(213,168,68,.6); }
+  .lmap i.p8 { background: rgba(106,168,255,.3); border-color: rgba(106,168,255,.7); }
+  .ftab.k4 { grid-template-columns: 210px 140px 170px minmax(0, 1fr); }
+  .ftab.k4 > div:nth-last-child(-n+3) { border-bottom: 1px solid var(--line); }
+  .ftab.k4 > div:nth-last-child(-n+4) { border-bottom: 0; }
+  .ftab.k4 > div { font-size: 18px; padding: 12px 16px; }
+  .ftab .sub { color: var(--ink-3); font-size: 15px; }
+  html.portrait .bits .br { grid-template-columns: 70px minmax(0, 1fr); } html.portrait .bits .br span { grid-column: 1 / -1; }
+  html.portrait .lean { font-size: 12px; padding: 12px; white-space: pre-wrap; }
+  html.portrait .ftab.k4 { grid-template-columns: 96px 100px minmax(0, 1fr); } html.portrait .ftab.k4 > .sub { display: none; } html.portrait .row > .ftab.k4, html.portrait .row > .stackcol { align-self: stretch; }
+  html.portrait .ftab.k4 > div { font-size: 13px; padding: 8px; }
+  html.portrait .refimg { height: auto !important; }
+  html.portrait .refimg img { height: auto; max-height: 260px; }
+</style>
+</head>
+<body>
+<svg class="sf-defs" width="0" height="0" style="position:absolute; width:0; height:0; overflow:hidden" aria-hidden="true" focusable="false">
+  <defs>
+    <linearGradient id="sfPaper" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f3efe4" stop-opacity=".1"/><stop offset="1" stop-color="#f3efe4" stop-opacity=".025"/></linearGradient>
+    <linearGradient id="sfTintGold" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#d5a844" stop-opacity=".2"/><stop offset="1" stop-color="#d5a844" stop-opacity=".04"/></linearGradient>
+    <linearGradient id="sfTintBlue" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#6aa8ff" stop-opacity=".2"/><stop offset="1" stop-color="#6aa8ff" stop-opacity=".04"/></linearGradient>
+    <linearGradient id="sfTintCoral" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f0542a" stop-opacity=".2"/><stop offset="1" stop-color="#f0542a" stop-opacity=".04"/></linearGradient>
+    <linearGradient id="sfTintGreen" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#4cc38a" stop-opacity=".2"/><stop offset="1" stop-color="#4cc38a" stop-opacity=".04"/></linearGradient>
+    <linearGradient id="sfTintViolet" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#a98bff" stop-opacity=".2"/><stop offset="1" stop-color="#a98bff" stop-opacity=".04"/></linearGradient>
+    <linearGradient id="sfCone" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#f3efe4" stop-opacity=".13"/><stop offset="1" stop-color="#f3efe4" stop-opacity="0"/></linearGradient>
+    <linearGradient id="sfAreaGold" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d5a844" stop-opacity=".3"/><stop offset="1" stop-color="#d5a844" stop-opacity="0"/></linearGradient>
+    <linearGradient id="sfScan" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f3efe4" stop-opacity="0"/><stop offset=".5" stop-color="#f3efe4" stop-opacity=".3"/><stop offset="1" stop-color="#f3efe4" stop-opacity="0"/></linearGradient>
+    <linearGradient id="sfScanG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4cc38a" stop-opacity="0"/><stop offset=".5" stop-color="#4cc38a" stop-opacity=".9"/><stop offset="1" stop-color="#4cc38a" stop-opacity="0"/></linearGradient>
+    <radialGradient id="sfGlowGold"><stop offset="0" stop-color="#d5a844" stop-opacity=".34"/><stop offset=".55" stop-color="#d5a844" stop-opacity=".1"/><stop offset="1" stop-color="#d5a844" stop-opacity="0"/></radialGradient>
+    <radialGradient id="sfGlowCoral"><stop offset="0" stop-color="#f0542a" stop-opacity=".34"/><stop offset=".55" stop-color="#f0542a" stop-opacity=".1"/><stop offset="1" stop-color="#f0542a" stop-opacity="0"/></radialGradient>
+    <radialGradient id="sfGlowBlue"><stop offset="0" stop-color="#6aa8ff" stop-opacity=".3"/><stop offset=".55" stop-color="#6aa8ff" stop-opacity=".09"/><stop offset="1" stop-color="#6aa8ff" stop-opacity="0"/></radialGradient>
+    <radialGradient id="sfGlowGreen"><stop offset="0" stop-color="#4cc38a" stop-opacity=".3"/><stop offset=".55" stop-color="#4cc38a" stop-opacity=".09"/><stop offset="1" stop-color="#4cc38a" stop-opacity="0"/></radialGradient>
+    <radialGradient id="sfGlowViolet"><stop offset="0" stop-color="#a98bff" stop-opacity=".3"/><stop offset=".55" stop-color="#a98bff" stop-opacity=".09"/><stop offset="1" stop-color="#a98bff" stop-opacity="0"/></radialGradient>
+    <radialGradient id="sfGlowInk"><stop offset="0" stop-color="#f3efe4" stop-opacity=".14"/><stop offset="1" stop-color="#f3efe4" stop-opacity="0"/></radialGradient>
+    <filter id="sfGlow" x="-80%" y="-80%" width="260%" height="260%"><feGaussianBlur in="SourceGraphic" stdDeviation="2.6" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+    <filter id="sfHeatBlur" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="3.5"/></filter>
+  </defs>
+</svg>
+<canvas id="bgfx" aria-hidden="true"></canvas>
+<div class="progress" id="progress"></div>
+
+<main class="deck" id="deck">
+
+  <!-- 01 표지 -->
+  <section class="slide s-title" data-notes="2026년 11월 23일 기준으로 지난 한 주(11월 16일~22일)의 AI 소식을 사실 확인과 함께 정리했습니다. 가장 큰 사건은 Anthropic 수학자 알푀게가 Claude와 함께 리만 가설 증명을 Lean 코드로 공개한 일입니다. 다만 Clay 연구소는 아직 인정하지 않았습니다. 같은 주에 OpenAI GPT-6.2 Astra·Sol, Google Gemini 4 Neon, Thinking Machines Inkling 2 Mini가 나란히 나왔습니다. 카카오톡 '라이언'의 12월 16일은 출시일이 아니라 약관 시행일이라는 점도 짚습니다.">
+    <div class="ph-title" style="background-image:url(img/title-seoul-namsan.jpg)" aria-hidden="true"></div>
+    <div class="date" data-a="fade">2026.11.23 기준</div>
+    <div class="kicker" data-a="left">Weekly Tech · AI Briefing</div>
+    <h1 data-a style="--d:1">2026년 11월 넷째 주<br><em>테크·AI 브리핑</em></h1>
+    <p class="lead" data-a style="--d:2">이번 주 가장 큰 사건은 <b>AI와 함께 쓴 리만 가설 증명</b>.<br>여기에 GPT-6.2, Gemini 4 Neon, Inkling 2 Mini가 한 주에.</p>
+    <div class="chips">
+      <span class="chip" data-a="pop" style="--d:4">GPT-6.2 Astra · Sol</span>
+      <span class="chip" data-a="pop" style="--d:5">Gemini 4 Neon</span>
+      <span class="chip" data-a="pop" style="--d:6">카톡 '라이언'</span>
+      <span class="chip gold" data-a="pop" style="--d:7">리만 가설 증명</span>
+    </div>
+    <div class="credit">사진: Matt Kieffer · CC BY-SA 2.0 · 남산에서 본 서울 야경 (Wikimedia Commons)</div>
+  </section>
+
+  <!-- 02 목차 -->
+  <section class="slide" data-notes="다섯 장으로 나눠 봅니다. 먼저 열한 항목의 판정을 한 장에 모은 표를 보고, 리만 가설, 새 모델, 에이전트와 생성형 화면, 앱 속 AI, Tesla FSD 순서로 갑니다. 리만 가설 장에서는 가설 자체와 Lean 검증, P=NP가 왜 같이 언급되는지까지 풀어 설명합니다. 초록 체크는 확인된 사실, 주황 점선은 루머·미확인, 금색 마름모는 판단, 파란 느낌표는 회사가 직접 발표한 수치입니다.">
+    <div class="kicker" data-a="left">Contents</div>
+    <h2 data-a style="--d:1">이번 주 다섯 가지</h2>
+    <ul class="agenda">
+      <li data-a style="--d:2"><span class="n">01</span><div><div class="t">리만 가설 증명</div><div class="d">가설이란 · Lean 검증 · Clay 조건 · P=NP</div></div></li>
+      <li data-a style="--d:3"><span class="n">02</span><div><div class="t">새 모델 세 갈래</div><div class="d">GPT-6.2 · Gemini 4 Neon · Inkling 2 Mini와 양자화</div></div></li>
+      <li data-a style="--d:4"><span class="n">03</span><div><div class="t">에이전트와 생성형 화면</div><div class="d">Stitch Loop와 대기자 명단 · diffusion-ui</div></div></li>
+      <li data-a style="--d:5"><span class="n">04</span><div><div class="t">앱 속 AI</div><div class="d">ChatGPT 리디자인 · 카톡 '라이언' · Gemini GIF</div></div></li>
+      <li class="warn" data-a style="--d:6"><span class="n">05</span><div><div class="t">Tesla FSD v15</div><div class="d">Reality View · "안전 25배"는 자체 수치</div></div></li>
+    </ul>
+    <div class="legend" data-a="fade" style="--d:7; margin-top:20px; gap:10px 14px"><span class="badge ok">확정된 사실</span><span class="badge rumor">루머·미확인</span><span class="badge judge">판단</span><span class="badge vendor">벤더 수치</span></div>
+    <div class="gloss" data-a="fade" style="--d:8" aria-label="약어 풀이"><span><b>FSD</b><em>Full Self-Driving</em> · Tesla의 주행 보조 소프트웨어</span><span><b>P=NP</b> · 검증이 쉬운 문제는 푸는 것도 쉬운가를 묻는 미해결 문제</span><span><b>GIF</b><em>Graphics Interchange Format</em> · 짧게 반복되는 움짤 형식</span></div>
+  </section>
+
+  <!-- 03 한눈에 보기 -->
+  <section class="slide" data-notes="열한 항목의 판정입니다. 출시·공개가 확인된 것은 GPT-6.2, Gemini 4 Neon, Inkling 2 Mini, Stitch Loop, ChatGPT 리디자인, Gemini GIF, FSD v15, diffusion-ui입니다. 리만 가설 증명은 Lean 검증까지 확인됐지만 Clay 연구소 인정은 아직입니다. Gemini 4 Cobalt는 코드 문자열 유출, Helium은 티저 영상뿐입니다. 메모에 있던 'Gemini Loop'는 정확한 이름이 Stitch Loop입니다. 카톡 라이언의 12월 16일은 약관 시행일이라 해석에 주의해야 합니다.">
+    <div class="kicker" data-a="left">At a glance</div>
+    <h2 data-a style="--d:1">열한 항목, <em>단서</em>까지 같이 읽어야 한다</h2>
+    <div class="cols c2" style="margin-top:22px; gap:20px; align-items:start">
+      <div class="ftab" data-a style="--d:2">
+        <div class="h">항목</div><div class="h">판정</div><div class="h">핵심</div>
+        <div class="rh">GPT-6.2 Astra·Sol</div><div><span class="badge ok">출시</span></div><div>11/17 출시</div>
+        <div class="rh">Gemini 4 Neon</div><div><span class="badge ok">출시</span></div><div>11/16 유출 → 11/18 정식</div>
+        <div class="rh">Gemini 4 Cobalt</div><div><span class="badge rumor">코드 유출</span></div><div>공식 발표 없음</div>
+        <div class="rh">Gemini 4 Helium</div><div><span class="badge rumor">티저만</span></div><div>모델 ID·가격 없음</div>
+        <div class="rh">Inkling 2 Mini</div><div><span class="badge ok">출시</span></div><div>11/20, 오픈 웨이트</div>
+        <div class="rh">"Gemini Loop"</div><div><span class="badge ok">이름 정정</span></div><div>Stitch Loop · 대기자 명단</div>
+      </div>
+      <div class="ftab" data-a style="--d:3">
+        <div class="h">항목</div><div class="h">판정</div><div class="h">핵심</div>
+        <div class="rh">리만 가설 증명</div><div><span class="badge ok">Lean 검증</span></div><div>Clay 미인정 · P=NP와 무관</div>
+        <div class="rh">ChatGPT 리디자인</div><div><span class="badge ok">공개</span></div><div>한국은 대상 제외</div>
+        <div class="rh">카톡 '라이언'</div><div><span class="badge judge">해석 주의</span></div><div>12/16은 약관 시행일</div>
+        <div class="rh">Gemini GIF</div><div><span class="badge ok">출시</span></div><div>한국 포함</div>
+        <div class="rh">FSD v15 · diffusion-ui</div><div><span class="badge ok">배포·공개</span></div><div>11/21 배포 · 연구 프리뷰</div>
+      </div>
+    </div>
+    <p class="src">자료: 각 사 발표·릴리스 노트, 본문 장별 출처 · 2026.11.23 기준</p>
+    <div class="gloss" data-a="fade" style="--d:5" aria-label="약어 풀이"><span><b>오픈 웨이트</b> · 학습된 모델 가중치를 내려받아 쓸 수 있게 공개</span><span><b>ID</b> · API에서 모델을 부르는 이름</span></div>
+  </section>
+
+  <!-- 04 구간 표지 01 -->
+  <section class="slide s-photo" data-notes="첫 번째 장은 리만 가설입니다. 1859년 리만이 제기한 뒤 167년 동안 풀리지 않던 문제를, Anthropic의 수학자가 Claude와 함께 증명했다고 발표했습니다. 가설이 무엇인지, Lean 검증이 무엇인지, 무엇이 아직인지 차례로 봅니다.">
+    <div class="ph soft" style="background-image:url(img/ch1-zeta.jpg)" aria-hidden="true"></div><div class="ph-shade"></div>
+    <figure class="ph-card" data-a="right" style="--d:2; width:420px; top:160px; padding:22px; background:#ebe8e2; border-radius:28px; border-color:rgba(255,255,255,.5)"><img src="img/ch1-riemann.jpg" width="1190" height="1600" alt="베른하르트 리만의 초상 사진" style="height:auto; max-height:none; object-fit:contain; border-radius:14px"></figure>
+    <div class="bign" data-a="left">01</div>
+    <h2 data-a style="--d:1">리만 가설,<br>167년 만의 증명</h2>
+    <p class="sub" data-a style="--d:2">Lean 검증은 통과, 공식 인정은 아직</p>
+    <div class="credit">배경: Wikimedia Commons 기여자 · CC BY-SA 3.0 · 리만 제타 함수 절댓값 그래프 / 우측: 작자 미상 · Public domain · 베른하르트 리만 (Wikimedia Commons)</div>
+  </section>
+
+  <!-- 05 리만 가설이란 -->
+  <section class="slide" data-notes="리만 가설이 무엇인지 먼저 짚겠습니다. 리만 제타 함수는 1 나누기 n의 s제곱을 모든 자연수에 대해 더한 함수를 복소수 전체로 넓힌 것입니다. 이 함수가 0이 되는 점 가운데 음의 짝수에 있는 '자명한 영점'을 빼면, 나머지 영점은 모두 실수부가 정확히 2분의 1인 세로선, 즉 임계선 위에 있다는 것이 리만 가설입니다. 1859년 리만이 논문에서 제기했고, 2000년 Clay 연구소가 밀레니엄 문제로 지정했습니다. 컴퓨터로 수조 개 영점을 확인했지만, 모든 영점에 대한 증명은 이번이 처음이라는 주장입니다. 오른쪽 그림은 임계선을 따라 움직이는 점이 제타 함수를 거치면 어디로 가는지 보여 주는데, 원점을 지날 때가 바로 영점입니다.">
+    <div class="kicker" data-a="left">01 · 리만 가설이란</div>
+    <h2 data-a style="--d:1">모든 ‘의미 있는 영점’은 <em>한 줄 위</em>에 있다</h2>
+    <div class="row" style="margin-top:24px; align-items:stretch">
+      <div class="stackcol grow">
+        <div class="card" data-a style="--d:2"><div class="num">① 리만 제타 함수</div>
+          <p style="font:600 28px Inter, sans-serif; color:var(--ink); margin:10px 0 4px">ζ(s) = 1 + 1/2<sup>s</sup> + 1/3<sup>s</sup> + 1/4<sup>s</sup> + …</p>
+          <p class="small">이 합을 복소수 s 전체로 넓힌 함수</p></div>
+        <div class="card" data-a style="--d:3"><div class="num">② 가설</div>
+          <p style="margin-top:8px">음의 짝수(−2, −4, …)에 있는 <b>자명한 영점</b>을 빼면, 나머지 영점은 모두 <b style="color:var(--gold)">실수부 = ½</b>인 세로선(<b>임계선</b>) 위에 있다</p></div>
+        <div class="card" data-a style="--d:4"><div class="num">③ 167년의 역사</div>
+          <p style="margin-top:8px"><b>1859</b> 리만 논문 → <b>2000</b> Clay 밀레니엄 문제 지정 → <b>2026.11.20</b> 증명 발표</p></div>
+      </div>
+      <div class="stackcol" style="width:520px">
+        <figure class="refimg light fit" data-a="right" style="--d:3; height:330px"><img src="img/ch1-critical-line.gif" width="300" height="320" alt="임계선을 따라 움직이는 점이 제타 함수를 거쳐 그리는 궤적, 원점을 지나는 순간이 영점"><figcaption>임계선 위의 점을 ζ로 옮긴 궤적. 원점을 지날 때가 영점 · YoshiGosu, CC BY-SA 4.0 (Wikimedia Commons)</figcaption></figure>
+        <figure class="refimg" data-a="right" style="--d:4; height:200px"><img src="img/ch1-kingy-critical.jpg" width="1400" height="787" alt="격자 위 세로선에 영점이 줄지어 찍힌 일러스트"><figcaption>임계선에 늘어선 영점 일러스트 · Kingy.ai 기사 이미지</figcaption></figure>
+      </div>
+    </div>
+    <div class="gloss" data-a="fade" style="--d:6" aria-label="약어 풀이"><span><b>영점</b> · 함수값이 0이 되는 입력</span><span><b>임계선</b><em>critical line</em> · 복소평면에서 실수부가 ½인 세로선</span><span><b>ζ</b> · 그리스 문자 제타</span></div>
+  </section>
+
+  <!-- 06 왜 중요한가 -->
+  <section class="slide" data-notes="이 가설이 왜 중요할까요. 제타 함수의 영점 위치는 소수가 얼마나 고르게 퍼져 있는지와 직결됩니다. 소수 정리는 x 이하 소수의 개수가 대략 x 나누기 로그 x라고 말하는데, 리만 가설이 참이면 이 근사의 오차가 루트 x 정도로 작다는 것이 보장됩니다. 그래서 수학자들은 '리만 가설이 참이라면'을 전제로 한 정리를 수없이 써 왔고, 증명이 확정되면 이 조건부 정리들이 한꺼번에 무조건 참이 됩니다. 이번에 함께 증명했다는 일반화된 리만 가설은 같은 주장을 디리클레 L-함수까지 넓힌 것으로, 소수 판정 같은 알고리즘의 성능 분석에도 쓰여 왔습니다. 오른쪽 그래프는 x 범위를 30에서 1만까지 넓혀 가며 실제 소수 개수를 그립니다. 가까이서 보면 소수가 나올 때마다 한 칸씩 오르는 계단이지만, 범위를 넓힐수록 계단이 잘게 부서져 매끈한 곡선이 되고 로그 적분 Li(x)에 바짝 붙습니다. 이 붙어 있는 정도, 즉 오차의 크기를 보장하는 것이 리만 가설입니다. 1만 이하의 소수는 1,229개입니다.">
+    <div class="kicker" data-a="left">01 · 왜 중요한가</div>
+    <h2 data-a style="--d:1">영점의 위치가 <em>소수의 질서</em>를 정한다</h2>
+    <div class="row" style="margin-top:24px; align-items:stretch">
+      <figure class="refimg pcplot" data-a style="--d:2; width:640px; height:430px; background:#0a1220"><span class="demo-tag dark">애니메이션 · 직접 계산한 실제 값</span><canvas aria-label="x 범위를 30에서 10,000까지 넓히면 계단 모양의 소수 개수 π(x)가 매끈한 곡선이 되어 Li(x)에 붙는 과정"></canvas><div class="pcstage"></div><figcaption>π(x)는 실제 소수 개수 · Li(x)·x/ln x와 비교 · 자체 계산</figcaption></figure>
+      <div class="stackcol grow">
+        <div class="card" data-a="right" style="--d:3"><div class="num">소수와의 연결</div><p style="margin-top:6px">x 이하 소수 개수 ≈ x / ln x. 리만 가설이 참이면 <b>오차가 √x 수준</b>으로 작다</p></div>
+        <div class="card" data-a="right" style="--d:4"><div class="num">조건부 정리들</div><p style="margin-top:6px">“리만 가설이 참이라면 …”으로 시작하는 정리 수천 개가 <b>한꺼번에 확정</b></p></div>
+        <div class="card" data-a="right" style="--d:5"><div class="num">일반화된 리만 가설</div><p style="margin-top:6px">같은 주장을 <b>디리클레 L-함수</b>로 확장. 소수 판정 알고리즘 분석 등에 쓰임</p></div>
+      </div>
+    </div>
+    <p class="src">자료: Nature, Scientific American · 그래프는 일반 설명용</p>
+    <div class="gloss" data-a="fade" style="--d:7" aria-label="약어 풀이"><span><b>π(x)</b> · x 이하 소수의 개수</span><span><b>ln</b> · 자연로그</span><span><b>GRH</b><em>Generalized Riemann Hypothesis</em> · 일반화된 리만 가설</span></div>
+  </section>
+
+  <!-- 07 발표와 검증 -->
+  <section class="slide" data-notes="11월 20일 Anthropic의 수학자 레벤트 알푀게가 Claude와 함께 리만 가설과 일반화된 리만 가설을 증명했다고 발표했습니다. 증명은 논문이 아니라 Lean 4 코드로, 14개 아카이브에 약 17만 5천 개 파일 규모입니다. Lean과 Mathlib 커뮤니티가 공동 성명으로 명제와 증명이 모두 정확하다고 인증했고, MIT의 앤드루 서덜랜드 등 독립 연구자들도 따로 컴파일에 성공했습니다.">
+    <div class="kicker" data-a="left">01 · 발표와 검증</div>
+    <h2 data-a style="--d:1">증명은 논문이 아니라 <em>Lean 코드</em>로 나왔다 <span class="badge ok" style="font-size:17px; vertical-align:12px">확정</span></h2>
+    <div class="row" style="margin-top:26px; align-items:stretch">
+      <div class="card grow" data-a style="--d:2">
+        <div class="num">11.20 발표 · 알푀게 + Claude</div>
+        <div class="scores">
+          <div><div class="lbl">아카이브</div><div class="kpi"><span data-count="14">0</span><small>개</small></div></div>
+          <div><div class="lbl">파일 수 (약)</div><div class="kpi gold"><span data-count="17.5" data-dec="1">0</span><small>만 개</small></div></div>
+          <div><div class="lbl">언어</div><div class="kpi">Lean <small>4</small></div></div>
+        </div>
+        <p style="margin-top:14px">대상: <b>리만 가설</b>과 <b>일반화된 리만 가설</b> 둘 다</p>
+        <div class="card ok" style="margin-top:14px"><div class="num">누가 확인했나</div>
+          <ul style="margin-bottom:0"><li><b>Lean/Mathlib 커뮤니티</b> 공동 성명: 명제와 증명 모두 정확</li><li><b>MIT 앤드루 서덜랜드</b> 등 독립 연구자: 별도 컴파일 성공</li></ul></div>
+      </div>
+      <figure class="refimg" data-a="right" style="--d:4; width:560px; height:470px"><img src="img/ch1-nature.jpg" width="1400" height="788" alt="수학자들이 수식이 가득한 화이트보드 앞에 모여 있는 사진" style="object-position:40% center"><figcaption>Nature 기사 대표 이미지 (James Brittain/Getty) · 리만 가설 증명 반응 기사</figcaption></figure>
+    </div>
+    <p class="src">자료: Nature, Scientific American · 2026.11.20~22</p>
+    <div class="gloss" data-a="fade" style="--d:6" aria-label="약어 풀이"><span><b>Lean 4</b> · 수학 증명을 코드로 쓰고 컴퓨터가 검사하는 증명 보조기</span><span><b>Mathlib</b> · Lean용 공동 수학 라이브러리</span><span><b>컴파일</b> · 코드를 기계가 처리·검사하는 과정</span></div>
+  </section>
+
+  <!-- 08 Lean이란 -->
+  <section class="slide" data-notes="Lean이 무엇인지 보겠습니다. Lean은 수학 명제와 증명을 프로그래밍 언어처럼 적으면 컴퓨터가 증명의 모든 단계를 검사해 주는 증명 보조기입니다. 2013년 Microsoft Research의 레오나르도 드 모라가 시작했고, 지금은 Lean 4가 쓰입니다. Mathlib은 전 세계 수학자들이 함께 만드는 Lean 수학 라이브러리로, 리만 제타 함수와 리만 가설의 정의도 이미 들어 있습니다. 왼쪽 코드는 Mathlib에 있는 리만 가설의 정의를 옮긴 것입니다. 제타 함수 값이 0이고, 음의 짝수가 아니고, 1이 아닌 모든 복소수 s의 실수부가 2분의 1이라는 뜻입니다. 아래 정리 줄은 증명이 어떤 모양인지 보여 주는 예시이고, 이번 증명의 실제 이름이나 구조는 아닙니다.">
+    <div class="kicker" data-a="left">01 · Lean 코드란</div>
+    <h2 data-a style="--d:1">명제와 증명을 <em>코드로</em> 쓰면, 컴퓨터가 한 줄씩 검사한다</h2>
+    <div class="row" style="margin-top:24px; align-items:stretch">
+      <div class="stackcol grow" data-a style="--d:2">
+<pre class="lean" aria-label="Mathlib의 리만 가설 정의"><span class="cm">-- Mathlib에 있는 리만 가설의 정의 (명제)</span>
+<span class="kw">def</span> <span class="nm">RiemannHypothesis</span> : <span class="ty">Prop</span> :=
+  ∀ (s : <span class="ty">ℂ</span>) (_ : riemannZeta s = 0)
+    (_ : ¬∃ n : <span class="ty">ℕ</span>, s = -2 * (n + 1)) (_ : s ≠ 1),
+    <span class="hl">s.re = 1 / 2</span>
+
+<span class="cm">-- 증명의 모양 (예시 · 실제 이름·구조 아님)</span>
+<span class="kw">theorem</span> <span class="nm">riemann_hypothesis</span> : RiemannHypothesis := <span class="kw">by</span>
+  <span class="cm">… 17.5만 개 파일에 걸친 보조정리들 …</span>
+<span class="ok">✓ 커널 검사 통과</span></pre>
+        <p class="small" style="margin:0">읽는 법: ζ(s)=0이고, 음의 짝수도 1도 아닌 모든 복소수 s → 실수부는 ½</p>
+      </div>
+      <div class="stackcol" style="width:500px">
+        <div class="card" data-a="right" style="--d:3"><div class="num">Lean</div><p style="margin-top:6px">증명 보조기(proof assistant). <b>2013년 Microsoft Research</b> 레오나르도 드 모라가 시작, 현재 <b>Lean 4</b></p></div>
+        <div class="card" data-a="right" style="--d:4"><div class="num">Mathlib</div><p style="margin-top:6px">수학자들이 함께 쌓는 Lean 라이브러리. 제타 함수와 <b>리만 가설 정의가 이미 들어 있음</b></p></div>
+        <div class="card" data-a="right" style="--d:5"><div class="num">커널</div><p style="margin-top:6px">모든 추론 단계를 규칙대로 확인하는 <b>작은 검사기</b>. 이것만 믿으면 된다</p></div>
+      </div>
+    </div>
+    <p class="src">자료: Lean·Mathlib 공개 문서(정의 원문), Scientific American · 코드 아래 정리 줄은 설명용 예시</p>
+    <div class="gloss" data-a="fade" style="--d:7" aria-label="약어 풀이"><span><b>Prop</b> · 참·거짓을 따질 수 있는 명제</span><span><b>ℂ · ℕ</b> · 복소수 · 자연수</span><span><b>s.re</b> · s의 실수부</span><span><b>theorem … by</b> · 정리 선언과 그 증명 시작</span></div>
+  </section>
+
+  <!-- 09 왜 검증하나 -->
+  <section class="slide" data-hook="steps" data-notes="왜 굳이 Lean으로 검증할까요. 첫째, 17만 5천 개 파일은 사람이 줄마다 읽고 확인할 수 있는 분량이 아닙니다. 둘째, AI가 만든 증명은 겉보기에 그럴듯해도 중간에 틀린 단계가 숨어 있을 수 있는데, Lean 커널은 한 단계라도 규칙에 어긋나면 통과시키지 않습니다. 셋째, 그렇다고 위험이 0은 아닙니다. 명제를 Lean으로 옮기는 과정에서 원래 문제와 다른 것을 적으면, 엉뚱한 명제를 완벽하게 증명할 수 있습니다. 그래서 커뮤니티 공동 성명이 증명뿐 아니라 '명제'가 정확하다는 점을 따로 확인한 것이 중요합니다. 그랜빌이 지적한 설명 문서 문제는 사람이 증명의 아이디어를 이해하는 일과 관련된 것으로, 기계 검사와는 별개입니다.">
+    <div class="kicker" data-a="left">01 · 왜 검증하나</div>
+    <h2 data-a style="--d:1">사람이 못 읽는 분량, <em>기계는 한 단계도 안 봐준다</em></h2>
+    <div class="wflow" data-a style="--d:2">
+      <div class="wstep"><div class="ic">✍️</div><h3>1. 명제 옮기기</h3><p>문제를 Lean 문장으로</p></div><div class="ar">→</div>
+      <div class="wstep"><div class="ic">🧩</div><h3>2. 증명 작성</h3><p>사람 + Claude가 보조정리를 쌓음</p></div><div class="ar">→</div>
+      <div class="wstep"><div class="ic">🔬</div><h3>3. 커널 검사</h3><p>모든 단계를 규칙대로 확인</p></div><div class="ar">→</div>
+      <div class="wstep"><div class="ic">✅</div><h3>4. 통과 / 실패</h3><p>한 줄이라도 틀리면 실패</p></div>
+    </div>
+    <div class="row" style="margin-top:22px; align-items:stretch">
+      <div class="cols c3 grow" style="gap:14px">
+        <div class="card" data-a style="--d:4"><div class="num">분량</div><p style="margin-top:6px"><b>17.5만 개 파일</b>은 사람이 줄마다 확인할 수 없다</p></div>
+        <div class="card" data-a style="--d:5"><div class="num">AI 증명의 함정</div><p style="margin-top:6px">그럴듯한 <b>틀린 단계</b>가 숨을 수 있다 → 기계가 걸러냄</p></div>
+        <div class="card hotc" data-a style="--d:6"><div class="num" style="color:#ff8a63">남는 위험</div><p style="margin-top:6px">명제를 잘못 옮기면 <b>엉뚱한 것을 완벽히</b> 증명 → 그래서 ‘명제’도 따로 확인</p></div>
+      </div>
+      <figure class="refimg" data-a="right" style="--d:7; width:300px"><img src="img/ch1-sciam.jpg" width="1400" height="1130" alt="어두운 배경 위 금빛 곡선이 겹쳐진 추상 이미지"><figcaption>Scientific American 기사 이미지 · Lean 검증 기사</figcaption></figure>
+    </div>
+    <p class="src">자료: Scientific American, Nature · 2026.11</p>
+    <div class="gloss" data-a="fade" style="--d:8" aria-label="약어 풀이"><span><b>보조정리</b><em>lemma</em> · 큰 증명을 위해 먼저 증명해 두는 작은 정리</span><span><b>커널</b> · Lean에서 증명을 최종 판정하는 핵심 검사기</span></div>
+  </section>
+
+  <!-- 10 Clay 조건 -->
+  <section class="slide" data-hook="steps" data-notes="수학계 반응은 갈립니다. 메이너드는 증명이 맞을 것으로 본다고 했고, 그랜빌은 공개된 설명 문서가 엉망이라고 비판하며 발표 시점에도 의문을 제기했습니다. 공식 인정은 아직입니다. Clay 연구소 규정상 학술지 등에 게재되고, 게재 후 2년이 지나고, 수학계 전반의 수용을 얻어야 상금 심사 대상이 됩니다. Clay 홈페이지는 지금도 이 문제를 미해결로 표시합니다.">
+    <div class="kicker" data-a="left">01 · 공식 인정</div>
+    <h2 data-a style="--d:1">Clay 상금까지는 <em>최소 2년</em>, 홈페이지는 여전히 ‘미해결’</h2>
+    <div class="cols c2" style="margin-top:24px">
+      <div class="card" data-a style="--d:2"><div class="num">메이너드</div><p style="font-size:21px; margin-top:8px">증명이 <b>맞을 것</b>으로 본다</p></div>
+      <div class="card hotc" data-a style="--d:3"><div class="num" style="color:#ff8a63">그랜빌</div><p style="font-size:21px; margin-top:8px">설명 문서가 <b>엉망</b>이다 · 발표 시점에도 의문</p></div>
+    </div>
+    <div class="wflow" data-a style="--d:4">
+      <div class="wstep"><div class="ic">📄</div><h3>1. 게재</h3><p>학술지 등에 정식 게재 · <b style="color:#ff8a63">아직 안 됨</b></p></div><div class="ar">→</div>
+      <div class="wstep"><div class="ic">⏳</div><h3>2. 2년 경과</h3><p>게재 후 2년 대기</p></div><div class="ar">→</div>
+      <div class="wstep"><div class="ic">🤝</div><h3>3. 수학계 수용</h3><p>전반적 인정</p></div><div class="ar">→</div>
+      <div class="wstep"><div class="ic">🏅</div><h3>4. 상금 심사</h3><p>이때부터 대상</p></div>
+    </div>
+    <p class="src">자료: Nature, Kingy.ai(Clay 규정 정리), Clay 연구소 홈페이지 · 2026.11.23 확인</p>
+    <div class="gloss" data-a="fade" style="--d:6" aria-label="약어 풀이"><span><b>Clay 연구소</b> · 밀레니엄 문제 7개에 각 100만 달러 상금을 건 미국 수학 연구소</span></div>
+  </section>
+
+  <!-- 11 왜 P=NP가 나오나 -->
+  <section class="slide" data-notes="그렇다면 리만 가설 이야기에 왜 P=NP가 따라 나올까요. 세 가지 이유가 있습니다. 첫째, 둘 다 Clay 밀레니엄 문제라서 '밀레니엄 문제가 풀렸다'는 소식이 다른 문제와 섞여 전해졌습니다. 메모에서도 둘을 연결했습니다. 둘째, 이번 사건의 구조 자체가 P 대 NP의 질문과 닮았습니다. 증명을 확인하는 데는 하루, 찾는 데는 167년이 걸렸습니다. 답을 검증하기는 쉬운데 찾기는 어려운 문제, 이것이 바로 NP입니다. 셋째, 역사적 연결입니다. 1956년 괴델은 폰 노이만에게 보낸 편지에서, 주어진 길이의 증명을 찾는 일을 기계가 빠르게 할 수 있는지 물었습니다. 이것이 오늘날 P 대 NP 질문의 원형으로 꼽힙니다. 만약 P가 NP와 같다면, 짧은 증명을 찾는 일이 검증만큼 쉬워집니다. 다만 AI가 리만 가설이라는 문제 하나의 증명을 찾았다고 해서, 모든 NP 문제를 빠르게 푸는 방법이 생긴 것은 아닙니다.">
+    <div class="kicker" data-a="left">01 · 왜 P=NP인가</div>
+    <h2 data-a style="--d:1">리만 가설 이야기에 <em>P=NP가 따라 나오는</em> 세 가지 이유</h2>
+    <div class="row" style="margin-top:24px; align-items:stretch">
+      <div class="stackcol grow">
+        <div class="card" data-a style="--d:2"><div class="num">① 같은 밀레니엄 문제</div><p style="margin-top:6px">둘 다 Clay 7대 문제. “밀레니엄 문제 해결” 소식에서 <b>둘이 섞여 전해짐</b></p></div>
+        <div class="card" data-a style="--d:3"><div class="num">② 찾기 vs 검증 구조</div><p style="margin-top:6px">검증 <b>하루</b>, 발견 <b>167년</b>. “확인은 쉬운데 찾기는 어려운 문제”가 곧 <b>NP</b></p></div>
+        <div class="card" data-a style="--d:4"><div class="num">③ 괴델의 1956년 편지</div><p style="margin-top:6px">폰 노이만에게 “증명을 <b>기계가 빨리 찾을 수 있나</b>” 질문 → P vs NP의 원형. P=NP라면 짧은 증명 찾기 = 검증만큼 쉬움</p></div>
+        <div class="card judge" data-a style="--d:5"><span class="badge judge">판단</span><p style="margin:8px 0 0">AI가 <b>문제 하나</b>의 증명을 찾은 것 ≠ 모든 NP 문제를 빨리 푸는 방법</p></div>
+      </div>
+      <figure class="refimg light fit" data-a="right" style="--d:3; width:560px"><img src="img/ch1-pnp.png" width="1400" height="875" alt="P≠NP일 때와 P=NP일 때 P, NP, NP-완전, NP-난해 집합의 관계를 그린 오일러 다이어그램"><figcaption>P≠NP(왼쪽)와 P=NP(오른쪽)일 때 문제 집합의 관계 · Behnam Esfahbod, CC BY-SA 3.0 (Wikimedia Commons)</figcaption></figure>
+    </div>
+    <p class="src">자료: Scientific American, Nature · 괴델 편지는 계산 복잡도 이론의 통설</p>
+    <div class="gloss" data-a="fade" style="--d:7" aria-label="약어 풀이"><span><b>P</b> · 빠르게(다항 시간에) 풀 수 있는 문제</span><span><b>NP</b> · 답이 주어지면 빠르게 검증할 수 있는 문제</span><span><b>NP-완전</b> · NP 중 가장 어려운 문제들. 하나만 빨리 풀어도 전부 풀림</span></div>
+  </section>
+
+  <!-- 12 P=NP 정정 -->
+  <section class="slide" data-notes="메모의 P=NP 관련 서술을 바로잡습니다. 리만 가설과 P 대 NP는 서로 다른 밀레니엄 문제라서, 리만 가설이 증명돼도 P 대 NP는 풀리지 않습니다. P 대 NP는 검증이 쉬운 문제는 푸는 것도 쉬운가를 묻는 열린 질문이지, '정답을 알면 풀기도 쉽다'처럼 정해진 명제가 아닙니다. 이번 사례는 오히려 반대 직관을 보여 줍니다. Lean으로 검증하는 데는 하루, 증명을 찾는 데는 167년이 걸렸습니다. 10월 말 AI가 지수 시간 가설을 반증했다는 주장도 있었지만, 이것도 P 대 NP를 푼 것은 아닙니다.">
+    <div class="kicker" data-a="left">01 · P=NP 정정</div>
+    <h2 data-a style="--d:1">리만 가설이 풀려도 <em>P vs NP는 그대로</em></h2>
+    <div class="row" style="margin-top:26px; align-items:stretch">
+      <div class="card grow" data-a style="--d:2">
+        <div class="num">이번 사례가 보여 준 것</div>
+        <div class="bigvs" style="margin-top:28px">
+          <div><div class="k" style="color:var(--green)">하루</div><div class="l">Lean으로 <b>검증</b></div></div>
+          <div class="vs">vs</div>
+          <div><div class="k" style="color:var(--gold)"><span data-count="167">0</span>년</div><div class="l">증명을 <b>찾기</b></div></div>
+        </div>
+        <p style="margin-top:28px; text-align:center">검증은 쉬워도 찾기는 어렵다 · P≠NP 직관과 닮은 장면</p>
+      </div>
+      <div class="cols" style="width:560px; gap:14px">
+        <div class="card hotc" data-a="right" style="--d:3"><div class="num" style="color:#ff8a63">메모 정정</div><p style="margin-top:6px"><s style="opacity:.7">“정답을 알면 풀기도 쉽다”</s><br>→ 정해진 명제가 아니라 <b>열린 질문</b></p></div>
+        <div class="card" data-a="right" style="--d:4"><div class="num">서로 다른 문제</div><p style="margin-top:6px">리만 가설과 P vs NP는 별개의 밀레니엄 문제</p></div>
+        <div class="card" data-a="right" style="--d:5"><div class="num">10월 말 ETH 반증 주장</div><p style="margin-top:6px">사실이어도 P vs NP 해결은 <b>아님</b></p></div>
+      </div>
+    </div>
+    <p class="src">자료: Scientific American, Nature · 2026.11</p>
+    <div class="gloss" data-a="fade" style="--d:7" aria-label="약어 풀이"><span><b>P vs NP</b> · 답을 빨리 검증할 수 있는 문제(NP)를 빨리 풀 수도(P) 있는가</span><span><b>ETH</b><em>Exponential Time Hypothesis</em> · 지수 시간 가설</span></div>
+  </section>
+
+  <!-- 13 구간 표지 02 -->
+  <section class="slide s-photo" data-notes="두 번째 장은 새 모델입니다. OpenAI가 11월 17일 GPT-6.2 Astra와 Sol을, Google이 18일 Gemini 4 Neon을, Thinking Machines가 20일 오픈 웨이트 Inkling 2 Mini를 내놨습니다. Inkling은 4비트로 학습한 구조까지 자세히 봅니다.">
+    <div class="ph soft" style="background-image:url(img/ch2-wafer.jpg)" aria-hidden="true"></div><div class="ph-shade"></div>
+    <figure class="ph-card" data-a="right" style="--d:2; width:460px"><img src="img/ch2-wafer.jpg" width="1200" height="1600" alt="칩이 빼곡히 새겨진 실리콘 웨이퍼" style="object-position:center"></figure>
+    <div class="bign" data-a="left">02</div>
+    <h2 data-a style="--d:1">새 모델 세 갈래</h2>
+    <p class="sub" data-a style="--d:2">GPT-6.2 · Gemini 4 Neon · Inkling 2 Mini</p>
+    <div class="credit">배경·우측: Naotake Murayama · CC BY 2.0 · Pentium 칩 웨이퍼 (Wikimedia Commons)</div>
+  </section>
+
+  <!-- 14 GPT-6.2 가격 -->
+  <section class="slide" data-notes="OpenAI는 11월 17일 두 모델을 출시했습니다. Astra는 고난도 전문 업무용, Sol은 일상 업무용입니다. API 가격은 100만 토큰당 Astra가 입력 8달러, 출력 40달러로 이전 모델보다 20% 내렸고, Sol은 입력 2달러, 출력 10달러로 GPT-6.1 Sol과 같습니다. OpenAI는 Astra가 GPT-6 Astra보다 성능이 높으면서 작업당 비용은 3분의 1 미만이라고 주장하는데, 이는 회사 측 수치입니다.">
+    <div class="kicker" data-a="left">02 · GPT-6.2</div>
+    <h2 data-a style="--d:1">Astra는 <em>20% 인하</em>, Sol은 가격 그대로</h2>
+    <div class="row" style="margin-top:26px; align-items:stretch">
+      <div class="card grow" data-a style="--d:2">
+        <div class="num">API 가격 · 100만 토큰당</div>
+        <div class="hbars" style="margin-top:14px">
+          <div class="hbar best" style="--lw:200px; --vw:90px; --k:0"><span class="nm">Astra 출력</span><span class="tr"><i style="--w:100%; --c:var(--gold)"></i></span><span class="v">$40</span></div>
+          <div class="hbar" style="--lw:200px; --vw:90px; --k:1"><span class="nm">Astra 입력</span><span class="tr"><i style="--w:20%; --c:var(--gold)"></i></span><span class="v">$8</span></div>
+          <div class="hbar" style="--lw:200px; --vw:90px; --k:2"><span class="nm">Sol 출력</span><span class="tr"><i style="--w:25%; --c:var(--blue)"></i></span><span class="v">$10</span></div>
+          <div class="hbar" style="--lw:200px; --vw:90px; --k:3"><span class="nm">Sol 입력</span><span class="tr"><i style="--w:5%; --c:var(--blue)"></i></span><span class="v">$2</span></div>
+        </div>
+        <p class="small" style="margin-top:14px">Astra: 고난도 전문 업무용 · 이전 모델 대비 20% 인하 / Sol: 일상 업무용 · GPT-6.1 Sol과 동일</p>
+      </div>
+      <div class="stackcol" style="width:500px">
+        <figure class="refimg" data-a="right" style="--d:3; height:220px"><img src="img/ch2-gpt62.jpg" width="1400" height="664" alt="별빛 배경에 Astra와 Sol 글자가 적힌 GPT-6.2 발표 이미지"><figcaption>GPT-6.2 발표 이미지 · SiliconANGLE 기사</figcaption></figure>
+        <div class="card vendor grow" data-a="right" style="--d:4"><span class="badge vendor">벤더 수치</span>
+          <p style="margin-top:10px"><b style="font-size:34px; color:var(--gold)">⅓ 미만</b> · GPT-6 Astra 대비 <b>작업당 비용</b>. 성능은 더 높다고 주장 (독립 검증 전)</p></div>
+      </div>
+    </div>
+    <p class="src">자료: OpenAI 개발자 커뮤니티, SiliconANGLE · 2026.11.17</p>
+    <div class="gloss" data-a="fade" style="--d:6" aria-label="약어 풀이"><span><b>API</b><em>Application Programming Interface</em> · 개발자가 모델을 코드로 부르는 창구</span><span><b>토큰</b> · 모델이 글을 처리하는 단위. 한국어 한 글자 ≈ 1~2토큰</span></div>
+  </section>
+
+  <!-- 15 GPT-6.2 안전·반응 -->
+  <section class="slide" data-notes="안전 등급에서 눈여겨볼 점이 있습니다. Astra는 OpenAI 준비성 프레임워크의 'AI 자기개선' 항목에서 High 기준을 충족한 첫 외부 배포 모델입니다. 사이버 역량도 크게 올라 보안 관련 안전장치를 강화해 출시했습니다. 반응은 엇갈립니다. OpenAI 측은 출시 직전 며칠 사이 큰 개선이 있었는데 일부 리뷰어가 이를 반영하지 못했다고 해명했습니다.">
+    <div class="kicker" data-a="left">02 · GPT-6.2</div>
+    <h2 data-a style="--d:1">‘AI 자기개선’ <em>High</em>를 넘긴 첫 외부 배포 모델</h2>
+    <div class="cols c3" style="margin-top:28px">
+      <div class="card ok" data-a style="--d:2"><span class="badge ok">확정</span><h3 style="margin-top:12px">준비성 프레임워크</h3><p>‘AI 자기개선’ 항목 <b>High 기준 충족</b>. 외부에 배포된 모델로는 처음</p></div>
+      <div class="card ok" data-a style="--d:3"><span class="badge ok">확정</span><h3 style="margin-top:12px">사이버 역량 상승</h3><p>역량이 크게 오른 만큼 <b>보안 안전장치를 강화</b>해 출시</p></div>
+      <div class="card judge" data-a style="--d:4"><span class="badge judge">평가 엇갈림</span><h3 style="margin-top:12px">리뷰 반응</h3><p>OpenAI: 출시 직전 며칠의 개선을 <b>일부 리뷰어가 반영 못 했다</b>고 해명</p></div>
+    </div>
+    <div class="row" style="margin-top:18px; align-items:stretch">
+      <figure class="refimg" data-a style="--d:5; width:440px; height:230px"><img src="img/ch2-astra.jpg" width="1400" height="787" alt="두 사람이 모니터를 보는 장면 위에 GPT-6.2 ASTRA 로고가 겹친 발표 영상 이미지"><figcaption>GPT-6.2 Astra 발표 이미지 · OpenAI 개발자 커뮤니티 공지</figcaption></figure>
+      <div class="card grow" data-a style="--d:6"><div class="num">읽는 법</div><p style="margin-top:8px"><b>High</b>는 해당 위험 역량이 높은 수준이라는 뜻이고, 그만큼 배포 전 안전장치를 요구한다는 신호다. 자기개선은 AI가 AI 연구 자체를 앞당길 수 있는 능력을 가리킨다.</p></div>
+    </div>
+    <p class="src">자료: OpenAI 개발자 커뮤니티, SiliconANGLE · 2026.11.17</p>
+    <div class="gloss" data-a="fade" style="--d:7" aria-label="약어 풀이"><span><b>준비성 프레임워크</b><em>Preparedness Framework</em> · OpenAI가 위험 역량을 등급으로 평가하는 기준</span></div>
+  </section>
+
+  <!-- 16 Gemini 4 -->
+  <section class="slide" data-notes="Gemini 4 Neon은 11월 16일 유출된 뒤 18일 정식 출시됐습니다. 컨텍스트 100만 토큰, 가격은 100만 토큰당 입력 3달러, 출력 15달러이고, 최상위 Carbon과 고속 Hydrogen 사이에 놓입니다. Cobalt는 AI Studio 프런트엔드 코드에서 models/cobalt 문자열이 발견된 것이 전부이고 Google은 확인하지 않았습니다. 아래 그림은 이 유출을 분석한 OrcaRouter 글의 이미지로, Neon은 과금 항목이 있지만 Cobalt는 없다는 점을 보여 줍니다. Helium은 Google DeepMind 직원의 티저 영상에 이름이 나왔을 뿐입니다. Flash-Lite급이라는 추측이 있지만 공식 정보는 없고, Helium은 과거 인도용 구독 요금제 이름으로도 쓰였습니다.">
+    <div class="kicker" data-a="left">02 · Gemini 4</div>
+    <h2 data-a style="--d:1">Neon은 출시, <em>Cobalt·Helium은 단서뿐</em></h2>
+    <div class="row" style="margin-top:24px; align-items:stretch">
+      <div class="stackcol grow">
+        <div class="ladder" data-a style="--d:2">
+          <div class="rung"><b>Carbon</b><span>최상위</span><em>기존</em></div>
+          <div class="rung new"><b>Neon</b><span>컨텍스트 100만 토큰 · 입력 $3 / 출력 $15</span><em>11.18 정식</em></div>
+          <div class="rung"><b>Hydrogen</b><span>고속</span><em>기존</em></div>
+        </div>
+        <figure class="refimg" data-a style="--d:4; height:230px"><img src="img/ch2-cobalt-leak.jpg" width="1400" height="735" alt="Gemini 4 Neon은 과금 항목 24개, Cobalt는 없음이라고 비교한 유출 분석 카드" style="object-position:top"><figcaption>유출 분석: Neon은 과금 항목 있음, Cobalt는 없음 · OrcaRouter 블로그 이미지</figcaption></figure>
+      </div>
+      <div class="cols" style="width:520px; gap:14px">
+        <div class="card rumor" data-a="right" style="--d:3"><span class="badge rumor">루머·미확인</span><h3 style="margin-top:10px">Cobalt</h3><p>AI Studio 프런트엔드 코드에 <span class="mono">models/cobalt</span> 문자열. 모델 ID·과금 항목 없음, Google 미확인</p></div>
+        <div class="card rumor" data-a="right" style="--d:4"><span class="badge rumor">루머·미확인</span><h3 style="margin-top:10px">Helium</h3><p>DeepMind 직원 티저에서 기존 4개 다음으로 빛나는 장면. Flash-Lite급 추측. 과거 인도용 요금제 이름이기도</p></div>
+      </div>
+    </div>
+    <p class="src">자료: Google Cloud 문서, OrcaRouter(유출 분석), TechCityAuthority(티저) · 2026.11.16~18</p>
+    <div class="gloss" data-a="fade" style="--d:6" aria-label="약어 풀이"><span><b>컨텍스트</b> · 모델이 한 번에 읽을 수 있는 입력 길이</span><span><b>AI Studio</b> · Google의 Gemini 개발자 도구</span><span><b>Flash-Lite</b> · Gemini의 가장 가볍고 싼 등급</span></div>
+  </section>
+
+  <!-- 17 Inkling 2 Mini 구조 -->
+  <section class="slide" data-notes="Thinking Machines는 11월 20일 Inkling 2 Mini를 Apache 2.0 라이선스로 공개했습니다. 텍스트와 이미지를 입력받고 컨텍스트는 100만 토큰입니다. 구조는 루프형 MoE 트랜스포머로, 24개 레이어 중 가운데 12개를 세 번 반복 실행합니다. 같은 층을 여러 번 돌리면 파라미터를 늘리지 않고도 토큰당 계산 단계를 늘릴 수 있습니다. 총 파라미터는 264억 개이고, 활성 파라미터는 34억 개 또는 54억 개로 출처마다 다른데, 54억 개는 루프 반복분을 포함해 센 값입니다. Artificial Analysis 지능 지수에서 Qwen3.8 27B와 같은 점수를 냈고, 활성 파라미터는 약 5분의 1입니다.">
+    <div class="kicker" data-a="left">02 · Inkling 2 Mini</div>
+    <h2 data-a style="--d:1">가운데 12층을 <em>세 번</em> 돌려 몸집을 줄였다</h2>
+    <div class="row" style="margin-top:24px; align-items:stretch">
+      <div class="card grow" data-a style="--d:2">
+        <div class="num">루프형 MoE 트랜스포머 · 24개 레이어</div>
+        <div class="layers" aria-label="24개 레이어 중 가운데 12개가 3회 반복">
+          <div class="loopband"><span>× 3회 반복</span></div>
+          <i style="--k:0"></i><i style="--k:1"></i><i style="--k:2"></i><i style="--k:3"></i><i style="--k:4"></i><i style="--k:5"></i>
+          <i class="lp" style="--k:6"></i><i class="lp" style="--k:7"></i><i class="lp" style="--k:8"></i><i class="lp" style="--k:9"></i><i class="lp" style="--k:10"></i><i class="lp" style="--k:11"></i><i class="lp" style="--k:12"></i><i class="lp" style="--k:13"></i><i class="lp" style="--k:14"></i><i class="lp" style="--k:15"></i><i class="lp" style="--k:16"></i><i class="lp" style="--k:17"></i>
+          <i style="--k:18"></i><i style="--k:19"></i><i style="--k:20"></i><i style="--k:21"></i><i style="--k:22"></i><i style="--k:23"></i>
+        </div>
+        <div class="laylab"><span>1</span><span>7 ─ 가운데 12개 ─ 18</span><span>24</span></div>
+        <div class="scores" style="margin-top:18px">
+          <div><div class="lbl">총 파라미터</div><div class="kpi"><span data-count="26.4" data-dec="1">0</span><small>B</small></div></div>
+          <div><div class="lbl">활성 파라미터</div><div class="kpi gold">3.4<small>B</small> / 5.4<small>B</small></div></div>
+        </div>
+        <p class="small" style="margin-top:6px">5.4B는 루프 반복분까지 센 값</p>
+      </div>
+      <div class="stackcol" style="width:480px">
+        <figure class="refimg light fit" data-a="right" style="--d:3; height:170px"><img src="img/ch2-inkling.jpg" width="1400" height="735" alt="Thinking Machines 로고가 있는 Inkling 2 Mini 공개 이미지"><figcaption>Inkling 2 Mini 공개 이미지 · Thinking Machines</figcaption></figure>
+        <div class="card ok" data-a="right" style="--d:4"><div class="num">Artificial Analysis 지능 지수</div><p style="margin-top:6px"><b>Qwen3.8 27B와 동점</b> · 활성 파라미터는 약 <b>⅕</b></p></div>
+        <div class="card" data-a="right" style="--d:5"><div class="num">공개 조건</div><p style="margin-top:6px">11.20 · <b>Apache 2.0</b> · 텍스트+이미지 입력 · 컨텍스트 100만 토큰</p></div>
+      </div>
+    </div>
+    <p class="src">자료: Thinking Machines, Artificial Analysis · 2026.11.20</p>
+    <div class="gloss" data-a="fade" style="--d:7" aria-label="약어 풀이"><span><b>MoE</b><em>Mixture of Experts</em> · 입력마다 일부 전문가 층만 켜는 구조</span><span><b>B</b> · 10억(billion) 개</span><span><b>활성 파라미터</b> · 한 번 계산에 실제로 쓰이는 파라미터</span></div>
+  </section>
+
+  <!-- 18 Inkling 양자화 -->
+  <section class="slide" data-notes="Inkling 2 Mini가 32GB Mac에서 돌아가는 이유는 양자화에 있습니다. 양자화는 모델의 숫자 하나를 표현하는 비트 수를 줄이는 기술입니다. 보통 모델은 16비트, 즉 BF16으로 저장하는데, 264억 개 파라미터를 16비트로 담으면 약 52.8GB가 필요해 32GB Mac에 들어가지 않습니다. Thinking Machines는 이 모델을 처음부터 4비트 NVFP4로 학습했습니다. 전문가 층의 순전파를 사전 학습부터 강화 학습까지 모두 NVFP4로 돌렸고, 마지막 4개 층만 8비트 MXFP8을 썼습니다. 배포 가중치도 학습 때와 같은 정밀도, 즉 20개 층은 NVFP4, 4개 층은 MXFP8이라서, 학습 뒤에 따로 깎아 내는 변환 손실이 없다고 설명합니다. 전체를 NVFP4로 가정하고 계산하면 크기는 약 15GB로, 16비트 대비 3분의 1 이하입니다. 이것은 제가 계산한 근사치입니다. 또 학습 도중 전문가 384개 중 3분의 2를 잘라 128개만 남겼고, 큰 내부 모델에서 1조 토큰을 증류해 성능을 회복했습니다. 양자화한 GGUF 버전은 Unsloth와 llama.cpp로 받을 수 있고, NVIDIA DGX Spark에서도 효율적으로 돌아갑니다.">
+    <div class="kicker" data-a="left">02 · Inkling 2 Mini · 양자화</div>
+    <h2 data-a style="--d:1">처음부터 <em>4비트로 학습</em>해, 변환 손실 없이 Mac에 올렸다</h2>
+    <div class="row" style="margin-top:22px; align-items:stretch">
+      <div class="card grow" data-a style="--d:2">
+        <div class="num">숫자 하나에 쓰는 비트 수</div>
+        <div class="bits">
+          <div class="br"><b>BF16</b><div class="cells"><i style="--c:var(--ink-3);--k:0"></i><i style="--c:var(--ink-3);--k:1"></i><i style="--c:var(--ink-3);--k:2"></i><i style="--c:var(--ink-3);--k:3"></i><i style="--c:var(--ink-3);--k:4"></i><i style="--c:var(--ink-3);--k:5"></i><i style="--c:var(--ink-3);--k:6"></i><i style="--c:var(--ink-3);--k:7"></i><i style="--c:var(--ink-3);--k:8"></i><i style="--c:var(--ink-3);--k:9"></i><i style="--c:var(--ink-3);--k:10"></i><i style="--c:var(--ink-3);--k:11"></i><i style="--c:var(--ink-3);--k:12"></i><i style="--c:var(--ink-3);--k:13"></i><i style="--c:var(--ink-3);--k:14"></i><i style="--c:var(--ink-3);--k:15"></i></div><span>16비트 · 일반 저장</span></div>
+          <div class="br"><b style="color:var(--blue)">MXFP8</b><div class="cells"><i style="--c:var(--blue);--k:0"></i><i style="--c:var(--blue);--k:1"></i><i style="--c:var(--blue);--k:2"></i><i style="--c:var(--blue);--k:3"></i><i style="--c:var(--blue);--k:4"></i><i style="--c:var(--blue);--k:5"></i><i style="--c:var(--blue);--k:6"></i><i style="--c:var(--blue);--k:7"></i></div><span>8비트 · 마지막 4개 층</span></div>
+          <div class="br"><b style="color:var(--gold)">NVFP4</b><div class="cells"><i style="--c:var(--gold);--k:0"></i><i style="--c:var(--gold);--k:1"></i><i style="--c:var(--gold);--k:2"></i><i style="--c:var(--gold);--k:3"></i></div><span>4비트 · 나머지 20개 층</span></div>
+        </div>
+        <div class="num" style="margin-top:22px">배포 가중치 정밀도 · 24개 층</div>
+        <div class="lmap" aria-label="20개 층 NVFP4, 마지막 4개 층 MXFP8"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i class="p8"></i><i class="p8"></i><i class="p8"></i><i class="p8"></i></div>
+        <p class="small" style="margin-top:10px">학습 정밀도 = 배포 정밀도 → 학습 뒤 깎아 내는 <b>변환 손실 없음</b> (Thinking Machines 설명)</p>
+      </div>
+      <div class="stackcol" style="width:520px">
+        <div class="card judge" data-a="right" style="--d:3"><span class="badge judge">계산값 · 근사</span>
+          <ul class="vlist" style="margin-top:10px"><li><span>BF16로 담으면</span><span>≈ 52.8GB</span></li><li><span>전부 NVFP4로 가정</span><span style="color:var(--gold)">≈ 15GB</span></li></ul>
+          <p class="small" style="margin:6px 0 0">26.4B × 비트 수. NVFP4는 16개 값마다 스케일을 붙여 실질 약 4.5비트</p></div>
+        <div class="card" data-a="right" style="--d:4"><div class="num">가지치기 + 회복</div><p style="margin-top:6px">전문가 <b>384 → 128개</b> (⅔ 제거, 토큰마다 8개 선택) · 내부 큰 모델에서 <b>1조 토큰 증류</b>로 성능 회복</p></div>
+        <div class="card ok" data-a="right" style="--d:5"><div class="num">어디서 돌리나</div><p style="margin-top:6px">RAM <b>32GB 이상 Mac</b> + Ollama · NVIDIA <b>DGX Spark</b> · GGUF는 Unsloth·llama.cpp</p></div>
+      </div>
+    </div>
+    <p class="src">자료: Thinking Machines 「Introducing Inkling 2 Mini」(NVFP4 and low-bit quantization 절) · 2026.11.20 · 용량은 이 문서에서 계산</p>
+    <div class="gloss" data-a="fade" style="--d:7" aria-label="약어 풀이"><span><b>양자화</b> · 숫자를 더 적은 비트로 표현해 모델을 작게 만드는 기술</span><span><b>NVFP4</b> · NVIDIA의 4비트 부동소수점 형식</span><span><b>MXFP8</b> · 묶음마다 스케일을 공유하는 8비트 형식</span><span><b>GGUF</b> · llama.cpp가 쓰는 로컬 모델 파일 형식</span><span><b>증류</b> · 큰 모델의 출력을 작은 모델이 따라 배우게 하는 학습</span></div>
+  </section>
+
+  <!-- 19 구간 표지 03 -->
+  <section class="slide s-photo" data-notes="세 번째 장은 에이전트와 생성형 화면입니다. Google은 출시 후에도 스스로 제품을 고치는 Stitch Loop를, Runway는 화면의 모든 픽셀을 모델이 실시간으로 그리는 diffusion-ui를 공개했습니다.">
+    <div class="ph soft" style="background-image:url(img/ch3-pixels.jpg)" aria-hidden="true"></div><div class="ph-shade"></div>
+    <figure class="ph-card" data-a="right" style="--d:2; width:400px"><img src="img/ch3-lcd.jpg" width="900" height="1600" alt="확대한 LCD 화면의 빨강·초록·파랑 픽셀" style="object-position:center"></figure>
+    <div class="bign" data-a="left">03</div>
+    <h2 data-a style="--d:1">에이전트와<br>생성형 화면</h2>
+    <p class="sub" data-a style="--d:2">Google Stitch Loop · Runway diffusion-ui</p>
+    <div class="credit">배경: D-Kuru · CC BY-SA 3.0 AT · 디스플레이 픽셀 패턴 / 우측: Jaredryandloneria · CC BY-SA 4.0 · LCD 픽셀 확대 (Wikimedia Commons)</div>
+  </section>
+
+  <!-- 20 Stitch Loop 흐름 -->
+  <section class="slide" data-hook="steps" data-notes="메모에 'Gemini Loop'로 적힌 것은 정확히는 Google Stitch Loop입니다. 11월 18일 Google Labs의 Stitch 실험 기능으로 발표됐습니다. Stitch가 제품을 설계하는 도구라면, Stitch Loop는 출시 뒤에도 제품을 계속 개선하는 장기 실행 에이전트입니다. 팀은 GitHub와 로그, 사용자 행동, 피드백 같은 제품 맥락을 180개가 넘는 통합 기능이나 커스텀 MCP 서버, CLI 업로드로 연결합니다. 각 루프는 근거가 있는 제안과 트레이드오프를 내놓고, 고른 수정안을 격리된 클라우드 샌드박스에서 만든 뒤 GitHub PR을 엽니다. 사람이 PR을 검토하기 전에는 아무것도 병합되지 않습니다. 기본 루프로는 Gemini 4 Carbon과 CodeMender를 묶은 보안, 지연 시간, WCAG 접근성이 있고, 결제 전환율 같은 목표로 커스텀 루프를 만들 수 있습니다.">
+    <div class="kicker" data-a="left">03 · Stitch Loop</div>
+    <h2 data-a style="--d:1">정식 이름은 <em>Stitch Loop</em>, 출시 후에도 일한다</h2>
+    <div class="wflow" data-a style="--d:2">
+      <div class="wstep"><div class="ic">🔌</div><h3>1. 연결</h3><p>GitHub·로그·피드백 · 180개+ 통합, MCP, CLI</p></div><div class="ar">→</div>
+      <div class="wstep"><div class="ic">💡</div><h3>2. 제안</h3><p>근거 있는 제안과 트레이드오프</p></div><div class="ar">→</div>
+      <div class="wstep"><div class="ic">🧪</div><h3>3. 구현</h3><p>격리된 클라우드 샌드박스에서 수정</p></div><div class="ar">→</div>
+      <div class="wstep"><div class="ic">🔍</div><h3>4. PR · 감시</h3><p>사람 검토 전엔 병합 없음 · 목표 달성 후에도 지표 감시</p></div>
+    </div>
+    <div class="cols c3" style="margin-top:22px">
+      <div class="card ok" data-a style="--d:4"><div class="num">기본 루프</div><p style="margin-top:6px"><b>보안</b>(Gemini 4 Carbon + CodeMender) · <b>지연 시간</b> · <b>WCAG 접근성</b></p></div>
+      <div class="card" data-a style="--d:5"><div class="num">커스텀 루프</div><p style="margin-top:6px">결제 전환율 같은 <b>팀 목표</b>를 직접 설정</p></div>
+      <div class="card" data-a style="--d:6"><div class="num">다른 도구와</div><p style="margin-top:6px">Google Antigravity가 Stitch CLI·MCP로 맥락 사용 · Slack <span class="mono">@stitch</span> 일일 요약</p></div>
+    </div>
+    <p class="src">자료: TestingCatalog 「Early look at Loop」 · 2026.11.18</p>
+    <div class="gloss" data-a="fade" style="--d:7" aria-label="약어 풀이"><span><b>MCP</b><em>Model Context Protocol</em> · AI가 외부 도구·데이터에 붙는 표준</span><span><b>CLI</b> · 명령줄 도구</span><span><b>PR</b><em>Pull Request</em> · 코드 변경 검토 요청</span><span><b>WCAG</b> · 웹 접근성 지침</span><span><b>샌드박스</b> · 실제 서비스와 분리된 시험 환경</span></div>
+  </section>
+
+  <!-- 21 Stitch Loop 대기자 명단 -->
+  <section class="slide" data-notes="Stitch Loop는 아직 바로 쓸 수 없고 대기자 명단 단계입니다. 대기자 명단은 전 세계 모든 사용자에게 열려 있고, 자격이 되는 Google AI Ultra 구독자는 우선 접근을 받습니다. Google이 겨냥하는 사용자는 빠르게 출시하지만 출시 뒤 작업을 따라가기 버거운 작은 팀입니다. Google Labs 실험 단계라 가격이나 정식 출시 일정은 공개되지 않았습니다. 왼쪽 화면은 TestingCatalog가 공개한 Loops 목록 화면으로, 커뮤니티 확장, 데이터 정확도, 알림 속도 같은 목표별 루프와 제안 수가 보입니다.">
+    <div class="kicker" data-a="left">03 · Stitch Loop · 대기자 명단</div>
+    <h2 data-a style="--d:1">대기자 명단은 <em>전 세계 누구나</em>, 우선권은 AI Ultra</h2>
+    <div class="row" style="margin-top:24px; align-items:stretch">
+      <figure class="refimg" data-a style="--d:2; width:740px; height:470px"><img src="img/ch3-stitch-loop.jpg" width="1400" height="825" alt="어두운 화면에 목표별 루프 목록과 제안 수가 표시된 Stitch Loop의 Loops 화면" style="object-position:left top"><figcaption>Stitch Loop의 Loops 화면 · TestingCatalog 기사 이미지 (2026.11.18)</figcaption></figure>
+      <div class="stackcol grow">
+        <div class="card ok" data-a="right" style="--d:3"><div class="num">누가 신청하나</div><p style="margin-top:6px"><b>전 세계 모든 사용자</b> 대기자 등록 가능</p></div>
+        <div class="card ok" data-a="right" style="--d:4"><div class="num">누가 먼저 쓰나</div><p style="margin-top:6px">자격 있는 <b>Google AI Ultra</b> 구독자 우선 접근</p></div>
+        <div class="card" data-a="right" style="--d:5"><div class="num">겨냥하는 팀</div><p style="margin-top:6px">빠르게 출시하지만 <b>출시 후 작업</b>을 못 따라가는 작은 팀</p></div>
+        <div class="card judge" data-a="right" style="--d:6"><div class="num">아직 모르는 것</div><p style="margin-top:6px">가격 · 정식 출시 일정 · 한국 우선권 여부 <b>공개 안 됨</b></p></div>
+      </div>
+    </div>
+    <p class="src">자료: TestingCatalog, Google 공식 X 계정 게시물 인용 · 2026.11.18</p>
+    <div class="gloss" data-a="fade" style="--d:7" aria-label="약어 풀이"><span><b>Google AI Ultra</b> · Google의 최상위 AI 구독 요금제</span><span><b>Google Labs</b> · Google의 실험 제품 조직</span></div>
+  </section>
+
+  <!-- 22 diffusion-ui -->
+  <section class="slide" data-notes="Runway Labs는 11월 17일 연구 앱 diffusion-ui를 공개했습니다. 화면의 모든 픽셀을 실시간 모델이 생성합니다. 생성된 인터페이스가 구조화된 데이터를 쓰고, 상태를 유지하고, 조작 요소를 만들어 낼 수 있습니다. 오른쪽 이미지는 단어 게임 화면을 모델이 직접 그려 낸 연구 시연 장면입니다. 초기 연구 시연 단계이고 가격이나 정식 제공 계획은 없습니다. 9월에 공개한 Interface World Model인 Solaris를 잇는 작업으로, Solaris는 HTML, CSS, 자바스크립트 없이 UI를 프레임 단위로 생성합니다.">
+    <div class="kicker" data-a="left">03 · diffusion-ui</div>
+    <h2 data-a style="--d:1">코드 없이 <em>픽셀로 그리는</em> 앱 화면</h2>
+    <div class="row" style="margin-top:8px; align-items:stretch">
+      <div class="stackcol grow">
+        <div class="tline" style="--n:3; margin-top:24px">
+          <div class="axis"><i></i></div>
+          <div class="ev" data-a style="--d:2"><div class="dot"></div><div class="when">2026.09</div><div class="what"><b>Solaris</b> 공개</div><div class="q">HTML·CSS·JS 없이 UI를 프레임 단위로 생성</div></div>
+          <div class="ev key" data-a style="--d:4"><div class="dot"></div><div class="when">11.17</div><div class="what"><b>diffusion-ui</b> 공개</div><div class="q">모든 픽셀을 실시간 모델이 생성</div></div>
+          <div class="ev" data-a style="--d:6"><div class="dot"></div><div class="when">이후</div><div class="what">가격·제공 계획 <b>없음</b></div><div class="q">초기 연구 시연</div></div>
+        </div>
+        <div class="card" data-a style="--d:8; margin-top:6px">
+          <div class="num">생성된 화면이 할 수 있는 것</div>
+          <div class="conds" style="margin-top:12px"><span class="chip">구조화된 데이터 쓰기</span><span class="chip">상태 유지</span><span class="chip">조작 요소 생성</span></div>
+        </div>
+      </div>
+      <figure class="refimg diffuse" data-a="right" style="--d:3; width:440px; height:440px; margin-top:20px"><span class="demo-tag dark">생성 개념 재현: 노이즈 → 화면</span><img src="img/ch3-diffusion-ui.jpg" width="1400" height="1400" alt="나무 탁자 위 단어 게임판을 모델이 생성한 diffusion-ui 시연 화면"><div class="noisegrid" aria-hidden="true"></div><figcaption>diffusion-ui 시연 화면 · Runway 공식 이미지 (AIPostHub 게재)</figcaption></figure>
+    </div>
+    <p class="src">자료: AIPostHub(Runway diffusion-ui 정리) · 2026.11.17</p>
+    <div class="gloss" data-a="fade" style="--d:9" aria-label="약어 풀이"><span><b>UI</b><em>User Interface</em> · 사용자 화면</span><span><b>HTML·CSS·JS</b> · 웹 화면을 만드는 세 가지 코드</span><span><b>World Model</b> · 다음 장면을 예측해 그려 내는 모델</span></div>
+  </section>
+
+  <!-- 23 구간 표지 04 -->
+  <section class="slide s-photo" data-notes="네 번째 장은 매일 쓰는 앱 속 AI입니다. ChatGPT 모바일 리디자인과 dots, 카카오톡의 AI 비서 라이언, Gemini 앱의 GIF 생성을 봅니다. 한국 사용자 입장에서 언제 쓸 수 있는지를 중심으로 정리했습니다.">
+    <div class="ph soft" style="background-image:url(img/ch4-phone.jpg)" aria-hidden="true"></div><div class="ph-shade"></div>
+    <figure class="ph-card" data-a="right" style="--d:2"><img src="img/ch4-chatgpt.jpg" width="1400" height="840" alt="새 하단 탭이 적용된 ChatGPT 모바일 앱 화면 세 장" style="object-position:center"></figure>
+    <div class="bign" data-a="left">04</div>
+    <h2 data-a style="--d:1">앱 속 AI</h2>
+    <p class="sub" data-a style="--d:2">ChatGPT · 카카오톡 · Gemini, 한국에서는 언제?</p>
+    <div class="credit">배경: Nenad Stojkovic · CC BY 2.0 · 휴대폰으로 메시지 입력 (Wikimedia Commons) / 우측: Digital Trends 기사 이미지 · ChatGPT 새 모바일 디자인</div>
+  </section>
+
+  <!-- 24 ChatGPT 리디자인 -->
+  <section class="slide" data-notes="ChatGPT 모바일 리디자인은 11월 19일 공개됐습니다. 하단 바에 홈, Dots, 그리드 세 탭이 생겼고 자주 쓰는 기능을 고정할 수 있습니다. 첫 대상은 dots 이용 자격이 있는 Pro 사용자입니다. 다만 EEA, 영국, 스위스와 함께 한국은 이번 리디자인 대상에서 빠졌습니다. dots는 일부 Plus 사용자 대상 테스트를 시작했고, 미국 Business Standard 사용자에게도 제공됩니다.">
+    <div class="kicker" data-a="left">04 · ChatGPT</div>
+    <h2 data-a style="--d:1">하단 탭 세 개로 바뀐 ChatGPT, <em>한국은 제외</em></h2>
+    <div class="row" style="margin-top:24px; align-items:stretch">
+      <div class="card grow" data-a style="--d:2">
+        <div class="num">11.19 공개 · 새 하단 바</div>
+        <div class="tabsmock cyc" aria-label="하단 바 세 탭: 홈, Dots, 그리드 (탭 전환 재현)">
+          <span><b>⌂</b>홈</span><span><b>⋯</b>Dots</span><span><b>▦</b>그리드</span>
+        </div>
+        <ul style="margin-top:16px">
+          <li>자주 쓰는 기능 <b>고정</b> 가능</li>
+          <li>첫 대상: dots 이용 자격이 있는 <b>Pro</b> 사용자</li>
+        </ul>
+        <div class="conds" style="margin-top:14px"><span class="chip">dots: 일부 Plus 테스트</span><span class="chip">미국 Business Standard 제공</span></div>
+      </div>
+      <div class="stackcol" style="width:560px">
+        <figure class="refimg" data-a="right" style="--d:3; height:280px"><img src="img/ch4-chatgpt.jpg" width="1400" height="840" alt="홈, dots 소개, 그리드 화면을 보여 주는 ChatGPT 새 모바일 앱 화면 세 장"><figcaption>새 모바일 화면: 홈 · dots · 그리드 · Digital Trends 기사 이미지</figcaption></figure>
+        <div class="card hotc" data-a="right" style="--d:4"><div class="num" style="color:#ff8a63">대상에서 빠진 지역</div><div class="conds" style="margin-top:10px"><span class="chip gold">한국</span><span class="chip">EEA</span><span class="chip">영국</span><span class="chip">스위스</span></div></div>
+      </div>
+    </div>
+    <p class="src">자료: Digital Trends, Root-Nation · 2026.11.19</p>
+    <div class="gloss" data-a="fade" style="--d:6" aria-label="약어 풀이"><span><b>EEA</b><em>European Economic Area</em> · 유럽경제지역(EU 27개국+3개국)</span><span><b>dots</b> · ChatGPT의 메시지·음성 통화형 비서 기능</span></div>
+  </section>
+
+  <!-- 24b dots 새 소식: GPT-Live-1.1 -->
+  <section class="slide" data-notes="dots 쪽 새 소식을 정리했습니다. 먼저 음성 모델 GPT-Live-1.1입니다. OpenAI는 10월 15일 ChatGPT, Codex, dots의 음성을 GPT-Live-1.1로 바꿨고, 새 목소리 13종을 추가했습니다. 프랑스어, 독일어, 힌디어, 멕시코 스페인어, 일본어와 함께 한국어 성능이 크게 좋아졌다고 밝혔습니다. 이번 주 11월 19일에는 같은 모델을 API로 공개했습니다. 모델 이름은 gpt-live-1.1이고, 말하는 동안에도 듣는 전이중 방식입니다. 요금은 대화 중 분당 0.05달러, 새로 생긴 대기 상태에서는 분당 0.02달러로, 아무도 말하지 않는 시간의 비용을 줄였습니다. 둘째, ChatGPT Enterprise에서는 11월 18일부터 관리자가 끄지 않으면 dots가 기본으로 켜집니다. 2027년 1월 13일까지는 무료이고, 1월 14일부터 dot 하나당 한 달에 Standard 50달러, Advanced 200달러, Expert 500달러가 붙습니다. 셋째, 직전 주인 11월 13일에는 dots가 사용자 대신 물건을 고르고 결제까지 하는 ChatGPT Wallet이 미국 Pro 사용자 일부에게 나왔습니다. 한국 사용자에게 바로 닿는 것은 한국어 음성 개선입니다. dots 도움말은 Plus 제외 지역으로 EEA, 영국, 스위스만 적고 있어, 앞 슬라이드의 리디자인 제외와는 따로 봐야 합니다.">
+    <div class="kicker" data-a="left">04 · ChatGPT dots</div>
+    <h2 data-a style="--d:1">dots의 목소리는 <em>GPT-Live-1.1</em>, 기업은 기본 켜짐</h2>
+    <div class="row" style="margin-top:22px; align-items:stretch">
+      <div class="ftab grow" data-a style="--d:2; align-self:start">
+        <div class="h">소식</div><div class="h">날짜 · 표시</div><div class="h">내용</div>
+        <div class="rh">GPT-Live-1.1<br>ChatGPT 음성</div><div><span class="badge ok">확정 · 10.15</span></div><div><span>ChatGPT·Codex·dots 음성을 교체. 새 목소리 <b>13종</b>, 억양 일관성 개선. <b>한국어</b>·일본어·힌디어 등 성능 향상</span></div>
+        <div class="rh">GPT-Live-1.1<br>API 공개</div><div><span class="badge ok">확정 · 11.19</span></div><div><span>모델명 <code>gpt-live-1.1</code>. 말하면서 듣는 전이중. 대화 중 분당 <b>$0.05</b>, 새 대기 상태 분당 <b>$0.02</b></span></div>
+        <div class="rh">Enterprise<br>기본 켜짐</div><div><span class="badge ok">확정 · 11.18</span></div><div><span>관리자가 끄지 않으면 자동 활성. 구성원당 개인 dot 1개. <b>2027.1.13까지 무료</b></span></div>
+        <div class="rh">Enterprise<br>요금</div><div><span class="badge vendor">벤더 수치 · 1.14~</span></div><div><span>dot당 월 Standard <b>$50</b> · Advanced <b>$200</b> · Expert <b>$500</b>. Codex·Work로 넘긴 작업은 별도 과금</span></div>
+        <div class="rh">ChatGPT Wallet</div><div><span class="badge ok">확정 · 11.13</span></div><div><span>dots가 상품을 고르고 <b>대신 결제</b>. 결제 토큰 사용, Face ID·지문으로 승인. 미국 Pro 일부</span></div>
+      </div>
+      <div class="stackcol" style="width:440px">
+        <div class="demo2" data-a="right" style="--d:3" aria-label="GPT-Live 전이중 대화와 Wallet 결제 흐름을 재현한 애니메이션">
+          <span class="demo-tag">동작 재현 · 실제 화면 아님</span>
+          <div class="dpan"><h4>GPT-Live-1.1<small>듣기·말하기 동시 · 대기 과금</small></h4>
+            <div class="vrow"><b>나</b><div class="vbar u" style="--c:#ff7a45"><i style="--k:0"></i><i style="--k:1"></i><i style="--k:2"></i><i style="--k:3"></i><i style="--k:4"></i><i style="--k:5"></i><i style="--k:6"></i><i style="--k:7"></i><i style="--k:8"></i><i style="--k:9"></i><i style="--k:10"></i><i style="--k:11"></i><i style="--k:12"></i><i style="--k:13"></i></div></div>
+            <div class="vrow"><b>dot</b><div class="vbar d" style="--c:var(--blue)"><i style="--k:0"></i><i style="--k:1"></i><i style="--k:2"></i><i style="--k:3"></i><i style="--k:4"></i><i style="--k:5"></i><i style="--k:6"></i><i style="--k:7"></i><i style="--k:8"></i><i style="--k:9"></i><i style="--k:10"></i><i style="--k:11"></i><i style="--k:12"></i><i style="--k:13"></i></div></div>
+            <div class="vstate"><span class="s1">● 말하는 중에도 듣는 중</span><span class="s2">◌ 대기: 말을 기다림</span></div>
+            <div class="meter"><em>분당 요금</em><b><span class="m1">$0.05</span><span class="m2">$0.02</span></b></div>
+          </div>
+          <div class="dpan"><h4>ChatGPT Wallet<small>dot이 고르고 대신 결제</small></h4>
+            <div class="wchat">
+              <div class="wb dot w1">허브 화분 1개, 총 $66.30. 저장된 주소로 보낼까요?</div>
+              <div class="wb me w2">응, 보내줘</div>
+              <div class="wb dot w3">결제 승인을 요청할게요.</div>
+              <div class="wbtn w4">구매 검토 ›</div>
+              <div class="wauth"><span class="fid"></span>Face ID로 승인 중</div>
+              <div class="wdone"><b>✓</b>결제 완료<br><small style="color:var(--ink-3)">카드 번호 대신 토큰</small></div>
+            </div>
+          </div>
+        </div>
+        <div class="card judge" data-a="right" style="--d:4"><span class="badge judge">한국 사용자 관점</span><ul style="margin-top:10px"><li>바로 체감: <b>한국어 음성</b> 개선</li><li>dots 제외 지역 표기: EEA·영국·스위스만</li><li>Wallet·Enterprise 요금: 당장 해당 없음</li></ul></div>
+      </div>
+    </div>
+    <p class="src">자료: OpenAI 개발자 커뮤니티(10.15), OpenAI Developers 공지·API 가격표(11.19), OpenAI 도움말 센터, TechCrunch(11.13) · 2026.11.23 기준</p>
+    <div class="gloss" data-a="fade" style="--d:6" aria-label="약어 풀이"><span><b>GPT-Live</b> · OpenAI의 실시간 음성 대화 모델</span><span><b>전이중</b><em>full duplex</em> · 듣기와 말하기를 동시에</span><span><b>API</b><em>Application Programming Interface</em> · 개발자가 모델을 앱에 붙이는 창구</span><span><b>대기</b><em>standby</em> · 말이 없을 때 낮은 요금으로 기다리는 상태</span></div>
+  </section>
+
+  <!-- 25 카톡 라이언: 기능 표 -->
+  <section class="slide" data-notes="카카오톡 AI 비서의 정식 명칭은 카나나 스페이스이고, 라이언은 그 첫 페르소나입니다. 무엇을 할 수 있는지 표로 정리했습니다. 부르는 방법은 카톡 화면을 두 손가락으로 쓸어 넘기는 것입니다. 첫 공개 기능은 메시지 전송, 일정 관리, 웹 검색, 카톡 설정 변경 네 가지입니다. 주문, 선물, 예약, 송금은 추가 예정으로, 구체적인 시점은 공개되지 않았습니다. 첫 공개 기능도 12월 중 비공개 베타에 참여하는 사전 신청자부터 쓸 수 있습니다.">
+    <div class="kicker" data-a="left">04 · 카카오톡 '라이언'</div>
+    <h2 data-a style="--d:1">라이언이 할 수 있는 일: <em>지금 넷, 예정 넷</em></h2>
+    <div class="row" style="margin-top:22px; align-items:flex-start">
+      <div class="ftab k4 grow" data-a style="--d:2">
+        <div class="h">기능</div><div class="h sub">분류</div><div class="h">상태</div><div class="h">언제부터</div>
+        <div class="rh">부르기</div><div class="sub">호출</div><div><span class="badge ok">발표됨</span></div><div>카톡 화면을 <b>두 손가락으로 쓸기</b></div>
+        <div class="rh">메시지 전송</div><div class="sub">소통</div><div><span class="badge ok">첫 공개</span></div><div>12월 중 CBT부터</div>
+        <div class="rh">일정 관리</div><div class="sub">생활</div><div><span class="badge ok">첫 공개</span></div><div>12월 중 CBT부터</div>
+        <div class="rh">웹 검색</div><div class="sub">정보</div><div><span class="badge ok">첫 공개</span></div><div>12월 중 CBT부터</div>
+        <div class="rh">카톡 설정 변경</div><div class="sub">설정</div><div><span class="badge ok">첫 공개</span></div><div>12월 중 CBT부터</div>
+        <div class="rh">주문</div><div class="sub">커머스</div><div><span class="badge judge">추가 예정</span></div><div>미정</div>
+        <div class="rh">선물</div><div class="sub">커머스</div><div><span class="badge judge">추가 예정</span></div><div>미정</div>
+        <div class="rh">예약</div><div class="sub">생활</div><div><span class="badge judge">추가 예정</span></div><div>미정</div>
+        <div class="rh">송금</div><div class="sub">금융</div><div><span class="badge judge">추가 예정</span></div><div>미정</div>
+      </div>
+      <div class="stackcol" style="width:330px">
+        <figure class="refimg light fit" data-a="right" style="--d:3; height:220px"><img src="img/ch4-kakaotalk.png" width="1400" height="1400" alt="노란 말풍선 모양의 카카오톡 로고" style="padding:28px 28px 40px"><figcaption>KakaoTalk 로고 · Kakao Corp., Public domain (Wikimedia Commons)</figcaption></figure>
+        <div class="card" data-a="right" style="--d:4"><div class="num">이름 정리</div><p style="margin-top:6px">서비스 <b>카나나 스페이스</b><br>첫 페르소나 <b>라이언</b></p></div>
+      </div>
+    </div>
+    <p class="src">자료: 아시아투데이(카나나 스페이스 12월 파일럿), 중앙이코노미뉴스 · 2026.11</p>
+    <div class="gloss" data-a="fade" style="--d:6" aria-label="약어 풀이"><span><b>CBT</b><em>Closed Beta Test</em> · 일부 신청자만 쓰는 비공개 시범 운영</span><span><b>페르소나</b> · AI 비서가 쓰는 캐릭터·말투</span></div>
+  </section>
+
+  <!-- 26 카톡 라이언: 12/16 -->
+  <section class="slide" data-notes="주의할 점은 12월 16일입니다. 이날은 서비스 출시일이 아니라 AI 서비스 공통 이용약관 시행일입니다. 실제 이용은 12월 중 사전 신청자 일부를 대상으로 한 비공개 베타로 시작하고, 전체 사용자 출시는 아닙니다. 주문, 선물, 예약, 송금은 그 뒤에 추가될 예정이며 일정은 공개되지 않았습니다.">
+    <div class="kicker" data-a="left">04 · 카카오톡 '라이언'</div>
+    <h2 data-a style="--d:1">12월 16일은 출시일이 아니라 <em>약관 시행일</em></h2>
+    <div class="tline" style="--n:3">
+      <div class="axis"><i></i></div>
+      <div class="ev key" data-a style="--d:2"><div class="dot"></div><div class="when">12.16</div><div class="what"><b>AI 서비스 공통 이용약관</b> 시행</div><div class="q">서비스 출시일 아님</div></div>
+      <div class="ev" data-a style="--d:4"><div class="dot"></div><div class="when">12월 중</div><div class="what">사전 신청자 일부 <b>비공개 베타(CBT)</b></div><div class="q">전체 사용자 대상 아님</div></div>
+      <div class="ev rum" data-a style="--d:6"><div class="dot"></div><div class="when">이후 (일정 미정)</div><div class="what">주문 · 선물 · 예약 · <b>송금</b> 추가 예정</div></div>
+    </div>
+    <div class="cols c2" style="margin-top:28px">
+      <div class="card hotc" data-a style="--d:8"><div class="num" style="color:#ff8a63">흔한 오해</div><p style="margin-top:6px"><s style="opacity:.7">“12월 16일 카톡에 AI 비서 출시”</s></p></div>
+      <div class="card ok" data-a style="--d:9"><div class="num">정확한 표현</div><p style="margin-top:6px">12/16 약관 시행 → <b>12월 중 일부 사전 신청자 CBT</b></p></div>
+    </div>
+    <p class="src">자료: 중앙이코노미뉴스(약관 12.16), 아시아투데이(12월 파일럿) · 2026.11</p>
+    <div class="gloss" data-a="fade" style="--d:10" aria-label="약어 풀이"><span><b>CBT</b><em>Closed Beta Test</em> · 비공개 시범 운영</span><span><b>약관 시행일</b> · 새 이용 조건이 효력을 갖는 날</span></div>
+  </section>
+
+  <!-- 27 Gemini GIF -->
+  <section class="slide" data-notes="11월 20일부터 Gemini 앱에서 텍스트, 사진, 영상으로 약 3초짜리 반복 GIF를 만들 수 있습니다. Google AI 구독자 대상이고 한국도 지원 국가에 포함됩니다. 바탕 모델인 Omni 1.2 Flash는 11월 5일 정식 출시됐고, 최대 15초 영상과 4K 업스케일을 지원합니다. 메모의 'GIFable'이라는 표현은 공식 자료에서 확인되지 않았습니다.">
+    <div class="kicker" data-a="left">04 · Gemini GIF</div>
+    <h2 data-a style="--d:1">Gemini 앱에서 <em>3초 반복 GIF</em>, 한국도 된다</h2>
+    <div class="row" style="margin-top:26px; align-items:stretch">
+      <div class="card ok grow" data-a style="--d:2">
+        <span class="badge ok">확정 · 11.20</span>
+        <div class="scores" style="margin-top:14px">
+          <div><div class="lbl">GIF 길이 (약)</div><div class="kpi gold"><span data-count="3">0</span><small>초 반복</small></div></div>
+          <div><div class="lbl">입력</div><div class="kpi" style="font-size:40px">텍스트 · 사진 · 영상</div></div>
+        </div>
+        <p style="margin-top:12px">대상: <b>Google AI 구독자</b> · 지원 국가에 <b>한국 포함</b></p>
+        <div class="cols c2" style="margin-top:14px; gap:14px">
+          <div class="card"><div class="num">바탕 모델 · Omni 1.2 Flash</div><p style="margin-top:6px"><b>11.05 GA</b> · 최대 15초 영상 · 4K 업스케일</p></div>
+          <div class="card rumor"><span class="badge rumor">미확인</span><p style="margin-top:8px">‘GIFable’이라는 이름은 <b>공식 자료에 없음</b></p></div>
+        </div>
+      </div>
+      <div class="gifdemo" data-a="right" style="--d:3; width:400px" aria-label="Gemini 앱에서 프롬프트로 3초 반복 GIF를 만드는 과정을 재현한 애니메이션">
+        <span class="demo-tag">동작 재현 · 실제 화면 아님</span>
+        <div class="gprompt"><span style="color:var(--blue)">✦</span><span class="tx">김이 피어오르는 커피잔 GIF</span><span class="cur"></span></div>
+        <div class="gstage">
+          <svg viewBox="0 0 360 260" role="img" aria-label="김이 반복해서 피어오르는 커피잔">
+            <ellipse cx="180" cy="226" rx="110" ry="14" fill="rgba(0,0,0,.35)"/>
+            <g class="cupbob">
+              <path class="steam" d="M150 120 q-14 -18 0 -36 q14 -18 0 -36" fill="none" stroke="#e9eef8" stroke-width="7" stroke-linecap="round"/>
+              <path class="steam s2" d="M180 116 q-14 -18 0 -36 q14 -18 0 -36" fill="none" stroke="#e9eef8" stroke-width="7" stroke-linecap="round"/>
+              <path class="steam s3" d="M210 120 q-14 -18 0 -36 q14 -18 0 -36" fill="none" stroke="#e9eef8" stroke-width="7" stroke-linecap="round"/>
+              <path d="M112 132 h136 l-12 78 a14 14 0 0 1 -14 12 h-84 a14 14 0 0 1 -14 -12 z" fill="#d5a844"/>
+              <path d="M248 148 q34 0 30 28 q-4 26 -36 24" fill="none" stroke="#d5a844" stroke-width="12"/>
+              <ellipse cx="180" cy="134" rx="68" ry="9" fill="#5a3a1c"/>
+            </g>
+          </svg>
+          <div class="gen">✦ GIF 생성 중…</div>
+        </div>
+        <div class="gloop"><span>↻ GIF</span><span class="pb"><i></i></span><span>3초</span></div>
+      </div>
+    </div>
+    <p class="src">자료: Android Authority · 2026.11.20</p>
+    <div class="gloss" data-a="fade" style="--d:6" aria-label="약어 풀이"><span><b>GA</b><em>General Availability</em> · 정식 출시</span><span><b>4K 업스케일</b> · 저해상도 영상을 4K로 키우는 기능</span></div>
+  </section>
+
+  <!-- 28 구간 표지 05 -->
+  <section class="slide s-photo" data-notes="마지막 장은 Tesla FSD v15입니다. 11월 21일 배포를 시작했고, 차량 주변을 가상 카메라 시점으로 그려 보여 주는 Reality View가 핵심입니다. Tesla가 내세운 '안전 25배' 수치는 따로 검증해야 합니다.">
+    <div class="ph soft" style="background-image:url(img/ch5-tesla.jpg)" aria-hidden="true"></div><div class="ph-shade"></div>
+    <figure class="ph-card" data-a="right" style="--d:2"><img src="img/ch5-tesla.jpg" width="1600" height="1200" alt="주차된 2025년형 Tesla Model Y" style="object-position:center"></figure>
+    <div class="bign" data-a="left">05</div>
+    <h2 data-a style="--d:1">Tesla FSD v15</h2>
+    <p class="sub" data-a style="--d:2">Reality View와 “안전 25배”</p>
+    <div class="credit">배경·우측: Dllu · CC BY-SA 4.0 · Tesla Model Y 2025, Santana Row (Wikimedia Commons)</div>
+  </section>
+
+  <!-- 29 FSD v15 -->
+  <section class="slide" data-notes="FSD v15는 11월 21일 배포를 시작했고, 12월 홀리데이 업데이트로 확대될 예정입니다. Reality View는 차량 위 가상 카메라 시점에서 주변을 실시간으로 생성해 보여 주는 화면으로, FSD가 어디로 갈 계획인지 표시되고 화면을 탭해 목적지를 지정할 수도 있습니다. 왼쪽 영상은 주차장에서 Reality View 화면의 빈자리를 손가락으로 탭해 고르자 화살표 표시가 뜨고, 위에서 내려다보는 시점으로 바뀌며 차가 그 자리로 들어가는 실제 화면을 2배속으로 줄인 것입니다. AI4 하드웨어 차량에서만 지원됩니다. '안전 25배' 주장은 Tesla 자체 수치이고, 지표 정의와 비교 기준을 공개하지 않아 검증되지 않았습니다.">
+    <div class="kicker" data-a="left">05 · Tesla FSD v15</div>
+    <h2 data-a style="--d:1">차 위에서 내려다보는 <em>Reality View</em>, 단 AI4 차량만</h2>
+    <div class="row" style="margin-top:24px; align-items:stretch">
+      <figure class="refimg" data-a style="--d:2; width:640px; height:360px; align-self:center"><picture><source srcset="img/ch5-reality-view.jpg" media="(prefers-reduced-motion: reduce)"><img src="img/ch5-reality-view.gif" width="560" height="315" alt="주차장에서 Reality View 화면의 빈자리를 손가락으로 탭하자 화살표 표시가 뜨고, 위에서 내려다보는 시점으로 바뀌며 차가 그 자리로 들어가는 영상"></picture><span class="demo-tag dark">실제 화면 영상 · 2배속</span><figcaption>FSD v15 주차 UI와 Reality View · @TeslaNewswire 게시 영상(X)에서 GIF로 변환</figcaption></figure>
+      <div class="stackcol grow">
+        <div class="card ok" data-a="right" style="--d:3"><span class="badge ok">확정</span>
+          <ul style="margin:10px 0 0"><li><b>11.21</b> 배포 시작 → <b>12월</b> 홀리데이 업데이트로 확대</li><li>차량 위 <b>가상 카메라 시점</b>으로 주변을 실시간 생성</li><li>FSD가 <b>어디로 갈지</b> 표시 · <b>탭해 목적지</b> 지정</li><li>지원: <b>AI4 하드웨어</b> 차량만</li></ul></div>
+        <div class="card vendor" data-a="right" style="--d:4"><span class="badge vendor">벤더 수치</span>
+          <div class="kpi" style="margin-top:10px; font-size:44px">“안전 <span style="color:var(--gold)">25</span>배”</div>
+          <div class="gauge low" style="margin-top:12px"><span class="zone"></span><span class="needle"></span></div>
+          <div class="gscale"><span>검증 낮음</span><span>중간</span><span>높음</span></div>
+          <p class="small" style="margin-top:6px">지표 정의·비교 기준 <b>비공개</b></p></div>
+      </div>
+    </div>
+    <p class="src">자료: Digital Trends(11.21), 영상 @TeslaNewswire(X, Basenor 게재 11.22)</p>
+    <div class="gloss" data-a="fade" style="--d:6" aria-label="약어 풀이"><span><b>AI4</b> · Tesla 차량에 들어가는 4세대 자율주행 컴퓨터(옛 HW4)</span><span><b>FSD</b><em>Full Self-Driving</em> · 운전자 감독이 필요한 주행 보조</span></div>
+  </section>
+
+  <!-- 30 요약 -->
+  <section class="slide" data-notes="정리합니다. 리만 가설 증명은 Lean 커널 검사와 커뮤니티의 명제 확인을 통과했지만 Clay 인정까지는 게재 후 최소 2년이 걸리고, P 대 NP를 푼 것은 아닙니다. 새 모델은 GPT-6.2, Gemini 4 Neon, Inkling 2 Mini가 확정이고, Inkling은 4비트로 학습해 32GB Mac에서 돌아갑니다. 한국 사용자에게는 ChatGPT 리디자인이 아직 오지 않았고, Gemini GIF는 바로 쓸 수 있으며, 카톡 라이언은 12월 비공개 베타부터입니다. 다음으로 볼 날짜는 12월 16일 카카오 약관 시행, 12월 중 카나나 스페이스 CBT, 12월 Tesla 홀리데이 업데이트, 그리고 Stitch Loop 대기자 개방입니다.">
+    <div class="kicker" data-a="left">Summary</div>
+    <h2 data-a style="--d:1">세 줄 요약과 <em>12월 일정</em></h2>
+    <div class="concl">
+      <div class="card" data-a style="--d:2"><div class="ic">∑</div><h3>리만 가설</h3><p>Lean 검증과 명제 확인 통과. Clay 인정은 게재 후 최소 2년. P vs NP와는 별개.</p></div>
+      <div class="card" data-a style="--d:3"><div class="ic">🧠</div><h3>새 모델</h3><p>GPT-6.2 · Gemini 4 Neon · Inkling 2 Mini 확정. Inkling은 4비트 학습으로 32GB Mac에서.</p></div>
+      <div class="card" data-a style="--d:4"><div class="ic">🇰🇷</div><h3>한국에서는</h3><p>ChatGPT 리디자인 제외, Gemini GIF는 지금, 카톡 라이언은 12월 CBT부터.</p></div>
+      <div class="card judge cal" data-a style="--d:5"><div class="num">다음 체크</div>
+        <ol><li><b>12.16</b>카카오 AI 약관 시행</li><li><b>12월 중</b>카나나 스페이스 CBT</li><li><b>12월</b>FSD v15 홀리데이 확대</li><li><b>미정</b>Stitch Loop 대기자 개방</li></ol>
+        <div class="ignite-what"><b>Clay 2년 규정?</b> 게재 후 2년이 지나고 수학계가 받아들여야 상금 심사가 시작된다.</div></div>
+    </div>
+    <div class="gloss" data-a="fade" style="--d:7" aria-label="약어 풀이"><span><b>CBT</b><em>Closed Beta Test</em> · 비공개 시범 운영</span><span><b>Lean</b> · 컴퓨터가 증명을 검사하는 증명 보조기</span></div>
+  </section>
+
+</main>
+
+<div class="notes" id="notes" role="note"></div>
+<nav class="hud" aria-label="슬라이드 이동">
+  <a href="../" title="아카이브로">← Archive</a>
+  <button type="button" id="firstBtn" title="첫 페이지로 (Home)" aria-label="첫 슬라이드로"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 3v10"/><path d="M12.5 3.5 7 8l5.5 4.5"/></svg></button>
+  <button type="button" id="prev" aria-label="이전 슬라이드">‹</button>
+  <span class="count" id="count">1 / 31</span>
+  <button type="button" id="next" aria-label="다음 슬라이드">›</button>
+  <button type="button" id="notesBtn" title="발표자 노트 (N)">N</button>
+  <button type="button" id="fsBtn" title="전체 화면 (F)">⛶</button>
+  <!-- 짝이 되는 스크롤 타입이 있을 때만 -->
+  <a class="alt" href="../ai-briefing-2026-11-w4-report/" title="같은 내용을 위아래로 스크롤해 읽는 스크롤 타입"><span class="ico" aria-hidden="true">☰</span><span class="lbl">스크롤 타입으로 보기</span></a>
+</nav>
+
+<script>
+(() => {
+  const deck = document.getElementById('deck');
+  const slides = [...deck.querySelectorAll('.slide')];
+  const N = slides.length;
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const $ = id => document.getElementById(id);
+  let cur = -1, timers = [], rafs = [];
+
+  /* ── fit the stage to the window ──
+     Landscape: a fixed 1600×900 stage. Phone held upright: a 640-wide stage whose height follows the
+     screen, and every slide re-flows to one column (html.portrait rules in the CSS). */
+  function fit() {
+    const W = innerWidth, H = innerHeight, root = document.documentElement;
+    const portrait = H > W * 1.15 && W < 900;
+    const short = !portrait && H < 560;
+    root.classList.toggle('portrait', portrait);
+    root.classList.toggle('short', short);
+    const dw = portrait ? 640 : 1600;
+    const dh = portrait ? Math.round(Math.max(1000, Math.min(1500, 640 * H / W))) : 900;
+    const availH = short ? H - 54 : H;
+    const s = Math.min(W / dw, availH / dh);
+    deck.style.width = dw + 'px'; deck.style.height = dh + 'px';
+    deck.style.top = short ? (availH / 2) + 'px' : '50%';
+    deck.style.transform = `scale(${s}) translate(${-dw / 2}px, ${-dh / 2}px)`;
+  }
+  addEventListener('resize', fit); addEventListener('orientationchange', () => setTimeout(fit, 200)); fit();
+
+  /* ── per-slide timers, cleared when the slide is left ── */
+  const later = (fn, ms) => timers.push(setTimeout(fn, reduced ? 0 : ms));
+  const every = (fn, ms) => timers.push(setInterval(fn, ms));
+  const frame = fn => { let id; const loop = t => { if (fn(t) !== false) { id = requestAnimationFrame(loop); rafs.push(id); } }; id = requestAnimationFrame(loop); rafs.push(id); };
+  function clearAll() { timers.forEach(t => { clearTimeout(t); clearInterval(t); }); rafs.forEach(cancelAnimationFrame); timers = []; rafs = []; }
+
+  /* ── count-up numbers: <span data-count="397.5" data-dec="1" data-comma="1" data-from="0" data-delay="500"> ── */
+  const fmt = (v, dec, comma) => comma ? v.toLocaleString('en-US', { minimumFractionDigits: dec, maximumFractionDigits: dec }) : v.toFixed(dec);
+  function countUp(el) {
+    const to = +el.dataset.count, from = +(el.dataset.from || 0), dec = +(el.dataset.dec || 0), delay = +(el.dataset.delay || 500), dur = 1600, comma = !!el.dataset.comma;
+    el.textContent = fmt(from, dec, comma);
+    if (reduced) { el.textContent = fmt(to, dec, comma); return; }
+    later(() => { const t0 = performance.now(); frame(t => { const p = Math.min(1, (t - t0) / dur), e = 1 - Math.pow(1 - p, 3); el.textContent = fmt(from + (to - from) * e, dec, comma); return p < 1; }); }, delay);
+  }
+
+  /* ── before/after toggle charts (.ptog buttons with data-p="0|1" next to a .pchart) ── */
+  const setToggle = (slide, after) => {
+    slide.querySelectorAll('.pchart').forEach(c => c.classList.toggle('after', after));
+    slide.querySelectorAll('.ptog button').forEach(b => b.setAttribute('aria-pressed', String((b.dataset.p === '1') === after)));
+  };
+  document.querySelectorAll('.ptog button').forEach(b => b.addEventListener('click', e => { e.stopPropagation(); clearAll(); setToggle(b.closest('.slide'), b.dataset.p === '1'); }));
+
+  /* ── slide hooks: <section class="slide" data-hook="name"> runs hooks.name(slide) on entry.
+     Add a hook per custom animation; use later/every/frame so leaving the slide stops it. ── */
+  const hooks = {
+    // .pchart: start on "before", switch to "after"
+    toggle(s) { setToggle(s, false); later(() => setToggle(s, true), 2600); },
+    // .wflow: light each .wstep in turn, arrows follow; .tok gets a fresh token on step 3
+    steps(s) {
+      const flow = s.querySelector('.wflow'), steps = [...flow.querySelectorAll('.wstep')], arrs = [...flow.querySelectorAll('.ar')];
+      const tok = flow.querySelector('.tok'); let i = -1;
+      const hex = () => Math.random().toString(16).slice(2, 6);
+      const tick = () => {
+        i = (i + 1) % (steps.length + 1);
+        steps.forEach((el, k) => el.classList.toggle('on', k === i));
+        arrs.forEach((a, k) => a.classList.toggle('on', k < i && i < steps.length));
+        if (tok && i === 2) tok.textContent = 'tok · ' + hex();
+      };
+      steps.forEach(el => el.classList.remove('on')); arrs.forEach(a => a.classList.remove('on'));
+      if (reduced) { steps.forEach(el => el.classList.add('on')); return; }
+      later(() => { tick(); every(tick, 1300); }, 1200);
+    },
+  };
+
+  /* ── navigation ── */
+  function go(n, fromHash) {
+    n = Math.max(0, Math.min(N - 1, n));
+    if (n === cur) return;
+    clearAll();
+    slides.forEach((s, k) => { s.classList.toggle('is-active', k === n); s.classList.toggle('is-past', k < n); s.setAttribute('aria-hidden', k !== n); });
+    cur = n;
+    const s = slides[n]; s.scrollTop = 0;
+    s.querySelectorAll('[data-count]').forEach(countUp);
+    if (s.dataset.hook && hooks[s.dataset.hook]) hooks[s.dataset.hook](s);
+    $('progress').style.width = ((n + 1) / N * 100) + '%';
+    $('count').textContent = `${n + 1} / ${N}`;
+    $('firstBtn').disabled = n === 0;
+    $('notes').innerHTML = `<b>${n + 1}</b>${s.dataset.notes || ''}`;
+    if (!fromHash) history.replaceState(null, '', '#' + (n + 1));
+  }
+  slides.forEach((s, k) => { s.setAttribute('role', 'group'); s.setAttribute('aria-roledescription', 'slide'); s.setAttribute('aria-label', `${k + 1} / ${N}`); });
+  $('firstBtn').onclick = () => go(0);
+  $('prev').onclick = () => go(cur - 1);
+  $('next').onclick = () => go(cur + 1);
+  $('notesBtn').onclick = () => $('notes').classList.toggle('show');
+  const fs = () => document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen?.();
+  $('fsBtn').onclick = fs;
+  addEventListener('keydown', e => {
+    if (e.metaKey || e.ctrlKey || e.altKey) return;
+    if (['ArrowRight', 'ArrowDown', 'PageDown', ' '].includes(e.key)) { e.preventDefault(); go(cur + 1); }
+    else if (['ArrowLeft', 'ArrowUp', 'PageUp'].includes(e.key)) { e.preventDefault(); go(cur - 1); }
+    else if (e.key === 'Home') go(0);
+    else if (e.key === 'End') go(N - 1);
+    else if (e.key === 'n' || e.key === 'N') $('notes').classList.toggle('show');
+    else if (e.key === 'f' || e.key === 'F') fs();
+  });
+  let tx = null, ty = 0;
+  addEventListener('touchstart', e => { tx = e.touches[0].clientX; ty = e.touches[0].clientY; }, { passive: true });
+  addEventListener('touchend', e => {
+    if (tx === null) return;
+    const d = e.changedTouches[0].clientX - tx, dy = e.changedTouches[0].clientY - ty; tx = null;
+    if (Math.abs(d) > 50 && Math.abs(d) > Math.abs(dy) * 1.3) go(cur + (d < 0 ? 1 : -1));
+  });
+  addEventListener('hashchange', () => go((parseInt(location.hash.slice(1), 10) || 1) - 1, true));
+  go((parseInt(location.hash.slice(1), 10) || 1) - 1, true);
+
+  /* ── background: a slow field of gold dots, brighter where a wave passes ── */
+  const cv = $('bgfx'), g = cv.getContext('2d');
+  let W, H, dpr;
+  const size = () => { dpr = Math.min(2, devicePixelRatio || 1); W = innerWidth; H = innerHeight; cv.width = W * dpr; cv.height = H * dpr; g.setTransform(dpr, 0, 0, dpr, 0, 0); };
+  size(); addEventListener('resize', size);
+  let last = 0;
+  const draw = t => {
+    if (!reduced) requestAnimationFrame(draw);
+    if (t - last < 50) return; last = t;
+    g.fillStyle = '#0c1524'; g.fillRect(0, 0, W, H);
+    const step = 26, s = t / 1000;
+    for (let y = step / 2; y < H; y += step) for (let x = step / 2; x < W; x += step) {
+      const w = Math.sin(x * .006 + s * .6) + Math.sin(y * .008 - s * .4) + Math.sin((x + y) * .004 + s * .3);
+      const a = .05 + Math.max(0, w) * .045;
+      g.fillStyle = `rgba(213,168,68,${a.toFixed(3)})`; g.fillRect(x - 1, y - 1, 2, 2);
+    }
+  };
+  requestAnimationFrame(draw);
+})();
+</script>
+<script>
+document.querySelectorAll('.noisegrid').forEach(g => { const pal = ['#2b3550','#5b4a3a','#8a7a5c','#1a2236','#a99b7c','#3c4a68','#6e5a44']; let h=''; for (let i=0;i<144;i++){ h += '<i style="--nc:'+pal[(Math.random()*pal.length)|0]+';--nd:'+(Math.random()*1.4).toFixed(2)+'s"></i>'; } g.innerHTML = h; });
+</script>
+<script>
+(() => {
+  const fig = document.querySelector('.pcplot'); if (!fig) return;
+  const cv = fig.querySelector('canvas'), st = fig.querySelector('.pcstage'), slide = fig.closest('.slide');
+  const N = 10000, pi = new Float64Array(N + 1), sieve = new Uint8Array(N + 1); let c = 0;
+  for (let i = 2; i <= N; i++) { if (!sieve[i]) { c++; for (let j = i * i; j <= N; j += i) sieve[j] = 1; } pi[i] = c; }
+  const Li = new Float64Array(N + 1); // Li(x) = ∫_2^x dt/ln t, Simpson per unit step
+  for (let i = 3; i <= N; i++) { const a = i - 1, m = i - .5, f = t => 1 / Math.log(t); Li[i] = Li[i - 1] + (f(a) + 4 * f(m) + f(i)) / 6; }
+  const LiAt = x => { const i = Math.floor(x); return i >= N ? Li[N] : Li[i] + (Li[i + 1] - Li[i]) * (x - i); };
+  const stages = [ [30, '계단: 소수마다 한 칸씩'], [100, '계단이 잘아진다'], [1000, '울퉁불퉁한 선'], [10000, '거의 매끈한 곡선 · Li(x)에 밀착'] ];
+  const HOLD = 2200, MOVE = 1500, CYCLE = stages.length * (HOLD + MOVE);
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let raf = 0, t0 = 0, lastLabel = '';
+  const ease = t => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+  function xmaxAt(t) {
+    t %= CYCLE; const seg = HOLD + MOVE, k = Math.floor(t / seg), r = t - k * seg;
+    const a = stages[k][0], b = stages[(k + 1) % stages.length][0];
+    if (r < HOLD || k === stages.length - 1) return [a, k];
+    const e = ease((r - HOLD) / MOVE); return [Math.exp(Math.log(a) + (Math.log(b) - Math.log(a)) * e), k];
+  }
+  function niceStep(r) { const p = Math.pow(10, Math.floor(Math.log10(r / 4))); for (const m of [1, 2, 5, 10]) if (r / (m * p) <= 6) return m * p; return 10 * p; }
+  function draw(X, k) {
+    const dpr = window.devicePixelRatio || 1, W = cv.clientWidth, H = cv.clientHeight;
+    if (cv.width !== W * dpr) { cv.width = W * dpr; cv.height = H * dpr; }
+    const g = cv.getContext('2d'); g.setTransform(dpr, 0, 0, dpr, 0, 0); g.clearRect(0, 0, W, H);
+    const L = 56, R = 22, T = 84, B = 58, w = W - L - R, h = H - T - B;
+    const Y = Math.max(LiAt(X), pi[Math.min(N, Math.floor(X))]) * 1.12 + 1;
+    const sx = x => L + (x / X) * w, sy = y => T + h - (y / Y) * h;
+    g.font = '12px "JetBrains Mono", monospace'; g.lineWidth = 1;
+    const xs = niceStep(X), ys = niceStep(Y);
+    g.strokeStyle = 'rgba(243,239,228,.08)'; g.fillStyle = 'rgba(243,239,228,.5)';
+    for (let x = 0; x <= X + 1e-9; x += xs) { g.beginPath(); g.moveTo(sx(x), T); g.lineTo(sx(x), T + h); g.stroke(); g.textAlign = 'center'; g.fillText(x.toLocaleString(), sx(x), T + h + 18); }
+    for (let y = 0; y <= Y; y += ys) { g.beginPath(); g.moveTo(L, sy(y)); g.lineTo(L + w, sy(y)); g.stroke(); g.textAlign = 'right'; g.fillText(Math.round(y).toLocaleString(), L - 8, sy(y) + 4); }
+    // primes as ticks on x axis when zoomed in
+    const tickA = Math.max(0, Math.min(1, (200 - X) / 150));
+    if (tickA > 0) { g.fillStyle = `rgba(213,168,68,${tickA})`; for (let p = 2; p <= X; p++) if (!sieve[p]) { g.beginPath(); g.arc(sx(p), T + h, 3.2, 0, 7); g.fill(); } }
+    const line = (col, wd, fn) => { g.strokeStyle = col; g.lineWidth = wd; g.beginPath(); const n = Math.min(900, Math.ceil(X * 2)); for (let i = 0; i <= n; i++) { const x = 2 + (X - 2) * i / n; const y = fn(x); i ? g.lineTo(sx(x), sy(y)) : g.moveTo(sx(x), sy(y)); } g.stroke(); };
+    line('rgba(240,84,42,.9)', 2, x => x / Math.log(x));
+    line('rgba(106,168,255,.95)', 2, LiAt);
+    // π(x) as true staircase
+    g.strokeStyle = '#4fd18b'; g.lineWidth = 2.6; g.beginPath(); g.moveTo(sx(0), sy(0));
+    const step = Math.max(1, Math.floor(X / 1200)); let prev = 0;
+    for (let x = 1; x <= Math.min(N, X); x += step) { const y = pi[x]; if (y !== prev) { g.lineTo(sx(x), sy(prev)); g.lineTo(sx(x), sy(y)); prev = y; } }
+    g.lineTo(sx(X), sy(prev)); g.stroke();
+    // legend
+    g.font = '600 13px "Pretendard Variable", sans-serif'; g.textAlign = 'left';
+    [['#4fd18b', 'π(x) 실제 소수 개수'], ['rgba(106,168,255,1)', 'Li(x)'], ['rgba(240,84,42,1)', 'x / ln x']].forEach(([cl, tx], i) => { const xx = [16, 186, 262][i], yy = 60; g.fillStyle = cl; g.fillRect(xx, yy - 6, 18, 3); g.fillStyle = 'rgba(243,239,228,.85)'; g.fillText(tx, xx + 24, yy); });
+    const lab = `x ≤ ${Math.round(X).toLocaleString()}`;
+    const html = `${lab}<small>${k >= 0 ? stages[k][1] : ''} · 소수 ${pi[Math.min(N, Math.floor(X))].toLocaleString()}개</small>`;
+    if (html !== lastLabel) { st.innerHTML = html; lastLabel = html; }
+  }
+  function frame(now) { if (!t0) t0 = now; const [X, k] = xmaxAt(now - t0); draw(X, k); raf = requestAnimationFrame(frame); }
+  function sync() { const on = slide.classList.contains('is-active'); cancelAnimationFrame(raf); if (on && !reduce) { t0 = 0; raf = requestAnimationFrame(frame); } else draw(reduce ? 10000 : 30, reduce ? 3 : 0); }
+  new MutationObserver(sync).observe(slide, { attributes: true, attributeFilter: ['class'] });
+  addEventListener('resize', sync); requestAnimationFrame(sync);
+})();
+</script>
+</body>
+</html>
