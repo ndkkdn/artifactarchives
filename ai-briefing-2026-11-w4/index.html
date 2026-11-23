@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>2026년 11월 넷째 주 테크·AI 브리핑</title>
-<meta name="description" content="리만 가설 증명(가설의 뜻, Lean 검증, Clay 조건, P=NP가 함께 언급되는 이유), GPT-6.2 Astra·Sol, Gemini 4 Neon·Cobalt·Helium, Inkling 2 Mini와 4비트 양자화, Google Stitch Loop와 대기자 명단, Runway diffusion-ui, ChatGPT 리디자인·dots·GPT-Live-1.1, 카카오톡 라이언, Gemini GIF, Tesla FSD v15를 31장으로 정리한 주간 브리핑.">
+<meta name="description" content="리만 가설 증명(가설의 뜻, Lean 검증, Clay 조건, P=NP가 함께 언급되는 이유), GPT-6.2 Astra·Sol, Gemini 4 Neon·Cobalt·Helium, Inkling 2 Mini와 4비트 양자화, Google Stitch Loop와 대기자 명단, Runway diffusion-ui, ChatGPT 리디자인·dots·GPT-Live-1.1, 카카오톡 라이언, Gemini GIF, Tesla FSD v15를 34장으로 정리한 주간 브리핑.">
 <link rel="icon" href="../favicon.ico">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -795,6 +795,67 @@
   html.portrait .ftab { grid-template-columns: 112px 104px minmax(0, 1fr); }
   html.portrait .ftab > div { font-size: 13.5px; padding: 8px 9px; }
   html.portrait .ftab:not(.k4) .badge { white-space: normal; line-height: 1.3; }
+  /* ── w4 rev3: millennium, voices, gif compare, chapter summary, ChatGPT spotlight ── */
+  .mill { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; margin-top: 26px; }
+  .mill .mt { position: relative; display: flex; flex-direction: column; gap: 6px; padding: 16px 18px; border-radius: 16px; border: 1px solid var(--line); background: var(--card); min-height: 196px; }
+  .mill .mt .f { font: 600 13px "JetBrains Mono", monospace; color: var(--ink-3); }
+  .mill .mt b { font-size: 21px; line-height: 1.25; letter-spacing: -.01em; }
+  .mill .mt p { margin: 0; font-size: 15.5px; color: var(--ink-2); line-height: 1.45; flex: 1; }
+  .mill .mt .badge { align-self: flex-start; font-size: 13px; }
+  .mill .mt.hot { border-color: rgba(213,168,68,.7); background: rgba(213,168,68,.1); box-shadow: 0 0 0 4px rgba(213,168,68,.08); }
+  .mill .mt.hot b { color: var(--gold); }
+  .mill .mt.done { border-color: rgba(79,209,139,.5); }
+  .mill .mt.info { background: transparent; border-style: dashed; }
+  .mill .tally { display: flex; gap: 18px; margin: 6px 0; }
+  .mill .tally div { display: flex; flex-direction: column; }
+  .mill .tally b { font: 800 40px Inter, sans-serif; line-height: 1; } .mill .tally b.g { color: var(--gold); }
+  .mill .tally span { font-size: 13px; color: var(--ink-3); }
+  .mill .mt.hot::after { content: ""; position: absolute; inset: -1px; border-radius: 16px; pointer-events: none; }
+  .is-active .mill .mt.hot::after { animation: millGlow 2.6s ease-in-out 1.6s infinite; }
+  @keyframes millGlow { 50% { box-shadow: 0 0 0 8px rgba(213,168,68,.18); } }
+  .mill .mt .badge:not(.ok):not(.judge) { border: 1px solid var(--line); color: var(--ink-3); background: transparent; }
+  html.portrait .mill { grid-template-columns: 1fr 1fr; gap: 10px; } html.portrait .mill .mt { min-height: 0; padding: 12px; } html.portrait .mill .mt b { font-size: 16px; } html.portrait .mill .mt p { font-size: 13px; }
+  .voices { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+  .voices .vc { position: relative; display: inline-flex; flex-direction: column; padding: 8px 14px; border-radius: 12px; border: 1px solid var(--line); background: var(--card-2); font: 600 16px "JetBrains Mono", monospace; color: var(--ink-2); }
+  .voices .vc small { font: 500 12px "Pretendard Variable", sans-serif; color: var(--ink-3); }
+  .voices .vc.def { border-color: rgba(106,168,255,.6); color: var(--blue); }
+  .voices .vc.kr { border-color: rgba(213,168,68,.8); background: rgba(213,168,68,.14); color: var(--gold); padding-right: 64px; }
+  .voices .vw { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); display: flex; gap: 3px; align-items: center; height: 26px; }
+  .voices .vw b { width: 4px; height: 100%; border-radius: 2px; background: var(--gold); transform: scaleY(.3); }
+  .is-active .voices .vw b { animation: vWave .5s ease-in-out infinite alternate; } .voices .vw b:nth-child(2) { animation-delay: -.15s !important; } .voices .vw b:nth-child(3) { animation-delay: -.3s !important; } .voices .vw b:nth-child(4) { animation-delay: -.08s !important; } .voices .vw b:nth-child(5) { animation-delay: -.22s !important; }
+  .ftab.cmp3 { grid-template-columns: 150px minmax(0, 1fr) minmax(0, 1fr); }
+  .ftab.cmp3 code { font-size: 14px; }
+  .fstrip { position: relative; display: flex; gap: 5px; margin-top: 12px; height: 46px; }
+  .fstrip i { flex: 1; border-radius: 6px; background: var(--card-2); border: 1px solid var(--line); }
+  .fstrip em { position: absolute; top: -3px; bottom: -3px; left: 0; width: calc((100% - 40px) / 9); border-radius: 8px; border: 2px solid var(--gold); box-shadow: 0 0 12px rgba(213,168,68,.5); }
+  .fstrip.o em { border-color: var(--blue); box-shadow: 0 0 12px rgba(106,168,255,.5); }
+  .is-active .fstrip.g em { animation: fsG 3s linear infinite; } .is-active .fstrip.o em { animation: fsG 1.8s steps(9) infinite; }
+  @keyframes fsG { from { transform: translateX(0); } to { transform: translateX(calc((100% + 5px) * 9)); } }
+  .fstrip.g i { background: linear-gradient(90deg, rgba(213,168,68,.12), rgba(213,168,68,.3)); }
+  .fcap { display: flex; justify-content: space-between; margin-top: 6px; font: 500 13px "JetBrains Mono", monospace; color: var(--ink-3); }
+  html.portrait .ftab.cmp3 { grid-template-columns: 84px minmax(0, 1fr) minmax(0, 1fr); }
+  .chsum { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 14px; margin-top: 26px; }
+  .chsum .cs { display: flex; flex-direction: column; gap: 8px; padding: 18px; border-radius: 16px; border: 1px solid var(--line); background: var(--card); }
+  .chsum .cs .n { font: 800 34px Inter, sans-serif; color: var(--gold); line-height: 1; }
+  .chsum .cs h3 { margin: 0; font-size: 22px; }
+  .chsum .cs ul { margin: 4px 0 0; padding-left: 18px; flex: 1; } .chsum .cs li { font-size: 15.5px; line-height: 1.45; color: var(--ink-2); margin-bottom: 6px; }
+  .chsum .cs .badge { align-self: flex-start; font-size: 13px; }
+  .nextchk { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-top: 18px; padding: 14px 18px; border-radius: 16px; border: 1px dashed rgba(213,168,68,.5); }
+  .nextchk > b { color: var(--gold); font-size: 17px; margin-right: 6px; }
+  .nextchk span { font-size: 15.5px; color: var(--ink-2); padding: 6px 12px; border-radius: 999px; background: var(--card-2); }
+  .nextchk span em { font-style: normal; font: 700 14px "JetBrains Mono", monospace; color: var(--ink); margin-right: 6px; }
+  html.portrait .chsum { grid-template-columns: 1fr; gap: 10px; } html.portrait .chsum .cs { padding: 12px 14px; } html.portrait .chsum .cs .n { font-size: 24px; }
+  /* ChatGPT screenshot spotlight, synced with the tab cycle */
+  .cgspot { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+  .cgspot .dim { fill: rgba(5,10,20,.62); opacity: 0; }
+  .cgspot .ring { fill: none; stroke: var(--gold); stroke-width: 7; opacity: 0; }
+  .is-active .cgspot .dim { animation: cgDim 6s ease-in-out infinite; } .is-active .cgspot .ring { animation: cgRing 6s ease-in-out infinite; }
+  .is-active .cgspot .p2 { animation-delay: -4s; } .is-active .cgspot .p3 { animation-delay: -2s; }
+  @keyframes cgDim { 0%, 30% { opacity: 0; } 36%, 94% { opacity: 1; } 100% { opacity: 0; } }
+  @keyframes cgRing { 0%, 30% { opacity: 1; } 36%, 94% { opacity: 0; } 100% { opacity: 1; } }
+  .is-active .cgspot .cloud { animation: cgBob 2s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+  @keyframes cgBob { 50% { transform: translateY(-14px); } }
+  @media (prefers-reduced-motion: reduce) { .cgspot *, .fstrip em, .voices .vw b, .mill .mt.hot::after { animation: none !important; } }
   /* ── live demos (동작 재현 애니메이션) ── */
   .pcplot canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
   .pcstage { position: absolute; right: 16px; top: 12px; z-index: 4; text-align: right; font: 700 22px "JetBrains Mono", monospace; color: var(--gold); line-height: 1.25; }
@@ -1059,7 +1120,25 @@
         <figure class="refimg" data-a="right" style="--d:4; height:200px"><img src="img/ch1-kingy-critical.jpg" width="1400" height="787" alt="격자 위 세로선에 영점이 줄지어 찍힌 일러스트"><figcaption>임계선에 늘어선 영점 일러스트 · Kingy.ai 기사 이미지</figcaption></figure>
       </div>
     </div>
-    <div class="gloss" data-a="fade" style="--d:6" aria-label="약어 풀이"><span><b>영점</b> · 함수값이 0이 되는 입력</span><span><b>임계선</b><em>critical line</em> · 복소평면에서 실수부가 ½인 세로선</span><span><b>ζ</b> · 그리스 문자 제타</span></div>
+    <div class="gloss" data-a="fade" style="--d:6" aria-label="약어 풀이"><span><b>복소수</b><em>complex number</em> · a + bi 꼴의 수. a는 실수부, b는 허수부(i² = −1)</span><span><b>영점</b><em>zero</em> · 함수값이 0이 되는 입력값 s</span><span><b>임계선</b><em>critical line</em> · 복소평면에서 실수부가 ½인 세로선</span><span><b>ζ</b> · 그리스 문자 제타</span></div>
+  </section>
+
+  <!-- 05b 밀레니엄 7대 난제 -->
+  <section class="slide" data-notes="리만 가설은 Clay 연구소가 2000년 5월 24일 발표한 일곱 개의 밀레니엄 문제 가운데 하나입니다. 문제마다 100만 달러의 상금이 걸려 있습니다. P 대 NP는 검증이 쉬운 문제를 푸는 것도 쉬운가를 묻습니다. 양-밀스 문제는 입자물리학의 바탕인 양자 게이지 이론이 수학적으로 존재하고 질량 간극을 갖는지 묻습니다. 나비에-스토크스 문제는 3차원 유체 방정식에 늘 매끄러운 해가 있는지, 버치-스위너턴다이어 추측은 타원곡선 위 유리수 점의 개수가 L-함수와 어떻게 연결되는지, 호지 추측은 어떤 위상적 대상을 대수적 도형으로 나타낼 수 있는지 묻습니다. 일곱 가운데 공식적으로 풀린 것은 푸앵카레 추측 하나로, 페렐만이 2002년과 2003년에 증명을 공개했고 2010년 상이 수여됐지만 그는 받지 않았습니다. 리만 가설은 이번에 증명이 발표됐지만 Clay의 인정은 아직입니다.">
+    <div class="kicker" data-a="left">01 · 밀레니엄 7대 난제</div>
+    <h2 data-a style="--d:1">상금 100만 달러씩, <em>풀린 것은 하나</em></h2>
+    <div class="mill">
+      <div class="mt" data-a="pop" style="--d:2"><span class="f">컴퓨터 과학</span><b>P vs NP</b><p>검증이 쉬운 문제는 푸는 것도 쉬운가</p><span class="badge">미해결</span></div>
+      <div class="mt hot" data-a="pop" style="--d:3"><span class="f">정수론</span><b>리만 가설</b><p>제타 함수의 의미 있는 영점은 모두 임계선 위인가</p><span class="badge judge">증명 발표 · Clay 미인정</span></div>
+      <div class="mt" data-a="pop" style="--d:4"><span class="f">수리물리</span><b>양-밀스 존재와 질량 간극</b><p>양자 게이지 이론이 수학적으로 존재하고, 질량 간극을 갖는가</p><span class="badge">미해결</span></div>
+      <div class="mt" data-a="pop" style="--d:5"><span class="f">유체역학</span><b>나비에-스토크스 방정식</b><p>3차원 유체 방정식에 늘 매끄러운 해가 있는가</p><span class="badge">미해결</span></div>
+      <div class="mt" data-a="pop" style="--d:6"><span class="f">정수론</span><b>버치-스위너턴다이어 추측</b><p>타원곡선 위 유리수 점의 개수와 L-함수의 관계</p><span class="badge">미해결</span></div>
+      <div class="mt" data-a="pop" style="--d:7"><span class="f">대수기하</span><b>호지 추측</b><p>어떤 위상적 대상을 대수적 도형으로 나타낼 수 있는가</p><span class="badge">미해결</span></div>
+      <div class="mt done" data-a="pop" style="--d:8"><span class="f">위상수학</span><b>푸앵카레 추측</b><p>구멍 없는 3차원 공간은 구면과 같은가 · 페렐만 2002–03 증명</p><span class="badge ok">해결 · 2010 수여(거절)</span></div>
+      <div class="mt info" data-a="pop" style="--d:9"><span class="f">Clay 연구소 · 2000.05.24 발표</span><div class="tally"><div><b>1</b><span>해결</span></div><div><b class="g">1</b><span>증명 발표</span></div><div><b>5</b><span>미해결</span></div></div><p>문제당 상금 <b>100만 달러</b></p></div>
+    </div>
+    <p class="src">자료: Clay 수학 연구소(Millennium Prize Problems) · 리만 가설 상태는 2026.11.23 기준</p>
+    <div class="gloss" data-a="fade" style="--d:10" aria-label="약어 풀이"><span><b>밀레니엄 문제</b><em>Millennium Prize Problems</em> · Clay 연구소가 상금을 건 7개 수학 난제</span><span><b>질량 간극</b><em>mass gap</em> · 가장 가벼운 입자도 0보다 큰 질량을 갖는 성질</span><span><b>타원곡선</b> · y² = x³ + ax + b 꼴의 곡선</span></div>
   </section>
 
   <!-- 06 왜 중요한가 -->
@@ -1079,7 +1158,7 @@
   </section>
 
   <!-- 07 발표와 검증 -->
-  <section class="slide" data-notes="11월 20일 Anthropic의 수학자 레벤트 알푀게가 Claude와 함께 리만 가설과 일반화된 리만 가설을 증명했다고 발표했습니다. 증명은 논문이 아니라 Lean 4 코드로, 14개 아카이브에 약 17만 5천 개 파일 규모입니다. Lean과 Mathlib 커뮤니티가 공동 성명으로 명제와 증명이 모두 정확하다고 인증했고, MIT의 앤드루 서덜랜드 등 독립 연구자들도 따로 컴파일에 성공했습니다.">
+  <section class="slide" data-notes="11월 20일 Anthropic의 수학자 레벤트 알푀게가 Claude와 함께 리만 가설과 일반화된 리만 가설을 증명했다고 발표했습니다. 증명은 논문이 아니라 Lean 4 코드로, 14개 압축 파일로 나뉘어 있고, 합치면 약 239MB에 Lean 소스 파일 175,187개, 즉 약 17만 5천 개 규모입니다. 25만이 아니라 17.5만이 맞습니다. Lean과 Mathlib 커뮤니티가 공동 성명으로 명제와 증명이 모두 정확하다고 인증했고, MIT의 앤드루 서덜랜드 등 독립 연구자들도 따로 컴파일에 성공했습니다.">
     <div class="kicker" data-a="left">01 · 발표와 검증</div>
     <h2 data-a style="--d:1">증명은 논문이 아니라 <em>Lean 코드</em>로 나왔다 <span class="badge ok" style="font-size:17px; vertical-align:12px">확정</span></h2>
     <div class="row" style="margin-top:26px; align-items:stretch">
@@ -1087,7 +1166,7 @@
         <div class="num">11.20 발표 · 알푀게 + Claude</div>
         <div class="scores">
           <div><div class="lbl">아카이브</div><div class="kpi"><span data-count="14">0</span><small>개</small></div></div>
-          <div><div class="lbl">파일 수 (약)</div><div class="kpi gold"><span data-count="17.5" data-dec="1">0</span><small>만 개</small></div></div>
+          <div><div class="lbl">Lean 파일 수</div><div class="kpi gold"><span data-count="17.5" data-dec="1">0</span><small>만 개</small></div><div class="small" style="color:var(--ink-3)">정확히 175,187개 · 압축 약 239MB</div></div>
           <div><div class="lbl">언어</div><div class="kpi">Lean <small>4</small></div></div>
         </div>
         <p style="margin-top:14px">대상: <b>리만 가설</b>과 <b>일반화된 리만 가설</b> 둘 다</p>
@@ -1096,7 +1175,7 @@
       </div>
       <figure class="refimg" data-a="right" style="--d:4; width:560px; height:470px"><img src="img/ch1-nature.jpg" width="1400" height="788" alt="수학자들이 수식이 가득한 화이트보드 앞에 모여 있는 사진" style="object-position:40% center"><figcaption>Nature 기사 대표 이미지 (James Brittain/Getty) · 리만 가설 증명 반응 기사</figcaption></figure>
     </div>
-    <p class="src">자료: Nature, Scientific American · 2026.11.20~22</p>
+    <p class="src">자료: Nature, Scientific American, Kingy.ai(파일 수·용량) · 2026.11.20~22</p>
     <div class="gloss" data-a="fade" style="--d:6" aria-label="약어 풀이"><span><b>Lean 4</b> · 수학 증명을 코드로 쓰고 컴퓨터가 검사하는 증명 보조기</span><span><b>Mathlib</b> · Lean용 공동 수학 라이브러리</span><span><b>컴파일</b> · 코드를 기계가 처리·검사하는 과정</span></div>
   </section>
 
@@ -1437,7 +1516,7 @@
         <div class="conds" style="margin-top:14px"><span class="chip">dots: 일부 Plus 테스트</span><span class="chip">미국 Business Standard 제공</span></div>
       </div>
       <div class="stackcol" style="width:560px">
-        <figure class="refimg" data-a="right" style="--d:3; height:280px"><img src="img/ch4-chatgpt.jpg" width="1400" height="840" alt="홈, dots 소개, 그리드 화면을 보여 주는 ChatGPT 새 모바일 앱 화면 세 장"><figcaption>새 모바일 화면: 홈 · dots · 그리드 · Digital Trends 기사 이미지</figcaption></figure>
+        <figure class="refimg" data-a="right" style="--d:3; height:336px"><img src="img/ch4-chatgpt.jpg" width="1400" height="840" alt="홈, dots 소개, 그리드 화면을 보여 주는 ChatGPT 새 모바일 앱 화면 세 장"><svg class="cgspot" viewBox="0 0 1400 840" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><rect class="dim p1" x="104" y="38" width="368" height="768" rx="62"/><rect class="ring p1" x="104" y="38" width="368" height="768" rx="62"/><rect class="dim p2" x="516" y="38" width="368" height="768" rx="62"/><rect class="ring p2" x="516" y="38" width="368" height="768" rx="62"/><rect class="dim p3" x="928" y="38" width="368" height="768" rx="62"/><rect class="ring p3" x="928" y="38" width="368" height="768" rx="62"/></svg><figcaption>새 모바일 화면: 홈 · dots · 그리드 (아래 탭과 함께 차례로 강조) · Digital Trends 기사 이미지</figcaption></figure>
         <div class="card hotc" data-a="right" style="--d:4"><div class="num" style="color:#ff8a63">대상에서 빠진 지역</div><div class="conds" style="margin-top:10px"><span class="chip gold">한국</span><span class="chip">EEA</span><span class="chip">영국</span><span class="chip">스위스</span></div></div>
       </div>
     </div>
@@ -1483,6 +1562,29 @@
     </div>
     <p class="src">자료: OpenAI 개발자 커뮤니티(10.15), OpenAI Developers 공지·API 가격표(11.19), OpenAI 도움말 센터, TechCrunch(11.13) · 2026.11.23 기준</p>
     <div class="gloss" data-a="fade" style="--d:6" aria-label="약어 풀이"><span><b>GPT-Live</b> · OpenAI의 실시간 음성 대화 모델</span><span><b>전이중</b><em>full duplex</em> · 듣기와 말하기를 동시에</span><span><b>API</b><em>Application Programming Interface</em> · 개발자가 모델을 앱에 붙이는 창구</span><span><b>대기</b><em>standby</em> · 말이 없을 때 낮은 요금으로 기다리는 상태</span></div>
+  </section>
+
+  <!-- 24c dots 목소리 -->
+  <section class="slide" data-notes="dots와 ChatGPT의 음성은 GPT-Live-1.1이 맡습니다. 10월 15일 업데이트로 새 목소리 13종이 더해졌고, 개발자 문서의 GPT-Live 목소리 표에는 21종이 올라 있습니다. 기본 목소리는 marin이고, 한국어 목소리로 '노을(noeul)'이 따로 있습니다. 목소리 샘플을 넣고 싶었지만, 11월 23일 기준 OpenAI 공식 문서에는 내려받거나 바로 재생할 수 있는 샘플 파일이 없었습니다. 직접 들어 보려면 ChatGPT 앱 음성 모드의 목소리 선택 화면을 쓰면 됩니다. OpenAI.fm은 텍스트 음성 변환 모델의 13개 목소리 데모라서 GPT-Live 목소리와는 다를 수 있습니다.">
+    <div class="kicker" data-a="left">04 · dots 목소리</div>
+    <h2 data-a style="--d:1">목소리 21종, 한국어 전용 <em>'노을'</em>도 있다</h2>
+    <div class="row" style="margin-top:22px; align-items:stretch">
+      <div class="card grow" data-a style="--d:2">
+        <div class="num">GPT-Live 목소리 목록 · API 이름</div>
+        <div class="voices">
+          <span class="vc def">marin<small>기본</small></span><span class="vc kr">noeul<small>한국어 · 노을</small><i class="vw"><b></b><b></b><b></b><b></b><b></b></i></span>
+          <span class="vc">quartz</span><span class="vc">ripple</span><span class="vc">vesper</span><span class="vc">willow</span><span class="vc">stone</span><span class="vc">gleam</span><span class="vc">meridian</span><span class="vc">bossa</span><span class="vc">tempo</span><span class="vc">beacon</span><span class="vc">delta</span><span class="vc">cinder</span><span class="vc">nuri</span><span class="vc">juni</span><span class="vc">flitz</span><span class="vc">brise</span><span class="vc">sillage</span><span class="vc">nira</span><span class="vc">harema</span><span class="vc">shida</span>
+        </div>
+        <p class="small" style="margin-top:12px">ChatGPT에는 10.15 업데이트로 <b>새 목소리 13종</b> 추가 · 한국어·일본어·힌디어 발음 개선</p>
+      </div>
+      <div class="stackcol" style="width:470px">
+        <div class="card rumor" data-a="right" style="--d:3"><span class="badge rumor">샘플 파일 없음</span><p style="margin-top:10px">OpenAI 공식 문서에 <b>재생·다운로드 가능한 목소리 샘플이 없다</b> (11.23 확인). 다른 음성을 대신 넣지 않았다.</p></div>
+        <div class="card ok" data-a="right" style="--d:4"><div class="num">직접 들어 보기</div>
+          <ul style="margin:8px 0 0"><li><b>ChatGPT 앱</b> 음성 모드 → 목소리 선택 화면</li><li><a href="https://www.openai.fm" target="_blank" rel="noopener" style="color:var(--gold)">OpenAI.fm ↗</a> · TTS 13종 데모 <span class="small">(GPT-Live 목소리와 다를 수 있음)</span></li></ul></div>
+      </div>
+    </div>
+    <p class="src">자료: OpenAI 「GPT-Live live conversations」 목소리 표, OpenAI 개발자 커뮤니티(10.15), OpenAI TTS 가이드 · 2026.11.23 확인</p>
+    <div class="gloss" data-a="fade" style="--d:6" aria-label="약어 풀이"><span><b>TTS</b><em>Text-to-Speech</em> · 글을 음성으로 읽어 주는 기술</span><span><b>API 이름</b> · 개발자가 코드에서 목소리를 고를 때 쓰는 값</span></div>
   </section>
 
   <!-- 25 카톡 라이언: 기능 표 -->
@@ -1570,6 +1672,34 @@
     <div class="gloss" data-a="fade" style="--d:6" aria-label="약어 풀이"><span><b>GA</b><em>General Availability</em> · 정식 출시</span><span><b>4K 업스케일</b> · 저해상도 영상을 4K로 키우는 기능</span></div>
   </section>
 
+  <!-- 27b GIF 비교 -->
+  <section class="slide" data-notes="같은 주에 GIF를 만들 수 있는 길이 하나 더 있습니다. OpenAI의 이미지 모델 GPT-Image-2.6 Sunburst와 Flare는 Image API에서 애니메이션 GIF 출력을 지원합니다. 둘을 비교하면, Gemini는 앱에서 구독자가 텍스트, 사진, 영상으로 약 3초짜리 반복 GIF를 바로 만드는 소비자 기능이고, 한국도 지원합니다. GPT-Image-2.6은 개발자용 API로, output_format을 gif로 지정하고 프레임 수를 2에서 16개, 프레임 간격을 20에서 2000밀리초로 정합니다. 기본값은 9프레임에 200밀리초라서 약 1.8초입니다. 가격은 이미지 출력 100만 토큰당 30달러이고 GIF 전용 가격은 따로 없습니다. GPT-Image-2.6의 공개 날짜는 문서에서 확인하지 못했습니다.">
+    <div class="kicker" data-a="left">04 · GIF 비교</div>
+    <h2 data-a style="--d:1">앱에서 3초 vs API에서 <em>프레임 단위로</em></h2>
+    <div class="row" style="margin-top:22px; align-items:stretch">
+      <div class="ftab cmp3 grow" data-a style="--d:2">
+        <div class="h">항목</div><div class="h">Gemini 앱 GIF</div><div class="h">GPT-Image-2.6 GIF</div>
+        <div class="rh">쓰는 사람</div><div><span><b>Google AI 구독자</b> · Gemini 앱</span></div><div><span><b>개발자</b> · Image API</span></div>
+        <div class="rh">입력</div><div><span>텍스트 · 사진 · 영상</span></div><div><span>텍스트 · 이미지(편집)</span></div>
+        <div class="rh">길이 조절</div><div><span>약 <b>3초</b> 반복 (고정)</span></div><div><span><b>2–16프레임</b> × 20–2000ms<br>기본 9 × 200ms ≈ 1.8초</span></div>
+        <div class="rh">모델</div><div><span>Omni 1.2 Flash</span></div><div><span><code>gpt-image-2.6-sunburst</code> · <code>-flare</code></span></div>
+        <div class="rh">가격</div><div><span>구독에 포함</span></div><div><span>이미지 출력 100만 토큰당 <b>$30</b> · GIF 별도 가격 없음</span></div>
+        <div class="rh">한국 · 공개</div><div><span><span class="badge ok">한국 포함 · 11.20</span></span></div><div><span><span class="badge rumor">공개일 문서에 없음</span></span></div>
+      </div>
+      <div class="stackcol" style="width:400px">
+        <div class="card" data-a="right" style="--d:3"><div class="num">Gemini · 정해진 3초 루프</div>
+          <div class="fstrip g"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><em></em></div>
+          <div class="fcap"><span>0초</span><span>↻ 3초</span></div></div>
+        <div class="card" data-a="right" style="--d:4"><div class="num">GPT-Image-2.6 · 프레임 수·간격 지정</div>
+          <div class="fstrip o"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><em></em></div>
+          <div class="fcap"><span>frame_count 9</span><span>frame_duration_ms 200</span></div>
+          <pre class="lean" style="margin-top:10px; font-size:13px; padding:10px 14px">output_format: "gif"</pre></div>
+      </div>
+    </div>
+    <p class="src">자료: Android Authority(Gemini GIF, 11.20), OpenAI 이미지 생성 가이드·모델 페이지(GPT-Image-2.6) · 2026.11.23 확인</p>
+    <div class="gloss" data-a="fade" style="--d:6" aria-label="약어 풀이"><span><b>프레임</b> · GIF를 이루는 정지 그림 한 장</span><span><b>ms</b><em>millisecond</em> · 1000분의 1초</span><span><b>Image API</b> · OpenAI 이미지 생성·편집 기능을 부르는 창구</span></div>
+  </section>
+
   <!-- 28 구간 표지 05 -->
   <section class="slide s-photo" data-notes="마지막 장은 Tesla FSD v15입니다. 11월 21일 배포를 시작했고, 차량 주변을 가상 카메라 시점으로 그려 보여 주는 Reality View가 핵심입니다. Tesla가 내세운 '안전 25배' 수치는 따로 검증해야 합니다.">
     <div class="ph soft" style="background-image:url(img/ch5-tesla.jpg)" aria-hidden="true"></div><div class="ph-shade"></div>
@@ -1601,18 +1731,18 @@
   </section>
 
   <!-- 30 요약 -->
-  <section class="slide" data-notes="정리합니다. 리만 가설 증명은 Lean 커널 검사와 커뮤니티의 명제 확인을 통과했지만 Clay 인정까지는 게재 후 최소 2년이 걸리고, P 대 NP를 푼 것은 아닙니다. 새 모델은 GPT-6.2, Gemini 4 Neon, Inkling 2 Mini가 확정이고, Inkling은 4비트로 학습해 32GB Mac에서 돌아갑니다. 한국 사용자에게는 ChatGPT 리디자인이 아직 오지 않았고, Gemini GIF는 바로 쓸 수 있으며, 카톡 라이언은 12월 비공개 베타부터입니다. 다음으로 볼 날짜는 12월 16일 카카오 약관 시행, 12월 중 카나나 스페이스 CBT, 12월 Tesla 홀리데이 업데이트, 그리고 Stitch Loop 대기자 개방입니다.">
+  <section class="slide" data-notes="챕터별로 한 장에 정리합니다. 첫째, 리만 가설 증명은 Lean 커널 검사와 커뮤니티의 명제 확인을 통과했지만, Clay 인정은 게재 후 최소 2년이 지나야 하고 P 대 NP는 여전히 열린 문제입니다. 둘째, 새 모델은 GPT-6.2 Astra와 Sol, Gemini 4 Neon, Inkling 2 Mini가 확정이고, Cobalt와 Helium은 미확인입니다. Inkling은 4비트로 학습해 32GB Mac에서 돌아갑니다. 셋째, 메모의 Gemini Loop는 Google Stitch Loop로, 지금은 대기자 명단 단계입니다. diffusion-ui는 연구 시연입니다. 넷째, 한국 사용자에게 ChatGPT 리디자인은 아직 오지 않았지만 dots 음성의 한국어는 좋아졌고, Gemini GIF는 바로 쓸 수 있으며, 카톡 라이언은 12월 비공개 베타부터입니다. 다섯째, Tesla FSD v15는 11월 21일 배포를 시작했고 AI4 차량 전용이며, 안전 25배는 Tesla 자체 수치입니다. 다음으로 볼 날짜는 12월 16일 카카오 약관 시행, 12월 중 카나나 스페이스 CBT, 12월 FSD 홀리데이 업데이트, 그리고 2027년 1월 14일 dots Enterprise 과금 시작입니다.">
     <div class="kicker" data-a="left">Summary</div>
-    <h2 data-a style="--d:1">세 줄 요약과 <em>12월 일정</em></h2>
-    <div class="concl">
-      <div class="card" data-a style="--d:2"><div class="ic">∑</div><h3>리만 가설</h3><p>Lean 검증과 명제 확인 통과. Clay 인정은 게재 후 최소 2년. P vs NP와는 별개.</p></div>
-      <div class="card" data-a style="--d:3"><div class="ic">🧠</div><h3>새 모델</h3><p>GPT-6.2 · Gemini 4 Neon · Inkling 2 Mini 확정. Inkling은 4비트 학습으로 32GB Mac에서.</p></div>
-      <div class="card" data-a style="--d:4"><div class="ic">🇰🇷</div><h3>한국에서는</h3><p>ChatGPT 리디자인 제외, Gemini GIF는 지금, 카톡 라이언은 12월 CBT부터.</p></div>
-      <div class="card judge cal" data-a style="--d:5"><div class="num">다음 체크</div>
-        <ol><li><b>12.16</b>카카오 AI 약관 시행</li><li><b>12월 중</b>카나나 스페이스 CBT</li><li><b>12월</b>FSD v15 홀리데이 확대</li><li><b>미정</b>Stitch Loop 대기자 개방</li></ol>
-        <div class="ignite-what"><b>Clay 2년 규정?</b> 게재 후 2년이 지나고 수학계가 받아들여야 상금 심사가 시작된다.</div></div>
+    <h2 data-a style="--d:1">챕터별 <em>한 장 요약</em></h2>
+    <div class="chsum">
+      <div class="cs" data-a style="--d:2"><span class="n">01</span><h3>리만 가설</h3><ul><li>Lean 커널 검사·명제 확인 <b>통과</b></li><li>Clay 인정은 게재 후 <b>2년+</b></li><li>P vs NP는 여전히 <b>열린 문제</b></li></ul><span class="badge ok">발표 · 검증</span></div>
+      <div class="cs" data-a style="--d:3"><span class="n">02</span><h3>새 모델</h3><ul><li>GPT-6.2 Astra <b>$8 / $40</b> (20%↓)</li><li>Gemini 4 Neon 출시 · Cobalt·Helium <b>미확인</b></li><li>Inkling 2 Mini <b>4비트 학습</b> → 32GB Mac</li></ul><span class="badge ok">3종 확정</span></div>
+      <div class="cs" data-a style="--d:4"><span class="n">03</span><h3>에이전트 · UI</h3><ul><li>"Gemini Loop" = <b>Stitch Loop</b></li><li><b>대기자 명단</b> · Ultra 구독자 우선</li><li>diffusion-ui: 픽셀 생성 <b>연구 시연</b></li></ul><span class="badge judge">아직 못 씀</span></div>
+      <div class="cs" data-a style="--d:5"><span class="n">04</span><h3>앱 속 AI</h3><ul><li>ChatGPT 리디자인 <b>한국 제외</b></li><li>dots 음성 GPT-Live-1.1 · <b>한국어 개선</b></li><li>Gemini GIF <b>지금</b> · 라이언 <b>12월 CBT</b></li></ul><span class="badge ok">일부 사용 가능</span></div>
+      <div class="cs" data-a style="--d:6"><span class="n">05</span><h3>자율주행</h3><ul><li>FSD v15 <b>11.21</b> 배포 시작</li><li>Reality View · <b>탭으로 목적지</b></li><li>AI4 전용 · "25배"는 <b>벤더 수치</b></li></ul><span class="badge vendor">검증 필요</span></div>
     </div>
-    <div class="gloss" data-a="fade" style="--d:7" aria-label="약어 풀이"><span><b>CBT</b><em>Closed Beta Test</em> · 비공개 시범 운영</span><span><b>Lean</b> · 컴퓨터가 증명을 검사하는 증명 보조기</span></div>
+    <div class="nextchk" data-a style="--d:7"><b>다음 체크</b><span><em>12.16</em>카카오 AI 약관 시행</span><span><em>12월 중</em>카나나 스페이스 CBT</span><span><em>12월</em>FSD v15 홀리데이 확대</span><span><em>2027.1.14</em>dots Enterprise 과금</span><span><em>미정</em>Stitch Loop 개방</span></div>
+    <div class="gloss" data-a="fade" style="--d:8" aria-label="약어 풀이"><span><b>CBT</b><em>Closed Beta Test</em> · 비공개 시범 운영</span><span><b>Lean</b> · 컴퓨터가 증명을 검사하는 증명 보조기</span><span><b>AI4</b> · Tesla 4세대 자율주행 컴퓨터</span></div>
   </section>
 
 </main>
@@ -1622,7 +1752,7 @@
   <a href="../" title="아카이브로">← Archive</a>
   <button type="button" id="firstBtn" title="첫 페이지로 (Home)" aria-label="첫 슬라이드로"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 3v10"/><path d="M12.5 3.5 7 8l5.5 4.5"/></svg></button>
   <button type="button" id="prev" aria-label="이전 슬라이드">‹</button>
-  <span class="count" id="count">1 / 31</span>
+  <span class="count" id="count">1 / 34</span>
   <button type="button" id="next" aria-label="다음 슬라이드">›</button>
   <button type="button" id="notesBtn" title="발표자 노트 (N)">N</button>
   <button type="button" id="fsBtn" title="전체 화면 (F)">⛶</button>

@@ -14,7 +14,7 @@ window.ITEMS = [
   {
     "href": "ai-briefing-2026-11-w4/",
     "title": "2026년 11월 넷째 주 테크·AI 브리핑 (슬라이드 타입)",
-    "desc": "리만 가설 증명(가설의 뜻과 소수와의 관계, Lean 코드와 검증 이유, Clay 인정 조건, P=NP가 함께 언급되는 이유와 정정), GPT-6.2 Astra·Sol, Gemini 4 Neon과 Cobalt·Helium 단서, Inkling 2 Mini 루프 구조와 4비트(NVFP4) 양자화, Google Stitch Loop와 대기자 명단, Runway diffusion-ui, ChatGPT 리디자인과 dots·GPT-Live-1.1 새 소식, 카카오톡 '라이언' 기능표, Gemini GIF, Tesla FSD v15를 31장으로 정리. 슬라이드마다 참고 이미지, 실제 동작하는 기능(GPT-Live·Wallet·Gemini GIF·diffusion-ui·ChatGPT 탭)은 동작 재현 애니메이션, 소수 계단이 곡선이 되는 그래프 애니메이션, FSD Reality View 실제 화면 GIF, 확정·루머·판단·벤더 수치 배지, 폰 세로 화면 대응. Speaker Notes(N), Fullscreen(F).",
+    "desc": "리만 가설 증명(가설의 뜻과 소수와의 관계, Lean 코드와 검증 이유, Clay 인정 조건, P=NP가 함께 언급되는 이유와 정정), GPT-6.2 Astra·Sol, Gemini 4 Neon과 Cobalt·Helium 단서, Inkling 2 Mini 루프 구조와 4비트(NVFP4) 양자화, Google Stitch Loop와 대기자 명단, Runway diffusion-ui, 밀레니엄 7대 난제, ChatGPT 리디자인과 dots·GPT-Live-1.1 새 소식·목소리 목록, Gemini GIF와 GPT-Image-2.6 GIF 비교, 챕터별 한 장 요약, 카카오톡 '라이언' 기능표, Gemini GIF, Tesla FSD v15를 34장으로 정리. 슬라이드마다 참고 이미지, 실제 동작하는 기능(GPT-Live·Wallet·Gemini GIF·diffusion-ui·ChatGPT 탭)은 동작 재현 애니메이션, 소수 계단이 곡선이 되는 그래프 애니메이션, FSD Reality View 실제 화면 GIF, 확정·루머·판단·벤더 수치 배지, 폰 세로 화면 대응. Speaker Notes(N), Fullscreen(F).",
     "type": "슬라이드",
     "tags": ["AI 동향", "주간 브리핑", "리만 가설", "GPT-6.2", "Gemini"],
     "date": "2026-11-23",
