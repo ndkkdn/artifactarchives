@@ -8,8 +8,7 @@ window.ITEMS = [
     "type": "슬라이드",
     "tags": [],
     "date": "2026-11-24",
-    "thumb": "thumbs/a-20261124-alb1h3.jpg",
-    "hidden": true
+    "thumb": "thumbs/a-20261124-alb1h3.jpg"
   },
   {
     "href": "ai-briefing-2026-11-w4-report/",
