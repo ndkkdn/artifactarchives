@@ -2,6 +2,16 @@
 // 직접 고칠 때도 JSON 형식(따옴표 붙은 키)을 유지해 주세요.
 window.ITEMS = [
   {
+    "href": "a-20261125-1t66ai/",
+    "title": "graph-vs-loop-engineering",
+    "desc": "graph-vs-loop-engineering",
+    "type": "슬라이드",
+    "tags": [],
+    "date": "2026-11-25",
+    "thumb": "thumbs/a-20261125-1t66ai.jpg",
+    "hidden": true
+  },
+  {
     "href": "ai-briefing-2026-11-w4-report/",
     "title": "2026년 11월 넷째 주 테크·AI 브리핑 (스크롤 타입)",
     "desc": "리만 가설 증명(가설의 뜻, 제타 함수 상세 설명, 리만 가설과 일반화된 리만 가설의 차이, 밀레니엄 7대 난제, Lean 코드와 검증 이유, Clay 인정 조건, P=NP가 따라 나오는 이유와 정정), GPT-6.2 Astra·Sol, Gemini 4 Neon과 Cobalt·Helium 단서, Inkling 2 Mini와 4비트 양자화, Google Stitch Loop와 대기자 명단, Runway diffusion-ui, ChatGPT 리디자인과 dots·GPT-Live-1.1, 카카오톡 '라이언' 기능표, Gemini GIF와 GPT-Image-2.6의 GIF 생성 기능 비교, Tesla FSD v15를 출처 26건과 함께 정리한 상세 리포트. 11개 항목 판정표, 소수 계단이 곡선이 되는 그래프 애니메이션, Mathlib 리만 가설 정의 코드, 양자화 비트 도해, GPT-Live·Wallet·Gemini GIF 동작 재현, Reality View 실제 화면 GIF, 섹션마다 참고 이미지, 눌러 보는 용어 풀이.",
